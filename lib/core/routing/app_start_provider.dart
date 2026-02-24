@@ -13,17 +13,27 @@ class AppStartNotifier extends StateNotifier<AppStartState> {
     _init();
   }
 
-  Future<void> _init() async {
-    final seen = await LocalStorage.isWelcomeSeen();
-    final token = await LocalStorage.getToken();
- 
-    if (!seen || token == null) {
-      state = AppStartState.welcome;
-    }
-    else{
-      state = AppStartState.authenticated ;
-    }
+ Future<void> _init() async {
+
+  final seen = await LocalStorage.isWelcomeSeen();
+
+  final token = await LocalStorage.getToken();
+
+  final role = await LocalStorage.getRole();
+
+  if (!seen) {
+    state = AppStartState.welcome;
+    return;
   }
+
+  if (token != null && role != null) {
+    state = AppStartState.authenticated;
+    return;
+  }
+
+  state = AppStartState.welcome;
+
+}
 
   void goToDashboard() => state = AppStartState.authenticated;
 }

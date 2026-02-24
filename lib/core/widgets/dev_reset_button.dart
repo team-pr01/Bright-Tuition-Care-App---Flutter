@@ -22,6 +22,8 @@ class DevResetButton extends ConsumerWidget {
         backgroundColor: const Color.fromARGB(74, 82, 81, 81),
         onPressed: () async {
           await LocalStorage.clearWelcome();
+          await LocalStorage.clearAuthIdentifier();
+          await LocalStorage.clear();
 
           // ref.read(appStartProvider.notifier).goToLogin();
 

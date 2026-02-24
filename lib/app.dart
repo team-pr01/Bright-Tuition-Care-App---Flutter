@@ -1,13 +1,12 @@
 import 'package:btcclient/core/widgets/dev_reset_button.dart';
-import 'package:btcclient/features/auth/presentation/register_screen.dart';
+import 'package:btcclient/features/auth/provider/auth_notifier.dart';
+import 'package:btcclient/features/guardian/presentation/guardian_dashboard_screen.dart';
+import 'package:btcclient/features/tutor/presentation/tutor_dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/config/theme.dart';
 import 'core/routing/app_start_provider.dart';
-
-import 'features/auth/provider/auth_provider.dart';
-import 'features/auth/presentation/login_screen.dart';
 import 'features/auth/presentation/welcome_screen.dart';
 
 import 'features/splash/splash_screen.dart';
@@ -40,12 +39,12 @@ class MyApp extends ConsumerWidget {
       //   break;
 
       case AppStartState.authenticated:
-        // if (authState.role == 'guardian') {
-        //   screen = const GuardianDashboard();
-        // } else {
-        //   screen = const TutorDashboard();
-        // }
-        // break;
+        if (authState.role == 'guardian') {
+          screen = const GuardianDashboardScreen();
+        } else {
+          screen = const TutorDashboardScreen();
+        }
+        break;
     }
 
     return MaterialApp(

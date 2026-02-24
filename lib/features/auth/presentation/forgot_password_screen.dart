@@ -59,7 +59,7 @@ class _ForgotPasswordScreenState
       return;
     }
 
-    /// Navigate to OTP screen
+    // / Navigate to OTP screen
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -69,7 +69,7 @@ class _ForgotPasswordScreenState
 
           subtitle: "OTP sent to",
 
-          destination: controller.text.trim(),
+          phoneNumber: controller.text.trim(),
 
           onVerify: (otp) async {
 
