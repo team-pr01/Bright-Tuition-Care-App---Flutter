@@ -65,18 +65,7 @@ class StarRating extends StatelessWidget {
         ),
 
         /// Rating value (optional)
-        if (showValue) ...[
-          const SizedBox(width: 6),
-
-          Text(
-            rating.toStringAsFixed(1),
-            style: valueStyle ??
-                Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.neutrals02,
-                ),
-          ),
-        ]
+        
       ],
     );
   }

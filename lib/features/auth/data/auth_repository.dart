@@ -1,31 +1,63 @@
-class AuthResult {
+import 'package:btcclient/core/storage/local_storage.dart';
+import 'package:btcclient/features/auth/data/auth_api.dart';
 
+class AuthResult {
   final String token;
   final String role;
 
-  AuthResult({
-    required this.token,
-    required this.role,
-  });
-
+  AuthResult({required this.token, required this.role});
 }
 
 class AuthRepository {
+  final AuthApi api;
 
-  Future<AuthResult> login({
-    required String email,
-    required String password,
-  }) async {
+  AuthRepository(this.api);
 
-    /// TODO replace with Dio call
+ Future<AuthResult> login({
+  required String email,
+  required String password,
+  required String role,
+}) async {
 
-    await Future.delayed(const Duration(seconds: 1));
+  final response = await api.login(
+    email: email,
+    password: password,
+    role: role,
+  );
 
-    return AuthResult(
-      token: "dummy_token",
-      role: "guardian",
-    );
+  print("LOGIN RESPONSE:");
+  print(response.data);
 
+  final responseData = response.data;
+
+  if (responseData["success"] != true) {
+    throw Exception(responseData["message"] ?? "Login failed");
   }
+
+  final data = responseData["data"];
+
+  if (data == null) {
+    throw Exception("Data object missing in response");
+  }
+
+  final accessToken = data["accessToken"];
+  final refreshToken = data["refreshToken"];
+  final userRole = data["role"] ?? role;
+
+  if (accessToken == null) {
+    throw Exception("Access token missing");
+  }
+
+await LocalStorage.saveToken(accessToken);
+await LocalStorage.saveRefreshToken(refreshToken);
+  await LocalStorage.saveRole(userRole);
+
+  return AuthResult(
+    token: accessToken,
+    role: userRole,
+  );
+
+}
+
 
 }

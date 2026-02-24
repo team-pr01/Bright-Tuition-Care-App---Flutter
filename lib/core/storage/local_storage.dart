@@ -7,7 +7,12 @@ class LocalStorage {
       _storage.write(key: 'token', value: token);
 
   static Future<String?> getToken() => _storage.read(key: 'token');
+  
+  static Future<void> saveRefreshToken(String token) =>
+      _storage.write(key: 'refreshToken', value: token);
 
+  static Future<String?> getRefreshToken() =>
+      _storage.read(key: 'refreshToken');
   static Future<void> setWelcomeSeen() =>
       _storage.write(key: 'welcome', value: 'true');
 
@@ -20,7 +25,6 @@ class LocalStorage {
       _storage.write(key: 'role', value: role);
 
   static Future<String?> getRole() => _storage.read(key: 'role');
-
 
   // dev
   static Future<void> clearWelcome() => _storage.delete(key: 'welcome');
