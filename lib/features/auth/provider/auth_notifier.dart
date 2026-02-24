@@ -1,7 +1,9 @@
 import 'package:btcclient/core/storage/local_storage.dart';
 import 'package:btcclient/features/auth/data/auth_api.dart';
 import 'package:btcclient/features/auth/data/auth_repository.dart';
+import 'package:btcclient/features/auth/data/models/resend_otp_request.dart';
 import 'package:btcclient/features/auth/data/models/signup_request.dart';
+import 'package:btcclient/features/auth/data/models/verify_otp_request.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:btcclient/features/auth/data/models/forgot_password_request.dart';
 import 'auth_state.dart';
@@ -26,12 +28,15 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       final token = await LocalStorage.getToken();
       final role = await LocalStorage.getRole();
-      final user =
-        await LocalStorage.getUser();
-
+      final user = await LocalStorage.getUser();
 
       if (token != null) {
-        state = AuthState(loggedIn: true, role: role,user:user ,loading: false);
+        state = AuthState(
+          loggedIn: true,
+          role: role,
+          user: user,
+          loading: false,
+        );
       } else {
         state = const AuthState(loggedIn: false, loading: false);
       }
@@ -83,9 +88,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
       await LocalStorage.saveUser(result.user);
       final savedUser = await LocalStorage.getUser();
 
-print("Saved user name: ${result.user.name}");
-      state = AuthState(loggedIn: true, role: result.role, loading: false,user: result.user);
-    
+      print("Saved user name: ${result.user.name}");
+      state = AuthState(
+        loggedIn: true,
+        role: result.role,
+        loading: false,
+        user: result.user,
+      );
     } catch (e) {
       state = state.copyWith(loading: false, error: e.toString());
     }
@@ -94,9 +103,45 @@ print("Saved user name: ${result.user.name}");
   // ================= LOGOUT =================
 
   Future<void> logout() async {
-      await LocalStorage.clearUser();
+    await LocalStorage.clearUser();
     await LocalStorage.clear();
 
     state = const AuthState(loggedIn: false, loading: false);
+  }
+
+  Future<bool> verifyOtp({required String email, required String otp}) async {
+    state = state.copyWith(loading: true, error: null);
+
+    try {
+      final result = await repo.verifyOtp(
+        VerifyOtpRequest(email: email, otp: otp),
+      );
+
+      /// set full auth state
+      state = AuthState(
+        loggedIn: true,
+        role: result.role,
+        user: result.user,
+        loading: false,
+      );
+
+      return true;
+    } catch (e) {
+      state = state.copyWith(loading: false, error: e.toString());
+
+      return false;
+    }
+  }
+
+  Future<bool> resendOtp({required String email}) async {
+    try {
+      await repo.resendOtp(ResendOtpRequest(email: email));
+
+      return true;
+    } catch (e) {
+      state = state.copyWith(error: e.toString());
+
+      return false;
+    }
   }
 }

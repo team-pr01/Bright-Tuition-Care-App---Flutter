@@ -1,5 +1,7 @@
+import 'package:btcclient/features/auth/data/models/resend_otp_request.dart';
 import 'package:btcclient/features/auth/data/models/signup_request.dart';
 import 'package:btcclient/features/auth/data/models/forgot_password_request.dart';
+import 'package:btcclient/features/auth/data/models/verify_otp_request.dart';
 import 'package:dio/dio.dart';
 import '../../../core/network/dio_client.dart';
 
@@ -35,6 +37,28 @@ Future<Response> forgetPassword(
 
   return await DioClient.dio.post(
     "/auth/forgot-password",
+    data: request.toJson(),
+  );
+
+}
+
+Future<Response> verifyOtp(
+  VerifyOtpRequest request,
+) async {
+
+  return await DioClient.dio.post(
+    "/auth/verify-otp",
+    data: request.toJson(),
+  );
+
+}
+
+Future<Response> resendOtp(
+  ResendOtpRequest request,
+) async {
+
+  return await DioClient.dio.post(
+    "/auth/resend-otp",
     data: request.toJson(),
   );
 

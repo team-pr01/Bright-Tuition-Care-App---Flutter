@@ -1,5 +1,6 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/layout/auth_layout.dart';
+import 'package:btcclient/core/routing/app_router.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/core/widgets/input/app_input_field.dart';
 import 'package:btcclient/core/widgets/segmented_switch/segmented_switch.dart';
@@ -102,89 +103,74 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-      final authState = ref.watch(authProvider);
-  ref.listen(authProvider, (previous, next) {
-
-  /// Signup success
-  if (previous?.loading == true &&
-      next.loading == false &&
-      next.error == null) {
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("OTP sent successfully"),
-        backgroundColor: Colors.green,
-      ),
-    );
-
-    /// Navigate to OTP screen
-    Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (_) => OtpScreen(
-      title: "Verify OTP",
-      subtitle: "Enter OTP sent to",
-      phoneNumber: phoneController.text.trim(),
-
-      onVerify: (otp) async {
-
-        /// call your verify API here
-        /// example:
-        /// return await ref.read(authProvider.notifier)
-        ///     .verifyOtp(phoneController.text.trim(), otp);
-
-        await Future.delayed(const Duration(seconds: 1));
-        return true;
-
-      },
-
-      onResend: () async {
-
-        /// call resend OTP API
-        /// example:
-        /// await ref.read(authProvider.notifier)
-        ///     .resendOtp(phoneController.text.trim());
-
-        await Future.delayed(const Duration(seconds: 1));
-
-      },
-
-      onSuccess: () {
-
+    final authState = ref.watch(authProvider);
+    ref.listen(authProvider, (previous, next) {
+      /// Signup success
+      if (previous?.loading == true &&
+          next.loading == false &&
+          next.error == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text("Account verified successfully"),
+            content: Text("OTP sent successfully"),
             backgroundColor: Colors.green,
           ),
         );
 
-        Navigator.pop(context);
+        /// Navigate to OTP screen
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => OtpScreen(
+              title: "Verify OTP",
+              subtitle: "Enter OTP sent to",
+              phoneNumber: phoneController.text.trim(),
 
-        /// or go to login/dashboard
-        // Navigator.pushReplacementNamed(context, "/login");
+              onVerify: (otp) async {
+                final success = await ref
+                    .read(authProvider.notifier)
+                    .verifyOtp(email: emailController.text.trim(), otp: otp);
 
-      },
+                return success;
+              },
 
-    ),
-  ),
-);
+              onResend: () async {
+                final success = await ref
+                    .read(authProvider.notifier)
+                    .resendOtp(email: emailController.text.trim());
 
-  }
+                if (success) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("OTP resent successfully"),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                }
+              },
 
-  /// Error handling
-  if (next.error != null &&
-      next.error != previous?.error) {
+              onSuccess: () {
+                final role = ref.read(authProvider).role;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(next.error!),
-        backgroundColor: Colors.red,
-      ),
-    );
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => AppRouter.getDashboardByRole(role),
+                  ),
+                  (route) => false,
+                );
+              },
+            ),
+          ),
+        );
+      }
 
-  }
-
-});
+      /// Error handling
+      if (next.error != null && next.error != previous?.error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(next.error!), backgroundColor: Colors.red),
+        );
+      }
+    });
     return AuthListener(
       child: AuthLayout(
         title: "Create Account",
@@ -347,7 +333,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 loading: authState.loading,
                 onPressed: _register,
               ),
-
             ],
           ),
         ),
