@@ -1,40 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../core/layout/auth_layout.dart';
 import '../../../core/widgets/input/app_input_field.dart';
 import '../../../core/widgets/button/app_button.dart';
-import 'otp_screen.dart';
 
-class ForgotPasswordScreen extends StatefulWidget {
+import '../../auth/provider/auth_notifier.dart';
+import '../../auth/presentation/otp_screen.dart';
 
-  final Future<bool> Function(String value) onSendOtp;
-
-  const ForgotPasswordScreen({
-    super.key,
-    required this.onSendOtp,
-  });
+class ForgotPasswordScreen extends ConsumerStatefulWidget {
+  const ForgotPasswordScreen({super.key});
 
   @override
-  State<ForgotPasswordScreen> createState() =>
+  ConsumerState<ForgotPasswordScreen> createState() =>
       _ForgotPasswordScreenState();
 }
 
-class _ForgotPasswordScreenState
-    extends State<ForgotPasswordScreen> {
-
+class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   final controller = TextEditingController();
 
-  final formKey = GlobalKey<FormState>();
-
   bool loading = false;
-
   String? error;
 
   Future<void> sendOtp() async {
+    final phone = controller.text.trim();
 
-    if (controller.text.trim().isEmpty) {
-
+    if (phone.isEmpty) {
       setState(() {
-        error = "Enter phone";
+        error = "Enter phone number";
       });
 
       return;
@@ -45,46 +38,40 @@ class _ForgotPasswordScreenState
       error = null;
     });
 
-    final success =
-        await widget.onSendOtp(controller.text.trim());
-
-    setState(() => loading = false);
-
-    if (!success) {
-
-      setState(() {
-        error = "Failed to send OTP";
-      });
-
-      return;
-    }
-
-    // / Navigate to OTP screen
+    /// Navigate to OTP screen
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => OtpScreen(
-
           title: "Verify OTP",
 
           subtitle: "OTP sent to",
 
-          phoneNumber: controller.text.trim(),
+          phoneNumber: phone,
 
           onVerify: (otp) async {
+            return await ref
+                .read(authProvider.notifier)
+                .verifyResetPasswordOtp(phoneNumber: phone, otp: otp);
+          },
 
-            /// call verify forgot password OTP API
-            return true;
+          onResend: () async {
+            final success = await ref
+                .read(authProvider.notifier)
+                .resendForgotPasswordOtp(phoneNumber: phone);
 
+            if (success) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("OTP resent successfully"),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            }
           },
 
           onSuccess: () {
-
-            Navigator.pushReplacementNamed(
-              context,
-              "/reset-password",
-            );
-
+            Navigator.pushReplacementNamed(context, "/reset-password");
           },
         ),
       ),
@@ -93,63 +80,46 @@ class _ForgotPasswordScreenState
 
   @override
   Widget build(BuildContext context) {
-
     return AuthLayout(
-
       title: "Forgot Password",
 
-      subtitle:
-          "Enter your phone to receive OTP",
+      subtitle: "Enter your phone to receive OTP",
 
-      child: Form(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
 
-        key: formKey,
+        children: [
+          AppInputField(
+            label: "Phone",
+            hint: "Enter phone",
+            controller: controller,
+            required: true,
+          ),
 
-        child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.stretch,
+          const SizedBox(height: 20),
 
-          children: [
+          AppButton(
+            label: "Send OTP",
+            loading: loading,
+            variant: AppButtonVariant.gradient,
+            onPressed: sendOtp,
+          ),
 
-            AppInputField(
-              label: "Phone",
-              hint: "Enter  phone",
-              controller: controller,
-              required: true,
-            ),
+          if (error != null) ...[
+            const SizedBox(height: 12),
 
-            const SizedBox(height: 20),
-
-            AppButton(
-              label: "Send OTP",
-              variant: AppButtonVariant.gradient,
-              loading: loading,
-              onPressed: sendOtp,
-            ),
-
-            if (error != null) ...[
-              const SizedBox(height: 12),
-
-              Text(
-                error!,
-                style: const TextStyle(
-                  color: Colors.red,
-                ),
-              )
-            ],
-
-            const SizedBox(height: 20),
-
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text(
-                "Back to Login",
-              ),
-            ),
+            Text(error!, style: const TextStyle(color: Colors.red)),
           ],
-        ),
+
+          const SizedBox(height: 20),
+
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text("Back to Login"),
+          ),
+        ],
       ),
     );
   }

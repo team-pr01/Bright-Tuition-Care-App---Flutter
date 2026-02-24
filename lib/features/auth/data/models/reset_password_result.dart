@@ -1,16 +1,16 @@
-class ForgotPasswordResult {
+class ResetPasswordResult {
 
   final String message;
 
-  ForgotPasswordResult({
+  ResetPasswordResult({
     required this.message,
   });
 
-  factory ForgotPasswordResult.fromJson(
+  factory ResetPasswordResult.fromJson(
     Map<String, dynamic> json,
   ) {
 
-    return ForgotPasswordResult(
+    return ResetPasswordResult(
       message: json["message"] ?? "",
     );
 

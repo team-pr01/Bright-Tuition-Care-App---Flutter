@@ -1,9 +1,12 @@
 import 'package:btcclient/core/storage/local_storage.dart';
 import 'package:btcclient/features/auth/data/auth_api.dart';
 import 'package:btcclient/features/auth/data/auth_repository.dart';
+import 'package:btcclient/features/auth/data/models/resend_forgot_password_otp_request.dart';
 import 'package:btcclient/features/auth/data/models/resend_otp_request.dart';
+import 'package:btcclient/features/auth/data/models/reset_password_request.dart';
 import 'package:btcclient/features/auth/data/models/signup_request.dart';
 import 'package:btcclient/features/auth/data/models/verify_otp_request.dart';
+import 'package:btcclient/features/auth/data/models/verify_reset_password_otp_request.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:btcclient/features/auth/data/models/forgot_password_request.dart';
 import 'auth_state.dart';
@@ -57,15 +60,20 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  Future<void> forgetPassword(ForgetPasswordRequest request) async {
-    state = state.copyWith(loading: true, error: null);
-
+  Future<bool> forgetPassword({required String phoneNumber}) async {
     try {
-      final result = await repo.forgetPassword(request);
+      await repo.forgetPassword(
+        ForgetPasswordRequest(phoneNumber: phoneNumber),
+      );
 
-      state = state.copyWith(loading: false);
+      /// SAVE identifier here
+      await LocalStorage.saveAuthIdentifier(phoneNumber);
+
+      return true;
     } catch (e) {
-      state = state.copyWith(loading: false, error: e.toString());
+      state = state.copyWith(error: e.toString());
+
+      return false;
     }
   }
 
@@ -140,6 +148,61 @@ class AuthNotifier extends StateNotifier<AuthState> {
       return true;
     } catch (e) {
       state = state.copyWith(error: e.toString());
+
+      return false;
+    }
+  }
+
+  Future<bool> verifyResetPasswordOtp({
+    required String phoneNumber,
+    required String otp,
+  }) async {
+    try {
+      await repo.verifyResetPasswordOtp(
+        VerifyResetPasswordOtpRequest(phoneNumber: phoneNumber, otp: otp),
+      );
+
+      return true;
+    } catch (e) {
+      state = state.copyWith(error: e.toString());
+
+      return false;
+    }
+  }
+
+  Future<bool> resendForgotPasswordOtp({required String phoneNumber}) async {
+    try {
+      await repo.resendForgotPasswordOtp(
+        ResendForgotPasswordOtpRequest(phoneNumber: phoneNumber),
+      );
+
+      return true;
+    } catch (e) {
+      state = state.copyWith(error: e.toString());
+
+      return false;
+    }
+  }
+
+  Future<bool> resetPassword({
+    required String phoneNumber,
+    required String newPassword,
+  }) async {
+    try {
+      state = state.copyWith(loading: true, error: null);
+
+      await repo.resetPassword(
+        ResetPasswordRequest(
+          phoneNumber: phoneNumber,
+          newPassword: newPassword,
+        ),
+      );
+
+      state = state.copyWith(loading: false);
+
+      return true;
+    } catch (e) {
+      state = state.copyWith(loading: false, error: e.toString());
 
       return false;
     }

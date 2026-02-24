@@ -1,65 +1,98 @@
+import 'package:btcclient/core/storage/local_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../core/layout/auth_layout.dart';
 import '../../../core/widgets/button/app_button.dart';
 import '../../../core/widgets/input/app_input_field.dart';
+import '../../auth/provider/auth_notifier.dart';
 
-class ResetPasswordScreen extends StatefulWidget {
+class ResetPasswordScreen extends ConsumerStatefulWidget {
 
-  /// identifier can be email OR phone OR userId
-  final String identifier;
-
-  /// reusable callback for API
-  final Future<bool> Function({
-    required String identifier,
-    required String password,
-  }) onReset;
-
-  const ResetPasswordScreen({
-    super.key,
-    required this.identifier,
-    required this.onReset,
-  });
+  const ResetPasswordScreen({super.key});
 
   @override
-  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
+  ConsumerState<ResetPasswordScreen> createState() =>
+      _ResetPasswordScreenState();
+
 }
 
-class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
+class _ResetPasswordScreenState
+    extends ConsumerState<ResetPasswordScreen> {
 
-  final _formKey = GlobalKey<FormState>();
+  final passwordController =
+      TextEditingController();
 
-  final passwordController = TextEditingController();
-  final confirmController = TextEditingController();
+  final confirmController =
+      TextEditingController();
 
   bool loading = false;
   String? error;
 
   @override
   void dispose() {
+
     passwordController.dispose();
     confirmController.dispose();
+
     super.dispose();
+
   }
 
   Future<void> _submit() async {
 
-    final password = passwordController.text.trim();
-    final confirm = confirmController.text.trim();
+    final password =
+        passwordController.text.trim();
+
+    final confirm =
+        confirmController.text.trim();
+
+    /// FIX: get identifier from storage
+    final phone =
+        await LocalStorage.getAuthIdentifier();
+
+    if (phone == null) {
+
+      setState(() {
+        error = "Session expired";
+      });
+
+      return;
+
+    }
 
     /// validation
-    if (password.isEmpty || confirm.isEmpty) {
-      setState(() => error = "Please fill all fields");
+    if (password.isEmpty ||
+        confirm.isEmpty) {
+
+      setState(() {
+        error = "Please fill all fields";
+      });
+
       return;
+
     }
 
     if (password.length < 6) {
-      setState(() => error = "Password must be at least 6 characters");
+
+      setState(() {
+        error =
+            "Password must be at least 6 characters";
+      });
+
       return;
+
     }
 
     if (password != confirm) {
-      setState(() => error = "Passwords do not match");
+
+      setState(() {
+        error =
+            "Passwords do not match";
+      });
+
       return;
+
     }
 
     setState(() {
@@ -67,28 +100,46 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       error = null;
     });
 
-    final success = await widget.onReset(
-      identifier: widget.identifier,
-      password: password,
-    );
+    final success =
+        await ref
+            .read(authProvider.notifier)
+            .resetPassword(
+              phoneNumber: phone,
+              newPassword: password,
+            );
 
-    setState(() => loading = false);
+    if (!mounted) return;
 
-    if (!success) {
-      setState(() => error = "Failed to reset password");
-      return;
-    }
+    setState(() {
+      loading = false;
+    });
 
-    /// success
-    if (mounted) {
-      Navigator.popUntil(context, (route) => route.isFirst);
+    if (success) {
 
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
         const SnackBar(
-          content: Text("Password reset successful"),
+          content: Text(
+              "Password reset successful"),
+          backgroundColor:
+              Colors.green,
         ),
       );
+
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        "/login",
+        (route) => false,
+      );
+
+    } else {
+
+      setState(() {
+        error = "Reset failed";
+      });
+
     }
+
   }
 
   @override
@@ -98,59 +149,73 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
       title: "Reset Password",
 
-      subtitle: "Create a new secure password",
+      subtitle:
+          "Create a new secure password",
 
-      child: Form(
+      child: Column(
 
-        key: _formKey,
+        crossAxisAlignment:
+            CrossAxisAlignment.stretch,
 
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+        children: [
 
-            /// NEW PASSWORD
-            AppInputField(
-              label: "New Password",
-              hint: "Enter new password",
-              controller: passwordController,
-              type: AppInputType.password,
-              required: true,
-            ),
+          AppInputField(
+            label: "New Password",
+            hint:
+                "Enter new password",
+            controller:
+                passwordController,
+            type:
+                AppInputType.password,
+            required: true,
+          ),
 
-            /// CONFIRM PASSWORD
-            AppInputField(
-              label: "Confirm Password",
-              hint: "Re-enter password",
-              controller: confirmController,
-              type: AppInputType.password,
-              required: true,
-            ),
+          AppInputField(
+            label:
+                "Confirm Password",
+            hint:
+                "Re-enter password",
+            controller:
+                confirmController,
+            type:
+                AppInputType.password,
+            required: true,
+          ),
 
-            const SizedBox(height: 20),
+          const SizedBox(
+              height: 20),
 
-            /// RESET BUTTON
-            AppButton(
-              label: "Reset Password",
-              variant: AppButtonVariant.gradient,
-              loading: loading,
-              onPressed: _submit,
-            ),
+          AppButton(
+            label:
+                "Reset Password",
+            variant:
+                AppButtonVariant.gradient,
+            loading: loading,
+            onPressed: _submit,
+          ),
 
-            /// ERROR TEXT
-            if (error != null) ...[
-              const SizedBox(height: 12),
-              Text(
-                error!,
-                style: const TextStyle(
-                  color: Colors.red,
-                  fontSize: 14,
-                ),
+          if (error != null) ...[
+
+            const SizedBox(
+                height: 12),
+
+            Text(
+              error!,
+              style:
+                  const TextStyle(
+                color:
+                    Colors.red,
               ),
-            ],
+            ),
 
-          ],
-        ),
+          ]
+
+        ],
+
       ),
+
     );
+
   }
+
 }

@@ -2,13 +2,19 @@ import 'package:btcclient/core/storage/local_storage.dart';
 import 'package:btcclient/features/auth/data/auth_api.dart';
 import 'package:btcclient/features/auth/data/models/forgot_password_request.dart';
 import 'package:btcclient/features/auth/data/models/forgot_password_result.dart';
+import 'package:btcclient/features/auth/data/models/resend_forgot_password_otp_request.dart';
+import 'package:btcclient/features/auth/data/models/resend_forgot_password_otp_result.dart';
 import 'package:btcclient/features/auth/data/models/resend_otp_request.dart';
 import 'package:btcclient/features/auth/data/models/resend_otp_result.dart';
+import 'package:btcclient/features/auth/data/models/reset_password_request.dart';
+import 'package:btcclient/features/auth/data/models/reset_password_result.dart';
 import 'package:btcclient/features/auth/data/models/signup_request.dart';
 import 'package:btcclient/features/auth/data/models/signup_result.dart';
 import 'package:btcclient/features/auth/data/models/user_model.dart';
 import 'package:btcclient/features/auth/data/models/verify_otp_request.dart';
 import 'package:btcclient/features/auth/data/models/verify_otp_result.dart';
+import 'package:btcclient/features/auth/data/models/verify_reset_password_otp_request.dart';
+import 'package:btcclient/features/auth/data/models/verify_reset_password_otp_result.dart';
 
 class AuthResult {
   final String token;
@@ -135,4 +141,85 @@ class AuthRepository {
 
     return ResendOtpResult.fromJson(responseData);
   }
+
+Future<VerifyResetPasswordOtpResult>
+verifyResetPasswordOtp(
+  VerifyResetPasswordOtpRequest request,
+) async {
+
+  final response =
+      await api.verifyResetPasswordOtp(
+        request,
+      );
+
+  final responseData =
+      response.data;
+
+  if (responseData["success"] != true) {
+
+    throw Exception(
+      responseData["message"] ??
+      "OTP verification failed",
+    );
+
+  }
+
+  return VerifyResetPasswordOtpResult
+      .fromJson(responseData);
+
+}
+
+
+Future<ResendForgotPasswordOtpResult>
+resendForgotPasswordOtp(
+  ResendForgotPasswordOtpRequest request,
+) async {
+
+  final response =
+      await api.resendForgotPasswordOtp(
+        request,
+      );
+
+  final responseData =
+      response.data;
+
+  if (responseData["success"] != true) {
+
+    throw Exception(
+      responseData["message"] ??
+      "Failed to resend OTP",
+    );
+
+  }
+
+  return ResendForgotPasswordOtpResult
+      .fromJson(responseData);
+
+}
+
+Future<ResetPasswordResult> resetPassword(
+  ResetPasswordRequest request,
+) async {
+
+  final response =
+      await api.resetPassword(request);
+
+  final responseData =
+      response.data;
+
+  if (responseData["success"] != true) {
+
+    throw Exception(
+      responseData["message"] ??
+      "Reset password failed",
+    );
+
+  }
+
+  return ResetPasswordResult.fromJson(
+    responseData,
+  );
+
+}
+
 }

@@ -63,19 +63,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     ).showSnackBar(SnackBar(content: Text(message)));
   }
 
-  void _forgotPassword() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => ForgotPasswordScreen(
-          onSendOtp: (value) async {
-            await Future.delayed(const Duration(seconds: 1));
-            return true;
-          },
-        ),
-      ),
-    );
-  }
+ void _forgotPassword() {
+
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => const ForgotPasswordScreen(),
+    ),
+  );
+
+}
 
   @override
   Widget build(BuildContext context) {

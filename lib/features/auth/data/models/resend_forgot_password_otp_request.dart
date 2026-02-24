@@ -1,8 +1,8 @@
-class ForgetPasswordRequest {
+class ResendForgotPasswordOtpRequest {
 
   final String phoneNumber;
 
-  ForgetPasswordRequest({
+  ResendForgotPasswordOtpRequest({
     required this.phoneNumber,
   });
 
