@@ -1,4 +1,4 @@
-import 'package:btcclient/features/auth/provider/auth_notifier.dart';
+import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -8,7 +8,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
+final user = ref.watch(authProvider).user;
     return Scaffold(
 
       appBar: AppBar(
@@ -37,7 +37,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
         ],
       ),
 
-      body: const Center(
+      body:  Center(
 
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -53,7 +53,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
             SizedBox(height: 16),
 
             Text(
-              "Welcome Guardian",
+              "Welcome Guardian ${user?.name ?? "Guest"}",
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,

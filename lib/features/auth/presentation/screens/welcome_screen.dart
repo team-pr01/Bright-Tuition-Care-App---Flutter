@@ -1,10 +1,10 @@
 import 'package:btcclient/core/models/testimonial_model.dart';
 import 'package:btcclient/core/widgets/testimonial/testimonial_section.dart';
-import 'package:btcclient/features/auth/presentation/login_screen.dart';
-import 'package:btcclient/features/auth/presentation/register_screen.dart';
+import 'package:btcclient/features/auth/presentation/screens/login_screen.dart';
+import 'package:btcclient/features/auth/presentation/screens/register_screen.dart';
 import 'package:flutter/material.dart';
-import '../../../core/config/theme.dart';
-import '../../../core/widgets/button/app_button.dart';
+import '../../../../core/config/theme.dart';
+import '../../../../core/widgets/button/app_button.dart';
 
 final testimonials = [
   TestimonialModel(

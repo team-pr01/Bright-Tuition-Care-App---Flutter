@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../../../core/layout/auth_layout.dart';
-import '../../../core/widgets/button/app_button.dart';
-import '../../../core/config/theme.dart';
+import '../../../../core/layout/auth_layout.dart';
+import '../../../../core/widgets/button/app_button.dart';
+import '../../../../core/config/theme.dart';
 
 class OtpScreen extends StatefulWidget {
-
   final String title;
   final String subtitle;
   final String phoneNumber;
@@ -29,12 +28,12 @@ class OtpScreen extends StatefulWidget {
 }
 
 class _OtpScreenState extends State<OtpScreen> {
+  final List<TextEditingController> controllers = List.generate(
+    4,
+    (_) => TextEditingController(),
+  );
 
-  final List<TextEditingController> controllers =
-      List.generate(4, (_) => TextEditingController());
-
-  final List<FocusNode> focusNodes =
-      List.generate(4, (_) => FocusNode());
+  final List<FocusNode> focusNodes = List.generate(4, (_) => FocusNode());
 
   bool loading = false;
   String? error;
@@ -43,8 +42,7 @@ class _OtpScreenState extends State<OtpScreen> {
   int secondsRemaining = 60;
   bool canResend = false;
 
-  String get otp =>
-      controllers.map((e) => e.text).join();
+  String get otp => controllers.map((e) => e.text).join();
 
   @override
   void initState() {
@@ -61,49 +59,35 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   void startTimer() {
-
     secondsRemaining = 60;
     canResend = false;
 
     timer?.cancel();
 
-    timer = Timer.periodic(
-      const Duration(seconds: 1),
-      (timer) {
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (secondsRemaining == 0) {
+        setState(() {
+          canResend = true;
+        });
 
-        if (secondsRemaining == 0) {
-
-          setState(() {
-            canResend = true;
-          });
-
-          timer.cancel();
-
-        } else {
-
-          setState(() {
-            secondsRemaining--;
-          });
-
-        }
-
-      },
-    );
-
+        timer.cancel();
+      } else {
+        setState(() {
+          secondsRemaining--;
+        });
+      }
+    });
   }
 
   Future<void> resendOtp() async {
-
     if (!canResend) return;
 
     await widget.onResend?.call();
 
     startTimer();
-
   }
 
   Future<void> verify() async {
-
     if (otp.length != 4) {
       setState(() => error = "Enter valid 4-digit OTP");
       return;
@@ -118,16 +102,14 @@ class _OtpScreenState extends State<OtpScreen> {
 
     setState(() => loading = false);
 
-    if (success) {
+    if (success && mounted) {
       widget.onSuccess();
     } else {
       setState(() => error = "Invalid OTP");
     }
-
   }
 
   void onChanged(String value, int index) {
-
     if (value.length == 1 && index < 3) {
       focusNodes[index + 1].requestFocus();
     }
@@ -135,11 +117,9 @@ class _OtpScreenState extends State<OtpScreen> {
     if (value.isEmpty && index > 0) {
       focusNodes[index - 1].requestFocus();
     }
-
   }
 
   Widget otpBox(int index) {
-
     return SizedBox(
       width: 50,
       child: TextField(
@@ -148,65 +128,49 @@ class _OtpScreenState extends State<OtpScreen> {
         keyboardType: TextInputType.phone,
         textAlign: TextAlign.center,
         maxLength: 1,
-        style: const TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-        ),
+        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         decoration: InputDecoration(
-  counterText: "", // ← ADD THIS LINE
+          counterText: "", // ← ADD THIS LINE
 
-  hintStyle: const TextStyle(
-    fontSize: 14,
-    color: AppColors.neutrals03,
-  ),
-  contentPadding:
-      const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-  filled: true,
-  fillColor: AppColors.neutrals01,
-  border: OutlineInputBorder(
-    borderRadius: BorderRadius.circular(5),
-  ),
-  enabledBorder: OutlineInputBorder(
-    borderRadius: BorderRadius.circular(5),
-    borderSide: BorderSide(
-      color: AppColors.primary01.withOpacity(0.3),
-    ),
-  ),
-  focusedBorder: OutlineInputBorder(
-    borderRadius: BorderRadius.circular(5),
-    borderSide: const BorderSide(
-      color: AppColors.primary01,
-      width: 1.5,
-    ),
-  ),
-), onChanged: (value) => onChanged(value, index),
+          hintStyle: const TextStyle(fontSize: 14, color: AppColors.neutrals03),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 10,
+          ),
+          filled: true,
+          fillColor: AppColors.neutrals01,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5),
+            borderSide: BorderSide(color: AppColors.primary01.withOpacity(0.3)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5),
+            borderSide: const BorderSide(
+              color: AppColors.primary01,
+              width: 1.5,
+            ),
+          ),
+        ),
+        onChanged: (value) => onChanged(value, index),
       ),
     );
-
   }
 
   @override
   Widget build(BuildContext context) {
-
     return AuthLayout(
-
       title: widget.title,
 
-      subtitle:
-          "${widget.subtitle}\n${widget.phoneNumber}",
+      subtitle: "${widget.subtitle}\n${widget.phoneNumber}",
 
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-
           Row(
-            mainAxisAlignment:
-                MainAxisAlignment.center,
-              spacing: 10,
-            children: List.generate(
-              4,
-              (index) => otpBox(index),
-            ),
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 10,
+            children: List.generate(4, (index) => otpBox(index)),
           ),
 
           const SizedBox(height: 24),
@@ -223,9 +187,7 @@ class _OtpScreenState extends State<OtpScreen> {
             Text(
               error!,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.red,
-              ),
+              style: const TextStyle(color: Colors.red),
             ),
           ],
 
@@ -239,16 +201,11 @@ class _OtpScreenState extends State<OtpScreen> {
                   )
                 : Text(
                     "Resend in $secondsRemaining sec",
-                    style: TextStyle(
-                      color: AppColors.neutrals03,
-                    ),
+                    style: TextStyle(color: AppColors.neutrals03),
                   ),
           ),
-
         ],
       ),
     );
-
   }
-
 }

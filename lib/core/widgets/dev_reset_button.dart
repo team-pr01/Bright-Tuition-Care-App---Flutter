@@ -1,3 +1,4 @@
+import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,7 +26,7 @@ class DevResetButton extends ConsumerWidget {
           await LocalStorage.clearAuthIdentifier();
           await LocalStorage.clear();
 
-          // ref.read(appStartProvider.notifier).goToLogin();
+          ref.read(authProvider.notifier).logout();
 
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(

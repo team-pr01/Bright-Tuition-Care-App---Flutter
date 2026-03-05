@@ -158,10 +158,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
     required String otp,
   }) async {
     try {
-      await repo.verifyResetPasswordOtp(
+      print("Verifying OTP for phone: $phoneNumber with OTP: $otp");
+      final result = await repo.verifyResetPasswordOtp(
         VerifyResetPasswordOtpRequest(phoneNumber: phoneNumber, otp: otp),
       );
-
+      print("Verify Reset Password OTP Result: ${result.message}");
       return true;
     } catch (e) {
       state = state.copyWith(error: e.toString());
@@ -172,9 +173,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<bool> resendForgotPasswordOtp({required String phoneNumber}) async {
     try {
-      await repo.resendForgotPasswordOtp(
+      final result = await repo.resendForgotPasswordOtp(
         ResendForgotPasswordOtpRequest(phoneNumber: phoneNumber),
       );
+      print(result);
 
       return true;
     } catch (e) {

@@ -4,10 +4,10 @@ import 'package:btcclient/core/routing/app_router.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/core/widgets/input/app_input_field.dart';
 import 'package:btcclient/core/widgets/segmented_switch/segmented_switch.dart';
-import 'package:btcclient/features/auth/presentation/forgot_password_screen.dart';
-import 'package:btcclient/features/auth/presentation/register_screen.dart';
+import 'package:btcclient/features/auth/presentation/screens/forgot_password_screen.dart';
+import 'package:btcclient/features/auth/presentation/screens/register_screen.dart';
 import 'package:btcclient/features/auth/presentation/widgets/auth_listener.dart';
-import 'package:btcclient/features/auth/provider/auth_notifier.dart';
+import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../provider/auth_notifier.dart';
+import '../provider/auth_notifier.dart';
 
 class AuthListener extends ConsumerWidget {
 

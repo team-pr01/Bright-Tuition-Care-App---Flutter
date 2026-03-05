@@ -1,4 +1,4 @@
-import 'package:btcclient/features/auth/provider/auth_notifier.dart';
+import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

@@ -182,6 +182,7 @@ resendForgotPasswordOtp(
 
   final responseData =
       response.data;
+      print(responseData);
 
   if (responseData["success"] != true) {
 

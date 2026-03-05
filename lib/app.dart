@@ -1,5 +1,5 @@
 import 'package:btcclient/core/widgets/dev_reset_button.dart';
-import 'package:btcclient/features/auth/provider/auth_notifier.dart';
+import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
 import 'package:btcclient/features/guardian/presentation/guardian_dashboard_screen.dart';
 import 'package:btcclient/features/tutor/presentation/tutor_dashboard_screen.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/config/theme.dart';
 import 'core/routing/app_start_provider.dart';
-import 'features/auth/presentation/welcome_screen.dart';
+import 'features/auth/presentation/screens/welcome_screen.dart';
 
 import 'features/splash/splash_screen.dart';
 

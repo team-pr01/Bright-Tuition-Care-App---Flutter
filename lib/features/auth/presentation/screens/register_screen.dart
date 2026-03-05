@@ -6,9 +6,9 @@ import 'package:btcclient/core/widgets/input/app_input_field.dart';
 import 'package:btcclient/core/widgets/segmented_switch/segmented_switch.dart';
 
 import 'package:btcclient/features/auth/data/models/signup_request.dart';
-import 'package:btcclient/features/auth/presentation/otp_screen.dart';
+import 'package:btcclient/features/auth/presentation/screens/otp_screen.dart';
 import 'package:btcclient/features/auth/presentation/widgets/auth_listener.dart';
-import 'package:btcclient/features/auth/provider/auth_notifier.dart';
+import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
 
 import 'package:btcclient/features/legal/presentation/terms_screen.dart';
 
