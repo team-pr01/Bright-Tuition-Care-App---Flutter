@@ -1,10 +1,10 @@
-import 'package:btcclient/features/auth/data/models/resend_forgot_password_otp_request.dart';
-import 'package:btcclient/features/auth/data/models/resend_otp_request.dart';
-import 'package:btcclient/features/auth/data/models/reset_password_request.dart';
-import 'package:btcclient/features/auth/data/models/signup_request.dart';
-import 'package:btcclient/features/auth/data/models/forgot_password_request.dart';
-import 'package:btcclient/features/auth/data/models/verify_otp_request.dart';
-import 'package:btcclient/features/auth/data/models/verify_reset_password_otp_request.dart';
+import 'package:btcclient/features/auth/data/models/requests/resend_forgot_password_otp_request.dart';
+import 'package:btcclient/features/auth/data/models/requests/resend_otp_request.dart';
+import 'package:btcclient/features/auth/data/models/requests/reset_password_request.dart';
+import 'package:btcclient/features/auth/data/models/requests/signup_request.dart';
+import 'package:btcclient/features/auth/data/models/requests/forgot_password_request.dart';
+import 'package:btcclient/features/auth/data/models/requests/verify_otp_request.dart';
+import 'package:btcclient/features/auth/data/models/requests/verify_reset_password_otp_request.dart';
 import 'package:dio/dio.dart';
 import '../../../core/network/dio_client.dart';
 

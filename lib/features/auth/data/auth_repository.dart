@@ -1,20 +1,19 @@
 import 'package:btcclient/core/storage/local_storage.dart';
 import 'package:btcclient/features/auth/data/auth_api.dart';
-import 'package:btcclient/features/auth/data/models/forgot_password_request.dart';
-import 'package:btcclient/features/auth/data/models/forgot_password_result.dart';
-import 'package:btcclient/features/auth/data/models/resend_forgot_password_otp_request.dart';
-import 'package:btcclient/features/auth/data/models/resend_forgot_password_otp_result.dart';
-import 'package:btcclient/features/auth/data/models/resend_otp_request.dart';
-import 'package:btcclient/features/auth/data/models/resend_otp_result.dart';
-import 'package:btcclient/features/auth/data/models/reset_password_request.dart';
-import 'package:btcclient/features/auth/data/models/reset_password_result.dart';
-import 'package:btcclient/features/auth/data/models/signup_request.dart';
-import 'package:btcclient/features/auth/data/models/signup_result.dart';
+import 'package:btcclient/features/auth/data/models/requests/forgot_password_request.dart';
+import 'package:btcclient/features/auth/data/models/results/forgot_password_result.dart';
+import 'package:btcclient/features/auth/data/models/requests/resend_forgot_password_otp_request.dart';
+import 'package:btcclient/features/auth/data/models/results/resend_forgot_password_otp_result.dart';
+import 'package:btcclient/features/auth/data/models/requests/resend_otp_request.dart';
+import 'package:btcclient/features/auth/data/models/results/resend_otp_result.dart';
+import 'package:btcclient/features/auth/data/models/requests/reset_password_request.dart';
+import 'package:btcclient/features/auth/data/models/results/reset_password_result.dart';
+import 'package:btcclient/features/auth/data/models/requests/signup_request.dart';
+import 'package:btcclient/features/auth/data/models/results/signup_result.dart';
 import 'package:btcclient/features/auth/data/models/user_model.dart';
-import 'package:btcclient/features/auth/data/models/verify_otp_request.dart';
-import 'package:btcclient/features/auth/data/models/verify_otp_result.dart';
-import 'package:btcclient/features/auth/data/models/verify_reset_password_otp_request.dart';
-import 'package:btcclient/features/auth/data/models/verify_reset_password_otp_result.dart';
+import 'package:btcclient/features/auth/data/models/requests/verify_otp_request.dart';
+import 'package:btcclient/features/auth/data/models/requests/verify_reset_password_otp_request.dart';
+import 'package:btcclient/features/auth/data/models/results/verify_reset_password_otp_result.dart';
 
 class AuthResult {
   final String token;
