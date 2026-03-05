@@ -93,8 +93,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       phoneNumber: phoneController.text.trim(),
       gender: selectedGender!.toLowerCase(),
       role: role,
-      city: "Dhaka", // replace with your controller later
-      area: "Nanani", // replace with your controller later
+      city: "", // replace with your controller later
+      area: "", // replace with your controller later
       password: passwordController.text.trim(),
     );
 
