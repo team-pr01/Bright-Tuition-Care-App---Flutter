@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 import '../../../../core/layout/auth_layout.dart';
 import '../../../../core/widgets/button/app_button.dart';
 import '../../../../core/config/theme.dart';
@@ -48,10 +49,18 @@ class _OtpScreenState extends State<OtpScreen> {
   void initState() {
     super.initState();
     startTimer();
+    SmsAutoFill().listenForCode();
+
+  SmsAutoFill().code.listen((code) {
+    if (code != null && code.length == 4) {
+      autoFillOtp(code);
+    }
+  });
   }
 
   @override
   void dispose() {
+    SmsAutoFill().unregisterListener();
     timer?.cancel();
     for (var c in controllers) c.dispose();
     for (var f in focusNodes) f.dispose();
@@ -79,6 +88,18 @@ class _OtpScreenState extends State<OtpScreen> {
     });
   }
 
+  void autoFillOtp(String code) {
+    if (code.length != 4) return;
+
+    for (int i = 0; i < code.length; i++) {
+      controllers[i].text = code[i];
+    }
+
+    focusNodes.last.unfocus();
+
+    verify();
+  }
+
   Future<void> resendOtp() async {
     if (!canResend) return;
 
@@ -102,7 +123,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
     setState(() => loading = false);
 
-    if (success && mounted) {
+    if (success) {
       widget.onSuccess();
     } else {
       setState(() => error = "Invalid OTP");
@@ -125,7 +146,8 @@ class _OtpScreenState extends State<OtpScreen> {
       child: TextField(
         controller: controllers[index],
         focusNode: focusNodes[index],
-        keyboardType: TextInputType.phone,
+        keyboardType: TextInputType.number,
+        autofillHints: const [AutofillHints.oneTimeCode],
         textAlign: TextAlign.center,
         maxLength: 1,
         style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -167,10 +189,17 @@ class _OtpScreenState extends State<OtpScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            spacing: 10,
-            children: List.generate(4, (index) => otpBox(index)),
+          AutofillGroup(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                4,
+                (index) => Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  child: otpBox(index),
+                ),
+              ),
+            ),
           ),
 
           const SizedBox(height: 24),

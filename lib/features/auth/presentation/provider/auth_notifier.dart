@@ -111,7 +111,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<void> logout() async {
     await LocalStorage.clearUser();
     await LocalStorage.clear();
-
+    
     state = const AuthState(loggedIn: false, loading: false);
   }
 

@@ -128,7 +128,7 @@ class WelcomeScreen extends StatelessWidget {
                                           context,
                                           MaterialPageRoute(
                                             builder: (_) =>
-                                                const RegisterScreen(role: "tutor"),
+                                                const RegisterScreen(role: "guardian"),
                                           ),
                                         );
                                       },
@@ -148,7 +148,7 @@ class WelcomeScreen extends StatelessWidget {
                                           context,
                                           MaterialPageRoute(
                                             builder: (_) =>
-                                                 const RegisterScreen(role: "guardian")
+                                                 const RegisterScreen(role: "tutor")
                                           ),
                                         );
                                       },

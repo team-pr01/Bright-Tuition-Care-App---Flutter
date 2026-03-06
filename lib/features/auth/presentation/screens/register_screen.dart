@@ -6,6 +6,7 @@ import 'package:btcclient/core/widgets/input/app_input_field.dart';
 import 'package:btcclient/core/widgets/segmented_switch/segmented_switch.dart';
 
 import 'package:btcclient/features/auth/data/models/requests/signup_request.dart';
+import 'package:btcclient/features/auth/presentation/screens/login_screen.dart';
 import 'package:btcclient/features/auth/presentation/screens/otp_screen.dart';
 import 'package:btcclient/features/auth/presentation/widgets/auth_listener.dart';
 import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
@@ -251,7 +252,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 required: true,
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 14),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -333,6 +334,43 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 loading: authState.loading,
                 onPressed: _register,
               ),
+              const SizedBox(height: 24),
+
+
+               RichText(
+                    text: TextSpan(
+                      style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                        color: AppColors.neutrals03,
+                      ),
+                      
+
+                      children: [
+                        const TextSpan(text: "Already have an account?"),
+
+                        TextSpan(
+                          text: " Sign In",
+                          style: const TextStyle(
+                            color: AppColors.primary01,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const LoginScreen(),
+                                ),
+                              );
+                            },
+                        ),
+
+                      ],
+                    ),
+                  ),
+
+
+
+              const SizedBox(height: 16),
             ],
           ),
         ),

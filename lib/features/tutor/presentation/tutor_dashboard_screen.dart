@@ -29,7 +29,7 @@ class TutorDashboardScreen extends ConsumerWidget {
 
               Navigator.pushNamedAndRemoveUntil(
                 context,
-                "/login",
+                "/welcome",
                 (route) => false,
               );
 

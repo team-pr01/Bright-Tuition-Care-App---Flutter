@@ -141,7 +141,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                 required: true,
 
-                suffixIcon: const Icon(Icons.email_outlined),
+                // suffixIcon: const Icon(Icons.email_outlined),
               ),
 
               // ================= PASSWORD =================
@@ -160,25 +160,30 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               const SizedBox(height: 8),
 
               Row(
+
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
-                      SizedBox(
-                        height: 16,
-                        width: 16,
-                        child: Checkbox(
-                          value: rememberMe,
-                          onChanged: (val) {
-                            setState(() {
-                              rememberMe = val ?? false;
-                            });
-                          },
-                          activeColor: AppColors.primary01,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(3),
+
+                      Padding(
+                        padding: const EdgeInsets.only(left: 4),
+                        child: SizedBox(
+                          height: 16,
+                          width: 16,
+                          child: Checkbox(
+                            value: rememberMe,
+                            onChanged: (val) {
+                              setState(() {
+                                rememberMe = val ?? false;
+                              });
+                            },
+                            activeColor: AppColors.primary01,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                            side: BorderSide(color: AppColors.neutrals03),
                           ),
-                          side: BorderSide(color: AppColors.neutrals03),
                         ),
                       ),
 

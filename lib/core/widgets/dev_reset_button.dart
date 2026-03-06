@@ -27,6 +27,11 @@ class DevResetButton extends ConsumerWidget {
           await LocalStorage.clear();
 
           ref.read(authProvider.notifier).logout();
+           Navigator.pushNamedAndRemoveUntil(
+                context,
+                "/welcome",
+                (route) => false,
+              );
 
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
