@@ -269,7 +269,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     context,
                     MaterialPageRoute(
                       builder: (_) => const RegisterScreen(role: "tutor"),
+                       maintainState: false,
                     ),
+                   
+
                   );
                 },
               ),

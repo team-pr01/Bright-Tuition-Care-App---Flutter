@@ -1,0 +1,47 @@
+import 'package:flutter/material.dart';
+import '../../config/theme.dart';
+
+class SidebarItem extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final VoidCallback onTap;
+  final bool selected;
+
+  const SidebarItem({
+    super.key,
+    required this.label,
+    required this.icon,
+    required this.onTap,
+    this.selected = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      dense: true, // reduces height
+      minLeadingWidth: 28,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+
+      leading: Icon(
+        icon,
+        size: 20,
+        color: Colors.white,
+      ),
+
+      title: Text(
+        label,
+        style: Theme.of(context).textTheme.titleLarge!
+                                    .copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.white
+                                    ),
+      ),
+
+      visualDensity: const VisualDensity(
+        vertical: -2, // compress vertical space
+      ),
+
+      onTap: onTap,
+    );
+  }
+}

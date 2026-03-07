@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:btcclient/core/models/testimonial_model.dart';
 import 'package:btcclient/core/widgets/start_rating/start_rating.dart';
 import 'package:flutter/material.dart';

@@ -9,12 +9,12 @@ class AppColors {
   static const primary02 = Color(0xFFE6F4FF);
   static const primary03 = Color(0xFFF0F8FF);
 
-
   //  neutrals
   static const neutrals01 = Color(0xFFFDFDFD);
   static const neutrals02 = Color(0xFF222222);
   static const neutrals03 = Color(0xFF757575);
   static const neutrals04 = Color(0xFFDFDFDF);
+  static const neutrals05 = Color(0xFFD4EBFD);
   // Light
   static const backgroundLight = Color(0xFFFFFFFF);
   static const textPrimaryLight = Color(0xFF1A1A1A);
@@ -210,6 +210,27 @@ class AppTheme {
       progressIndicatorTheme: const ProgressIndicatorThemeData(
         color: AppColors.primary01,
       ),
+
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: AppColors.neutrals01,
+        elevation: 8,
+        selectedItemColor: Colors.blue,
+        unselectedItemColor: Color.fromARGB(255, 82, 78, 78),
+
+        selectedLabelStyle: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 12,
+        ),
+
+        unselectedLabelStyle: TextStyle(
+          fontWeight: FontWeight.w400,
+          fontSize: 12,
+        ),
+
+        showUnselectedLabels: true,
+        type: BottomNavigationBarType.fixed,
+      ),
+      
     );
   }
 
@@ -251,6 +272,26 @@ class AppTheme {
 
       progressIndicatorTheme: const ProgressIndicatorThemeData(
         color: AppColors.primary01,
+      ),
+
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: Colors.white,
+
+        selectedItemColor: Colors.blue,
+        unselectedItemColor: Colors.grey,
+
+        selectedLabelStyle: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 12,
+        ),
+
+        unselectedLabelStyle: TextStyle(
+          fontWeight: FontWeight.w400,
+          fontSize: 12,
+        ),
+
+        showUnselectedLabels: true,
+        type: BottomNavigationBarType.fixed,
       ),
     );
   }
