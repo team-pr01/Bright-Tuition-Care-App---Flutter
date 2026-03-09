@@ -41,6 +41,8 @@ dependencies:
   intl: ^0.19.0
   logger: ^2.3.0
   sms_autofill: ^2.4.0
+  flutter_svg: ^2.0.10
+  url_launcher: ^6.2.6
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
@@ -68,6 +70,9 @@ flutter:
     - .env
     - assets/images/
     - assets/icons/
+    - assets/icons/operations/
+    - assets/icons/navigations/
+    - assets/icons/visual/
   fonts:
     - family: Outfit
       fonts:

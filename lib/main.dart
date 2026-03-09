@@ -6,15 +6,13 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'app.dart';
 
-void main() async {
+void main() {
+  runZonedGuarded(() async {
 
-  WidgetsFlutterBinding.ensureInitialized();
+    WidgetsFlutterBinding.ensureInitialized();
 
-  /// Load environment variables (.env)
-  await dotenv.load(fileName: ".env");
-
-  /// Catch global errors (important for production)
-  runZonedGuarded(() {
+    /// Load environment variables (.env)
+    await dotenv.load(fileName: ".env");
 
     runApp(
       const ProviderScope(
@@ -28,5 +26,4 @@ void main() async {
     debugPrintStack(stackTrace: stack);
 
   });
-
 }

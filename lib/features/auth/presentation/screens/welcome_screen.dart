@@ -2,7 +2,9 @@ import 'package:btcclient/core/models/testimonial_model.dart';
 import 'package:btcclient/core/widgets/testimonial/testimonial_section.dart';
 import 'package:btcclient/features/auth/presentation/screens/login_screen.dart';
 import 'package:btcclient/features/auth/presentation/screens/register_screen.dart';
+import 'package:btcclient/features/auth/presentation/widgets/welcome_nav_link.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/config/theme.dart';
 import '../../../../core/widgets/button/app_button.dart';
 
@@ -128,7 +130,9 @@ class WelcomeScreen extends StatelessWidget {
                                           context,
                                           MaterialPageRoute(
                                             builder: (_) =>
-                                                const RegisterScreen(role: "guardian"),
+                                                const RegisterScreen(
+                                                  role: "guardian",
+                                                ),
                                           ),
                                         );
                                       },
@@ -140,7 +144,7 @@ class WelcomeScreen extends StatelessWidget {
 
                                   Expanded(
                                     child: AppButton(
-                                        fontSize: 12,
+                                      fontSize: 12,
                                       label: "Become a Tutor",
                                       variant: AppButtonVariant.secondary,
                                       onPressed: () {
@@ -148,7 +152,9 @@ class WelcomeScreen extends StatelessWidget {
                                           context,
                                           MaterialPageRoute(
                                             builder: (_) =>
-                                                 const RegisterScreen(role: "tutor")
+                                                const RegisterScreen(
+                                                  role: "tutor",
+                                                ),
                                           ),
                                         );
                                       },
@@ -161,8 +167,8 @@ class WelcomeScreen extends StatelessWidget {
                               const SizedBox(height: 14),
 
                               AppButton(
-                                  fontSize: 12,
-                                  
+                                fontSize: 12,
+
                                 label: "Sign In",
                                 variant: AppButtonVariant.outline,
                                 width: 130,
@@ -196,17 +202,60 @@ class WelcomeScreen extends StatelessWidget {
                         /// LINKS
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: const [
-                            LinkItem(icon: Icons.list, label: "Job Board"),
-                            LinkItem(
-                              icon: Icons.grid_view,
+                          children: [
+                            WelcomeNavLink(
+                              icon: SvgPicture.asset(
+                                "assets/icons/navigations/jobs.svg",
+                                width: 24,
+                                height: 24,
+                                colorFilter: const ColorFilter.mode(
+                                  Colors.white,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                              label: "Job Board",
+                            ),
+
+                            WelcomeNavLink(
+                              icon: SvgPicture.asset(
+                                "assets/icons/navigations/dashboard-square-edit.svg",
+                                width: 24,
+                                height: 24,
+                                colorFilter: const ColorFilter.mode(
+                                  Colors.white,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
                               label: "Highlights",
                             ),
-                            LinkItem(icon: Icons.phone, label: "Helpline"),
-                            LinkItem(icon: Icons.video_call, label: "Tutorial"),
+
+                            WelcomeNavLink(
+                              icon: SvgPicture.asset(
+                                "assets/icons/navigations/mdi-light_phone.svg",
+                                width: 24,
+                                height: 24,
+                                colorFilter: const ColorFilter.mode(
+                                  Colors.white,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                              label: "Helpline",
+                            ),
+
+                            WelcomeNavLink(
+                              icon: SvgPicture.asset(
+                                "assets/icons/navigations/video-ai.svg",
+                                width: 24,
+                                height: 24,
+                                colorFilter: const ColorFilter.mode(
+                                  Colors.white,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                              label: "Tutorial",
+                            ),
                           ],
                         ),
-
                         const SizedBox(height: 20),
                       ],
                     ),
@@ -226,37 +275,3 @@ class WelcomeScreen extends StatelessWidget {
   }
 }
 
-class LinkItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-
-  const LinkItem({super.key, required this.icon, required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: AppColors.primary01,
-            shape: BoxShape.circle,
-          ),
-          child: Icon(icon, color: Colors.white),
-        ),
-
-        const SizedBox(height: 6),
-
-        Text(
-          label,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodySmall!.copyWith(
-            fontWeight: FontWeight.w300,
-            color: AppColors.neutrals03,
-            fontSize: 11,
-          ),
-        ),
-      ],
-    );
-  }
-}

@@ -25,7 +25,7 @@ class AuthLayout extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
-            colors: [Color(0xFF74C5FF), Color(0xFF0D99FF)],
+            colors: [AppColors.primaryGradientStart, AppColors.primaryGradientEnd],
             stops: [0.0082, 1],
           ),
         ),

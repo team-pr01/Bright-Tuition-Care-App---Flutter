@@ -8,6 +8,8 @@ class AppColors {
   static const primary01 = Color(0xFF0D99FF);
   static const primary02 = Color(0xFFE6F4FF);
   static const primary03 = Color(0xFFF0F8FF);
+  static const primaryGradientStart = Color(0xFF74C5FF);
+  static const primaryGradientEnd = Color(0xFF0D99FF);
 
   //  neutrals
   static const neutrals01 = Color(0xFFFDFDFD);

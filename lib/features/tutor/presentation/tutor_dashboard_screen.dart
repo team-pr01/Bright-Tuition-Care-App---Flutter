@@ -7,6 +7,7 @@ import 'package:btcclient/features/tutor/presentation/job_board.dart';
 import 'package:btcclient/features/tutor/presentation/tutor_dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class TutorDashboardScreen extends ConsumerWidget {
   const TutorDashboardScreen({super.key});
@@ -15,38 +16,68 @@ class TutorDashboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authProvider).user;
 
+    if (user == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
     return DashboardLayout(
       drawerBuilder: (changeTab) => AppSidebar(
-        user: user!,
+        user: user,
 
         menuItems: [
           SidebarItem(
             label: "Home",
-            icon: Icons.home,
-            onTap: () {
-              Navigator.pop(context);
-              changeTab(0);
-            },
+            icon: SvgPicture.asset(
+              "assets/icons/navigations/dashboard-square.svg",
+              width: 20,
+              height: 20,
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
+              ),
+            ),
+            onTap: () {},
           ),
           SidebarItem(
-            label: "Jobs",
-            icon: Icons.work,
-            onTap: () {
-              Navigator.pop(context);
-              changeTab(1);
-            },
+            label: "Job Board",
+            icon: SvgPicture.asset(
+              "assets/icons/navigations/job-board.svg",
+              width: 20,
+              height: 20,
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
+              ),
+            ),
+            onTap: () {},
           ),
           SidebarItem(
-            label: "Messages",
-            icon: Icons.chat,
+            label: "How it Works",
+            icon: SvgPicture.asset(
+              "assets/icons/navigations/how-it-works.svg",
+              width: 20,
+              height: 20,
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
+              ),
+            ),
             onTap: () {
               Navigator.pop(context);
               changeTab(2);
             },
           ),
           SidebarItem(
-            label: "Students",
-            icon: Icons.school,
+            label: "Profile",
+            icon: SvgPicture.asset(
+              "assets/icons/navigations/user-circle.svg",
+              width: 20,
+              height: 20,
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
+              ),
+            ),
             onTap: () {
               Navigator.pop(context);
               changeTab(3);
@@ -54,8 +85,32 @@ class TutorDashboardScreen extends ConsumerWidget {
           ),
 
           SidebarItem(
-            label: "Profile",
-            icon: Icons.person,
+            label: "Payments",
+            icon: SvgPicture.asset(
+              "assets/icons/navigations/payment.svg",
+              width: 20,
+              height: 20,
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
+              ),
+            ),
+            onTap: () {
+              Navigator.pop(context);
+              changeTab(4);
+            },
+          ),
+          SidebarItem(
+            label: "Settings",
+            icon: SvgPicture.asset(
+              "assets/icons/navigations/settings.svg",
+              width: 20,
+              height: 20,
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
+              ),
+            ),
             onTap: () {
               Navigator.pop(context);
               changeTab(4);
@@ -65,9 +120,28 @@ class TutorDashboardScreen extends ConsumerWidget {
 
         /// sidebar extra links
         menuItemsCommon: [
-          SidebarItem(label: "Settings", icon: Icons.settings, onTap: () {}),
-
-          SidebarItem(label: "Help", icon: Icons.help, onTap: () {}),
+          // SidebarItem(label: "Settings", icon: SvgPicture.asset(
+          //   "assets/icons/navigations/dashboard-square.svg",
+          //   width: 20,
+          //   height: 20,
+          //   colorFilter: const ColorFilter.mode(
+          //     Colors.white,
+          //     BlendMode.srcIn,
+          //   ),
+          // ), onTap: () {}),
+          SidebarItem(
+            label: "Refer and Earn",
+            icon: SvgPicture.asset(
+              "assets/icons/navigations/refer.svg",
+              width: 20,
+              height: 20,
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
+              ),
+            ),
+            onTap: () {},
+          ),
         ],
 
         onLogout: () async {
@@ -81,10 +155,7 @@ class TutorDashboardScreen extends ConsumerWidget {
         },
       ),
 
-      pages: const [
-        TutorHomeScreen(),
-        TutorJobsScreen(),
-      ],
+      pages: const [TutorHomeScreen(), TutorJobsScreen()],
 
       //       pages: const [
 

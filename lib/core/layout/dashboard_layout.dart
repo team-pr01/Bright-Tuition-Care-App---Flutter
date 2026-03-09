@@ -1,6 +1,7 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/widgets/navbar/bottom_navbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class DashboardLayout extends StatefulWidget {
   final List<Widget> pages;
@@ -27,6 +28,7 @@ class _DashboardLayoutState extends State<DashboardLayout> {
     });
   }
 
+  int notificationCount = 3;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +36,9 @@ class _DashboardLayoutState extends State<DashboardLayout> {
 
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(56),
+        
         child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
           decoration: const BoxDecoration(
             color: AppColors.neutrals01,
             boxShadow: [
@@ -55,7 +59,25 @@ class _DashboardLayoutState extends State<DashboardLayout> {
                   alignment: Alignment.centerLeft,
                   child: Builder(
                     builder: (context) => IconButton(
-                      icon: const Icon(Icons.menu),
+                      icon: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(
+                            color: AppColors.primary03,
+                            width: 1,
+                          ),
+                        ),
+                        child: SvgPicture.asset(
+                          "assets/icons/operations/menu.svg",
+                          width: 20,
+                          height: 20,
+                          colorFilter: const ColorFilter.mode(
+                            AppColors.primary01,
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                      ),
                       onPressed: () {
                         Scaffold.of(context).openDrawer();
                       },
@@ -67,7 +89,7 @@ class _DashboardLayoutState extends State<DashboardLayout> {
                 Center(
                   child: Image.asset(
                     "assets/images/logo.png",
-                    height: 28,
+                    height: 32,
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -75,11 +97,57 @@ class _DashboardLayoutState extends State<DashboardLayout> {
                 /// RIGHT NOTIFICATION BUTTON
                 Align(
                   alignment: Alignment.centerRight,
-                  child: IconButton(
-                    icon: const Icon(Icons.notifications_none),
-                    onPressed: () {
-                      // TODO: open notifications screen
-                    },
+                  child: Stack(
+                    children: [
+                      IconButton(
+                        icon: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                            border: Border.all(
+                              color: AppColors.primary03,
+                              width: 1,
+                            ),
+                          ),
+                          child: SvgPicture.asset(
+                            "assets/icons/operations/notification.svg",
+                            width: 20,
+                            height: 20,
+                            colorFilter: const ColorFilter.mode(
+                              AppColors.primary01,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                        ),
+                        onPressed: () {},
+                      ),
+
+                      if (notificationCount > 0)
+                        Positioned(
+                          right: 5,
+                          top: 5,
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: const BoxDecoration(
+                              color: Colors.red,
+                              shape: BoxShape.circle,
+                            ),
+                            constraints: const BoxConstraints(
+                              minWidth: 16,
+                              minHeight: 16,
+                            ),
+                            child: Text(
+                              "$notificationCount",
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ],

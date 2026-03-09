@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../config/theme.dart';
 
 class SidebarItem extends StatelessWidget {
   final String label;
-  final IconData icon;
+  final Widget icon;
   final VoidCallback onTap;
   final bool selected;
 
@@ -18,28 +17,21 @@ class SidebarItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      dense: true, // reduces height
+      dense: true,
       minLeadingWidth: 28,
       contentPadding: const EdgeInsets.symmetric(horizontal: 12),
 
-      leading: Icon(
-        icon,
-        size: 20,
-        color: Colors.white,
-      ),
+      leading: icon,
 
       title: Text(
         label,
-        style: Theme.of(context).textTheme.titleLarge!
-                                    .copyWith(
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.white
-                                    ),
+        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+          fontWeight: FontWeight.w500,
+          color: Colors.white,
+        ),
       ),
 
-      visualDensity: const VisualDensity(
-        vertical: -2, // compress vertical space
-      ),
+      visualDensity: const VisualDensity(vertical: -2),
 
       onTap: onTap,
     );
