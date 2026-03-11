@@ -59,14 +59,7 @@ class _NoticeBottomSheetState extends State<NoticeBottomSheet> {
               height: 4,
               margin: const EdgeInsets.only(bottom: 20),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter,
-            colors: [
-              Colors.white, // bottom color
-              AppColors.primary02, // top color (change as needed)
-            ],
-          ),
+          color: AppColors.primary01,
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
@@ -108,6 +101,11 @@ class _NoticeBottomSheetState extends State<NoticeBottomSheet> {
                         const SizedBox(height: 16),
 
                         /// FULL NOTICE TEXT
+                        Text(
+                          notice.title,
+                         style: Theme.of(context).textTheme.titleLarge!.copyWith( color: AppColors.neutrals02,),
+                        ),
+                         const SizedBox(height: 6),
                         Text(
                           notice.message,
                           style: Theme.of(context)

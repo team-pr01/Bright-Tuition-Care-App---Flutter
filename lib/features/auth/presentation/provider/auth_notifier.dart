@@ -1,14 +1,14 @@
 import 'package:btcclient/core/storage/local_storage.dart';
 import 'package:btcclient/features/auth/data/auth_api.dart';
 import 'package:btcclient/features/auth/data/auth_repository.dart';
-import 'package:btcclient/features/auth/data/models/requests/resend_forgot_password_otp_request.dart';
-import 'package:btcclient/features/auth/data/models/requests/resend_otp_request.dart';
-import 'package:btcclient/features/auth/data/models/requests/reset_password_request.dart';
-import 'package:btcclient/features/auth/data/models/requests/signup_request.dart';
-import 'package:btcclient/features/auth/data/models/requests/verify_otp_request.dart';
-import 'package:btcclient/features/auth/data/models/requests/verify_reset_password_otp_request.dart';
+import 'package:btcclient/features/auth/data/requests/resend_forgot_password_otp_request.dart';
+import 'package:btcclient/features/auth/data/requests/resend_otp_request.dart';
+import 'package:btcclient/features/auth/data/requests/reset_password_request.dart';
+import 'package:btcclient/features/auth/data/requests/signup_request.dart';
+import 'package:btcclient/features/auth/data/requests/verify_otp_request.dart';
+import 'package:btcclient/features/auth/data/requests/verify_reset_password_otp_request.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:btcclient/features/auth/data/models/requests/forgot_password_request.dart';
+import 'package:btcclient/features/auth/data/requests/forgot_password_request.dart';
 import 'auth_state.dart';
 
 final authRepositoryProvider = Provider((ref) => AuthRepository(AuthApi()));
@@ -111,7 +111,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<void> logout() async {
     await LocalStorage.clearUser();
     await LocalStorage.clear();
-    
+
     state = const AuthState(loggedIn: false, loading: false);
   }
 

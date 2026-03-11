@@ -4,11 +4,14 @@ import 'package:flutter/material.dart';
 class DashboardNavLinks extends StatelessWidget {
   final Widget icon;
   final String label;
+  final String count;
 
   const DashboardNavLinks({
     super.key,
     required this.icon,
     required this.label,
+    this.count = "0",
+    
   });
 
   @override
@@ -40,7 +43,7 @@ class DashboardNavLinks extends StatelessWidget {
           ),
         ),
         Text(
-          "0",
+          count,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodySmall!.copyWith(
             fontWeight: FontWeight.w300,

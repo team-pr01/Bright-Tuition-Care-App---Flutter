@@ -1,10 +1,11 @@
+import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/layout/dashboard_layout.dart';
 import 'package:btcclient/core/widgets/navbar/side_drawer.dart';
 import 'package:btcclient/core/widgets/navbar/sidebar_item.dart';
 import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
 import 'package:btcclient/features/auth/presentation/screens/welcome_screen.dart';
-import 'package:btcclient/features/tutor/presentation/job_board.dart';
-import 'package:btcclient/features/tutor/presentation/tutor_dashboard.dart';
+import 'package:btcclient/features/tutor/presentation/screens/job_board.dart';
+import 'package:btcclient/features/tutor/presentation/screens/tutor_dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -15,7 +16,6 @@ class TutorDashboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authProvider).user;
-
     if (user == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
@@ -26,7 +26,7 @@ class TutorDashboardScreen extends ConsumerWidget {
 
         menuItems: [
           SidebarItem(
-            label: "Home",
+            label: "Dashboard",
             icon: SvgPicture.asset(
               "assets/icons/navigations/dashboard-square.svg",
               width: 20,
@@ -36,7 +36,10 @@ class TutorDashboardScreen extends ConsumerWidget {
                 BlendMode.srcIn,
               ),
             ),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              changeTab(0);
+            },
           ),
           SidebarItem(
             label: "Job Board",
@@ -49,7 +52,10 @@ class TutorDashboardScreen extends ConsumerWidget {
                 BlendMode.srcIn,
               ),
             ),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              changeTab(0);
+            },
           ),
           SidebarItem(
             label: "How it Works",
@@ -155,7 +161,13 @@ class TutorDashboardScreen extends ConsumerWidget {
         },
       ),
 
-      pages: const [TutorHomeScreen(), TutorJobsScreen()],
+      pages: [
+        (changeTab) => const TutorJobsScreen(),
+        (changeTab) => const TutorJobsScreen(),
+        (changeTab) => TutorHomeScreen(changeTab: changeTab),
+        (changeTab) => const TutorJobsScreen(),
+        (changeTab) => const TutorJobsScreen(),
+      ],
 
       //       pages: const [
 
@@ -164,12 +176,102 @@ class TutorDashboardScreen extends ConsumerWidget {
       //   StudentsScreen(),
       //   ProfileScreen(),
       // ],
-      navItems: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-        BottomNavigationBarItem(icon: Icon(Icons.work), label: "Jobs"),
-        // BottomNavigationBarItem(icon: Icon(Icons.chat), label: "Messages"),
-        // BottomNavigationBarItem(icon: Icon(Icons.school), label: "Students"),
-        // BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+      navItems: [
+        BottomNavigationBarItem(
+          icon: SvgPicture.asset(
+            "assets/icons/navigations/job-search.svg",
+            width: 22,
+            height: 22,
+            colorFilter: const ColorFilter.mode(
+              AppColors.neutrals06,
+              BlendMode.srcIn,
+            ),
+          ),
+          activeIcon: SvgPicture.asset(
+            "assets/icons/navigations/job-search.svg",
+            width: 22,
+            height: 22,
+            colorFilter: ColorFilter.mode(AppColors.primary01, BlendMode.srcIn),
+          ),
+          label: "Job Board",
+        ),
+
+        BottomNavigationBarItem(
+          icon: SvgPicture.asset(
+            "assets/icons/navigations/invoice.svg",
+            width: 22,
+            height: 22,
+            colorFilter: const ColorFilter.mode(
+              AppColors.neutrals06,
+              BlendMode.srcIn,
+            ),
+          ),
+          activeIcon: SvgPicture.asset(
+            "assets/icons/navigations/invoice.svg",
+            width: 22,
+            height: 22,
+            colorFilter: ColorFilter.mode(AppColors.primary01, BlendMode.srcIn),
+          ),
+          label: "Invoice",
+        ),
+
+        /// CENTER HOME
+        BottomNavigationBarItem(
+          icon: SvgPicture.asset(
+            "assets/icons/navigations/dashboard-square.svg",
+            width: 26,
+            height: 26,
+            colorFilter: const ColorFilter.mode(
+              AppColors.neutrals06,
+              BlendMode.srcIn,
+            ),
+          ),
+          activeIcon: SvgPicture.asset(
+            "assets/icons/navigations/dashboard-square.svg",
+            width: 26,
+            height: 26,
+            colorFilter: ColorFilter.mode(AppColors.primary01, BlendMode.srcIn),
+          ),
+          label: "Dashboard",
+        ),
+
+        BottomNavigationBarItem(
+          icon: SvgPicture.asset(
+            "assets/icons/navigations/payment.svg",
+            width: 22,
+            height: 22,
+            colorFilter: const ColorFilter.mode(
+              AppColors.neutrals06,
+              BlendMode.srcIn,
+            ),
+          ),
+          activeIcon: SvgPicture.asset(
+            "assets/icons/navigations/payment.svg",
+            width: 22,
+            height: 22,
+            colorFilter: ColorFilter.mode(AppColors.primary01, BlendMode.srcIn),
+          ),
+          label: "Payments",
+        ),
+
+        BottomNavigationBarItem(
+          icon: SvgPicture.asset(
+            "assets/icons/navigations/user-circle.svg",
+            width: 22,
+            height: 22,
+            colorFilter: const ColorFilter.mode(
+              AppColors.neutrals06,
+              BlendMode.srcIn,
+            ),
+          ),
+          activeIcon: SvgPicture.asset(
+            "assets/icons/navigations/user-circle.svg",
+            width: 22,
+            height: 22,
+            colorFilter: ColorFilter.mode(AppColors.primary01, BlendMode.srcIn),
+          ),
+          label: "Profile",
+        ),
       ],
     );
   }

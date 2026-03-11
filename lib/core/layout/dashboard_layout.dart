@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class DashboardLayout extends StatefulWidget {
-  final List<Widget> pages;
+  final List<Widget Function(Function(int))> pages;
   final List<BottomNavigationBarItem> navItems;
   final Widget Function(Function(int)) drawerBuilder;
 
@@ -20,7 +20,7 @@ class DashboardLayout extends StatefulWidget {
 }
 
 class _DashboardLayoutState extends State<DashboardLayout> {
-  int currentIndex = 0;
+  int currentIndex = 2;
 
   void changeTab(int index) {
     setState(() {
@@ -161,7 +161,7 @@ class _DashboardLayoutState extends State<DashboardLayout> {
         transitionBuilder: (child, animation) {
           return FadeTransition(opacity: animation, child: child);
         },
-        child: widget.pages[currentIndex],
+        child: widget.pages[currentIndex](changeTab),
       ),
 
       bottomNavigationBar: AppBottomNavBar(

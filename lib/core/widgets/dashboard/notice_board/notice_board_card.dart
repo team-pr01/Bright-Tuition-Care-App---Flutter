@@ -120,7 +120,7 @@ class _NoticeBoardCardState extends State<NoticeBoardCard> {
                     children: [
                        Text(
                         notice.title,
-                        maxLines: 2,
+                        maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.titleLarge!.copyWith( color: AppColors.neutrals02,),
                       ),

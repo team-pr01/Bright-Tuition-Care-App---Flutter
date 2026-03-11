@@ -59,7 +59,7 @@ class DashboardLargeCard extends StatelessWidget {
                     actionText,
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                       color: AppColors.primary01,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
                 ),

@@ -3,31 +3,39 @@ import 'package:btcclient/core/widgets/dashboard/dashboard_cards/profile_progres
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'dashboard_small_card.dart';
-import 'dashboard_large_card.dart';
+import '../../../../core/widgets/dashboard/dashboard_cards/dashboard_small_card.dart';
+import '../../../../core/widgets/dashboard/dashboard_cards/dashboard_large_card.dart';
 
-class DashboardCardsSection extends StatelessWidget {
-  const DashboardCardsSection({super.key});
+class TutorCardsSection extends StatelessWidget {
+  final int profileCompletion;
+  final int nearbyJobsCount;
+  final int confirmationLettersCount;
+  final int invoicesCount;
+  const TutorCardsSection({
+    super.key,
+    required this.profileCompletion,
+    required this.nearbyJobsCount,
+    required this.confirmationLettersCount,
+    required this.invoicesCount,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-
         /// TOP TWO CARDS (SAME HEIGHT)
         IntrinsicHeight(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-
               /// PROFILE COMPLETION CARD
               Expanded(
                 child: DashboardSmallCard(
-                  title: "50%",
+                  title: profileCompletion.toString() + "%",
                   description:
                       "Complete & organized profile may help to get better response",
-                  icon: const ProfileProgressIcon(
-                    progress: 0.5,
+                  icon: ProfileProgressIcon(
+                    progress: (profileCompletion / 100).clamp(0.0, 1.0),
                   ),
                 ),
               ),
@@ -38,7 +46,8 @@ class DashboardCardsSection extends StatelessWidget {
               Expanded(
                 child: DashboardSmallCard(
                   subtitle: "Nearby Jobs",
-                  description: "167 jobs available in your nearest area.",
+                  title: nearbyJobsCount.toString(),
+                  description: " jobs available in your nearest area.",
                   actionText: "View All",
                   icon: SvgPicture.asset(
                     "assets/icons/visual/location.svg",
@@ -59,8 +68,10 @@ class DashboardCardsSection extends StatelessWidget {
         /// LARGE CARD
         DashboardLargeCard(
           title: "Confirmation Letter",
-          description: "167 jobs available in your nearest area.",
-          actionText: "View All",
+          description: confirmationLettersCount > 0
+              ? "$confirmationLettersCount confirmation letter(s) available."
+              : "You have not confirmed any tuition jobs yet.",
+          actionText: confirmationLettersCount > 0 ? "View All" : "",
           icon: SvgPicture.asset(
             "assets/icons/visual/letter.svg",
             width: 80,
@@ -69,6 +80,15 @@ class DashboardCardsSection extends StatelessWidget {
               BlendMode.srcIn,
             ),
           ),
+        ),
+        const SizedBox(height: 14),
+        DashboardLargeCard(
+          title: "Invoices",
+          description: invoicesCount > 0
+              ? "$invoicesCount invoice(s) available."
+              : "No invoice is available because you have not confirmed any tuition jobs yet.",
+          actionText: invoicesCount > 0 ? "View All" : "",
+          icon: SvgPicture.asset("assets/icons/visual/invoice.svg", width: 80),
         ),
       ],
     );

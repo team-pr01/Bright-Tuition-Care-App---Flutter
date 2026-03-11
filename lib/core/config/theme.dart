@@ -17,6 +17,7 @@ class AppColors {
   static const neutrals03 = Color(0xFF757575);
   static const neutrals04 = Color(0xFFDFDFDF);
   static const neutrals05 = Color(0xFFD4EBFD);
+  static const neutrals06 = Color(0xFF504F4F);
   // Light
   static const backgroundLight = Color(0xFFFFFFFF);
   static const textPrimaryLight = Color(0xFF1A1A1A);

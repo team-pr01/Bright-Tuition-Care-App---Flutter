@@ -39,6 +39,7 @@ class DashboardSmallCard extends StatelessWidget {
               children: [
                 Text(
                   title!,
+                  softWrap: true,
                   style: Theme.of(context).textTheme.headlineLarge!.copyWith(
                     color: Colors.black,
                     fontWeight: FontWeight.w500,
@@ -86,7 +87,7 @@ class DashboardSmallCard extends StatelessWidget {
                     actionText!,
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                       color: AppColors.primary01,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w400,
                       height: 1.5,
                     ),
                   ),
