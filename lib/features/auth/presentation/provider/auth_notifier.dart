@@ -52,8 +52,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(loading: true, error: null);
 
     try {
-      final result = await repo.signup(request);
-
       state = state.copyWith(loading: false);
     } catch (e) {
       state = state.copyWith(loading: false, error: e.toString());
@@ -94,7 +92,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
       await LocalStorage.setWelcomeSeen();
       await LocalStorage.saveUser(result.user);
-      final savedUser = await LocalStorage.getUser();
       state = AuthState(
         loggedIn: true,
         role: result.role,
