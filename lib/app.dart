@@ -1,6 +1,6 @@
 import 'package:btcclient/core/widgets/dev_reset_button.dart';
 import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
-import 'package:btcclient/features/guardian/presentation/screens/guardian_dashboard_screen.dart';
+import 'package:btcclient/features/guardian/presentation/guardian_dashboard_screen.dart';
 import 'package:btcclient/features/tutor/presentation/tutor_dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
