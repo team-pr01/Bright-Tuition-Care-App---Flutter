@@ -1,11 +1,13 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/layout/dashboard_layout.dart';
+import 'package:btcclient/core/screens/join_community.dart';
 import 'package:btcclient/core/widgets/navbar/side_drawer.dart';
 import 'package:btcclient/core/widgets/navbar/sidebar_item.dart';
 import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
 import 'package:btcclient/features/auth/presentation/screens/welcome_screen.dart';
 import 'package:btcclient/features/tutor/presentation/screens/job_board.dart';
 import 'package:btcclient/features/tutor/presentation/screens/tutor_dashboard.dart';
+import 'package:btcclient/core/screens/share_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -126,15 +128,6 @@ class TutorDashboardScreen extends ConsumerWidget {
 
         /// sidebar extra links
         menuItemsCommon: [
-          // SidebarItem(label: "Settings", icon: SvgPicture.asset(
-          //   "assets/icons/navigations/dashboard-square.svg",
-          //   width: 20,
-          //   height: 20,
-          //   colorFilter: const ColorFilter.mode(
-          //     Colors.white,
-          //     BlendMode.srcIn,
-          //   ),
-          // ), onTap: () {}),
           SidebarItem(
             label: "Refer and Earn",
             icon: SvgPicture.asset(
@@ -147,6 +140,53 @@ class TutorDashboardScreen extends ConsumerWidget {
               ),
             ),
             onTap: () {},
+          ),
+          SidebarItem(
+            label: "Share The App",
+            icon: SvgPicture.asset(
+              "assets/icons/navigations/share.svg",
+              width: 20,
+              height: 20,
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
+              ),
+            ),
+            onTap: () {
+              Navigator.pop(context); // closes drawer
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ShareScreen()),
+              );
+            },
+          ),
+          SidebarItem(
+            label: "Join Community",
+            icon: SvgPicture.asset(
+              "assets/icons/social_media/facebook.svg",
+              width: 20,
+              height: 20,
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
+              ),
+            ),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const CommunityPage(
+                    title: "Tutor Community",
+                    description:
+                        "Join our tutor community to exchange teaching strategies, gain valuable insights, stay informed on the latest trends and access resources that support your professional growth.",
+                    buttonText: "Join Community",
+                    link: "https://www.facebook.com/groups/252670130864095",
+                  ),
+                ),
+              );
+            },
           ),
         ],
 

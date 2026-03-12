@@ -44,6 +44,7 @@ dependencies:
   flutter_svg: ^2.0.10
   url_launcher: ^6.2.6
   shimmer: ^3.0.0
+  share_plus: ^7.2.1
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
@@ -74,6 +75,7 @@ flutter:
     - assets/icons/operations/
     - assets/icons/navigations/
     - assets/icons/visual/
+    - assets/icons/social_media/
   fonts:
     - family: Outfit
       fonts:

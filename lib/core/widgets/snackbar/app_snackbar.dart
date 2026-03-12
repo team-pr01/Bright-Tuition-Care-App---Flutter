@@ -24,7 +24,7 @@ class AppSnackbar {
         break;
 
       case SnackType.warning:
-        backgroundColor = const Color.fromARGB(255, 245, 167, 51);
+        backgroundColor = Colors.orange;
         icon = Icons.warning;
         break;
     }
@@ -32,7 +32,7 @@ class AppSnackbar {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         behavior: SnackBarBehavior.floating,
-        backgroundColor: backgroundColor.withOpacity(0.5),
+        backgroundColor: Colors.white,
         margin: const EdgeInsets.all(16),
         shape: RoundedRectangleBorder(
            borderRadius: BorderRadius.circular(12),
@@ -40,12 +40,12 @@ class AppSnackbar {
         ),
         content: Row(
           children: [
-            Icon(icon, color: Colors.white),
+            Icon(icon, color:backgroundColor),
             const SizedBox(width: 10),
             Expanded(
               child: Text(
                 message,
-                style: const TextStyle(color: Colors.white),
+                style:  TextStyle(color: backgroundColor),
               ),
             ),
           ],
