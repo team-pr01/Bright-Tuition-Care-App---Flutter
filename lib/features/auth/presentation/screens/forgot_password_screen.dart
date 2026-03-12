@@ -1,3 +1,4 @@
+import 'package:btcclient/core/widgets/snackbar/app_snackbar.dart';
 import 'package:btcclient/features/auth/presentation/screens/reset_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,9 +23,14 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   final controller = TextEditingController();
 
   bool loading = false;
-  String? error;
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
   Future<void> sendOtp() async {
+    if (loading) return;
     FocusScope.of(context).unfocus();
 
     if (!_formKey.currentState!.validate()) return;
@@ -33,7 +39,6 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
 
     setState(() {
       loading = true;
-      error = null;
     });
 
     final success = await ref
@@ -45,11 +50,10 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
     });
 
     if (!success) {
-      setState(() {
-        error = "Failed to send OTP";
-      });
+      AppSnackbar.show(context, "Failed to send OTP", SnackType.error);
       return;
     }
+    AppSnackbar.show(context, "OTP sent successfully", SnackType.success);
 
     /// Navigate ONLY if success
     Navigator.push(
@@ -72,8 +76,10 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                 .resendForgotPasswordOtp(phoneNumber: phone);
 
             if (!success) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Failed to resend OTP")),
+              AppSnackbar.show(
+                context,
+                "Failed to resend OTP",
+                SnackType.error,
               );
             }
           },
@@ -105,6 +111,20 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
               hint: "Enter phone",
               controller: controller,
               required: true,
+              keyboardType: TextInputType.phone,
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return "Phone number is required";
+                }
+
+                final regex = RegExp(r'^[0-9]{10}$');
+
+                if (!regex.hasMatch(value.trim())) {
+                  return "Enter valid 10 digit phone number";
+                }
+
+                return null;
+              },
             ),
 
             const SizedBox(height: 20),
@@ -115,12 +135,6 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
               variant: AppButtonVariant.gradient,
               onPressed: loading ? null : sendOtp,
             ),
-
-            if (error != null) ...[
-              const SizedBox(height: 12),
-
-              Text(error!, style: const TextStyle(color: Colors.red)),
-            ],
 
             const SizedBox(height: 20),
 

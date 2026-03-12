@@ -71,12 +71,27 @@ class RecognitionCard extends StatelessWidget {
                   /// PROFILE IMAGE
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: Image.asset(
-                      image,
-                      width: 70,
-                      height: 70,
-                      fit: BoxFit.cover,
-                    ),
+                    child: image.startsWith("http")
+                        ? Image.network(
+                            image,
+                            width: 70,
+                            height: 70,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) {
+                              return Image.asset(
+                                "assets/images/dummy-avatar.jpg",
+                                width: 70,
+                                height: 70,
+                                fit: BoxFit.cover,
+                              );
+                            },
+                          )
+                        : Image.asset(
+                            image,
+                            width: 70,
+                            height: 70,
+                            fit: BoxFit.cover,
+                          ),
                   ),
 
                   const SizedBox(width: 12),

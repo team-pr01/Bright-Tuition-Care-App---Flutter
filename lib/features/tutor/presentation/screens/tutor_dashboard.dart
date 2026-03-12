@@ -36,8 +36,8 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
   Widget build(BuildContext context) {
     final dashboardData = ref.watch(tutorDashboardProvider);
     final notices = (dashboardData?["data"]?["notices"] as List? ?? [])
-    .map((notice) => NoticeModel.fromJson(notice))
-    .toList();
+        .map((notice) => NoticeModel.fromJson(notice))
+        .toList();
     final profileCompleted = dashboardData != null
         ? dashboardData["data"]["profileCompleted"]
         : 0;
@@ -84,9 +84,7 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
                   ),
                   label: "Applied",
                   count:
-                      dashboardData?["data"]?["applications"]["applied"]
-                          .toString() ??
-                      "0",
+                      dashboardData?["data"]?["applications"]["applied"] ?? 0,
                 ),
                 DashboardNavLinks(
                   icon: SvgPicture.asset(
@@ -100,9 +98,8 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
                   ),
                   label: "Shortlisted",
                   count:
-                      dashboardData?["data"]?["applications"]["shortlisted"]
-                          .toString() ??
-                      "0",
+                      dashboardData?["data"]?["applications"]["shortlisted"] ??
+                      0,
                 ),
                 DashboardNavLinks(
                   icon: SvgPicture.asset(
@@ -116,9 +113,7 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
                   ),
                   label: "Appointed",
                   count:
-                      dashboardData?["data"]?["applications"]["appointed"]
-                          .toString() ??
-                      "0",
+                      dashboardData?["data"]?["applications"]["appointed"] ?? 0,
                 ),
                 DashboardNavLinks(
                   icon: SvgPicture.asset(
@@ -132,9 +127,7 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
                   ),
                   label: "Confirmed",
                   count:
-                      dashboardData?["data"]?["applications"]["confirmed"]
-                          .toString() ??
-                      "0",
+                      dashboardData?["data"]?["applications"]["confirmed"] ?? 0,
                 ),
                 DashboardNavLinks(
                   icon: SvgPicture.asset(
@@ -148,9 +141,7 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
                   ),
                   label: "Cancelled",
                   count:
-                      dashboardData?["data"]?["applications"]["rejected"]
-                          .toString() ??
-                      "0",
+                      dashboardData?["data"]?["applications"]["rejected"] ?? 0,
                 ),
               ],
             ),
@@ -163,12 +154,16 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
             /// TUTOR OF THE MONTH (FROM API)
             if (dashboardData != null)
               RecognitionCard(
-                image: "assets/images/logo-1.png",
+                image:
+                    dashboardData["data"]?["tutorOfTheMonth"]["imageUrl"] ??
+                    "assets/images/logo-1.png",
                 title: "Tutor of the Month",
                 tutorId:
                     dashboardData["data"]?["tutorOfTheMonth"]["tutorId"] ?? "",
-                rating: dashboardData["data"]?["tutorOfTheMonth"]["rating"]
-                    .toString() ?? "0",
+                rating:
+                    dashboardData["data"]?["tutorOfTheMonth"]["rating"]
+                        .toString() ??
+                    "0",
                 name:
                     dashboardData["data"]?["tutorOfTheMonth"]["userId"]["name"] ??
                     "",
@@ -178,7 +173,7 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
             const SizedBox(height: 20),
 
             TutorCardsSection(
-              profileCompletion:profileCompleted,
+              profileCompletion: profileCompleted,
               nearbyJobsCount: totalNearbyJobs,
               confirmationLettersCount: confirmationLetters,
               invoicesCount: invoices,

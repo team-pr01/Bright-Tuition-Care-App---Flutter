@@ -1,4 +1,5 @@
 import 'package:btcclient/core/storage/local_storage.dart';
+import 'package:btcclient/core/widgets/snackbar/app_snackbar.dart';
 import 'package:btcclient/features/auth/presentation/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,7 +23,6 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
   final confirmController = TextEditingController();
 
   bool loading = false;
-  String? error;
 
   @override
   void dispose() {
@@ -41,41 +41,32 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
     final phone = await LocalStorage.getAuthIdentifier();
 
     if (phone == null) {
-      setState(() {
-        error = "Session expired";
-      });
+      AppSnackbar.show(context, "Session expired", SnackType.error);
 
       return;
     }
 
     /// validation
-    if (password.isEmpty || confirm.isEmpty) {
-      setState(() {
-        error = "Please fill all fields";
-      });
-
-      return;
-    }
+    AppSnackbar.show(context, "Please fill all fields", SnackType.warning);
 
     if (password.length < 6) {
-      setState(() {
-        error = "Password must be at least 6 characters";
-      });
+      AppSnackbar.show(
+        context,
+        "Password must be at least 6 characters",
+        SnackType.warning,
+      );
 
       return;
     }
 
     if (password != confirm) {
-      setState(() {
-        error = "Passwords do not match";
-      });
+      AppSnackbar.show(context, "Passwords do not match", SnackType.warning);
 
       return;
     }
 
     setState(() {
       loading = true;
-      error = null;
     });
 
     final success = await ref
@@ -89,12 +80,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
     });
 
     if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Password reset successful"),
-          backgroundColor: Colors.green,
-        ),
-      );
+      AppSnackbar.show(context, "Password reset successful", SnackType.success);
 
       Navigator.pushAndRemoveUntil(
         context,
@@ -102,9 +88,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
         (route) => false,
       );
     } else {
-      setState(() {
-        error = "Reset failed";
-      });
+      AppSnackbar.show(context, "Reset failed", SnackType.error);
     }
   }
 
@@ -122,15 +106,39 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
           AppInputField(
             label: "New Password",
             hint: "Enter new password",
+            keyboardType: TextInputType.visiblePassword,
             controller: passwordController,
             type: AppInputType.password,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Password is required";
+              }
+
+              if (value.length < 6) {
+                return "Password must be at least 6 characters";
+              }
+
+              return null;
+            },
             required: true,
           ),
 
           AppInputField(
             label: "Confirm Password",
             hint: "Re-enter password",
+            keyboardType: TextInputType.visiblePassword,
             controller: confirmController,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Confirm password required";
+              }
+
+              if (value != passwordController.text) {
+                return "Passwords do not match";
+              }
+
+              return null;
+            },
             type: AppInputType.password,
             required: true,
           ),
@@ -141,14 +149,8 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
             label: "Reset Password",
             variant: AppButtonVariant.gradient,
             loading: loading,
-            onPressed: _submit,
+            onPressed: loading ? null : _submit,
           ),
-
-          if (error != null) ...[
-            const SizedBox(height: 12),
-
-            Text(error!, style: const TextStyle(color: Colors.red)),
-          ],
         ],
       ),
     );

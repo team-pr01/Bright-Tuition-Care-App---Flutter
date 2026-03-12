@@ -50,6 +50,7 @@ class AppSidebar extends StatelessWidget {
               createdAt: user.createdAt,
               extraLine1: "Children: 2",
             ),
+            Text(user.email),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
               child: Divider(color: AppColors.neutrals05, thickness: 1.5),

@@ -1,16 +1,17 @@
 import 'package:btcclient/core/config/theme.dart';
+import 'package:btcclient/core/utils/number_formatter.dart';
 import 'package:flutter/material.dart';
 
 class DashboardNavLinks extends StatelessWidget {
   final Widget icon;
   final String label;
-  final String count;
+  final int count;
 
   const DashboardNavLinks({
     super.key,
     required this.icon,
     required this.label,
-    this.count = "0",
+    this.count = 0,
     
   });
 
@@ -43,7 +44,7 @@ class DashboardNavLinks extends StatelessWidget {
           ),
         ),
         Text(
-          count,
+          formatNumber(count),
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodySmall!.copyWith(
             fontWeight: FontWeight.w300,

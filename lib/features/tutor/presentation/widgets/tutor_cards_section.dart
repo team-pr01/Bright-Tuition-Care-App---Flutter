@@ -1,4 +1,5 @@
 import 'package:btcclient/core/config/theme.dart';
+import 'package:btcclient/core/utils/number_formatter.dart';
 import 'package:btcclient/core/widgets/dashboard/dashboard_cards/profile_progress_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -46,7 +47,7 @@ class TutorCardsSection extends StatelessWidget {
               Expanded(
                 child: DashboardSmallCard(
                   subtitle: "Nearby Jobs",
-                  title: nearbyJobsCount.toString(),
+                  title: formatNumber(nearbyJobsCount).toString(),
                   description: " jobs available in your nearest area.",
                   actionText: "View All",
                   icon: SvgPicture.asset(
@@ -68,6 +69,7 @@ class TutorCardsSection extends StatelessWidget {
         /// LARGE CARD
         DashboardLargeCard(
           title: "Confirmation Letter",
+          subtitle:formatNumber(confirmationLettersCount) ,
           description: confirmationLettersCount > 0
               ? "$confirmationLettersCount confirmation letter(s) available."
               : "You have not confirmed any tuition jobs yet.",
@@ -84,6 +86,7 @@ class TutorCardsSection extends StatelessWidget {
         const SizedBox(height: 14),
         DashboardLargeCard(
           title: "Invoices",
+          subtitle:formatNumber(invoicesCount) ,
           description: invoicesCount > 0
               ? "$invoicesCount invoice(s) available."
               : "No invoice is available because you have not confirmed any tuition jobs yet.",

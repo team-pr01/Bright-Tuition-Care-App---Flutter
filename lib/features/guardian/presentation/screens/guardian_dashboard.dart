@@ -1,5 +1,6 @@
 import 'package:btcclient/core/models/notice_model.dart';
 import 'package:btcclient/core/widgets/dashboard/verify_profile_card.dart';
+import 'package:btcclient/core/widgets/recognition_card.dart';
 import 'package:btcclient/features/guardian/presentation/provider/guardain_dashboard_provider.dart';
 import 'package:btcclient/features/guardian/presentation/widgets/guardian_cards_section.dart';
 import 'package:btcclient/features/guardian/presentation/widgets/hire_tutor_bar.dart';
@@ -66,7 +67,7 @@ class _GuardianHomeScreenState extends ConsumerState<GuardianHomeScreen> {
                 ),
                 label: "All Jobs",
                 count:
-                    dashboardData?["data"]?["jobs"]["total"]?.toString() ?? "0",
+                    dashboardData?["data"]?["jobs"]["total"] ?? 0,
               ),
               DashboardNavLinks(
                 icon: SvgPicture.asset(
@@ -80,8 +81,8 @@ class _GuardianHomeScreenState extends ConsumerState<GuardianHomeScreen> {
                 ),
                 label: "pending",
                 count:
-                    dashboardData?["data"]?["jobs"]["pending"]?.toString() ??
-                    "0",
+                    dashboardData?["data"]?["jobs"]["pending"] ??
+                    0,
               ),
 
               DashboardNavLinks(
@@ -96,7 +97,7 @@ class _GuardianHomeScreenState extends ConsumerState<GuardianHomeScreen> {
                 ),
                 label: "Live",
                 count:
-                    dashboardData?["data"]?["jobs"]["live"]?.toString() ?? "0",
+                    dashboardData?["data"]?["jobs"]["live"] ?? 0,
               ),
 
               DashboardNavLinks(
@@ -124,15 +125,31 @@ class _GuardianHomeScreenState extends ConsumerState<GuardianHomeScreen> {
                 ),
                 label: "Cancelled",
                 count:
-                    dashboardData?["data"]?["jobs"]["cancelled"]?.toString() ??
-                    "0",
+                    dashboardData?["data"]?["jobs"]["cancelled"] ??
+                    0,
               ),
             ],
           ),
           const SizedBox(height: 20),
           NoticeSection(notices: notices),
           const SizedBox(height: 20),
+/// TUTOR OF THE MONTH (FROM API)
+            if (dashboardData != null)
+              RecognitionCard(
+                image:dashboardData["data"]?["guardianOfTheMonth"]["imageUrl"] ??
+                    "assets/images/dummy-avatar.jpg",
+                title: "Guardian of the Month",
+                tutorId:
+                    dashboardData["data"]?["guardianOfTheMonth"]["guardianId"] ?? "",
+                rating: dashboardData["data"]?["guardianOfTheMonth"]["rating"]
+                    .toString() ?? "0",
+                name:
+                    dashboardData["data"]?["guardianOfTheMonth"]["userId"]["name"] ??
+                    "",
+                date: "This Month",
+              ),
 
+            const SizedBox(height: 20),
           GuardianCardsSection(
             profileCompletion: profileCompleted,
             confirmationLettersCount: confirmationLetters,

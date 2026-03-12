@@ -4,6 +4,7 @@ import 'package:btcclient/core/routing/app_router.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/core/widgets/input/app_input_field.dart';
 import 'package:btcclient/core/widgets/segmented_switch/segmented_switch.dart';
+import 'package:btcclient/core/widgets/snackbar/app_snackbar.dart';
 
 import 'package:btcclient/features/auth/data/requests/signup_request.dart';
 import 'package:btcclient/features/auth/presentation/screens/login_screen.dart';
@@ -64,24 +65,22 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
     /// Check gender
     if (selectedGender == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Please select gender")));
+      AppSnackbar.show(context, "Please select gender", SnackType.warning);
       return;
     }
 
     /// Check password match
     if (passwordController.text != confirmPasswordController.text) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Passwords do not match")));
+      AppSnackbar.show(context, "Passwords do not match", SnackType.error);
       return;
     }
 
     /// Check terms accepted
     if (!rememberMe) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("You must accept Terms & Privacy Policy")),
+      AppSnackbar.show(
+        context,
+        "You must accept Terms & Privacy Policy",
+        SnackType.warning,
       );
       return;
     }
@@ -110,12 +109,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       if (previous?.loading == true &&
           next.loading == false &&
           next.error == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("OTP sent successfully"),
-            backgroundColor: Colors.green,
-          ),
-        );
+        AppSnackbar.show(context, "OTP sent successfully", SnackType.success);
 
         /// Navigate to OTP screen
         Navigator.push(
@@ -140,11 +134,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     .resendOtp(email: emailController.text.trim());
 
                 if (success) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("OTP resent successfully"),
-                      backgroundColor: Colors.green,
-                    ),
+                  AppSnackbar.show(
+                    context,
+                    "OTP resent successfully",
+                    SnackType.success,
                   );
                 }
               },
@@ -167,9 +160,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
       /// Error handling
       if (next.error != null && next.error != previous?.error) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(next.error!), backgroundColor: Colors.red),
-        );
+        AppSnackbar.show(context, next.error!, SnackType.error);
       }
     });
     return AuthListener(
@@ -210,7 +201,23 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 label: "Email",
                 hint: "Enter your email",
                 controller: emailController,
+                keyboardType: TextInputType.emailAddress,
                 required: true,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "Email is required";
+                  }
+
+                  final emailRegex = RegExp(
+                    r'^[\w\.-]+@([\w-]+\.)+[\w-]{2,4}$',
+                  );
+
+                  if (!emailRegex.hasMatch(value.trim())) {
+                    return "Enter valid email";
+                  }
+
+                  return null;
+                },
               ),
 
               /// PHONE
@@ -218,6 +225,20 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 label: "Phone",
                 hint: "Enter your phone",
                 controller: phoneController,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "Phone number is required";
+                  }
+
+                  final bdPhoneRegex = RegExp(r'^01[3-9]\d{8}$');
+
+                  if (!bdPhoneRegex.hasMatch(value.trim())) {
+                    return "Enter valid Bangladeshi phone number";
+                  }
+
+                  return null;
+                },
+                keyboardType: TextInputType.phone,
                 required: true,
               ),
 
@@ -240,7 +261,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 hint: "********",
                 type: AppInputType.password,
                 controller: passwordController,
+                keyboardType: TextInputType.visiblePassword,
                 required: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Password is required";
+                  }
+
+                  if (value.length < 6) {
+                    return "Password must be at least 6 characters";
+                  }
+
+                  return null;
+                },
               ),
 
               /// CONFIRM PASSWORD
@@ -249,7 +282,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 hint: "********",
                 type: AppInputType.password,
                 controller: confirmPasswordController,
+                keyboardType: TextInputType.visiblePassword,
                 required: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Confirm password required";
+                  }
+
+                  if (value != passwordController.text) {
+                    return "Passwords do not match";
+                  }
+
+                  return null;
+                },
               ),
 
               const SizedBox(height: 14),
@@ -332,43 +377,38 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 label: "Create Account",
                 variant: AppButtonVariant.gradient,
                 loading: authState.loading,
-                onPressed: _register,
+                onPressed: authState.loading ? null : _register,
               ),
               const SizedBox(height: 24),
 
+              RichText(
+                text: TextSpan(
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelSmall!.copyWith(color: AppColors.neutrals03),
 
-               RichText(
-                    text: TextSpan(
-                      style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                        color: AppColors.neutrals03,
+                  children: [
+                    const TextSpan(text: "Already have an account?"),
+
+                    TextSpan(
+                      text: " Sign In",
+                      style: const TextStyle(
+                        color: AppColors.primary01,
+                        fontWeight: FontWeight.w600,
                       ),
-                      
-
-                      children: [
-                        const TextSpan(text: "Already have an account?"),
-
-                        TextSpan(
-                          text: " Sign In",
-                          style: const TextStyle(
-                            color: AppColors.primary01,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const LoginScreen(),
-                                ),
-                              );
-                            },
-                        ),
-
-                      ],
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const LoginScreen(),
+                            ),
+                          );
+                        },
                     ),
-                  ),
-
-
+                  ],
+                ),
+              ),
 
               const SizedBox(height: 16),
             ],

@@ -38,7 +38,7 @@ class TutorDashboardScreen extends ConsumerWidget {
             ),
             onTap: () {
               Navigator.pop(context);
-              changeTab(0);
+              changeTab(2);
             },
           ),
           SidebarItem(

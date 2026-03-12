@@ -10,6 +10,7 @@ class AppInputField extends StatefulWidget {
   final AppInputType type;
   final bool required;
   final Widget? suffixIcon;
+  final TextInputType? keyboardType;
 
   /// dropdown
   final List<String>? dropdownItems;
@@ -22,6 +23,7 @@ class AppInputField extends StatefulWidget {
   final bool multiSelect;
   final List<String>? selectedValues;
   final Function(List<String>)? onMultiChanged;
+  final String? Function(String?)? validator;
 
   final int maxLines;
 
@@ -33,6 +35,7 @@ class AppInputField extends StatefulWidget {
     this.type = AppInputType.text,
     this.required = false,
     this.suffixIcon,
+     this.keyboardType = TextInputType.text,
     this.dropdownItems,
     this.value,
     this.onChanged,
@@ -40,6 +43,7 @@ class AppInputField extends StatefulWidget {
     this.selectedValues,
     this.onMultiChanged,
     this.maxLines = 1,
+    this.validator,
   });
 
   @override
@@ -50,10 +54,10 @@ class _AppInputFieldState extends State<AppInputField> {
   bool obscure = true;
 
   TextStyle get inputStyle => const TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w400,
-        color: AppColors.neutrals02,
-      );
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    color: AppColors.neutrals02,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -61,9 +65,9 @@ class _AppInputFieldState extends State<AppInputField> {
       text: TextSpan(
         text: widget.label,
         style: Theme.of(context).textTheme.titleLarge!.copyWith(
-              color: AppColors.neutrals02,
-              fontWeight: FontWeight.w400,
-            ),
+          color: AppColors.neutrals02,
+          fontWeight: FontWeight.w400,
+        ),
         children: widget.required
             ? const [
                 TextSpan(
@@ -79,10 +83,17 @@ class _AppInputFieldState extends State<AppInputField> {
 
     switch (widget.type) {
       case AppInputType.password:
-        field = TextField(
+        field = TextFormField(
           controller: widget.controller,
           obscureText: obscure,
+          keyboardType: widget.keyboardType,
           style: inputStyle,
+          validator: (value) {
+            if (widget.required && (value == null || value.trim().isEmpty)) {
+              return "${widget.label} is required";
+            }
+            return null;
+          },
           decoration: _decoration().copyWith(
             suffixIcon: IconButton(
               icon: Icon(
@@ -96,33 +107,61 @@ class _AppInputFieldState extends State<AppInputField> {
         break;
 
       case AppInputType.multiline:
-        field = TextField(
+        field = TextFormField(
           controller: widget.controller,
           maxLines: widget.maxLines,
+            keyboardType: widget.keyboardType,
           style: inputStyle,
           decoration: _decoration(),
+          validator: (value) {
+            if (widget.required && (value == null || value.trim().isEmpty)) {
+              return "${widget.label} is required";
+            }
+            return null;
+          },
         );
         break;
 
       case AppInputType.dropdown:
-        field = _SearchableDropdown(
-          items: widget.dropdownItems ?? [],
-          hint: widget.hint,
-          value: widget.value,
-          multiSelect: widget.multiSelect,
-          selectedValues: widget.selectedValues ?? [],
-          onChanged: widget.onChanged,
-          onMultiChanged: widget.onMultiChanged,
+        field = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _SearchableDropdown(
+              items: widget.dropdownItems ?? [],
+              hint: widget.hint,
+              value: widget.value,
+              multiSelect: widget.multiSelect,
+              selectedValues: widget.selectedValues ?? [],
+              onChanged: widget.onChanged,
+              onMultiChanged: widget.onMultiChanged,
+            ),
+
+            if (widget.required &&
+                !widget.multiSelect &&
+                (widget.value == null || widget.value!.isEmpty))
+              const Padding(
+                padding: EdgeInsets.only(top: 6, left: 4),
+                child: Text(
+                  "This field is required",
+                  style: TextStyle(color: Colors.red, fontSize: 12),
+                ),
+              ),
+          ],
         );
         break;
 
       default:
-        field = TextField(
+        field = TextFormField(
           controller: widget.controller,
+          keyboardType: widget.keyboardType,
           style: inputStyle,
-          decoration: _decoration().copyWith(
-            suffixIcon: widget.suffixIcon,
-          ),
+          decoration: _decoration().copyWith(suffixIcon: widget.suffixIcon),
+          validator: (value) {
+            if (widget.required && (value == null || value.trim().isEmpty)) {
+              return "${widget.label} is required";
+            }
+            return null;
+          },
         );
     }
 
@@ -140,29 +179,18 @@ class _AppInputFieldState extends State<AppInputField> {
   InputDecoration _decoration() {
     return InputDecoration(
       hintText: widget.hint,
-      hintStyle: const TextStyle(
-        fontSize: 14,
-        color: AppColors.neutrals03,
-      ),
-      contentPadding:
-          const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      hintStyle: const TextStyle(fontSize: 14, color: AppColors.neutrals03),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       filled: true,
       fillColor: AppColors.neutrals01,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(5),
-      ),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(5),
-        borderSide: BorderSide(
-          color: AppColors.primary01.withOpacity(0.3),
-        ),
+        borderSide: BorderSide(color: AppColors.primary01.withOpacity(0.3)),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(5),
-        borderSide: const BorderSide(
-          color: AppColors.primary01,
-          width: 1.5,
-        ),
+        borderSide: const BorderSide(color: AppColors.primary01, width: 1.5),
       ),
     );
   }
@@ -225,105 +253,99 @@ class _SearchableDropdownState extends State<_SearchableDropdown> {
     }
   }
 
- Widget _buildModal() {
-  return StatefulBuilder(
-    builder: (context, modalSetState) {
-      return Container(
-        height: 450,
-        padding: const EdgeInsets.all(16),
-        decoration: const BoxDecoration(
-          color: AppColors.neutrals01,
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(16),
+  Widget _buildModal() {
+    return StatefulBuilder(
+      builder: (context, modalSetState) {
+        return Container(
+          height: 450,
+          padding: const EdgeInsets.all(16),
+          decoration: const BoxDecoration(
+            color: AppColors.neutrals01,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
           ),
-        ),
-        child: Column(
-          children: [
-
-            /// SEARCH
-            TextField(
-              controller: searchController,
-              decoration: const InputDecoration(
-                hintText: "Search...",
-                prefixIcon: Icon(Icons.search),
-              ),
-              onChanged: (value) {
-                modalSetState(() {
-                  filteredItems = widget.items
-                      .where((e) =>
-                          e.toLowerCase().contains(value.toLowerCase()))
-                      .toList();
-                });
-              },
-            ),
-
-            const SizedBox(height: 12),
-
-            /// LIST
-            Expanded(
-              child: ListView.builder(
-                itemCount: filteredItems.length,
-                itemBuilder: (_, index) {
-                  final item = filteredItems[index];
-
-                  if (widget.multiSelect) {
-                    final selected = tempSelected.contains(item);
-
-                    return CheckboxListTile(
-                      value: selected,
-
-                      title: Text(
-                        item,
-                        style: const TextStyle(fontSize: 14),
-                      ),
-
-                      controlAffinity:
-                          ListTileControlAffinity.leading,
-
-                      activeColor: AppColors.primary01,
-
-                      onChanged: (checked) {
-                        modalSetState(() {
-                          if (checked == true) {
-                            if (!tempSelected.contains(item)) {
-                              tempSelected.add(item);
-                            }
-                          } else {
-                            tempSelected.remove(item);
-                          }
-                        });
-                      },
-                    );
-                  }
-
-                  return ListTile(
-                    title: Text(item),
-                    onTap: () {
-                      Navigator.pop(context, item);
-                    },
-                  );
+          child: Column(
+            children: [
+              /// SEARCH
+              TextFormField(
+                controller: searchController,
+                decoration: const InputDecoration(
+                  hintText: "Search...",
+                  prefixIcon: Icon(Icons.search),
+                ),
+                onChanged: (value) {
+                  modalSetState(() {
+                    filteredItems = widget.items
+                        .where(
+                          (e) => e.toLowerCase().contains(value.toLowerCase()),
+                        )
+                        .toList();
+                  });
                 },
               ),
-            ),
 
-            /// DONE BUTTON
-            if (widget.multiSelect)
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    widget.onMultiChanged?.call(tempSelected);
-                    Navigator.pop(context);
+              const SizedBox(height: 12),
+
+              /// LIST
+              Expanded(
+                child: ListView.builder(
+                  itemCount: filteredItems.length,
+                  itemBuilder: (_, index) {
+                    final item = filteredItems[index];
+
+                    if (widget.multiSelect) {
+                      final selected = tempSelected.contains(item);
+
+                      return CheckboxListTile(
+                        value: selected,
+
+                        title: Text(item, style: const TextStyle(fontSize: 14)),
+
+                        controlAffinity: ListTileControlAffinity.leading,
+
+                        activeColor: AppColors.primary01,
+
+                        onChanged: (checked) {
+                          modalSetState(() {
+                            if (checked == true) {
+                              if (!tempSelected.contains(item)) {
+                                tempSelected.add(item);
+                              }
+                            } else {
+                              tempSelected.remove(item);
+                            }
+                          });
+                        },
+                      );
+                    }
+
+                    return ListTile(
+                      title: Text(item),
+                      onTap: () {
+                        Navigator.pop(context, item);
+                      },
+                    );
                   },
-                  child: const Text("Done"),
                 ),
               ),
-          ],
-        ),
-      );
-    },
-  );
-}
+
+              /// DONE BUTTON
+              if (widget.multiSelect)
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      widget.onMultiChanged?.call(tempSelected);
+                      Navigator.pop(context);
+                    },
+                    child: const Text("Done"),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -345,19 +367,12 @@ class _SearchableDropdownState extends State<_SearchableDropdown> {
         decoration: BoxDecoration(
           color: AppColors.neutrals01,
           borderRadius: BorderRadius.circular(5),
-          border: Border.all(
-            color: AppColors.primary01.withOpacity(0.3),
-          ),
+          border: Border.all(color: AppColors.primary01.withOpacity(0.3)),
         ),
         alignment: Alignment.centerLeft,
         child: Row(
           children: [
-            Expanded(
-              child: Text(
-                text,
-                style: const TextStyle(fontSize: 14),
-              ),
-            ),
+            Expanded(child: Text(text, style: const TextStyle(fontSize: 14))),
             const Icon(Icons.keyboard_arrow_down),
           ],
         ),

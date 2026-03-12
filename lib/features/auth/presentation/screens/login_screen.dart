@@ -4,6 +4,7 @@ import 'package:btcclient/core/routing/app_router.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/core/widgets/input/app_input_field.dart';
 import 'package:btcclient/core/widgets/segmented_switch/segmented_switch.dart';
+import 'package:btcclient/core/widgets/snackbar/app_snackbar.dart';
 import 'package:btcclient/features/auth/presentation/screens/forgot_password_screen.dart';
 import 'package:btcclient/features/auth/presentation/screens/register_screen.dart';
 import 'package:btcclient/features/auth/presentation/widgets/auth_listener.dart';
@@ -42,7 +43,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     if (selected == null) {
-      _showError("Please select role");
+      AppSnackbar.show(context, "Please select role", SnackType.warning);
       return;
     }
 
@@ -58,21 +59,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    AppSnackbar.show(context, message, SnackType.error);
   }
 
- void _forgotPassword() {
-
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) => const ForgotPasswordScreen(),
-    ),
-  );
-
-}
+  void _forgotPassword() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const ForgotPasswordScreen()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +75,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     /// Listen for login success / error
     ref.listen(authProvider, (previous, next) {
-
       /// show success only when login changes from false → true
       if (next.loggedIn == true) {
         Navigator.of(context).pushAndRemoveUntil(
@@ -92,9 +86,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       }
 
       if (next.error != null && next.error != previous?.error) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(next.error!), backgroundColor: Colors.red),
-        );
+        AppSnackbar.show(context, next.error!, SnackType.error);
       }
     });
 
@@ -134,14 +126,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               // ================= EMAIL =================
               AppInputField(
                 label: "Email",
-
                 hint: "Enter your email",
-
                 controller: emailController,
-
                 required: true,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "Email is required";
+                  }
 
-                // suffixIcon: const Icon(Icons.email_outlined),
+                  final emailRegex = RegExp(
+                    r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                  );
+
+                  if (!emailRegex.hasMatch(value.trim())) {
+                    return "Enter a valid email";
+                  }
+
+                  return null;
+                },
               ),
 
               // ================= PASSWORD =================
@@ -155,17 +157,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 controller: passwordController,
 
                 required: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Password is required";
+                  }
+
+                  return null;
+                },
               ),
 
               const SizedBox(height: 8),
 
               Row(
-
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
-
                       Padding(
                         padding: const EdgeInsets.only(left: 4),
                         child: SizedBox(
@@ -269,10 +276,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     context,
                     MaterialPageRoute(
                       builder: (_) => const RegisterScreen(role: "tutor"),
-                       maintainState: false,
+                      maintainState: false,
                     ),
-                   
-
                   );
                 },
               ),

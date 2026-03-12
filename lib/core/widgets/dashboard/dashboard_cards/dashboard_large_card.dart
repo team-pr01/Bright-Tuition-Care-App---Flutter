@@ -34,16 +34,40 @@ class DashboardLargeCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title!, style: Theme.of(context).textTheme.headlineMedium!.copyWith(color: Colors.black,fontWeight:FontWeight.w400,height:1.2)),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: title!,
+                        style: Theme.of(context).textTheme.headlineMedium!
+                            .copyWith(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400,
+                              height: 1.2,
+                            ),
+                      ),
+                     TextSpan(text:(" ")),
+                      if(subtitle != null)TextSpan(
+                        text: subtitle!,
+                        style: Theme.of(context).textTheme.headlineMedium!
+                            .copyWith(
+                              color: AppColors.primary01,
+                              fontWeight: FontWeight.w400,
+                              height: 1.2,
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
 
                 const SizedBox(height: 8),
 
-               if(subtitle != null)Text(
-                  subtitle!,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleSmall!.copyWith(color: Colors.black),
-                ), 
+                //  if(subtitle != null)Text(
+                //     subtitle!,
+                //     style: Theme.of(
+                //       context,
+                //     ).textTheme.titleSmall!.copyWith(color: Colors.black),
+                //   ),
                 Text(
                   description,
                   style: Theme.of(
