@@ -6,6 +6,7 @@ import 'package:btcclient/core/widgets/navbar/sidebar_item.dart';
 import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
 import 'package:btcclient/features/auth/presentation/screens/welcome_screen.dart';
 import 'package:btcclient/features/guardian/presentation/screens/guardian_dashboard.dart';
+import 'package:btcclient/features/guardian/presentation/screens/guardian_payment_screen.dart';
 import 'package:btcclient/features/tutor/presentation/screens/job_board.dart';
 import 'package:btcclient/core/screens/share_app.dart';
 import 'package:flutter/material.dart';
@@ -200,7 +201,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
         (changeTab) => const TutorJobsScreen(),
         (changeTab) => const TutorJobsScreen(),
         (changeTab) => GuardianHomeScreen(),
-        (changeTab) => const TutorJobsScreen(),
+        (changeTab) => const GuardianPaymentScreen(),
         (changeTab) => const TutorJobsScreen(),
       ],
 

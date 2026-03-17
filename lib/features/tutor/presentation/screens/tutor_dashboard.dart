@@ -1,9 +1,9 @@
 import 'package:btcclient/core/models/notice_model.dart';
+import 'package:btcclient/core/widgets/dashboard/verify_profile_card.dart';
 import 'package:btcclient/features/tutor/presentation/provider/tutor_dashboard_provider.dart';
 import 'package:btcclient/features/tutor/presentation/widgets/tutor_cards_section.dart';
 import 'package:btcclient/core/widgets/dashboard/dashboard_nav_links.dart';
 import 'package:btcclient/core/widgets/dashboard/notice_board/notice_section.dart';
-import 'package:btcclient/core/widgets/dashboard/verify_profile_card.dart';
 import 'package:btcclient/core/widgets/helpline_card/helpline_card.dart';
 import 'package:btcclient/core/widgets/recognition_card.dart';
 import 'package:btcclient/features/tutor/presentation/widgets/tutor_search_bar.dart';

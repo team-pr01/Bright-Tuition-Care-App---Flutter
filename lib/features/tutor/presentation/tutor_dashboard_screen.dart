@@ -8,12 +8,14 @@ import 'package:btcclient/features/auth/presentation/screens/welcome_screen.dart
 import 'package:btcclient/features/tutor/presentation/screens/job_board.dart';
 import 'package:btcclient/features/tutor/presentation/screens/tutor_dashboard.dart';
 import 'package:btcclient/core/screens/share_app.dart';
+import 'package:btcclient/features/tutor/presentation/screens/tutor_payment_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class TutorDashboardScreen extends ConsumerWidget {
   const TutorDashboardScreen({super.key});
+  
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -105,7 +107,7 @@ class TutorDashboardScreen extends ConsumerWidget {
             ),
             onTap: () {
               Navigator.pop(context);
-              changeTab(4);
+              changeTab(3);
             },
           ),
           SidebarItem(
@@ -190,6 +192,7 @@ class TutorDashboardScreen extends ConsumerWidget {
           ),
         ],
 
+
         onLogout: () async {
           await ref.read(authProvider.notifier).logout();
 
@@ -205,7 +208,7 @@ class TutorDashboardScreen extends ConsumerWidget {
         (changeTab) => const TutorJobsScreen(),
         (changeTab) => const TutorJobsScreen(),
         (changeTab) => TutorHomeScreen(changeTab: changeTab),
-        (changeTab) => const TutorJobsScreen(),
+        (changeTab) => const TutorPaymentScreen(),
         (changeTab) => const TutorJobsScreen(),
       ],
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum SnackType { success, error, warning }
+enum SnackType { success, error, warning, natural }
 
 class AppSnackbar {
   static void show(
@@ -15,7 +15,6 @@ class AppSnackbar {
       case SnackType.success:
         backgroundColor = Colors.green;
         icon = Icons.check_circle;
-        
         break;
 
       case SnackType.error:
@@ -27,6 +26,11 @@ class AppSnackbar {
         backgroundColor = Colors.orange;
         icon = Icons.warning;
         break;
+
+      case SnackType.natural:
+        backgroundColor = Colors.grey;
+        icon = Icons.circle;
+        break;
     }
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -35,17 +39,17 @@ class AppSnackbar {
         backgroundColor: Colors.white,
         margin: const EdgeInsets.all(16),
         shape: RoundedRectangleBorder(
-           borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12),
           side: BorderSide(color: backgroundColor),
         ),
         content: Row(
           children: [
-            Icon(icon, color:backgroundColor),
+            Icon(icon, color: backgroundColor),
             const SizedBox(width: 10),
             Expanded(
               child: Text(
                 message,
-                style:  TextStyle(color: backgroundColor),
+                style: TextStyle(color: backgroundColor),
               ),
             ),
           ],

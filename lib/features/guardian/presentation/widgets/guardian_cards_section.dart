@@ -1,4 +1,5 @@
 import 'package:btcclient/core/config/theme.dart';
+import 'package:btcclient/core/utils/number_formatter.dart';
 import 'package:btcclient/core/widgets/dashboard/dashboard_cards/dashboard_large_card.dart';
 import 'package:btcclient/core/widgets/dashboard/dashboard_cards/dashboard_small_card.dart';
 import 'package:btcclient/core/widgets/dashboard/dashboard_cards/profile_progress_icon.dart';
@@ -59,8 +60,8 @@ class GuardianCardsSection extends StatelessWidget {
                 child: DashboardSmallCard(
                   subtitle: "Confirmation Letter",
                   title: confirmationLettersCount > 0
-                      ? confirmationLettersCount.toString()
-                      : "0",
+                      ? formatNumber(confirmationLettersCount).toString()
+                      : formatNumber(0).toString(),
                   description: confirmationLettersCount > 0
                       ? "$confirmationLettersCount letter(s) available."
                       : "No confirmed tuition yet.",
