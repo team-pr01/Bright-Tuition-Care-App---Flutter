@@ -5,23 +5,21 @@ import 'package:btcclient/core/widgets/navbar/side_drawer.dart';
 import 'package:btcclient/core/widgets/navbar/sidebar_item.dart';
 import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
 import 'package:btcclient/features/auth/presentation/screens/welcome_screen.dart';
-import 'package:btcclient/features/legal/data/important_guidelines_data.dart';
-import 'package:btcclient/features/legal/presentation/important_guidelines_screen.dart';
+import 'package:btcclient/features/guardian/presentation/screens/guardian_dashboard.dart';
+import 'package:btcclient/features/guardian/presentation/screens/guardian_payment_screen.dart';
 import 'package:btcclient/features/tutor/presentation/screens/job_board.dart';
-import 'package:btcclient/features/tutor/presentation/screens/tutor_dashboard.dart';
 import 'package:btcclient/core/screens/share_app.dart';
-import 'package:btcclient/features/tutor/presentation/screens/tutor_payment_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class TutorDashboardScreen extends ConsumerWidget {
-  const TutorDashboardScreen({super.key});
-  
+class GuardianDashboardScreen extends ConsumerWidget {
+  const GuardianDashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authProvider).user;
+
     if (user == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
@@ -32,7 +30,7 @@ class TutorDashboardScreen extends ConsumerWidget {
 
         menuItems: [
           SidebarItem(
-            label: "Dashboard",
+            label: "Home",
             icon: SvgPicture.asset(
               "assets/icons/navigations/dashboard-square.svg",
               width: 20,
@@ -42,10 +40,7 @@ class TutorDashboardScreen extends ConsumerWidget {
                 BlendMode.srcIn,
               ),
             ),
-            onTap: () {
-              Navigator.pop(context);
-              changeTab(2);
-            },
+            onTap: () {},
           ),
           SidebarItem(
             label: "Job Board",
@@ -58,10 +53,7 @@ class TutorDashboardScreen extends ConsumerWidget {
                 BlendMode.srcIn,
               ),
             ),
-            onTap: () {
-              Navigator.pop(context);
-              changeTab(0);
-            },
+            onTap: () {},
           ),
           SidebarItem(
             label: "How it Works",
@@ -109,7 +101,7 @@ class TutorDashboardScreen extends ConsumerWidget {
             ),
             onTap: () {
               Navigator.pop(context);
-              changeTab(3);
+              changeTab(4);
             },
           ),
           SidebarItem(
@@ -182,40 +174,17 @@ class TutorDashboardScreen extends ConsumerWidget {
                 context,
                 MaterialPageRoute(
                   builder: (_) => const CommunityPage(
-                    title: "Tutor Community",
+                    title: "Guardian Community",
                     description:
-                        "Join our tutor community to exchange teaching strategies, gain valuable insights, stay informed on the latest trends and access resources that support your professional growth.",
+                        "Join the Guardian Community to share your feedback, stay connected with our team and receive important updates and expert guidance to support your child’s learning.",
                     buttonText: "Join Community",
-                    link: "https://www.facebook.com/groups/252670130864095",
+                    link: "https://www.facebook.com/groups/248374924778212",
                   ),
                 ),
               );
             },
           ),
-          SidebarItem(
-            label: "Important Guideline",
-            icon: SvgPicture.asset(
-              "assets/icons/social_media/facebook.svg",
-              width: 20,
-              height: 20,
-              colorFilter: const ColorFilter.mode(
-                Colors.white,
-                BlendMode.srcIn,
-              ),
-            ),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) =>
-                      ImportantGuidelinesScreen( document: importantGuidelinesData),
-                ),
-              );
-            },
-          ),
         ],
-
 
         onLogout: () async {
           await ref.read(authProvider.notifier).logout();
@@ -231,8 +200,8 @@ class TutorDashboardScreen extends ConsumerWidget {
       pages: [
         (changeTab) => const TutorJobsScreen(),
         (changeTab) => const TutorJobsScreen(),
-        (changeTab) => TutorHomeScreen(changeTab: changeTab),
-        (changeTab) => const TutorPaymentScreen(),
+        (changeTab) => GuardianHomeScreen(),
+        (changeTab) => const GuardianPaymentScreen(),
         (changeTab) => const TutorJobsScreen(),
       ],
 
@@ -244,6 +213,25 @@ class TutorDashboardScreen extends ConsumerWidget {
       //   ProfileScreen(),
       // ],
       navItems: [
+        BottomNavigationBarItem(
+          icon: SvgPicture.asset(
+            "assets/icons/navigations/posting.svg",
+            width: 22,
+            height: 22,
+            colorFilter: const ColorFilter.mode(
+              AppColors.neutrals06,
+              BlendMode.srcIn,
+            ),
+          ),
+          activeIcon: SvgPicture.asset(
+            "assets/icons/navigations/posting.svg",
+            width: 22,
+            height: 22,
+            colorFilter: ColorFilter.mode(AppColors.primary01, BlendMode.srcIn),
+          ),
+          label: "Posting",
+        ),
+
         BottomNavigationBarItem(
           icon: SvgPicture.asset(
             "assets/icons/navigations/job-search.svg",
@@ -261,25 +249,6 @@ class TutorDashboardScreen extends ConsumerWidget {
             colorFilter: ColorFilter.mode(AppColors.primary01, BlendMode.srcIn),
           ),
           label: "Job Board",
-        ),
-
-        BottomNavigationBarItem(
-          icon: SvgPicture.asset(
-            "assets/icons/navigations/invoice.svg",
-            width: 22,
-            height: 22,
-            colorFilter: const ColorFilter.mode(
-              AppColors.neutrals06,
-              BlendMode.srcIn,
-            ),
-          ),
-          activeIcon: SvgPicture.asset(
-            "assets/icons/navigations/invoice.svg",
-            width: 22,
-            height: 22,
-            colorFilter: ColorFilter.mode(AppColors.primary01, BlendMode.srcIn),
-          ),
-          label: "Invoice",
         ),
 
         /// CENTER HOME

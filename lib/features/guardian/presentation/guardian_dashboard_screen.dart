@@ -7,6 +7,8 @@ import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart
 import 'package:btcclient/features/auth/presentation/screens/welcome_screen.dart';
 import 'package:btcclient/features/guardian/presentation/screens/guardian_dashboard.dart';
 import 'package:btcclient/features/guardian/presentation/screens/guardian_payment_screen.dart';
+import 'package:btcclient/features/legal/data/important_guidelines_data.dart';
+import 'package:btcclient/features/legal/presentation/important_guidelines_screen.dart';
 import 'package:btcclient/features/tutor/presentation/screens/job_board.dart';
 import 'package:btcclient/core/screens/share_app.dart';
 import 'package:flutter/material.dart';
@@ -180,6 +182,28 @@ class GuardianDashboardScreen extends ConsumerWidget {
                     buttonText: "Join Community",
                     link: "https://www.facebook.com/groups/248374924778212",
                   ),
+                ),
+              );
+            },
+          ),
+          SidebarItem(
+            label: "Important Guideline",
+            icon: SvgPicture.asset(
+              "assets/icons/social_media/facebook.svg",
+              width: 20,
+              height: 20,
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
+              ),
+            ),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) =>
+                      ImportantGuidelinesScreen(document: importantGuidelinesData),
                 ),
               );
             },
