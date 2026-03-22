@@ -26,7 +26,7 @@ class AppSidebar extends StatelessWidget {
           bottomRight: Radius.circular(0),
         ),
       ),
-      width: 244,
+      width: 264,
       backgroundColor: AppColors.primary01,
       child: SafeArea(
         child: Column(

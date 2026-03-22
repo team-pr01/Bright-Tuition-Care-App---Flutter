@@ -189,7 +189,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
           SidebarItem(
             label: "Important Guideline",
             icon: SvgPicture.asset(
-              "assets/icons/social_media/facebook.svg",
+              "assets/icons/navigations/question-mark.svg",
               width: 20,
               height: 20,
               colorFilter: const ColorFilter.mode(

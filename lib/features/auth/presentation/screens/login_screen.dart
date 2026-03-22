@@ -58,9 +58,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         );
   }
 
-  void _showError(String message) {
-    AppSnackbar.show(context, message, SnackType.error);
-  }
+ 
 
   void _forgotPassword() {
     Navigator.push(

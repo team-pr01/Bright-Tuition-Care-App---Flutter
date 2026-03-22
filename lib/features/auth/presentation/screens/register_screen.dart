@@ -382,10 +382,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               const SizedBox(height: 24),
 
               RichText(
+                textAlign: TextAlign.center,
                 text: TextSpan(
+                  
                   style: Theme.of(
                     context,
-                  ).textTheme.labelSmall!.copyWith(color: AppColors.neutrals03),
+                  ).textTheme.labelSmall!.copyWith(color: AppColors.neutrals03, ),
 
                   children: [
                     const TextSpan(text: "Already have an account?"),

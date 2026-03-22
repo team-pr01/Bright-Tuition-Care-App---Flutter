@@ -1,16 +1,24 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/core/widgets/navbar/common_appbar.dart';
 import 'package:btcclient/core/widgets/input/app_input_field.dart';
-import 'package:flutter/material.dart';
+import 'package:btcclient/core/widgets/snackbar/app_snackbar.dart';
 
-class RefundFormScreen extends StatefulWidget {
+import 'package:btcclient/features/tutor/data/requests/refund_application_request.dart';
+import 'package:btcclient/features/tutor/presentation/provider/refund_provider.dart';
+
+class RefundFormScreen extends ConsumerStatefulWidget {
   const RefundFormScreen({super.key});
 
   @override
-  State<RefundFormScreen> createState() => _RefundFormScreenState();
+  ConsumerState<RefundFormScreen> createState() =>
+      _RefundFormScreenState();
 }
 
-class _RefundFormScreenState extends State<RefundFormScreen> {
+class _RefundFormScreenState
+    extends ConsumerState<RefundFormScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final jobIdController = TextEditingController();
@@ -22,6 +30,41 @@ class _RefundFormScreenState extends State<RefundFormScreen> {
   String? paymentMethod;
 
   final paymentMethods = ["bKash", "Nagad", "Rocket", "Bank Transfer"];
+
+  @override
+  void initState() {
+    super.initState();
+
+    // ✅ LISTEN TO PROVIDER (handles success/error)
+    Future.microtask(() {
+      ref.listen(refundProvider, (previous, next) {
+        next.whenOrNull(
+          data: (response) {
+            if (response != null && response.success) {
+              AppSnackbar.show(
+                context,
+                response.message,
+                SnackType.success,
+              );
+            } else {
+              AppSnackbar.show(
+                context,
+                response?.message ?? "Failed",
+                SnackType.error,
+              );
+            }
+          },
+          error: (e, _) {
+            AppSnackbar.show(
+              context,
+              "Something went wrong",
+              SnackType.error,
+            );
+          },
+        );
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +149,7 @@ class _RefundFormScreenState extends State<RefundFormScreen> {
               AppButton(
                 label: "Submit Refund Request",
                 variant: AppButtonVariant.gradient,
-                onPressed: () {},
+                onPressed: submitRefund, // ✅ FIXED
               ),
             ],
           ),
@@ -115,31 +158,32 @@ class _RefundFormScreenState extends State<RefundFormScreen> {
     );
   }
 
-  void submitRefund() {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
+  Future<void> submitRefund() async {
+    if (!_formKey.currentState!.validate()) return;
 
     if (paymentMethod == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please select payment method")),
-      );
+      AppSnackbar.show(context, "Select payment method", SnackType.warning);
       return;
     }
 
-    final refundData = {
-      "jobId": jobIdController.text,
-      "amount": amountController.text,
-      "paymentMethod": paymentMethod,
-      "bankName": paymentMethod == "Bank Transfer"
-          ? bankNameController.text
+    final amount = double.tryParse(amountController.text);
+    if (amount == null) {
+      AppSnackbar.show(context, "Enter valid amount", SnackType.error);
+      return;
+    }
+
+    final request = RefundApplicationRequest(
+      jobId: jobIdController.text.trim(),
+      amount: amount,
+      paymentMethod: paymentMethod!,
+      bankName: paymentMethod == "Bank Transfer"
+          ? bankNameController.text.trim()
           : null,
-      "accountNumber": accountController.text,
-      "refundReason": reasonController.text,
-    };
+      accountNumber: accountController.text.trim(),
+      refundReason: reasonController.text.trim(),
+    );
 
-    print(refundData);
-
-    /// CALL API HERE
+    // ✅ TRIGGER PROVIDER
+    await ref.read(refundProvider.notifier).applyRefund(request);
   }
 }
