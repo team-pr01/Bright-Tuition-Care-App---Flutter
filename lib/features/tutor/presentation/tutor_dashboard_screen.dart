@@ -7,6 +7,7 @@ import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart
 import 'package:btcclient/features/auth/presentation/screens/welcome_screen.dart';
 import 'package:btcclient/features/legal/data/important_guidelines_data.dart';
 import 'package:btcclient/features/legal/presentation/important_guidelines_screen.dart';
+import 'package:btcclient/features/refer/presentation/screens/referral_screen.dart';
 import 'package:btcclient/features/tutor/presentation/screens/job_board.dart';
 import 'package:btcclient/features/tutor/presentation/screens/tutor_dashboard.dart';
 import 'package:btcclient/core/screens/share_app.dart';
@@ -143,7 +144,14 @@ class TutorDashboardScreen extends ConsumerWidget {
                 BlendMode.srcIn,
               ),
             ),
-            onTap: () {},
+             onTap: () {
+              Navigator.pop(context); // closes drawer
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ReferralScreen()),
+              );
+            },
           ),
           SidebarItem(
             label: "Share The App",
