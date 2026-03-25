@@ -17,12 +17,11 @@ class LeadCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border(bottom: BorderSide(width: 0.4))
+        border: Border(bottom: BorderSide(width: 0.4)),
       ),
 
       child: Column(
         children: [
-
           /// 🔹 TOP ROW (ALWAYS VISIBLE)
           ListTile(
             onTap: onTap,
@@ -32,7 +31,7 @@ class LeadCard extends StatelessWidget {
               style: const TextStyle(fontWeight: FontWeight.w600),
             ),
 
-            subtitle: Text("Class ${lead.className} • ${lead.status}"),
+            subtitle: Text("Class ${lead.className} • ${lead.status}" ),
 
             trailing: Icon(
               isOpen ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
@@ -46,7 +45,6 @@ class LeadCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   _row("Address", lead.address),
                   _row("Details", lead.details),
                   _row("Date", lead.date),
@@ -57,7 +55,6 @@ class LeadCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-
                       IconButton(
                         onPressed: () {},
                         icon: const Icon(Icons.edit, color: Colors.blue),

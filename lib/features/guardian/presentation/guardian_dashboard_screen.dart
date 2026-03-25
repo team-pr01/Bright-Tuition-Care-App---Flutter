@@ -1,5 +1,6 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/layout/dashboard_layout.dart';
+import 'package:btcclient/features/tutor/presentation/screens/how_it_works_screen.dart';
 import 'package:btcclient/core/screens/join_community.dart';
 import 'package:btcclient/core/widgets/navbar/side_drawer.dart';
 import 'package:btcclient/core/widgets/navbar/sidebar_item.dart';
@@ -69,8 +70,12 @@ class GuardianDashboardScreen extends ConsumerWidget {
               ),
             ),
             onTap: () {
-              Navigator.pop(context);
-              changeTab(2);
+              Navigator.pop(context); // closes drawer
+
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => HowItWorksScreen(isTutor: false) ),
+              // );
             },
           ),
           SidebarItem(
