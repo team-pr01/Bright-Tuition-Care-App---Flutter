@@ -38,6 +38,9 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
     final notices = (dashboardData?["data"]?["notices"] as List? ?? [])
         .map((notice) => NoticeModel.fromJson(notice))
         .toList();
+    final isVerified = dashboardData != null
+        ? dashboardData["data"]["isVerified"] ?? false
+        : false;
     final profileCompleted = dashboardData != null
         ? dashboardData["data"]["profileCompleted"]
         : 0;
@@ -181,7 +184,9 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
 
             const SizedBox(height: 20),
 
-            const VerifyProfileCard(),
+            VerifyProfileCard(
+              isVerified: isVerified, // real value
+            ),
 
             const SizedBox(height: 20),
 

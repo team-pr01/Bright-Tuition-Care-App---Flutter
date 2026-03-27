@@ -32,6 +32,10 @@ class _GuardianHomeScreenState extends ConsumerState<GuardianHomeScreen> {
   @override
   Widget build(BuildContext context) {
     final dashboardData = ref.watch(guardianDashboardProvider);
+    final isVerified = dashboardData != null
+    ? dashboardData["data"]["isVerified"] ?? false
+    : false;
+    print("is verifirs"+isVerified);
     final notices = (dashboardData?["data"]?["notices"] as List? ?? [])
         .map((notice) => NoticeModel.fromJson(notice))
         .toList();
@@ -156,7 +160,9 @@ class _GuardianHomeScreenState extends ConsumerState<GuardianHomeScreen> {
 
           const SizedBox(height: 20),
 
-          const VerifyProfileCard(),
+          VerifyProfileCard(
+  isVerified: isVerified, // real value
+),
           const SizedBox(height: 20),
 
           HelplineCard(

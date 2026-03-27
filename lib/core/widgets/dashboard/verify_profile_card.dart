@@ -3,11 +3,17 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:btcclient/core/config/theme.dart';
 
 class VerifyProfileCard extends StatelessWidget {
-  const VerifyProfileCard({super.key});
+  final bool isVerified;
+
+  const VerifyProfileCard({
+    super.key,
+    required this.isVerified,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 13),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
@@ -27,7 +33,7 @@ class VerifyProfileCard extends StatelessWidget {
 
           /// TITLE
           Text(
-            "Verify Your Profile",
+            isVerified ? "Profile Verified" : "Verify Your Profile",
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
               fontWeight: FontWeight.w500,
               color: Colors.black,
@@ -39,9 +45,11 @@ class VerifyProfileCard extends StatelessWidget {
 
           /// DESCRIPTION
           Text(
-            "Verify your profile to build trust and ensure a safe learning environment. "
-            "Verified accounts get higher visibility and faster matches. "
-            "Complete verification to start connecting confidently.",
+            isVerified
+                ? "Your profile is verified."
+                : "Verify your profile to build trust and ensure a safe learning environment. "
+                    "Verified accounts get higher visibility and faster matches. "
+                    "Complete verification to start connecting confidently.",
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: AppColors.neutrals03,
@@ -51,7 +59,7 @@ class VerifyProfileCard extends StatelessWidget {
 
           const SizedBox(height: 14),
 
-          /// BUTTON
+          /// BUTTON (text only changed, UI same)
           OutlinedButton(
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
@@ -62,7 +70,7 @@ class VerifyProfileCard extends StatelessWidget {
             ),
             onPressed: () {},
             child: Text(
-              "Verify Now",
+              isVerified ? "Verified" : "Verify Now",
               style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                 color: AppColors.primary01,
                 height: 1.5,

@@ -1,6 +1,5 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/layout/dashboard_layout.dart';
-import 'package:btcclient/features/tutor/presentation/screens/how_it_works_screen.dart';
 import 'package:btcclient/core/screens/join_community.dart';
 import 'package:btcclient/core/widgets/navbar/side_drawer.dart';
 import 'package:btcclient/core/widgets/navbar/sidebar_item.dart';
@@ -8,6 +7,7 @@ import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart
 import 'package:btcclient/features/auth/presentation/screens/welcome_screen.dart';
 import 'package:btcclient/features/guardian/presentation/screens/guardian_dashboard.dart';
 import 'package:btcclient/features/guardian/presentation/screens/guardian_payment_screen.dart';
+import 'package:btcclient/features/guardian/presentation/screens/how_it_works_screen.dart';
 import 'package:btcclient/features/legal/data/important_guidelines_data.dart';
 import 'package:btcclient/features/legal/presentation/important_guidelines_screen.dart';
 import 'package:btcclient/features/tutor/presentation/screens/job_board.dart';
@@ -72,10 +72,10 @@ class GuardianDashboardScreen extends ConsumerWidget {
             onTap: () {
               Navigator.pop(context); // closes drawer
 
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => HowItWorksScreen(isTutor: false) ),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HowItWorksScreen()),
+              );
             },
           ),
           SidebarItem(
@@ -207,8 +207,9 @@ class GuardianDashboardScreen extends ConsumerWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) =>
-                      ImportantGuidelinesScreen(document: importantGuidelinesData),
+                  builder: (_) => ImportantGuidelinesScreen(
+                    document: importantGuidelinesData,
+                  ),
                 ),
               );
             },
