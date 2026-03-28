@@ -76,6 +76,7 @@ flutter:
     - assets/icons/navigations/
     - assets/icons/visual/
     - assets/icons/social_media/
+    - assets/icons/job-card-icons/
   fonts:
     - family: Outfit
       fonts:

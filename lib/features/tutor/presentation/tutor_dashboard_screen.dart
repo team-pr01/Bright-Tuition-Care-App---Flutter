@@ -1,5 +1,7 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/layout/dashboard_layout.dart';
+// import 'package:btcclient/features/jobs/presentation/screens/job_page.dart';
+// import 'package:btcclient/features/jobs/presentation/widgets/job_card.dart';
 import 'package:btcclient/features/tutor/presentation/screens/how_it_works_screen.dart';
 import 'package:btcclient/core/screens/join_community.dart';
 import 'package:btcclient/core/widgets/navbar/side_drawer.dart';
@@ -242,7 +244,7 @@ class TutorDashboardScreen extends ConsumerWidget {
       ),
 
       pages: [
-        (changeTab) => const TutorJobsScreen(),
+        // (changeTab) => const  JobsPage(variant: JobCardVariant.tutor),
         (changeTab) => const TutorJobsScreen(),
         (changeTab) => TutorHomeScreen(changeTab: changeTab),
         (changeTab) => const TutorPaymentScreen(),

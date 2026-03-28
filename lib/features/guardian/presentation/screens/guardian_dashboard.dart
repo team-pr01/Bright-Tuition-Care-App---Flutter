@@ -35,7 +35,6 @@ class _GuardianHomeScreenState extends ConsumerState<GuardianHomeScreen> {
     final isVerified = dashboardData != null
     ? dashboardData["data"]["isVerified"] ?? false
     : false;
-    print("is verifirs"+isVerified);
     final notices = (dashboardData?["data"]?["notices"] as List? ?? [])
         .map((notice) => NoticeModel.fromJson(notice))
         .toList();
