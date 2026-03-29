@@ -10,7 +10,6 @@ import 'package:btcclient/features/guardian/presentation/screens/guardian_paymen
 import 'package:btcclient/features/guardian/presentation/screens/how_it_works_screen.dart';
 import 'package:btcclient/features/legal/data/important_guidelines_data.dart';
 import 'package:btcclient/features/legal/presentation/important_guidelines_screen.dart';
-import 'package:btcclient/features/tutor/presentation/screens/job_board.dart';
 import 'package:btcclient/core/screens/share_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -228,11 +227,11 @@ class GuardianDashboardScreen extends ConsumerWidget {
       ),
 
       pages: [
-        (changeTab) => const TutorJobsScreen(),
-        (changeTab) => const TutorJobsScreen(),
+        // (changeTab) => const TutorJobsScreen(),
+        // (changeTab) => const TutorJobsScreen(),
         (changeTab) => GuardianHomeScreen(),
         (changeTab) => const GuardianPaymentScreen(),
-        (changeTab) => const TutorJobsScreen(),
+        // (changeTab) => const TutorJobsScreen(),
       ],
 
       //       pages: const [

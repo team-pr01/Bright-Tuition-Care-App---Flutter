@@ -1,5 +1,6 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/layout/dashboard_layout.dart';
+import 'package:btcclient/features/jobs/presentation/screen/job_page.dart';
 // import 'package:btcclient/features/jobs/presentation/screens/job_page.dart';
 // import 'package:btcclient/features/jobs/presentation/widgets/job_card.dart';
 import 'package:btcclient/features/tutor/presentation/screens/how_it_works_screen.dart';
@@ -11,7 +12,6 @@ import 'package:btcclient/features/auth/presentation/screens/welcome_screen.dart
 import 'package:btcclient/features/legal/data/important_guidelines_data.dart';
 import 'package:btcclient/features/legal/presentation/important_guidelines_screen.dart';
 import 'package:btcclient/features/refer/presentation/screens/referral_screen.dart';
-import 'package:btcclient/features/tutor/presentation/screens/job_board.dart';
 import 'package:btcclient/features/tutor/presentation/screens/tutor_dashboard.dart';
 import 'package:btcclient/core/screens/share_app.dart';
 import 'package:btcclient/features/tutor/presentation/screens/tutor_payment_screen.dart';
@@ -244,20 +244,12 @@ class TutorDashboardScreen extends ConsumerWidget {
       ),
 
       pages: [
-        // (changeTab) => const  JobsPage(variant: JobCardVariant.tutor),
-        (changeTab) => const TutorJobsScreen(),
+        (changeTab) => const  JobsPage(role: "tutor"),
+        // (changeTab) => const TutorJobsScreen(),
         (changeTab) => TutorHomeScreen(changeTab: changeTab),
         (changeTab) => const TutorPaymentScreen(),
-        (changeTab) => const TutorJobsScreen(),
+        // (changeTab) => const TutorJobsScreen(),
       ],
-
-      //       pages: const [
-
-      //   JobsScreen(),
-      //   MessagesScreen(),
-      //   StudentsScreen(),
-      //   ProfileScreen(),
-      // ],
       navItems: [
         BottomNavigationBarItem(
           icon: SvgPicture.asset(
