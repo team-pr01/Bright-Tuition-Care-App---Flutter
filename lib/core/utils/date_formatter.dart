@@ -10,5 +10,13 @@ class DateFormatter {
       return date;
     }
   }
+  static String formattedDate(String date) {
+    try {
+      final parsed = DateTime.parse(date);
+      return DateFormat('dd MMM yyyy').format(parsed);
+    } catch (e) {
+      return date;
+    }
+  }
 
 }

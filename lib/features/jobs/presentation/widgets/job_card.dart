@@ -1,31 +1,43 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/utils/category_icon_helper.dart';
+import 'package:btcclient/core/utils/date_formatter.dart';
+import 'package:btcclient/core/utils/safe.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
+import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
+import 'package:btcclient/features/jobs/data/models/application_model.dart';
+import 'package:btcclient/features/jobs/presentation/provider/jobs_notifier.dart';
+import 'package:btcclient/features/jobs/presentation/widgets/icon_row.dart';
+import 'package:btcclient/features/jobs/presentation/widgets/job_bottom_sheet.dart';
+import 'package:btcclient/features/tutor/presentation/screens/tutor_application_screen.dart';
+import 'package:btcclient/features/tutor/presentation/tutor_dashboard_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../data/models/job_model.dart';
 
-class JobCard extends StatelessWidget {
+enum JobCardVariant { job, application }
+
+class JobCard extends ConsumerWidget {
   final JobModel job;
-  final VoidCallback? onApply;
-  final VoidCallback? onDetails;
+  final variant;
 
-  const JobCard({super.key, required this.job, this.onApply, this.onDetails});
-
-  String safe(dynamic value) {
-    if (value == null) return "-";
-    return value.toString();
-  }
+  const JobCard({super.key, required this.job, required this.variant});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(authProvider).user;
     final iconPath = JobIconHelper.getCategoryIcon(
       category: job.category ?? "",
       className: job.subjects,
       gender: job.preferredTutorGender,
     );
 
-    print("ICON PATH => $iconPath");
+    final isApplied = user == null
+        ? false
+        : job.applications?.any((app) => app.userId == user.id) ?? false;
+
+    final link = "https://brighttuitioncare.com/job-board/id/${job.jobId}";
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       padding: const EdgeInsets.all(16),
@@ -76,7 +88,7 @@ class JobCard extends StatelessWidget {
 
               /// RIGHT ILLUSTRATION (optional)
               ///
-              SvgPicture.asset("$iconPath", height: 50),
+              SvgPicture.asset("$iconPath", height: 80),
             ],
           ),
 
@@ -84,18 +96,17 @@ class JobCard extends StatelessWidget {
 
           /// META
           Text(
-            "Job Id : ${safe(job.jobId)}    Posted Date : ${_formatDate(job.createdAt)}",
+            "Job Id : ${safe(job.jobId)}    Posted Date : ${DateFormatter.formattedDate(job.createdAt.toString())}",
             style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
           ),
 
           const SizedBox(height: 16),
 
           /// ================= SUBJECTS =================
-          _iconRow(
-              context: context,
+          IconRow(
             icon: "assets/icons/visual/subject.svg",
             title: "Subjects",
-            value: job.subjects?.join(", "),
+            value: safe(job.subjects?.join(", ")),
           ),
 
           const SizedBox(height: 12),
@@ -104,19 +115,17 @@ class JobCard extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: _iconRow(
-                    context: context,
+                child: IconRow(
                   icon: "assets/icons/visual/tutoringDays.svg",
                   title: "Tutoring Days",
-                  value: job.tutoringDays,
+                  value: safe(job.tutoringDays),
                 ),
               ),
               Expanded(
-                child: _iconRow(
-                    context: context,
+                child: IconRow(
                   icon: "assets/icons/visual/salary.svg",
                   title: "Salary",
-                  value: job.salary,
+                  value: safe(job.salary),
                 ),
               ),
             ],
@@ -125,141 +134,301 @@ class JobCard extends StatelessWidget {
           const SizedBox(height: 12),
 
           /// ================= GENDER =================
-          _iconRow(
-              context: context,
+          IconRow(
             icon: job.preferredTutorGender == "male"
                 ? "assets/icons/visual/male.svg"
                 : job.preferredTutorGender == "female"
                 ? "assets/icons/visual/prefered-tutor.svg"
                 : "assets/icons/visual/gender.svg",
             title: "Prefer Tutor",
-            value: job.preferredTutorGender,
+            value: safe(job.preferredTutorGender),
           ),
 
           const SizedBox(height: 12),
 
           /// ================= LOCATION =================
-          _iconRow(
-              context: context,
+          IconRow(
             icon: "assets/icons/visual/location2.svg",
             title: "Location",
-            value: "${job.address ?? ""}, ${job.area ?? ""}-${job.city ?? ""}",
+            value: safe(
+              "${job.address ?? ""}, ${job.area?.join(", ") ?? "-"}-${job.city?.join(", ") ?? "-"}",
+            ),
           ),
 
           const SizedBox(height: 16),
 
           /// ================= FOOTER =================
-          Row(
-            children: [
-              /// DETAILS
-              GestureDetector(
-                onTap: onDetails,
-                child: Row(
+          if (variant == JobCardVariant.job)
+            Row(
+              children: [
+                /// DETAILS
+                GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (_) => JobBottomSheet(
+                        job: job, // 🔥 pass exact clicked job
+                      ),
+                    );
+                  },
+                  child: Row(
+                    children: [
+                      SvgPicture.asset(
+                        "assets/icons/operations/job-details.svg",
+                        height: 16,
+                      ),
+                      const SizedBox(width: 6),
+                      const Text("Details"),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                GestureDetector(
+                  onTap: () {
+                    Share.share(link);
+                  },
+                  child: Row(
+                    children: [
+                      SvgPicture.asset(
+                        "assets/icons/visual/send.svg",
+                        height: 16,
+                        color: AppColors.neutrals02,
+                      ),
+                      const SizedBox(width: 6),
+                      const Text("Share"),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(width: 20),
+
+                /// SHARE
+                SvgPicture.asset("assets/icons/job/share.svg", height: 16),
+
+                const Spacer(),
+
+                /// APPLY BUTTON
+                AppButton(
+                  label: isApplied ? "Undo Apply" : "Apply",
+                  onPressed: () async {
+                    final user = ref.read(authProvider).user;
+
+                    if (user == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Please login first")),
+                      );
+                      return;
+                    }
+
+                    try {
+                      if (isApplied) {
+                        // 🔥 WITHDRAW FLOW
+
+                        final application = job.applications
+                            ?.where((app) => app.userId == user?.id)
+                            .cast<ApplicationModel?>()
+                            .firstOrNull;
+                        if (application == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Application not found"),
+                            ),
+                          );
+                          return;
+                        }
+
+                        final success = await ref
+                            .read(jobsProvider.notifier)
+                            .withdrawApplication(
+                              applicationId: application.applicationId!,
+                            );
+
+                        if (success) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Withdraw successful"),
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Withdraw failed")),
+                          );
+                        }
+                      } else {
+                        // 🔥 APPLY FLOW
+
+                        final success = await ref
+                            .read(jobsProvider.notifier)
+                            .applyJob(jobId: job.id!, userId: user.id);
+
+                        if (success) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Applied successfully"),
+                            ),
+                          );
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const MyApplicationPage(),
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Failed to apply")),
+                          );
+                        }
+                      }
+                    } catch (e) {
+                      print("❌ ERROR: $e");
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Something went wrong")),
+                      );
+                    }
+                  },
+                  variant: AppButtonVariant.gradient,
+                  height: 40,
+                  width: 160,
+                  icon: isApplied ? Icons.undo : Icons.arrow_forward,
+                ),
+              ],
+            ),
+          if (variant == JobCardVariant.application)
+            Row(
+              children: [
+                /// DETAILS
+                GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (_) => JobBottomSheet(
+                        job: job, // 🔥 pass exact clicked job
+                      ),
+                    );
+                  },
+                  child: Row(
+                    children: [
+                      SvgPicture.asset(
+                        "assets/icons/operations/job-details.svg",
+                        height: 16,
+                      ),
+                      const SizedBox(width: 6),
+                      const Text("Details"),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Row(
                   children: [
-                    SvgPicture.asset(
-                      "assets/icons/operations/job-details.svg",
-                      height: 16,
-                    ),
+                   const Text("Applied on "),
                     const SizedBox(width: 6),
-                    const Text("Details"),
+                    const Text("Applied on "),
                   ],
                 ),
-              ),
-              const SizedBox(width: 10),
-              GestureDetector(
-                onTap: onDetails,
-                child: Row(
-                  children: [
-                    SvgPicture.asset(
-                      "assets/icons/visual/send.svg",
-                      height: 16,
-                      color: AppColors.neutrals02,
-                    ),
-                    const SizedBox(width: 6),
-                    const Text("Share"),
-                  ],
+
+                const SizedBox(width: 20),
+
+                /// SHARE
+                SvgPicture.asset("assets/icons/job/share.svg", height: 16),
+
+                const Spacer(),
+
+                /// APPLY BUTTON
+                AppButton(
+                  label: isApplied ? "Undo Apply" : "Apply",
+                  onPressed: () async {
+                    final user = ref.read(authProvider).user;
+
+                    if (user == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Please login first")),
+                      );
+                      return;
+                    }
+
+                    try {
+                      if (isApplied) {
+                        // 🔥 WITHDRAW FLOW
+
+                        final application = job.applications
+                            ?.where((app) => app.userId == user?.id)
+                            .cast<ApplicationModel?>()
+                            .firstOrNull;
+                        if (application == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Application not found"),
+                            ),
+                          );
+                          return;
+                        }
+
+                        final success = await ref
+                            .read(jobsProvider.notifier)
+                            .withdrawApplication(
+                              applicationId: application.applicationId!,
+                            );
+
+                        if (success) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Withdraw successful"),
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Withdraw failed")),
+                          );
+                        }
+                      } else {
+                        // 🔥 APPLY FLOW
+
+                        final success = await ref
+                            .read(jobsProvider.notifier)
+                            .applyJob(jobId: job.id!, userId: user.id);
+
+                        if (success) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Applied successfully"),
+                            ),
+                          );
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const TutorDashboardScreen(),
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Failed to apply")),
+                          );
+                        }
+                      }
+                    } catch (e) {
+                      print("❌ ERROR: $e");
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Something went wrong")),
+                      );
+                    }
+                  },
+                  variant: AppButtonVariant.gradient,
+                  height: 40,
+                  width: 160,
+                  icon: isApplied ? Icons.undo : Icons.arrow_forward,
                 ),
-              ),
-
-              const SizedBox(width: 20),
-
-              /// SHARE
-              SvgPicture.asset("assets/icons/job/share.svg", height: 16),
-
-              const Spacer(),
-
-              /// APPLY BUTTON
-              AppButton(
-                label: "Apply",
-                onPressed: onApply,
-                variant: AppButtonVariant.gradient,
-                height: 40,
-                width: 150, // important: don't make it full width in row
-                icon: Icons.arrow_forward,
-              ),
-            ],
-          ),
+              ],
+            ),
         ],
       ),
     );
   }
 
   /// ================= REUSABLE ROW =================
-  Widget _iconRow({
-    required BuildContext context,
-    required String icon,
-    required String title,
-    String? value,
-  }) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SvgPicture.asset(icon, height: 18, color: AppColors.primary01),
-        const SizedBox(width: 8),
-
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: TextStyle(fontSize: 12, color: AppColors.neutrals03),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                value ?? "-",
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  color: AppColors.neutrals02,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  String _formatDate(DateTime? date) {
-    if (date == null) return "-";
-    return "${date.day} ${_month(date.month)}, ${date.year}";
-  }
-
-  String _month(int m) {
-    const months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
-    return months[m - 1];
-  }
 }

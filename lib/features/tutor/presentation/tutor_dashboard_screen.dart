@@ -12,6 +12,7 @@ import 'package:btcclient/features/auth/presentation/screens/welcome_screen.dart
 import 'package:btcclient/features/legal/data/important_guidelines_data.dart';
 import 'package:btcclient/features/legal/presentation/important_guidelines_screen.dart';
 import 'package:btcclient/features/refer/presentation/screens/referral_screen.dart';
+import 'package:btcclient/features/tutor/presentation/screens/tutor_application_screen.dart';
 import 'package:btcclient/features/tutor/presentation/screens/tutor_dashboard.dart';
 import 'package:btcclient/core/screens/share_app.dart';
 import 'package:btcclient/features/tutor/presentation/screens/tutor_payment_screen.dart';
@@ -65,6 +66,26 @@ class TutorDashboardScreen extends ConsumerWidget {
             onTap: () {
               Navigator.pop(context);
               changeTab(0);
+            },
+          ),
+          SidebarItem(
+            label: "My Applications",
+            icon: SvgPicture.asset(
+              "assets/icons/navigations/applied.svg",
+              width: 20,
+              height: 20,
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
+              ),
+            ),
+            onTap: () {
+              Navigator.pop(context); // closes drawer
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const MyApplicationPage()),
+              );
             },
           ),
           SidebarItem(

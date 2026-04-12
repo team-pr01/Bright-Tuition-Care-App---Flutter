@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/jobs_api.dart';
 import '../../data/jobs_repository.dart';
@@ -74,48 +75,39 @@ class JobsNotifier extends StateNotifier<JobsState> {
   }
 
   /// ================= INITIAL FETCH =================
-  Future<void> fetchJobs({JobFilter? newFilter}) async {
-    print("FETCH JOBS CALLED");
+ Future<void> fetchJobs({JobFilter? newFilter}) async {
+  final token = await LocalStorage.getToken();
 
-    final token = await LocalStorage.getToken();
+  if (token == null) return;
 
-    /// 🔥 IMPORTANT (fix your previous bug)
-    if (token == null) {
-      print("❌ Token not available — skipping API call");
-      return;
-    }
+  final filter = (newFilter ?? state.filter).copyWith(
+    status: "live", // 🔥 FORCE ALWAYS
+    skip: 0,
+  );
 
-    final filter = newFilter ?? state.filter;
+  state = state.copyWith(
+    isLoading: true,
+    jobs: [],
+    hasMore: true,
+    error: null,
+    filter: filter,
+  );
+
+  try {
+    final jobs = await repo.getJobs(filter);
 
     state = state.copyWith(
-      isLoading: true,
-      jobs: [],
-      hasMore: true,
-      error: null,
-      filter: filter.copyWith(skip: 0),
+      jobs: jobs,
+      isLoading: false,
+      hasMore: jobs.length == filter.limit,
     );
-
-    try {
-      final jobs = await repo.getJobs(state.filter);
-
-      state = state.copyWith(
-        jobs: jobs,
-        isLoading: false,
-        hasMore: jobs.length == state.filter.limit,
-      );
-
-      print("✅ Jobs fetched: ${jobs.length}");
-    } catch (e) {
-      print("❌ Fetch error: $e");
-
-      state = state.copyWith(
-        isLoading: false,
-        error: e.toString(),
-      );
-    }
+  } catch (e) {
+    state = state.copyWith(
+      isLoading: false,
+      error: e.toString(),
+    );
   }
-
-  /// ================= LOAD MORE =================
+} /// ================= LOAD MORE =================
   Future<void> loadMore() async {
     if (state.isLoadingMore || !state.hasMore) {
       return;
@@ -162,4 +154,41 @@ class JobsNotifier extends StateNotifier<JobsState> {
 
     await fetchJobs(newFilter: state.filter);
   }
+  Future<bool> applyJob({
+  required String jobId,
+  required String userId,
+}) async {
+  try {
+    await repo.applyJob(
+      jobId: jobId,
+      userId: userId,
+    );
+
+    return true;
+  } catch (e) {
+    if (e is DioException) {
+      print("❌ STATUS: ${e.response?.statusCode}");
+      print("❌ ERROR BODY: ${e.response?.data}");
+    } else {
+      print("❌ ERROR: $e");
+    }
+    return false;
+  }
+}
+Future<bool> withdrawApplication({
+  required String applicationId,
+}) async {
+  try {
+    await repo.withdrawApplication(
+      applicationId: applicationId,
+    );
+    return true;
+  } catch (e) {
+    if (e is DioException) {
+      print("❌ STATUS: ${e.response?.statusCode}");
+      print("❌ ERROR: ${e.response?.data}");
+    }
+    return false;
+  }
+}
 }

@@ -19,4 +19,36 @@ class JobsRepository {
 
     return data.map((e) => JobModel.fromJson(e)).toList();
   }
+
+ 
+
+  Future<Map<String, dynamic>> applyJob({
+    required String jobId,
+    required String userId,
+  }) async {
+
+    final res = await api.applyForJob(
+      jobId: jobId,
+      userId: userId,
+    );
+
+    if (res["success"] != true) {
+      throw Exception(res["message"] ?? "Apply failed");
+    }
+
+    return res["data"];
+  }
+
+  Future<void> withdrawApplication({
+  required String applicationId,
+}) async {
+
+  final res = await api.withdrawApplication(
+    applicationId: applicationId,
+  );
+
+  if (res["success"] != true) {
+    throw Exception(res["message"] ?? "Withdraw failed");
+  }
+}
 }

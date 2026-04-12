@@ -1,3 +1,4 @@
+import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:flutter/material.dart';
 import '../../config/theme.dart';
 
@@ -332,12 +333,13 @@ class _SearchableDropdownState extends State<_SearchableDropdown> {
               if (widget.multiSelect)
                 SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
+                  child: AppButton(
+                    label: "Apply",
+                    variant: AppButtonVariant.gradient,
+                     onPressed: () {
                       widget.onMultiChanged?.call(tempSelected);
                       Navigator.pop(context);
                     },
-                    child: const Text("Done"),
                   ),
                 ),
             ],

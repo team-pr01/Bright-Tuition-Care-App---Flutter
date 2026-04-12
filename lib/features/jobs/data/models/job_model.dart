@@ -1,60 +1,130 @@
+import 'package:btcclient/features/jobs/data/models/application_model.dart';
+
 class JobModel {
-  final String id;
-  final String jobId;
-  final String title;
-  final String? category;
-  final List<String>? subjects;
+  final String? id;
+  final String? jobId;
+  final String? title;
   final String? salary;
-  final String? city;
-  final String? area;
-  final String? address;
-  final String? preferredTutorGender;
-  final String? tutoringDays;
   final String? tuitionType;
+  final String? category;
+  final String? curriculum;
+
+  final List<String>? classes;
+  final List<String>? subjects;
+
+  final String? tutoringTime;
+  final String? tutoringDays;
+  final String? otherRequirements;
+
+  final String? preferredTutorGender;
+  final int? numberOfStudents;
+  final String? studentGender;
+
+  final List<String>? city;
+  final List<String>? area;
+  final String? address;
+  final String? locationDirection;
+
+  final String? guardianName;
+  final String? guardianPhoneNumber;
+
+  final String? status;
+  final String? postedBy;
+
   final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final DateTime? jobUpdatedAt;
+
+  final List<ApplicationModel>? applications;
 
   JobModel({
-    required this.id,
-    required this.jobId,
-    required this.title,
-    this.category,
-    this.subjects,
+    this.id,
+    this.jobId,
+    this.title,
     this.salary,
+    this.tuitionType,
+    this.category,
+    this.curriculum,
+    this.classes,
+    this.subjects,
+    this.tutoringTime,
+    this.tutoringDays,
+    this.otherRequirements,
+    this.preferredTutorGender,
+    this.numberOfStudents,
+    this.studentGender,
     this.city,
     this.area,
     this.address,
-    this.preferredTutorGender,
-    this.tutoringDays,
-      this.tuitionType, 
+    this.locationDirection,
+    this.guardianName,
+    this.guardianPhoneNumber,
+    this.status,
+    this.postedBy,
     this.createdAt,
+    this.updatedAt,
+    this.jobUpdatedAt,
+    this.applications,
   });
 
   factory JobModel.fromJson(Map<String, dynamic> json) {
-  return JobModel(
-    id: json["_id"] ?? "",
-    jobId: json["jobId"] ?? "",
-    title: json["title"] ?? "",
-    category: json["category"],
+    return JobModel(
+      id: json['_id'],
+      jobId: json['jobId'],
+      title: json['title'],
+      salary: json['salary'],
+      tuitionType: json['tuitionType'],
+      category: json['category'],
+      curriculum: json['curriculum'],
 
-    /// ✅ FIXED LIST → STRING
-    subjects: (json["subjects"] as List?)
-        ?.map((e) => e.toString())
-        .toList(),
+      classes: (json['class'] as List?)?.map((e) => e.toString()).toList(),
+      subjects: (json['subjects'] as List?)?.map((e) => e.toString()).toList(),
 
-    salary: json["salary"]?.toString(),
+      tutoringTime: json['tutoringTime'],
+      tutoringDays: json['tutoringDays'],
+      otherRequirements: json['otherRequirements'],
 
-    /// 🔥 MAIN FIX HERE
-    city: (json["city"] as List?)?.join(", "),
-    area: (json["area"] as List?)?.join(", "),
-    address: json["address"],
+      preferredTutorGender: json['preferredTutorGender'],
+      numberOfStudents: json['numberOfStudents'],
+      studentGender: json['studentGender'],
 
-    preferredTutorGender: json["preferredTutorGender"],
-    tutoringDays: json["tutoringDays"]?.toString(),
-    tuitionType: json["tuitionType"]?.toString(),
+      city: (json['city'] as List?)?.map((e) => e.toString()).toList(),
+      area: (json['area'] as List?)?.map((e) => e.toString()).toList(),
+      address: json['address'],
+      locationDirection: json['locationDirection'],
 
-    createdAt: json["createdAt"] != null
-        ? DateTime.tryParse(json["createdAt"])
-        : null,
-  );
+      guardianName: json['guardianName'],
+      guardianPhoneNumber: json['guardianPhoneNumber'],
+
+      status: json['status'],
+      postedBy: json['postedBy'],
+
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'])
+          : null,
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'])
+          : null,
+      jobUpdatedAt: json['jobUpdatedAt'] != null
+          ? DateTime.parse(json['jobUpdatedAt'])
+          : null,
+
+      applications: (json['applications'] as List?)
+          ?.map((e) => ApplicationModel.fromJson(e))
+          .toList(),
+    );
+  }
+  List<String>? parseList(dynamic value) {
+  if (value == null) return null;
+
+  if (value is List) {
+    return value.map((e) => e.toString()).toList();
+  }
+
+  if (value is String) {
+    return [value];
+  }
+
+  return null;
 }
 }

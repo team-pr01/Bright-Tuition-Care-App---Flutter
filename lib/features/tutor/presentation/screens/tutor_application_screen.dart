@@ -8,16 +8,15 @@ import 'package:btcclient/features/jobs/presentation/widgets/job_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class JobsPage extends ConsumerStatefulWidget {
-  final String role;
+class MyApplicationPage extends ConsumerStatefulWidget {
 
-  const JobsPage({super.key, required this.role});
+  const MyApplicationPage({super.key,});
 
   @override
-  ConsumerState<JobsPage> createState() => _JobsPageState();
+  ConsumerState<MyApplicationPage> createState() => _MyApplicationPageState();
 }
 
-class _JobsPageState extends ConsumerState<JobsPage> {
+class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _searchController = TextEditingController();
 
@@ -181,7 +180,7 @@ class _JobsPageState extends ConsumerState<JobsPage> {
 
           return JobCard(
             job: job,
-            variant: "job",
+            variant: "application",
           );
         },
       ),
