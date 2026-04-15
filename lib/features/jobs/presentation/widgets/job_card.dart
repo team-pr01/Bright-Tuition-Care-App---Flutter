@@ -1,28 +1,36 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/utils/category_icon_helper.dart';
 import 'package:btcclient/core/utils/date_formatter.dart';
+import 'package:btcclient/core/utils/get_appointed_status.dart';
 import 'package:btcclient/core/utils/safe.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
-import 'package:btcclient/features/jobs/data/models/application_model.dart';
-import 'package:btcclient/features/jobs/presentation/provider/jobs_notifier.dart';
+import 'package:btcclient/features/guardian/presentation/screens/guradin_job_application.dart';
+import 'package:btcclient/features/jobs/data/models/application_modal.dart';
+import 'package:btcclient/features/jobs/data/models/applied_model.dart';
+import 'package:btcclient/features/jobs/presentation/enums/job_card_variant.dart';
+import 'package:btcclient/features/jobs/presentation/notifier/jobs_notifier.dart';
+import 'package:btcclient/features/jobs/presentation/provider/job_provider.dart';
 import 'package:btcclient/features/jobs/presentation/widgets/icon_row.dart';
 import 'package:btcclient/features/jobs/presentation/widgets/job_bottom_sheet.dart';
 import 'package:btcclient/features/tutor/presentation/screens/tutor_application_screen.dart';
-import 'package:btcclient/features/tutor/presentation/tutor_dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../data/models/job_model.dart';
 
-enum JobCardVariant { job, application }
-
 class JobCard extends ConsumerWidget {
   final JobModel job;
-  final variant;
+  final JobCardVariant variant;
+  final ApplicationModel? application;
 
-  const JobCard({super.key, required this.job, required this.variant});
+  const JobCard({
+    super.key,
+    required this.job,
+    required this.variant,
+    this.application,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -53,6 +61,7 @@ class JobCard extends ConsumerWidget {
           ),
         ],
       ),
+
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -88,9 +97,112 @@ class JobCard extends ConsumerWidget {
 
               /// RIGHT ILLUSTRATION (optional)
               ///
-              SvgPicture.asset("$iconPath", height: 80),
+              Opacity(
+                opacity: 0.6,
+                child: SvgPicture.asset(iconPath, height: 60),
+              ),
             ],
           ),
+
+          const SizedBox(height: 6),
+          if (variant == JobCardVariant.application)
+            Row(
+              children: [
+                /// DETAILS
+                Row(
+                  children: [
+                    SvgPicture.asset(
+                      "assets/icons/visual/status.svg",
+                      height: 16,
+                    ),
+                    const SizedBox(width: 6),
+
+                    Text("Status :"),
+                    const SizedBox(width: 8),
+                    Text(
+                      StatusDataFormatter.getStatusLabel(application?.status),
+                      style: TextStyle(
+                        color: StatusDataFormatter.getStatusColor(
+                          application?.status,
+                        ),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(width: 20),
+
+                /// APPLY BUTTON
+              ],
+            ),
+          if (variant == JobCardVariant.postedJob)
+            Row(
+              children: [
+                /// DETAILS
+                Row(
+                  children: [
+                    SvgPicture.asset(
+                      "assets/icons/visual/status.svg",
+                      height: 16,
+                    ),
+                    const SizedBox(width: 6),
+
+                    Text("Status :"),
+                    const SizedBox(width: 8),
+                    Text(
+                      job.status ?? "",
+                      style: TextStyle(
+                        color: StatusDataFormatter.getStatusColorGuardian(
+                          application?.status,
+                        ),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(width: 20),
+
+                GestureDetector(
+                  onTap: () {
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => GuardianJobApplication(jobId: job.id,)),
+              );
+            },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 2,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SvgPicture.asset(
+                          "assets/icons/navigations/confirmed.svg",
+                          height: 16,
+                          width: 16,
+                          color: AppColors.primary01,
+                        ),
+                        const SizedBox(width: 4),
+                        const Text("Applications"),
+                        const SizedBox(width: 4),
+                        Text(
+                          "(${job.applications?.length ?? 0})",
+                          style: const TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(width: 10),
+
+                /// APPLY BUTTON
+              ],
+            ),
 
           const SizedBox(height: 6),
 
@@ -168,6 +280,7 @@ class JobCard extends ConsumerWidget {
                       context: context,
                       isScrollControlled: true,
                       builder: (_) => JobBottomSheet(
+                        variant: JobCardVariant.job,
                         job: job, // 🔥 pass exact clicked job
                       ),
                     );
@@ -216,7 +329,9 @@ class JobCard extends ConsumerWidget {
 
                     if (user == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Please login first")),
+                        const SnackBar(
+                          content: Text("Please login first to apply on job"),
+                        ),
                       );
                       return;
                     }
@@ -227,7 +342,7 @@ class JobCard extends ConsumerWidget {
 
                         final application = job.applications
                             ?.where((app) => app.userId == user?.id)
-                            .cast<ApplicationModel?>()
+                            .cast<AppliedModel?>()
                             .firstOrNull;
                         if (application == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -306,6 +421,8 @@ class JobCard extends ConsumerWidget {
                       context: context,
                       isScrollControlled: true,
                       builder: (_) => JobBottomSheet(
+                        variant: JobCardVariant.application,
+                        application: application,
                         job: job, // 🔥 pass exact clicked job
                       ),
                     );
@@ -324,9 +441,17 @@ class JobCard extends ConsumerWidget {
                 const SizedBox(width: 10),
                 Row(
                   children: [
-                   const Text("Applied on "),
+                    const Text("Applied on :"),
                     const SizedBox(width: 6),
-                    const Text("Applied on "),
+                    Text(
+                      DateFormatter.formattedDate(
+                        application?.appliedOn.toString() ?? "",
+                      ),
+                      style: const TextStyle(
+                        color: AppColors.primary01,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ],
                 ),
 
@@ -338,91 +463,54 @@ class JobCard extends ConsumerWidget {
                 const Spacer(),
 
                 /// APPLY BUTTON
-                AppButton(
-                  label: isApplied ? "Undo Apply" : "Apply",
-                  onPressed: () async {
-                    final user = ref.read(authProvider).user;
-
-                    if (user == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Please login first")),
-                      );
-                      return;
-                    }
-
-                    try {
-                      if (isApplied) {
-                        // 🔥 WITHDRAW FLOW
-
-                        final application = job.applications
-                            ?.where((app) => app.userId == user?.id)
-                            .cast<ApplicationModel?>()
-                            .firstOrNull;
-                        if (application == null) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Application not found"),
-                            ),
-                          );
-                          return;
-                        }
-
-                        final success = await ref
-                            .read(jobsProvider.notifier)
-                            .withdrawApplication(
-                              applicationId: application.applicationId!,
-                            );
-
-                        if (success) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Withdraw successful"),
-                            ),
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Withdraw failed")),
-                          );
-                        }
-                      } else {
-                        // 🔥 APPLY FLOW
-
-                        final success = await ref
-                            .read(jobsProvider.notifier)
-                            .applyJob(jobId: job.id!, userId: user.id);
-
-                        if (success) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Applied successfully"),
-                            ),
-                          );
-
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const TutorDashboardScreen(),
-                            ),
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Failed to apply")),
-                          );
-                        }
-                      }
-                    } catch (e) {
-                      print("❌ ERROR: $e");
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Something went wrong")),
-                      );
-                    }
+              ],
+            ),
+          if (variant == JobCardVariant.postedJob)
+            Row(
+              children: [
+                /// DETAILS
+                GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (_) => JobBottomSheet(
+                        variant: JobCardVariant.postedJob,
+                        job: job, // 🔥 pass exact clicked job
+                      ),
+                    );
                   },
-                  variant: AppButtonVariant.gradient,
-                  height: 40,
-                  width: 160,
-                  icon: isApplied ? Icons.undo : Icons.arrow_forward,
+                  child: Row(
+                    children: [
+                      SvgPicture.asset(
+                        "assets/icons/operations/job-details.svg",
+                        height: 16,
+                      ),
+                      const SizedBox(width: 6),
+                      const Text("Details"),
+                    ],
+                  ),
                 ),
+                const SizedBox(width: 10),
+
+                GestureDetector(
+                  onTap: () {},
+                  child: Row(
+                    children: [
+                      const Icon(Icons.edit, size: 16),
+                      const SizedBox(width: 4),
+                      const Text("Edit Job"),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+
+                /// SHARE
+                SvgPicture.asset("assets/icons/job/share.svg", height: 16),
+
+                const Spacer(),
+
+                /// APPLY BUTTON
               ],
             ),
         ],

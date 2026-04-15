@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class DashboardLayout extends StatefulWidget {
-  final List<Widget Function(Function(int))> pages;
+  /// 👇 IMPORTANT: updated signature (added String?)
+  final List<Widget Function(Function(int, {String? status}), String?)> pages;
+
   final List<BottomNavigationBarItem> navItems;
-  final Widget Function(Function(int)) drawerBuilder;
+  final Widget Function(Function(int, {String? status})) drawerBuilder;
 
   const DashboardLayout({
     super.key,
@@ -22,11 +24,17 @@ class DashboardLayout extends StatefulWidget {
 
 class _DashboardLayoutState extends State<DashboardLayout> {
   int currentIndex = 2;
+
+  /// 🔥 NEW: filter holder
+  String? jobStatusFilter;
+
   DateTime? lastBackPressed;
 
-  void changeTab(int index) {
+  /// 🔥 UPDATED
+  void changeTab(int index, {String? status}) {
     setState(() {
       currentIndex = index;
+      jobStatusFilter = status;
     });
   }
 
@@ -39,7 +47,6 @@ class _DashboardLayoutState extends State<DashboardLayout> {
       onPopInvoked: (didPop) async {
         if (didPop) return;
 
-        /// If not on dashboard → go to dashboard
         if (currentIndex != 2) {
           setState(() {
             currentIndex = 2;
@@ -47,7 +54,6 @@ class _DashboardLayoutState extends State<DashboardLayout> {
           return;
         }
 
-        /// Double back to exit
         final now = DateTime.now();
 
         if (lastBackPressed == null ||
@@ -65,7 +71,6 @@ class _DashboardLayoutState extends State<DashboardLayout> {
 
         Navigator.of(context).pop();
       },
-
       child: Scaffold(
         drawer: widget.drawerBuilder(changeTab),
 
@@ -88,7 +93,6 @@ class _DashboardLayoutState extends State<DashboardLayout> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  /// LEFT MENU BUTTON
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Builder(
@@ -119,7 +123,6 @@ class _DashboardLayoutState extends State<DashboardLayout> {
                     ),
                   ),
 
-                  /// CENTER LOGO
                   Center(
                     child: Image.asset(
                       "assets/images/logo.png",
@@ -128,7 +131,6 @@ class _DashboardLayoutState extends State<DashboardLayout> {
                     ),
                   ),
 
-                  /// RIGHT NOTIFICATION BUTTON
                   Align(
                     alignment: Alignment.centerRight,
                     child: Stack(
@@ -155,7 +157,6 @@ class _DashboardLayoutState extends State<DashboardLayout> {
                           ),
                           onPressed: () {},
                         ),
-
                         if (notificationCount > 0)
                           Positioned(
                             right: 5,
@@ -190,15 +191,19 @@ class _DashboardLayoutState extends State<DashboardLayout> {
           ),
         ),
 
+        /// 🔥 MAIN BODY (FILTER PASSED HERE)
         body: AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
-          child: widget.pages[currentIndex](changeTab),
+          child: widget.pages[currentIndex](
+            changeTab,
+            jobStatusFilter,
+          ),
         ),
 
         bottomNavigationBar: AppBottomNavBar(
           currentIndex: currentIndex,
           items: widget.navItems,
-          onTap: changeTab,
+          onTap: (index) => changeTab(index),
         ),
       ),
     );

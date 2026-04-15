@@ -1,6 +1,7 @@
 import 'package:btcclient/core/models/notice_model.dart';
 import 'package:btcclient/core/widgets/dashboard/verify_profile_card.dart';
 import 'package:btcclient/features/tutor/presentation/provider/tutor_dashboard_provider.dart';
+import 'package:btcclient/features/tutor/presentation/screens/tutor_application_screen.dart';
 import 'package:btcclient/features/tutor/presentation/widgets/tutor_cards_section.dart';
 import 'package:btcclient/core/widgets/dashboard/dashboard_nav_links.dart';
 import 'package:btcclient/core/widgets/dashboard/notice_board/notice_section.dart';
@@ -54,9 +55,9 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
         ? dashboardData["data"]["invoiceCount"]
         : 0;
     return RefreshIndicator(
-      onRefresh: () async {
-        await ref.read(tutorDashboardProvider.notifier).fetchStats();
-      },
+  onRefresh: () async {
+    await ref.read(tutorDashboardProvider.notifier).fetchStats();
+  },
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         physics: const AlwaysScrollableScrollPhysics(),
@@ -85,6 +86,15 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
                       BlendMode.srcIn,
                     ),
                   ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            const MyApplicationPage(initialStatus: "applied"),
+                      ),
+                    );
+                  },
                   label: "Applied",
                   count:
                       dashboardData?["data"]?["applications"]["applied"] ?? 0,
@@ -99,6 +109,15 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
                       BlendMode.srcIn,
                     ),
                   ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            const MyApplicationPage(initialStatus: "shortlisted"),
+                      ),
+                    );
+                  },
                   label: "Shortlisted",
                   count:
                       dashboardData?["data"]?["applications"]["shortlisted"] ??
@@ -114,6 +133,15 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
                       BlendMode.srcIn,
                     ),
                   ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            const MyApplicationPage(initialStatus: "appointed"),
+                      ),
+                    );
+                  },
                   label: "Appointed",
                   count:
                       dashboardData?["data"]?["applications"]["appointed"] ?? 0,
@@ -128,6 +156,15 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
                       BlendMode.srcIn,
                     ),
                   ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            const MyApplicationPage(initialStatus: "confirmed"),
+                      ),
+                    );
+                  },
                   label: "Confirmed",
                   count:
                       dashboardData?["data"]?["applications"]["confirmed"] ?? 0,
@@ -142,6 +179,15 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
                       BlendMode.srcIn,
                     ),
                   ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            const MyApplicationPage(initialStatus: "cancelled"),
+                      ),
+                    );
+                  },
                   label: "Cancelled",
                   count:
                       dashboardData?["data"]?["applications"]["rejected"] ?? 0,

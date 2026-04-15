@@ -1,14 +1,14 @@
-class ApplicationModel {
+class AppliedModel {
   final String? userId;
   final String? applicationId;
 
-  ApplicationModel({
+  AppliedModel({
     this.userId,
     this.applicationId,
   });
 
-  factory ApplicationModel.fromJson(Map<String, dynamic> json) {
-    return ApplicationModel(
+  factory AppliedModel.fromJson(Map<String, dynamic> json) {
+    return AppliedModel(
       userId: json['userId'],
       applicationId: json['applicationId'],
     );

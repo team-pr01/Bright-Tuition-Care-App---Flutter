@@ -35,4 +35,31 @@ class JobsApi {
 
   return response.data;
 }
+
+Future<Map<String, dynamic>> getMyApplications({
+  required Map<String, dynamic> query,
+}) async {
+  final response = await DioClient.dio.get(
+    "/tutor/my-applications",
+    queryParameters: query,
+  );
+
+  print("📦 APPLICATIONS RAW: ${response.data}");
+
+  return response.data;
+}
+
+Future<Map<String, dynamic>> getMyPostedJobs({
+  required Map<String, dynamic> query,
+}) async {
+  final response = await DioClient.dio.get(
+    "/job/my-posted-jobs",
+    queryParameters: query,
+  );
+
+  print("📦 POSTED JOBS RAW: ${response.data}");
+
+  return response.data;
+}
+
 }

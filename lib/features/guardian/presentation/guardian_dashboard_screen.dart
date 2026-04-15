@@ -8,6 +8,7 @@ import 'package:btcclient/features/auth/presentation/screens/welcome_screen.dart
 import 'package:btcclient/features/guardian/presentation/screens/guardian_dashboard.dart';
 import 'package:btcclient/features/guardian/presentation/screens/guardian_payment_screen.dart';
 import 'package:btcclient/features/guardian/presentation/screens/how_it_works_screen.dart';
+import 'package:btcclient/features/jobs/presentation/screen/job_page.dart';
 import 'package:btcclient/features/legal/data/important_guidelines_data.dart';
 import 'package:btcclient/features/legal/presentation/important_guidelines_screen.dart';
 import 'package:btcclient/core/screens/share_app.dart';
@@ -42,7 +43,10 @@ class GuardianDashboardScreen extends ConsumerWidget {
                 BlendMode.srcIn,
               ),
             ),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              changeTab(2);
+            },
           ),
           SidebarItem(
             label: "Job Board",
@@ -55,7 +59,10 @@ class GuardianDashboardScreen extends ConsumerWidget {
                 BlendMode.srcIn,
               ),
             ),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              changeTab(1);
+            },
           ),
           SidebarItem(
             label: "How it Works",
@@ -227,20 +234,23 @@ class GuardianDashboardScreen extends ConsumerWidget {
       ),
 
       pages: [
-        // (changeTab) => const TutorJobsScreen(),
-        // (changeTab) => const TutorJobsScreen(),
-        (changeTab) => GuardianHomeScreen(),
-        (changeTab) => const GuardianPaymentScreen(),
-        // (changeTab) => const TutorJobsScreen(),
+        (changeTab, status) => JobsPage(
+          role: "guardian",
+          initialStatus: status, // 🔥 IMPORTANT
+        ),
+
+        (changeTab, status) => JobsPage(
+          role: "guardian",
+          initialStatus: status, // 🔥 keep consistent
+        ),
+
+        (changeTab, status) => GuardianHomeScreen(
+          changeTab: changeTab, // 🔥 PASS IT
+        ),
+
+        (changeTab, status) => const GuardianPaymentScreen(),
       ],
 
-      //       pages: const [
-
-      //   JobsScreen(),
-      //   MessagesScreen(),
-      //   StudentsScreen(),
-      //   ProfileScreen(),
-      // ],
       navItems: [
         BottomNavigationBarItem(
           icon: SvgPicture.asset(
@@ -258,7 +268,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
             height: 22,
             colorFilter: ColorFilter.mode(AppColors.primary01, BlendMode.srcIn),
           ),
-          label: "Posting",
+          label: "Post Job",
         ),
 
         BottomNavigationBarItem(
@@ -277,7 +287,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
             height: 22,
             colorFilter: ColorFilter.mode(AppColors.primary01, BlendMode.srcIn),
           ),
-          label: "Job Board",
+          label: "Posted Board",
         ),
 
         /// CENTER HOME

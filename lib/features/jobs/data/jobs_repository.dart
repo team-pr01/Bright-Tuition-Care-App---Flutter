@@ -1,5 +1,8 @@
+import 'package:btcclient/features/jobs/data/responses/application_response.dart';
+import 'package:btcclient/features/jobs/data/responses/jobs_response.dart';
+import 'package:btcclient/features/jobs/data/responses/posted_jobs_response.dart';
+
 import 'jobs_api.dart';
-import 'models/job_model.dart';
 import 'models/job_filter.dart';
 
 class JobsRepository {
@@ -7,18 +10,15 @@ class JobsRepository {
 
   JobsRepository(this.api);
 
-  Future<List<JobModel>> getJobs(JobFilter filter) async {
-    final res = await api.getJobs(filter.toQuery());
+Future<JobsResponse> getJobs(JobFilter filter) async {
+  final res = await api.getJobs(filter.toQuery());
 
-    /// 🔥 IMPORTANT VALIDATION
-    if (res["success"] != true) {
-      throw Exception(res["message"] ?? "Failed to fetch jobs");
-    }
-
-   final List data = res["data"]["jobs"] ?? [];
-
-    return data.map((e) => JobModel.fromJson(e)).toList();
+  if (res["success"] != true) {
+    throw Exception(res["message"] ?? "Failed to fetch jobs");
   }
+
+  return JobsResponse.fromJson(res);
+}
 
  
 
@@ -51,4 +51,30 @@ class JobsRepository {
     throw Exception(res["message"] ?? "Withdraw failed");
   }
 }
+
+Future<ApplicationResponse> getMyApplications({
+  required Map<String, dynamic> query,
+}) async {
+  final res = await api.getMyApplications(query: query);
+
+  /// 🔥 SAME VALIDATION (keep consistency)
+  if (res["success"] != true) {
+    throw Exception(res["message"] ?? "Failed to fetch applications");
+  }
+
+  return ApplicationResponse.fromJson(res);
+}
+
+Future<PostedJobsResponse> getMyPostedJobs({
+  required Map<String, dynamic> query,
+}) async {
+  final res = await api.getMyPostedJobs(query: query);
+
+  if (res["success"] != true) {
+    throw Exception(res["message"] ?? "Failed to fetch posted jobs");
+  }
+
+  return PostedJobsResponse.fromJson(res);
+}
+
 }

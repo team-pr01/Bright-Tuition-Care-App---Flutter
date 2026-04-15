@@ -22,7 +22,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class TutorDashboardScreen extends ConsumerWidget {
   const TutorDashboardScreen({super.key});
-  
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -84,7 +83,9 @@ class TutorDashboardScreen extends ConsumerWidget {
 
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const MyApplicationPage()),
+                MaterialPageRoute(
+                  builder: (context) => const MyApplicationPage(),
+                ),
               );
             },
           ),
@@ -104,7 +105,7 @@ class TutorDashboardScreen extends ConsumerWidget {
 
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => HowItWorksScreen() ),
+                MaterialPageRoute(builder: (context) => HowItWorksScreen()),
               );
             },
           ),
@@ -172,7 +173,7 @@ class TutorDashboardScreen extends ConsumerWidget {
                 BlendMode.srcIn,
               ),
             ),
-             onTap: () {
+            onTap: () {
               Navigator.pop(context); // closes drawer
 
               Navigator.push(
@@ -244,14 +245,14 @@ class TutorDashboardScreen extends ConsumerWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) =>
-                      ImportantGuidelinesScreen( document: importantGuidelinesData),
+                  builder: (_) => ImportantGuidelinesScreen(
+                    document: importantGuidelinesData,
+                  ),
                 ),
               );
             },
           ),
         ],
-
 
         onLogout: () async {
           await ref.read(authProvider.notifier).logout();
@@ -265,11 +266,13 @@ class TutorDashboardScreen extends ConsumerWidget {
       ),
 
       pages: [
-        (changeTab) => const  JobsPage(role: "tutor"),
-        // (changeTab) => const TutorJobsScreen(),
-        (changeTab) => TutorHomeScreen(changeTab: changeTab),
-        (changeTab) => const TutorPaymentScreen(),
-        // (changeTab) => const TutorJobsScreen(),
+        (changeTab, status) => const JobsPage(role: "tutor"),
+
+        (changeTab, status) => TutorHomeScreen(
+          changeTab: changeTab, // 🔥 KEEP THIS
+        ),
+
+        (changeTab, status) => const TutorPaymentScreen(),
       ],
       navItems: [
         BottomNavigationBarItem(

@@ -1,17 +1,23 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/utils/get_cout.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
+import 'package:btcclient/core/widgets/dashboard/dashboard_nav_links.dart';
 import 'package:btcclient/core/widgets/search_bar/search_bar.dart';
-import 'package:btcclient/features/jobs/presentation/provider/jobs_notifier.dart';
+import 'package:btcclient/features/jobs/presentation/enums/job_card_variant.dart';
+import 'package:btcclient/features/jobs/presentation/notifier/posted_jobs_notifier.dart';
+import 'package:btcclient/features/jobs/presentation/provider/job_provider.dart';
+import 'package:btcclient/features/jobs/presentation/provider/posted_job_provider.dart';
 import 'package:btcclient/features/jobs/presentation/widgets/filter_form.dart';
 import 'package:btcclient/features/jobs/presentation/widgets/job_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'dart:async';
 
 class JobsPage extends ConsumerStatefulWidget {
   final String role;
-
-  const JobsPage({super.key, required this.role});
+  final String? initialStatus;
+  const JobsPage({super.key, required this.role,  this.initialStatus,});
 
   @override
   ConsumerState<JobsPage> createState() => _JobsPageState();
@@ -20,20 +26,32 @@ class JobsPage extends ConsumerStatefulWidget {
 class _JobsPageState extends ConsumerState<JobsPage> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _searchController = TextEditingController();
+  Timer? _debounce;
+  bool get isTutor => widget.role == "tutor";
 
   @override
   void initState() {
     super.initState();
 
-    
+    /// 🔥 INITIAL FETCH (ROLE BASED)
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(jobsProvider.notifier).fetchJobs();
+      if (isTutor) {
+        ref.read(jobsProvider.notifier).fetchJobs();
+      } else {
+        ref.read(postedJobsProvider.notifier)
+        .fetchPostedJobs(status: widget.initialStatus);
+      }
     });
 
+    /// 🔥 PAGINATION
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
           _scrollController.position.maxScrollExtent - 200) {
-        ref.read(jobsProvider.notifier).loadMore();
+        if (isTutor) {
+          ref.read(jobsProvider.notifier).loadMore();
+        } else {
+          ref.read(postedJobsProvider.notifier).loadMore();
+        }
       }
     });
   }
@@ -47,14 +65,11 @@ class _JobsPageState extends ConsumerState<JobsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(jobsProvider);
-    print ("state.jobs: ${state.jobs}");
+    /// 🔥 SWITCH STATE BASED ON ROLE
+    final jobsState = ref.watch(jobsProvider);
+    final postedState = ref.watch(postedJobsProvider);
 
-    /// 🔥 DEBUG (remove later)
-    debugPrint("Jobs: ${state.jobs.length}");
-    debugPrint("Loading: ${state.isLoading}");
-    debugPrint("Error: ${state.error}");
-
+    final state = isTutor ? jobsState : postedState;
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -81,7 +96,14 @@ class _JobsPageState extends ConsumerState<JobsPage> {
             alignment: Alignment.centerRight,
             child: FilterSidebar(
               onApply: (filter) {
-                ref.read(jobsProvider.notifier).applyFilter(filter);
+                if (isTutor) {
+                  ref.read(jobsProvider.notifier).applyFilter(filter);
+                } else {
+                  /// 🔥 POSTED JOB FILTER
+                  ref
+                      .read(postedJobsProvider.notifier)
+                      .fetchPostedJobs(status: filter.status);
+                }
               },
             ),
           );
@@ -103,23 +125,139 @@ class _JobsPageState extends ConsumerState<JobsPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// 🔍 SEARCH BAR
-          ReusableSearchBar(
-            controller: _searchController,
-            onChanged: (value) {
-              /// 🔥 Connect to provider later
-              debugPrint("Search: $value");
-            },
-          ),
+          /// 🔍 SEARCH
+          if (isTutor) ...[
+            ReusableSearchBar(
+              controller: _searchController,
+              onChanged: (value) {
+                if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+                _debounce = Timer(const Duration(milliseconds: 500), () {
+                  ref
+                      .read(jobsProvider.notifier)
+                      .fetchJobs(
+                        newFilter: state.filter.copyWith(keyword: value),
+                      );
+                });
+              },
+            ),
+          ],
 
           const SizedBox(height: 16),
+          if (!isTutor) ...[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                DashboardNavLinks(
+                  icon: SvgPicture.asset(
+                    "assets/icons/navigations/appointed.svg",
+                    width: 24,
+                    height: 24,
+                    colorFilter: const ColorFilter.mode(
+                      Colors.white,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  label: "All Jobs",
+                  count: state.meta?.counts.totalJobs ?? 0,
+                  onTap: () {
+                    ref
+                        .read(postedJobsProvider.notifier)
+                        .fetchPostedJobs(status: null);
+                  },
+                ),
+
+                DashboardNavLinks(
+                  icon: SvgPicture.asset(
+                    "assets/icons/navigations/pending-jobs.svg",
+                    width: 24,
+                    height: 24,
+                    colorFilter: const ColorFilter.mode(
+                      Colors.white,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  label: "Pending",
+                  count: state.meta?.counts.pendingJobs ?? 0,
+                  onTap: () {
+                    ref
+                        .read(postedJobsProvider.notifier)
+                        .fetchPostedJobs(status: "pending");
+                  },
+                ),
+
+                DashboardNavLinks(
+                  icon: SvgPicture.asset(
+                    "assets/icons/navigations/jobs-search.svg",
+                    width: 24,
+                    height: 24,
+                    colorFilter: const ColorFilter.mode(
+                      Colors.white,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  label: "Live",
+                  count: state.meta?.counts.liveJobs ?? 0,
+                  onTap: () {
+                    ref
+                        .read(postedJobsProvider.notifier)
+                        .fetchPostedJobs(status: "live");
+                  },
+                ),
+
+                DashboardNavLinks(
+                  icon: SvgPicture.asset(
+                    "assets/icons/navigations/confirmed.svg",
+                    width: 24,
+                    height: 24,
+                    colorFilter: const ColorFilter.mode(
+                      Colors.white,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  label: "Closed",
+                  count: state.meta?.counts.closedJobs ?? 0,
+                  onTap: () {
+                    ref
+                        .read(postedJobsProvider.notifier)
+                        .fetchPostedJobs(status: "closed");
+                  },
+                ),
+
+                DashboardNavLinks(
+                  icon: SvgPicture.asset(
+                    "assets/icons/navigations/cancelled.svg",
+                    width: 24,
+                    height: 24,
+                    colorFilter: const ColorFilter.mode(
+                      Colors.white,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  label: "Cancelled",
+                  count: state.meta?.counts.cancelledJobs ?? 0,
+                  onTap: () {
+                    ref
+                        .read(postedJobsProvider.notifier)
+                        .fetchPostedJobs(status: "cancelled");
+                  },
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 20),
+          ],
 
           /// 📊 COUNT + FILTER
           Row(
             children: [
               Expanded(
                 child: Text(
-                  getCountText(state.jobs),
+                  getCountText(
+                    isTutor
+                        ? (state.meta?.liveJobs ?? 0)
+                        : (state.meta?.counts.liveJobs ?? 0),
+                  ),
                   style: Theme.of(context).textTheme.titleLarge!.copyWith(
                     color: AppColors.neutrals02,
                     fontWeight: FontWeight.w400,
@@ -128,16 +266,16 @@ class _JobsPageState extends ConsumerState<JobsPage> {
                 ),
               ),
 
-              AppButton(
-                label: "Filter",
-                onPressed: () {
-                  openFilter(context);
-                },
-                variant: AppButtonVariant.outline,
-                height: 32,
-                width: 130,
-                icon: Icons.tune,
-              ),
+              if (isTutor) ...[
+                AppButton(
+                  label: "Filter",
+                  onPressed: () => openFilter(context),
+                  variant: AppButtonVariant.outline,
+                  height: 32,
+                  width: 130,
+                  icon: Icons.tune,
+                ),
+              ],
             ],
           ),
         ],
@@ -147,41 +285,40 @@ class _JobsPageState extends ConsumerState<JobsPage> {
 
   /// ================= BODY =================
   Widget _buildBody(state) {
-    /// LOADING FIRST TIME
     if (state.isLoading && state.jobs.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    /// ERROR
     if (state.error != null && state.jobs.isEmpty) {
       return Center(child: Text(state.error ?? "Something went wrong"));
     }
 
-    /// EMPTY
     if (!state.isLoading && state.jobs.isEmpty) {
       return const Center(child: Text("No jobs found"));
     }
 
-    /// LIST
     return RefreshIndicator(
       onRefresh: () async {
-        await ref.read(jobsProvider.notifier).refresh();
+        if (isTutor) {
+          await ref.read(jobsProvider.notifier).refresh();
+        } else {
+          await ref.read(postedJobsProvider.notifier).refresh();
+        }
       },
       child: ListView.builder(
         controller: _scrollController,
         physics: const AlwaysScrollableScrollPhysics(),
         itemCount: state.jobs.length + 1,
         itemBuilder: (context, index) {
-          /// 🔥 Pagination Loader
           if (index == state.jobs.length) {
             return _buildPaginationLoader(state);
           }
 
           final job = state.jobs[index];
-
+          print(job);
           return JobCard(
             job: job,
-            variant: "job",
+            variant: isTutor ? JobCardVariant.job : JobCardVariant.postedJob,
           );
         },
       ),

@@ -1,13 +1,17 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/utils/category_icon_helper.dart';
 import 'package:btcclient/core/utils/date_formatter.dart';
+import 'package:btcclient/core/utils/get_appointed_status.dart';
 import 'package:btcclient/core/utils/safe.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/core/widgets/reusable_bottom_sheet/reusable_bottom_sheet.dart';
 import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
-import 'package:btcclient/features/jobs/data/models/application_model.dart';
+import 'package:btcclient/features/jobs/data/models/application_modal.dart';
+import 'package:btcclient/features/jobs/data/models/applied_model.dart';
 import 'package:btcclient/features/jobs/data/models/job_model.dart';
-import 'package:btcclient/features/jobs/presentation/provider/jobs_notifier.dart';
+import 'package:btcclient/features/jobs/presentation/enums/job_card_variant.dart';
+import 'package:btcclient/features/jobs/presentation/notifier/jobs_notifier.dart';
+import 'package:btcclient/features/jobs/presentation/provider/job_provider.dart';
 import 'package:btcclient/features/jobs/presentation/widgets/icon_row.dart';
 import 'package:btcclient/features/tutor/presentation/tutor_dashboard_screen.dart';
 import 'package:flutter/material.dart';
@@ -17,11 +21,14 @@ import 'package:url_launcher/url_launcher.dart';
 
 class JobBottomSheet extends ConsumerWidget {
   final JobModel job;
+  final JobCardVariant variant;
+  final ApplicationModel? application;
 
-  const JobBottomSheet({super.key, required this.job});
+  const JobBottomSheet({super.key, required this.job,required this.variant, this.application});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+   print("variant: $variant");
     final user = ref.watch(authProvider).user;
     final iconPath = JobIconHelper.getCategoryIcon(
       category: job.category ?? "",
@@ -63,6 +70,98 @@ class JobBottomSheet extends ConsumerWidget {
               ),
 
               const SizedBox(height: 10),
+              if (variant == JobCardVariant.application && application!=null)
+               
+                    Row(
+                      children: [
+                        SvgPicture.asset(
+                          "assets/icons/visual/status.svg",
+                          height: 16,
+                        ),
+                        const SizedBox(width: 6),
+
+                        Text("Status :"),
+                        const SizedBox(width: 8),
+                        Text(
+                          StatusDataFormatter.getStatusLabel(application?.status),
+                          style: TextStyle(
+                            color:StatusDataFormatter.getStatusColor(application?.status),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(width: 20),
+
+                   
+if (variant == JobCardVariant.postedJob)
+            Row(
+              children: [
+                /// DETAILS
+                Row(
+                  children: [
+                    SvgPicture.asset(
+                      "assets/icons/visual/status.svg",
+                      height: 16,
+                    ),
+                    const SizedBox(width: 6),
+
+                    Text("Status :"),
+                    const SizedBox(width: 8),
+                    Text(
+                      job.status ?? "",
+                      style: TextStyle(
+                        color: StatusDataFormatter.getStatusColorGuardian(
+                          application?.status,
+                        ),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(width: 20),
+
+                 GestureDetector(
+                  onTap: () {
+                    // TODO: handle click (open applications list, etc.)
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 2,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SvgPicture.asset(
+                          "assets/icons/navigations/confirmed.svg",
+                          height: 16,
+                          width: 16,
+                          color: AppColors.primary01,
+                        ),
+                        const SizedBox(width: 4),
+                        const Text("Applications"),
+                        const SizedBox(width: 4),
+                        Text(
+                          "(${job.applications?.length ?? 0})",
+                          style: const TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(width: 10),
+
+                /// APPLY BUTTON
+              ],
+            ),
+
+          const SizedBox(height: 6),
+
+              const SizedBox(height: 6),
 
               Text(
                 "Job Id : ${safe(job.jobId)}    Posted Date : ${DateFormatter.formattedDate(job.createdAt.toString())}",
@@ -113,7 +212,7 @@ class JobBottomSheet extends ConsumerWidget {
                   Expanded(
                     child: IconRow(
                       icon: "assets/icons/visual/gender.svg",
-                      title: "Tutoring Days",
+                      title: "Student Gender",
                       value: safe(job.studentGender),
                     ),
                   ),
@@ -172,18 +271,19 @@ class JobBottomSheet extends ConsumerWidget {
                       label: "Direction",
                       onPressed: () async {
                         final url = job.locationDirection;
-                
+
                         if (url == null || url.isEmpty) {
                           debugPrint("URL is empty");
                           return;
                         }
-                
+
                         final uri = Uri.parse(url);
-                
+
                         try {
                           await launchUrl(
                             uri,
-                            mode: LaunchMode.externalApplication, // 🔥 IMPORTANT
+                            mode:
+                                LaunchMode.externalApplication, // 🔥 IMPORTANT
                           );
                         } catch (e) {
                           debugPrint("Launch failed: $e");
@@ -193,90 +293,110 @@ class JobBottomSheet extends ConsumerWidget {
                       height: 40,
                       width: 120,
                     ),
-                      /// APPLY BUTTON
-              AppButton(
-                label: isApplied ? "Undo Apply" : "Apply",
-                onPressed: () async {
-                  final user = ref.read(authProvider).user;
 
-                  if (user == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Please login first")),
-                    );
-                    return;
-                  }
+                    /// APPLY BUTTON
+                  if(variant != JobCardVariant.postedJob) ...[ AppButton(
+                      label: isApplied ? "Undo Apply" : "Apply",
+                      onPressed: () async {
+                        final user = ref.read(authProvider).user;
 
-                  try {
-                    if (isApplied) {
-                      // 🔥 WITHDRAW FLOW
-
-                      final application = job.applications
-                          ?.where((app) => app.userId == user?.id)
-                          .cast<ApplicationModel?>()
-                          .firstOrNull;
-                      if (application == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Application not found"),
-                          ),
-                        );
-                        return;
-                      }
-
-                      final success = await ref
-                          .read(jobsProvider.notifier)
-                          .withdrawApplication(
-                            applicationId: application.applicationId!,
+                        if (user == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Please login first")),
                           );
+                          return;
+                        }
 
-                      if (success) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Withdraw successful")),
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Withdraw failed")),
-                        );
-                      }
-                    } else {
-                      // 🔥 APPLY FLOW
+                        try {
+                          if (isApplied) {
+                            // 🔥 WITHDRAW FLOW
 
-                      final success = await ref
-                          .read(jobsProvider.notifier)
-                          .applyJob(jobId: job.id!, userId: user.id);
+                            final application = job.applications
+                                ?.where((app) => app.userId == user?.id)
+                                .cast<AppliedModel?>()
+                                .firstOrNull;
+                            if (application == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Application not found"),
+                                ),
+                              );
+                              return;
+                            }
 
-                      if (success) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Applied successfully")),
-                        );
+                            final success = await ref
+                                .read(jobsProvider.notifier)
+                                .withdrawApplication(
+                                  applicationId: application.applicationId!,
+                                );
 
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const TutorDashboardScreen(),
-                          ),
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Failed to apply")),
-                        );
-                      }
-                    }
-                  } catch (e) {
-                    print("❌ ERROR: $e");
+                            if (success) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Withdraw successful"),
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Withdraw failed"),
+                                ),
+                              );
+                            }
+                          } else {
+                            // 🔥 APPLY FLOW
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Something went wrong")),
-                    );
-                  }
-                },
-                variant: AppButtonVariant.gradient,
-                height: 40,
-                width: 160,
-                icon: isApplied ? Icons.undo : Icons.arrow_forward,
-              ),
-            
-                  ],
+                            final success = await ref
+                                .read(jobsProvider.notifier)
+                                .applyJob(jobId: job.id!, userId: user.id);
+
+                            if (success) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Applied successfully"),
+                                ),
+                              );
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const TutorDashboardScreen(),
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Failed to apply"),
+                                ),
+                              );
+                            }
+                          }
+                        } catch (e) {
+                          print("❌ ERROR: $e");
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Something went wrong"),
+                            ),
+                          );
+                        }
+                      },
+                      variant: AppButtonVariant.gradient,
+                      height: 40,
+                      width: 160,
+                      icon: isApplied ? Icons.undo : Icons.arrow_forward,
+                    ),
+                 ],
+                 if(variant == JobCardVariant.postedJob) ...[ AppButton(
+                      label: "Edit Job",
+                      onPressed:() {
+                      },
+                      variant: AppButtonVariant.gradient,
+                      height: 40,
+                      width: 160,
+                      icon: Icons.edit,
+                    ),
+                 ] ],
                 ),
               ),
             ],

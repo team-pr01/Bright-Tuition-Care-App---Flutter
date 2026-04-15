@@ -1,4 +1,4 @@
-import 'package:btcclient/features/jobs/data/models/application_model.dart';
+import 'package:btcclient/features/jobs/data/models/applied_model.dart';
 
 class JobModel {
   final String? id;
@@ -30,12 +30,12 @@ class JobModel {
 
   final String? status;
   final String? postedBy;
-
+  final String? postedByModel;
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final DateTime? jobUpdatedAt;
 
-  final List<ApplicationModel>? applications;
+  final List<AppliedModel>? applications;
 
   JobModel({
     this.id,
@@ -63,6 +63,7 @@ class JobModel {
     this.postedBy,
     this.createdAt,
     this.updatedAt,
+    this.postedByModel,
     this.jobUpdatedAt,
     this.applications,
   });
@@ -97,6 +98,7 @@ class JobModel {
       guardianPhoneNumber: json['guardianPhoneNumber'],
 
       status: json['status'],
+      postedByModel: json['postedByModel'],
       postedBy: json['postedBy'],
 
       createdAt: json['createdAt'] != null
@@ -110,21 +112,21 @@ class JobModel {
           : null,
 
       applications: (json['applications'] as List?)
-          ?.map((e) => ApplicationModel.fromJson(e))
+          ?.map((e) => AppliedModel.fromJson(e))
           .toList(),
     );
   }
   List<String>? parseList(dynamic value) {
-  if (value == null) return null;
+    if (value == null) return null;
 
-  if (value is List) {
-    return value.map((e) => e.toString()).toList();
+    if (value is List) {
+      return value.map((e) => e.toString()).toList();
+    }
+
+    if (value is String) {
+      return [value];
+    }
+
+    return null;
   }
-
-  if (value is String) {
-    return [value];
-  }
-
-  return null;
-}
 }
