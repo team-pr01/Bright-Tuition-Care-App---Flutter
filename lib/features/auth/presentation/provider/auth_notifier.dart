@@ -7,6 +7,7 @@ import 'package:btcclient/features/auth/data/requests/reset_password_request.dar
 import 'package:btcclient/features/auth/data/requests/signup_request.dart';
 import 'package:btcclient/features/auth/data/requests/verify_otp_request.dart';
 import 'package:btcclient/features/auth/data/requests/verify_reset_password_otp_request.dart';
+import 'package:btcclient/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:btcclient/features/auth/data/requests/forgot_password_request.dart';
 import 'auth_state.dart';
@@ -16,13 +17,14 @@ final authRepositoryProvider = Provider((ref) => AuthRepository(AuthApi()));
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   final repo = ref.read(authRepositoryProvider);
 
-  return AuthNotifier(repo);
+  return AuthNotifier(repo, ref); // 🔥 pass ref
 });
 
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthRepository repo;
+  final Ref ref; // 🔥 add this
 
-  AuthNotifier(this.repo)
+  AuthNotifier(this.repo, this.ref)
     : super(const AuthState(loggedIn: false, loading: true)) {
     _checkLogin();
   }
@@ -34,6 +36,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final user = await LocalStorage.getUser();
 
       if (token != null) {
+        await ref.read(profileProvider.notifier).fetchProfile();
         state = AuthState(
           loggedIn: true,
           role: role,
@@ -90,6 +93,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
         password: password,
         role: role,
       );
+      await ref.read(profileProvider.notifier).fetchProfile();
       await LocalStorage.setWelcomeSeen();
       await LocalStorage.saveUser(result.user);
       state = AuthState(
@@ -119,6 +123,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final result = await repo.verifyOtp(
         VerifyOtpRequest(email: email, otp: otp),
       );
+      await ref.read(profileProvider.notifier).fetchProfile();
 
       /// set full auth state
       state = AuthState(
@@ -196,7 +201,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
 
       state = state.copyWith(loading: false);
-
+      await ref.read(profileProvider.notifier).fetchProfile();
       return true;
     } catch (e) {
       state = state.copyWith(loading: false, error: e.toString());
@@ -204,4 +209,63 @@ class AuthNotifier extends StateNotifier<AuthState> {
       return false;
     }
   }
+
+  Future<bool> updateProfile(Map<String, dynamic> body) async {
+    try {
+      state = state.copyWith(loading: true, error: null);
+
+      final updatedProfile = await repo.updateProfile(body);
+      await ref.read(profileProvider.notifier).fetchProfile();
+      // 🔥 Refresh profile globally
+      await ref.read(profileProvider.notifier).fetchProfile();
+
+      state = state.copyWith(loading: false);
+
+      return true;
+    } catch (e) {
+      state = state.copyWith(loading: false, error: e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    try {
+      state = state.copyWith(loading: true, error: null);
+
+      final success = await repo.changePassword(
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+      );
+
+      state = state.copyWith(loading: false);
+
+      return success;
+    } catch (e) {
+      state = state.copyWith(loading: false, error: e.toString());
+      return false;
+    }
+  }
+
+Future<bool> requestUnlockProfile(String reason) async {
+  try {
+    state = state.copyWith(loading: true, error: null);
+
+    final success = await repo.requestUnlockProfile(reason);
+
+    // 🔥 VERY IMPORTANT: refresh profile
+    await ref.read(profileProvider.notifier).fetchProfile();
+
+    state = state.copyWith(loading: false);
+
+    return success;
+  } catch (e) {
+    state = state.copyWith(loading: false, error: e.toString());
+    return false;
+  }
 }
+
+}
+

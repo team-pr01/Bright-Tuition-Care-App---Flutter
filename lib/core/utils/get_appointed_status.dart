@@ -53,4 +53,21 @@ class StatusDataFormatter {
         return "Applied";
     }
   }
+
+  static Color getJobApplicationStatusColor(String status) {
+  switch (status) {
+    case "applied":
+      return Colors.blue;
+    case "shortlisted":
+      return Colors.orange;
+    case "appointed":
+    case "confirmed":
+      return Colors.green;
+    case "rejected":
+      return Colors.red;
+    default:
+      return Colors.grey;
+  }
+}
+
 }

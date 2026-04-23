@@ -1,5 +1,7 @@
 import 'package:btcclient/core/storage/local_storage.dart';
 import 'package:btcclient/features/auth/data/auth_api.dart';
+import 'package:btcclient/features/auth/data/models/guardian_model.dart';
+import 'package:btcclient/features/auth/data/models/tutor_model.dart';
 import 'package:btcclient/features/auth/data/requests/forgot_password_request.dart';
 import 'package:btcclient/features/auth/data/results/forgot_password_result.dart';
 import 'package:btcclient/features/auth/data/requests/resend_forgot_password_otp_request.dart';
@@ -14,13 +16,19 @@ import 'package:btcclient/features/auth/data/models/user_model.dart';
 import 'package:btcclient/features/auth/data/requests/verify_otp_request.dart';
 import 'package:btcclient/features/auth/data/requests/verify_reset_password_otp_request.dart';
 import 'package:btcclient/features/auth/data/results/verify_reset_password_otp_result.dart';
+import 'package:btcclient/features/auth/presentation/provider/profile_notifier.dart';
 
 class AuthResult {
   final String token;
   final String role;
   final UserModel user;
   final String? refreshToken;
-  AuthResult({required this.token, required this.role, required this.user, this.refreshToken});
+  AuthResult({
+    required this.token,
+    required this.role,
+    required this.user,
+    this.refreshToken,
+  });
 }
 
 class AuthRepository {
@@ -59,7 +67,12 @@ class AuthRepository {
     await LocalStorage.saveRefreshToken(refreshToken);
     await LocalStorage.saveRole(user.role);
 
-    return AuthResult(token: accessToken, role: user.role, user: user, refreshToken: refreshToken);
+    return AuthResult(
+      token: accessToken,
+      role: user.role,
+      user: user,
+      refreshToken: refreshToken,
+    );
   }
 
   Future<SignupResult> signup(SignupRequest request) async {
@@ -108,7 +121,6 @@ class AuthRepository {
     if (data == null) {
       throw Exception("Invalid response");
     }
-
     final accessToken = data["accessToken"];
 
     final refreshToken = data["refreshToken"];
@@ -142,85 +154,119 @@ class AuthRepository {
     return ResendOtpResult.fromJson(responseData);
   }
 
-Future<VerifyResetPasswordOtpResult>
-verifyResetPasswordOtp(
-  VerifyResetPasswordOtpRequest request,
-) async {
+  Future<VerifyResetPasswordOtpResult> verifyResetPasswordOtp(
+    VerifyResetPasswordOtpRequest request,
+  ) async {
+    final response = await api.verifyResetPasswordOtp(request);
 
-  final response =
-      await api.verifyResetPasswordOtp(
-        request,
-      );
+    final responseData = response.data;
 
-  final responseData =
-      response.data;
+    if (responseData["success"] != true) {
+      throw Exception(responseData["message"] ?? "OTP verification failed");
+    }
 
-  if (responseData["success"] != true) {
-
-    throw Exception(
-      responseData["message"] ??
-      "OTP verification failed",
-    );
-
+    return VerifyResetPasswordOtpResult.fromJson(responseData);
   }
 
-  return VerifyResetPasswordOtpResult
-      .fromJson(responseData);
+  Future<ResendForgotPasswordOtpResult> resendForgotPasswordOtp(
+    ResendForgotPasswordOtpRequest request,
+  ) async {
+    final response = await api.resendForgotPasswordOtp(request);
 
-}
+    final responseData = response.data;
+    print(responseData);
 
+    if (responseData["success"] != true) {
+      throw Exception(responseData["message"] ?? "Failed to resend OTP");
+    }
 
-Future<ResendForgotPasswordOtpResult>
-resendForgotPasswordOtp(
-  ResendForgotPasswordOtpRequest request,
-) async {
-
-  final response =
-      await api.resendForgotPasswordOtp(
-        request,
-      );
-
-  final responseData =
-      response.data;
-      print(responseData);
-
-  if (responseData["success"] != true) {
-
-    throw Exception(
-      responseData["message"] ??
-      "Failed to resend OTP",
-    );
-
+    return ResendForgotPasswordOtpResult.fromJson(responseData);
   }
 
-  return ResendForgotPasswordOtpResult
-      .fromJson(responseData);
+  Future<ResetPasswordResult> resetPassword(
+    ResetPasswordRequest request,
+  ) async {
+    final response = await api.resetPassword(request);
 
-}
+    final responseData = response.data;
 
-Future<ResetPasswordResult> resetPassword(
-  ResetPasswordRequest request,
-) async {
+    if (responseData["success"] != true) {
+      throw Exception(responseData["message"] ?? "Reset password failed");
+    }
 
-  final response =
-      await api.resetPassword(request);
-
-  final responseData =
-      response.data;
-
-  if (responseData["success"] != true) {
-
-    throw Exception(
-      responseData["message"] ??
-      "Reset password failed",
-    );
-
+    return ResetPasswordResult.fromJson(responseData);
   }
 
-  return ResetPasswordResult.fromJson(
-    responseData,
+  Future<dynamic> getProfile() async {
+    final response = await api.getMe();
+
+    final responseData = response.data;
+
+    if (responseData["success"] != true) {
+      throw Exception(responseData["message"]);
+    }
+
+    final data = responseData["data"];
+    final role = data["userId"]?["role"];
+
+    if (role == "guardian") {
+      return GuardianProfileModel.fromJson(responseData);
+    } else if (role == "tutor") {
+      return TutorProfileModel.fromJson(responseData);
+    } else {
+      throw Exception("Unknown role");
+    }
+  }
+
+  Future<dynamic> updateProfile(Map<String, dynamic> body) async {
+  final response = await api.updateProfile(body);
+
+  final responseData = response.data;
+
+  if (responseData["success"] != true) {
+    throw Exception(responseData["message"]);
+  }
+
+  final role = responseData["data"]?["userId"]?["role"];
+
+  if (role == "guardian") {
+    return GuardianProfileModel.fromJson(responseData);
+  } else if (role == "tutor") {
+    return TutorProfileModel.fromJson(responseData);
+  } else {
+    throw Exception("Unknown role");
+  }
+} 
+
+Future<bool> changePassword({
+  required String currentPassword,
+  required String newPassword,
+}) async {
+  final response = await api.changePassword(
+    currentPassword: currentPassword,
+    newPassword: newPassword,
   );
 
+  final responseData = response.data;
+
+  if (responseData["success"] != true) {
+    throw Exception(responseData["message"]);
+  }
+
+  return true;
 }
+
+Future<bool> requestUnlockProfile(String reason) async {
+  final response = await api.requestUnlockProfile(reason: reason);
+
+  final responseData = response.data;
+
+  if (responseData["success"] != true) {
+    throw Exception(responseData["message"]);
+  }
+
+  return true;
+}
+
 
 }

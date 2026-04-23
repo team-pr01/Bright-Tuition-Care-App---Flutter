@@ -8,10 +8,12 @@ import 'package:btcclient/features/auth/presentation/screens/welcome_screen.dart
 import 'package:btcclient/features/guardian/presentation/screens/guardian_dashboard.dart';
 import 'package:btcclient/features/guardian/presentation/screens/guardian_payment_screen.dart';
 import 'package:btcclient/features/guardian/presentation/screens/how_it_works_screen.dart';
+import 'package:btcclient/features/hire_tutor/presentation/screen/post_job_page.dart';
 import 'package:btcclient/features/jobs/presentation/screen/job_page.dart';
 import 'package:btcclient/features/legal/data/important_guidelines_data.dart';
 import 'package:btcclient/features/legal/presentation/important_guidelines_screen.dart';
 import 'package:btcclient/core/screens/share_app.dart';
+import 'package:btcclient/features/settings/prersentation/screens/setting_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -52,6 +54,22 @@ class GuardianDashboardScreen extends ConsumerWidget {
             label: "Job Board",
             icon: SvgPicture.asset(
               "assets/icons/navigations/job-board.svg",
+              width: 20,
+              height: 20,
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
+              ),
+            ),
+            onTap: () {
+              Navigator.pop(context);
+              changeTab(0);
+            },
+          ),
+          SidebarItem(
+            label: "Hair a tutor",
+            icon: SvgPicture.asset(
+              "assets/icons/navigations/job-search.svg",
               width: 20,
               height: 20,
               colorFilter: const ColorFilter.mode(
@@ -129,8 +147,12 @@ class GuardianDashboardScreen extends ConsumerWidget {
               ),
             ),
             onTap: () {
-              Navigator.pop(context);
-              changeTab(4);
+              Navigator.pop(context); // closes drawer
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingScreen(role:"guardian")),
+              );
             },
           ),
         ],
@@ -239,10 +261,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
           initialStatus: status, // 🔥 IMPORTANT
         ),
 
-        (changeTab, status) => JobsPage(
-          role: "guardian",
-          initialStatus: status, // 🔥 keep consistent
-        ),
+        (changeTab, status) => PostJobPage( changeTab: changeTab,),
 
         (changeTab, status) => GuardianHomeScreen(
           changeTab: changeTab, // 🔥 PASS IT
@@ -268,7 +287,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
             height: 22,
             colorFilter: ColorFilter.mode(AppColors.primary01, BlendMode.srcIn),
           ),
-          label: "Post Job",
+          label: "Posted Job",
         ),
 
         BottomNavigationBarItem(
@@ -287,7 +306,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
             height: 22,
             colorFilter: ColorFilter.mode(AppColors.primary01, BlendMode.srcIn),
           ),
-          label: "Posted Board",
+          label: "Post Job",
         ),
 
         /// CENTER HOME

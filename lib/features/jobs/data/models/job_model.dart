@@ -1,7 +1,7 @@
 import 'package:btcclient/features/jobs/data/models/applied_model.dart';
 
 class JobModel {
-  final String? id;
+  final String id;
   final String? jobId;
   final String? title;
   final String? salary;
@@ -38,7 +38,7 @@ class JobModel {
   final List<AppliedModel>? applications;
 
   JobModel({
-    this.id,
+    required this.id,
     this.jobId,
     this.title,
     this.salary,

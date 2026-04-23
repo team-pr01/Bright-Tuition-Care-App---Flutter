@@ -100,4 +100,40 @@ Future<Response> resetPassword(
 
 }
 
+
+Future<Response> getMe() async {
+  return await DioClient.dio.get("/user/me");
+}
+
+Future<Response> updateProfile(Map<String, dynamic> data) async {
+  return await DioClient.dio.patch(
+    "/user/update-profile",
+    data: data,
+  );
+}
+
+Future<Response> changePassword({
+  required String currentPassword,
+  required String newPassword,
+}) async {
+  return await DioClient.dio.post(
+    "/auth/change-password",
+    data: {
+      "currentPassword": currentPassword,
+      "newPassword": newPassword,
+    },
+  );
+}
+
+Future<Response> requestUnlockProfile({
+  required String reason,
+}) async {
+  return await DioClient.dio.post(
+    "/user/request-to-unlock-profile",
+    data: {
+      "unlockRequestReason": reason,
+    },
+  );
+}
+
 }

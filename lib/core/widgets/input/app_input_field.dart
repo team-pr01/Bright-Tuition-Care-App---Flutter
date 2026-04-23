@@ -5,7 +5,7 @@ import '../../config/theme.dart';
 enum AppInputType { text, password, multiline, dropdown }
 
 class AppInputField extends StatefulWidget {
-  final String label;
+  final String? label;
   final String? hint;
   final TextEditingController? controller;
   final AppInputType type;
@@ -15,6 +15,7 @@ class AppInputField extends StatefulWidget {
 
   /// dropdown
   final List<String>? dropdownItems;
+  final bool enabled;
 
   /// single select
   final String? value;
@@ -30,13 +31,13 @@ class AppInputField extends StatefulWidget {
 
   const AppInputField({
     super.key,
-    required this.label,
+    this.label,
     this.hint,
     this.controller,
     this.type = AppInputType.text,
     this.required = false,
     this.suffixIcon,
-     this.keyboardType = TextInputType.text,
+    this.keyboardType = TextInputType.text,
     this.dropdownItems,
     this.value,
     this.onChanged,
@@ -45,6 +46,7 @@ class AppInputField extends StatefulWidget {
     this.onMultiChanged,
     this.maxLines = 1,
     this.validator,
+    this.enabled = true,
   });
 
   @override
@@ -85,6 +87,7 @@ class _AppInputFieldState extends State<AppInputField> {
     switch (widget.type) {
       case AppInputType.password:
         field = TextFormField(
+          enabled: widget.enabled,
           controller: widget.controller,
           obscureText: obscure,
           keyboardType: widget.keyboardType,
@@ -109,9 +112,10 @@ class _AppInputFieldState extends State<AppInputField> {
 
       case AppInputType.multiline:
         field = TextFormField(
+          enabled: widget.enabled,
           controller: widget.controller,
           maxLines: widget.maxLines,
-            keyboardType: widget.keyboardType,
+          keyboardType: widget.keyboardType,
           style: inputStyle,
           decoration: _decoration(),
           validator: (value) {
@@ -153,10 +157,12 @@ class _AppInputFieldState extends State<AppInputField> {
 
       default:
         field = TextFormField(
+          enabled: widget.enabled,
           controller: widget.controller,
           keyboardType: widget.keyboardType,
           style: inputStyle,
           decoration: _decoration().copyWith(suffixIcon: widget.suffixIcon),
+          onChanged: widget.onChanged,
           validator: (value) {
             if (widget.required && (value == null || value.trim().isEmpty)) {
               return "${widget.label} is required";
@@ -336,7 +342,7 @@ class _SearchableDropdownState extends State<_SearchableDropdown> {
                   child: AppButton(
                     label: "Apply",
                     variant: AppButtonVariant.gradient,
-                     onPressed: () {
+                    onPressed: () {
                       widget.onMultiChanged?.call(tempSelected);
                       Navigator.pop(context);
                     },

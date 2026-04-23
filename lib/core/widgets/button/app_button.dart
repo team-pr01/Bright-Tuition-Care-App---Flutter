@@ -6,9 +6,9 @@ enum AppButtonVariant {
   secondary,
   outline,
   text,
-
   gradient, 
-  outlineGray, 
+  outlineGray,
+  delete 
 }
 
 class AppButton extends StatelessWidget {
@@ -173,6 +173,16 @@ class AppButton extends StatelessWidget {
         return ElevatedButton.styleFrom(
           backgroundColor: AppColors.neutrals01,
           foregroundColor: AppColors.primary01,
+          elevation: 0,
+
+          side: BorderSide(color: AppColors.neutrals04),
+
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        );
+      case AppButtonVariant.delete:
+        return ElevatedButton.styleFrom(
+          backgroundColor: AppColors.error,
+          foregroundColor: AppColors.neutrals01,
           elevation: 0,
 
           side: BorderSide(color: AppColors.neutrals04),

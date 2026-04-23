@@ -1,6 +1,7 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/layout/dashboard_layout.dart';
 import 'package:btcclient/features/jobs/presentation/screen/job_page.dart';
+import 'package:btcclient/features/settings/prersentation/screens/setting_screen.dart';
 // import 'package:btcclient/features/jobs/presentation/screens/job_page.dart';
 // import 'package:btcclient/features/jobs/presentation/widgets/job_card.dart';
 import 'package:btcclient/features/tutor/presentation/screens/how_it_works_screen.dart';
@@ -154,8 +155,12 @@ class TutorDashboardScreen extends ConsumerWidget {
               ),
             ),
             onTap: () {
-              Navigator.pop(context);
-              changeTab(4);
+              Navigator.pop(context); // closes drawer
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingScreen(role:"tutor")),
+              );
             },
           ),
         ],

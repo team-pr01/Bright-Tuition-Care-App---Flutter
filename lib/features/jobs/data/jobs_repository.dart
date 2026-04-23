@@ -1,3 +1,5 @@
+import 'package:btcclient/features/jobs/data/models/job_application_meta.dart';
+import 'package:btcclient/features/jobs/data/models/job_application_modal.dart';
 import 'package:btcclient/features/jobs/data/responses/application_response.dart';
 import 'package:btcclient/features/jobs/data/responses/jobs_response.dart';
 import 'package:btcclient/features/jobs/data/responses/posted_jobs_response.dart';
@@ -76,5 +78,34 @@ Future<PostedJobsResponse> getMyPostedJobs({
 
   return PostedJobsResponse.fromJson(res);
 }
+
+Future<(List<JobApplicationModel>, JobApplicationMeta)> getApplications({
+    required String jobId,
+    required int page,
+    required int limit,
+    String? status,
+    String? keyword,
+    String? demoDate,
+  }) async {
+    final res = await api.fetchApplications(
+      jobId: jobId,
+      page: page,
+      limit: limit,
+      status: status,
+      keyword: keyword,
+      demoDate: demoDate,
+    );
+
+    final data = res['data'];
+
+    final meta = JobApplicationMeta.fromJson(data['meta']);
+
+    final list = (data['applications'] as List)
+        .map((e) => JobApplicationModel.fromJson(e))
+        .toList();
+
+    return (list, meta);
+  }
+
 
 }

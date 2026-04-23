@@ -85,7 +85,7 @@ class _GuardianHomeScreenState extends ConsumerState<GuardianHomeScreen> {
                   label: "All Jobs",
                   count: dashboardData?["data"]?["jobs"]["total"] ?? 0,
                   onTap: () {
-                    widget.changeTab(1, status: null);
+                    widget.changeTab(0, status: null);
                   },
                 ),
 
@@ -102,7 +102,7 @@ class _GuardianHomeScreenState extends ConsumerState<GuardianHomeScreen> {
                   label: "Pending",
                   count: dashboardData?["data"]?["jobs"]["pending"] ?? 0,
                   onTap: () {
-                    widget.changeTab(1, status: "pending");
+                    widget.changeTab(0, status: "pending");
                   },
                 ),
 
@@ -119,7 +119,7 @@ class _GuardianHomeScreenState extends ConsumerState<GuardianHomeScreen> {
                   label: "Live",
                   count: dashboardData?["data"]?["jobs"]["live"] ?? 0,
                   onTap: () {
-                    widget.changeTab(1, status: "live");
+                    widget.changeTab(0, status: "live");
                   },
                 ),
 
@@ -136,7 +136,7 @@ class _GuardianHomeScreenState extends ConsumerState<GuardianHomeScreen> {
                   label: "Closed",
                   count: dashboardData?["data"]?["jobs"]["closed"] ?? 0,
                   onTap: () {
-                    widget.changeTab(1, status: "closed");
+                    widget.changeTab(0, status: "closed");
                   },
                 ),
 
@@ -153,7 +153,7 @@ class _GuardianHomeScreenState extends ConsumerState<GuardianHomeScreen> {
                   label: "Cancelled",
                   count: dashboardData?["data"]?["jobs"]["cancelled"] ?? 0,
                   onTap: () {
-                    widget.changeTab(1, status: "cancelled");
+                    widget.changeTab(0, status: "cancelled");
                   },
                 ),
               ],
