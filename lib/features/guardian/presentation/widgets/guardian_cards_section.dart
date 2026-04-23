@@ -9,11 +9,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 class GuardianCardsSection extends StatelessWidget {
   final int profileCompletion;
   final int confirmationLettersCount;
+ final VoidCallback onHireTutorTap;
 
   const GuardianCardsSection({
     super.key,
     required this.profileCompletion,
     required this.confirmationLettersCount,
+      required this.onHireTutorTap,
   });
 
   @override
@@ -33,6 +35,7 @@ class GuardianCardsSection extends StatelessWidget {
               BlendMode.srcIn,
             ),
           ),
+          onTap: onHireTutorTap,
         ),
         const SizedBox(height: 14),
 

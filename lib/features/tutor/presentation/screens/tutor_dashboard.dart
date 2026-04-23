@@ -14,9 +14,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class TutorHomeScreen extends ConsumerStatefulWidget {
-  final Function(int) changeTab;
+ final Function(int, {String? status}) changeTab;
 
-  const TutorHomeScreen({super.key, required this.changeTab});
+const TutorHomeScreen({
+  super.key,
+  required this.changeTab,
+});
 
   @override
   ConsumerState<TutorHomeScreen> createState() => _TutorHomeScreenState();
@@ -91,7 +94,7 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
                       context,
                       MaterialPageRoute(
                         builder: (_) =>
-                            const MyApplicationPage(initialStatus: "applied"),
+                            MyApplicationPage( changeTab: widget.changeTab,initialStatus: "applied"),
                       ),
                     );
                   },
@@ -114,7 +117,7 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
                       context,
                       MaterialPageRoute(
                         builder: (_) =>
-                            const MyApplicationPage(initialStatus: "shortlisted"),
+                            MyApplicationPage( changeTab: widget.changeTab,initialStatus: "shortlisted"),
                       ),
                     );
                   },
@@ -138,7 +141,7 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
                       context,
                       MaterialPageRoute(
                         builder: (_) =>
-                            const MyApplicationPage(initialStatus: "appointed"),
+                            MyApplicationPage( changeTab: widget.changeTab,initialStatus: "appointed"),
                       ),
                     );
                   },
@@ -161,7 +164,7 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
                       context,
                       MaterialPageRoute(
                         builder: (_) =>
-                            const MyApplicationPage(initialStatus: "confirmed"),
+                            MyApplicationPage( changeTab: widget.changeTab,initialStatus: "confirmed"),
                       ),
                     );
                   },
@@ -184,7 +187,7 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
                       context,
                       MaterialPageRoute(
                         builder: (_) =>
-                            const MyApplicationPage(initialStatus: "cancelled"),
+                            MyApplicationPage( changeTab: widget.changeTab,initialStatus: "cancelled"),
                       ),
                     );
                   },

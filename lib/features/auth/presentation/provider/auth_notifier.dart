@@ -251,6 +251,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
 Future<bool> requestUnlockProfile(String reason) async {
   try {
+      print("🚀 API CALLED with reason: $reason");
     state = state.copyWith(loading: true, error: null);
 
     final success = await repo.requestUnlockProfile(reason);

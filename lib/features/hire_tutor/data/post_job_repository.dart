@@ -23,4 +23,24 @@ class PostJobRepository {
       return false;
     }
   }
+
+  Future<bool> updateJob(String id, Map<String, dynamic> body) async {
+    try {
+      final res = await _api.updateJob(jobId: id, body: body);
+      print("✏️ UPDATE SUCCESS => ${res.data}");
+      return true;
+    } catch (e) {
+      _handleError(e);
+      return false;
+    }
+  }
+
+  void _handleError(dynamic e) {
+    if (e is DioException) {
+      print("❌ STATUS => ${e.response?.statusCode}");
+      print("❌ BACKEND => ${e.response?.data}");
+    } else {
+      print("❌ ERROR => $e");
+    }
+  }
 }

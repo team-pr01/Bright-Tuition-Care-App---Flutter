@@ -52,9 +52,7 @@ class _GuardianHomeScreenState extends ConsumerState<GuardianHomeScreen> {
 
     return RefreshIndicator(
       onRefresh: () async {
-        await ref
-            .read(guardianDashboardProvider.notifier)
-            .fetchStats();
+        await ref.read(guardianDashboardProvider.notifier).fetchStats();
       },
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(), // 🔥 IMPORTANT FIX
@@ -63,7 +61,7 @@ class _GuardianHomeScreenState extends ConsumerState<GuardianHomeScreen> {
           children: [
             HireTutorBar(
               onTap: () {
-                print("Hire Tutor Clicked");
+                widget.changeTab(1);
               },
             ),
 
@@ -169,19 +167,18 @@ class _GuardianHomeScreenState extends ConsumerState<GuardianHomeScreen> {
               RecognitionCard(
                 image:
                     dashboardData["data"]?["guardianOfTheMonth"]["imageUrl"] ??
-                        "assets/images/dummy-avatar.jpg",
+                    "assets/images/dummy-avatar.jpg",
                 title: "Guardian of the Month",
                 tutorId:
                     dashboardData["data"]?["guardianOfTheMonth"]["guardianId"] ??
-                        "",
+                    "",
                 rating:
                     dashboardData["data"]?["guardianOfTheMonth"]["rating"]
-                            .toString() ??
-                        "0",
+                        .toString() ??
+                    "0",
                 name:
-                    dashboardData["data"]?["guardianOfTheMonth"]["userId"]
-                            ["name"] ??
-                        "",
+                    dashboardData["data"]?["guardianOfTheMonth"]["userId"]["name"] ??
+                    "",
                 date: "This Month",
               ),
 
@@ -190,13 +187,14 @@ class _GuardianHomeScreenState extends ConsumerState<GuardianHomeScreen> {
             GuardianCardsSection(
               profileCompletion: profileCompleted,
               confirmationLettersCount: confirmationLetters,
+              onHireTutorTap: () {
+                widget.changeTab(1); // 🔥 SAME behavior
+              },
             ),
 
             const SizedBox(height: 20),
 
-            VerifyProfileCard(
-              isVerified: isVerified,
-            ),
+            VerifyProfileCard(isVerified: isVerified),
 
             const SizedBox(height: 20),
 

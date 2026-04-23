@@ -6,6 +6,8 @@ import 'package:btcclient/core/utils/safe.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
 import 'package:btcclient/features/guardian/presentation/screens/guradian_job_application.dart';
+import 'package:btcclient/features/hire_tutor/presentation/provider/post_job_provider.dart';
+import 'package:btcclient/features/hire_tutor/presentation/screen/post_job_page.dart';
 import 'package:btcclient/features/jobs/data/models/application_modal.dart';
 import 'package:btcclient/features/jobs/data/models/applied_model.dart';
 import 'package:btcclient/features/jobs/presentation/enums/job_card_variant.dart';
@@ -23,11 +25,13 @@ class JobCard extends ConsumerWidget {
   final JobModel job;
   final JobCardVariant variant;
   final ApplicationModel? application;
+  final Function(int, {String? status}) changeTab;
 
   const JobCard({
     super.key,
     required this.job,
     required this.variant,
+    required this.changeTab,
     this.application,
   });
 
@@ -165,12 +169,14 @@ class JobCard extends ConsumerWidget {
 
                 GestureDetector(
                   onTap: () {
-
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => GuardianJobApplication(jobId: job.id,)),
-              );
-            },
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            GuardianJobApplication(jobId: job.id),
+                      ),
+                    );
+                  },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 4,
@@ -280,7 +286,8 @@ class JobCard extends ConsumerWidget {
                       isScrollControlled: true,
                       builder: (_) => JobBottomSheet(
                         variant: JobCardVariant.job,
-                        job: job, // 🔥 pass exact clicked job
+                        job: job, 
+                        changeTab: changeTab,// 🔥 pass exact clicked job
                       ),
                     );
                   },
@@ -386,7 +393,7 @@ class JobCard extends ConsumerWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const MyApplicationPage(),
+                              builder: (_) => MyApplicationPage( changeTab: changeTab,),
                             ),
                           );
                         } else {
@@ -420,6 +427,7 @@ class JobCard extends ConsumerWidget {
                       context: context,
                       isScrollControlled: true,
                       builder: (_) => JobBottomSheet(
+                        changeTab: changeTab,
                         variant: JobCardVariant.application,
                         application: application,
                         job: job, // 🔥 pass exact clicked job
@@ -474,6 +482,7 @@ class JobCard extends ConsumerWidget {
                       context: context,
                       isScrollControlled: true,
                       builder: (_) => JobBottomSheet(
+                        changeTab: changeTab,
                         variant: JobCardVariant.postedJob,
                         job: job, // 🔥 pass exact clicked job
                       ),
@@ -493,7 +502,29 @@ class JobCard extends ConsumerWidget {
                 const SizedBox(width: 10),
 
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    ref.read(postJobProvider.notifier).setEditData({
+                      "_id": job.id,
+                      "tuitionType": job.tuitionType,
+                      "category": job.category,
+                      "curriculum": job.curriculum,
+                      "class": job.classes,
+                      "subjects": job.subjects,
+                      "tutoringDays": job.tutoringDays,
+                      "tutoringTime": job.tutoringTime.toString(),
+                      "salary": job.salary.toString(),
+                      "studentGender": job.studentGender,
+                      "preferredTutorGender": job.preferredTutorGender,
+                      "numberOfStudents": job.numberOfStudents.toString(),
+                      "studentsInstituteName": job.instituteName,
+                      "otherRequirements": job.otherRequirements,
+                      "city": job.city,
+                      "area": job.area,
+                      "address": job.address,
+                    });
+
+                    changeTab(1); // 🔥 GO TO POST JOB TAB
+                  },
                   child: Row(
                     children: [
                       const Icon(Icons.edit, size: 16),

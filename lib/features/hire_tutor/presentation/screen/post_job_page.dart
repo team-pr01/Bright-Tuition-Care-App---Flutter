@@ -73,7 +73,9 @@ class PostJobPage extends ConsumerWidget {
                               notifier.next();
                             }
                           },
-                    label: state.step == 3 ? "Submit" : "Next",
+                    label: state.step == 3
+                        ? (state.isEdit ? "Update Job" : "Submit")
+                        : "Next",
                   ),
                 ),
               ],

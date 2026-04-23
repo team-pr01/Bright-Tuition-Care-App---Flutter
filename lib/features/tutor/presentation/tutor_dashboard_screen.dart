@@ -80,12 +80,14 @@ class TutorDashboardScreen extends ConsumerWidget {
               ),
             ),
             onTap: () {
-              Navigator.pop(context); // closes drawer
+              Navigator.pop(context);
 
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const MyApplicationPage(),
+                  builder: (context) => MyApplicationPage(
+                    changeTab: changeTab, // ✅ correct
+                  ),
                 ),
               );
             },
@@ -159,7 +161,9 @@ class TutorDashboardScreen extends ConsumerWidget {
 
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SettingScreen(role:"tutor")),
+                MaterialPageRoute(
+                  builder: (context) => SettingScreen(role: "tutor"),
+                ),
               );
             },
           ),
@@ -271,7 +275,7 @@ class TutorDashboardScreen extends ConsumerWidget {
       ),
 
       pages: [
-        (changeTab, status) => const JobsPage(role: "tutor"),
+        (changeTab, status) => JobsPage(role: "tutor", changeTab: changeTab),
 
         (changeTab, status) => TutorHomeScreen(
           changeTab: changeTab, // 🔥 KEEP THIS

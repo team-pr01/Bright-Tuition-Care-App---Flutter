@@ -257,6 +257,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
 
       pages: [
         (changeTab, status) => JobsPage(
+          changeTab: changeTab,
           role: "guardian",
           initialStatus: status, // 🔥 IMPORTANT
         ),

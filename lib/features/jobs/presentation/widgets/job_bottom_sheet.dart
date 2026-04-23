@@ -6,11 +6,11 @@ import 'package:btcclient/core/utils/safe.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/core/widgets/reusable_bottom_sheet/reusable_bottom_sheet.dart';
 import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
+import 'package:btcclient/features/hire_tutor/presentation/provider/post_job_provider.dart';
 import 'package:btcclient/features/jobs/data/models/application_modal.dart';
 import 'package:btcclient/features/jobs/data/models/applied_model.dart';
 import 'package:btcclient/features/jobs/data/models/job_model.dart';
 import 'package:btcclient/features/jobs/presentation/enums/job_card_variant.dart';
-import 'package:btcclient/features/jobs/presentation/notifier/jobs_notifier.dart';
 import 'package:btcclient/features/jobs/presentation/provider/job_provider.dart';
 import 'package:btcclient/features/jobs/presentation/widgets/icon_row.dart';
 import 'package:btcclient/features/tutor/presentation/tutor_dashboard_screen.dart';
@@ -23,12 +23,19 @@ class JobBottomSheet extends ConsumerWidget {
   final JobModel job;
   final JobCardVariant variant;
   final ApplicationModel? application;
+  final Function(int, {String? status}) changeTab;
 
-  const JobBottomSheet({super.key, required this.job,required this.variant, this.application});
+  const JobBottomSheet({
+    super.key,
+    required this.job,
+    required this.variant,
+    this.application,
+     required this.changeTab,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-   print("variant: $variant");
+    print("variant: $variant");
     final user = ref.watch(authProvider).user;
     final iconPath = JobIconHelper.getCategoryIcon(
       category: job.category ?? "",
@@ -70,35 +77,7 @@ class JobBottomSheet extends ConsumerWidget {
               ),
 
               const SizedBox(height: 10),
-              if (variant == JobCardVariant.application && application!=null)
-               
-                    Row(
-                      children: [
-                        SvgPicture.asset(
-                          "assets/icons/visual/status.svg",
-                          height: 16,
-                        ),
-                        const SizedBox(width: 6),
-
-                        Text("Status :"),
-                        const SizedBox(width: 8),
-                        Text(
-                          StatusDataFormatter.getStatusLabel(application?.status),
-                          style: TextStyle(
-                            color:StatusDataFormatter.getStatusColor(application?.status),
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(width: 20),
-
-                   
-if (variant == JobCardVariant.postedJob)
-            Row(
-              children: [
-                /// DETAILS
+              if (variant == JobCardVariant.application && application != null)
                 Row(
                   children: [
                     SvgPicture.asset(
@@ -110,9 +89,9 @@ if (variant == JobCardVariant.postedJob)
                     Text("Status :"),
                     const SizedBox(width: 8),
                     Text(
-                      job.status ?? "",
+                      StatusDataFormatter.getStatusLabel(application?.status),
                       style: TextStyle(
-                        color: StatusDataFormatter.getStatusColorGuardian(
+                        color: StatusDataFormatter.getStatusColor(
                           application?.status,
                         ),
                         fontWeight: FontWeight.w500,
@@ -121,45 +100,75 @@ if (variant == JobCardVariant.postedJob)
                   ],
                 ),
 
-                const SizedBox(width: 20),
+              const SizedBox(width: 20),
 
-                 GestureDetector(
-                  onTap: () {
-                    // TODO: handle click (open applications list, etc.)
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 4,
-                      vertical: 2,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
+              if (variant == JobCardVariant.postedJob)
+                Row(
+                  children: [
+                    /// DETAILS
+                    Row(
                       children: [
                         SvgPicture.asset(
-                          "assets/icons/navigations/confirmed.svg",
+                          "assets/icons/visual/status.svg",
                           height: 16,
-                          width: 16,
-                          color: AppColors.primary01,
                         ),
-                        const SizedBox(width: 4),
-                        const Text("Applications"),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: 6),
+
+                        Text("Status :"),
+                        const SizedBox(width: 8),
                         Text(
-                          "(${job.applications?.length ?? 0})",
-                          style: const TextStyle(fontWeight: FontWeight.w500),
+                          job.status ?? "",
+                          style: TextStyle(
+                            color: StatusDataFormatter.getStatusColorGuardian(
+                              application?.status,
+                            ),
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ],
                     ),
-                  ),
+
+                    const SizedBox(width: 20),
+
+                    GestureDetector(
+                      onTap: () {
+                        // TODO: handle click (open applications list, etc.)
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 4,
+                          vertical: 2,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SvgPicture.asset(
+                              "assets/icons/navigations/confirmed.svg",
+                              height: 16,
+                              width: 16,
+                              color: AppColors.primary01,
+                            ),
+                            const SizedBox(width: 4),
+                            const Text("Applications"),
+                            const SizedBox(width: 4),
+                            Text(
+                              "(${job.applications?.length ?? 0})",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(width: 10),
+
+                    /// APPLY BUTTON
+                  ],
                 ),
 
-                const SizedBox(width: 10),
-
-                /// APPLY BUTTON
-              ],
-            ),
-
-          const SizedBox(height: 6),
+              const SizedBox(height: 6),
 
               const SizedBox(height: 6),
 
@@ -295,108 +304,137 @@ if (variant == JobCardVariant.postedJob)
                     ),
 
                     /// APPLY BUTTON
-                  if(variant != JobCardVariant.postedJob) ...[ AppButton(
-                      label: isApplied ? "Undo Apply" : "Apply",
-                      onPressed: () async {
-                        final user = ref.read(authProvider).user;
+                    if (variant != JobCardVariant.postedJob) ...[
+                      AppButton(
+                        label: isApplied ? "Undo Apply" : "Apply",
+                        onPressed: () async {
+                          final user = ref.read(authProvider).user;
 
-                        if (user == null) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Please login first")),
-                          );
-                          return;
-                        }
+                          if (user == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Please login first"),
+                              ),
+                            );
+                            return;
+                          }
 
-                        try {
-                          if (isApplied) {
-                            // 🔥 WITHDRAW FLOW
+                          try {
+                            if (isApplied) {
+                              // 🔥 WITHDRAW FLOW
 
-                            final application = job.applications
-                                ?.where((app) => app.userId == user?.id)
-                                .cast<AppliedModel?>()
-                                .firstOrNull;
-                            if (application == null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Application not found"),
-                                ),
-                              );
-                              return;
-                            }
+                              final application = job.applications
+                                  ?.where((app) => app.userId == user?.id)
+                                  .cast<AppliedModel?>()
+                                  .firstOrNull;
+                              if (application == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Application not found"),
+                                  ),
+                                );
+                                return;
+                              }
 
-                            final success = await ref
-                                .read(jobsProvider.notifier)
-                                .withdrawApplication(
-                                  applicationId: application.applicationId!,
+                              final success = await ref
+                                  .read(jobsProvider.notifier)
+                                  .withdrawApplication(
+                                    applicationId: application.applicationId!,
+                                  );
+
+                              if (success) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Withdraw successful"),
+                                  ),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Withdraw failed"),
+                                  ),
+                                );
+                              }
+                            } else {
+                              // 🔥 APPLY FLOW
+
+                              final success = await ref
+                                  .read(jobsProvider.notifier)
+                                  .applyJob(jobId: job.id!, userId: user.id);
+
+                              if (success) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Applied successfully"),
+                                  ),
                                 );
 
-                            if (success) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Withdraw successful"),
-                                ),
-                              );
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Withdraw failed"),
-                                ),
-                              );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        const TutorDashboardScreen(),
+                                  ),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Failed to apply"),
+                                  ),
+                                );
+                              }
                             }
-                          } else {
-                            // 🔥 APPLY FLOW
+                          } catch (e) {
+                            print("❌ ERROR: $e");
 
-                            final success = await ref
-                                .read(jobsProvider.notifier)
-                                .applyJob(jobId: job.id!, userId: user.id);
-
-                            if (success) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Applied successfully"),
-                                ),
-                              );
-
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const TutorDashboardScreen(),
-                                ),
-                              );
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Failed to apply"),
-                                ),
-                              );
-                            }
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Something went wrong"),
+                              ),
+                            );
                           }
-                        } catch (e) {
-                          print("❌ ERROR: $e");
+                        },
+                        variant: AppButtonVariant.gradient,
+                        height: 40,
+                        width: 160,
+                        icon: isApplied ? Icons.undo : Icons.arrow_forward,
+                      ),
+                    ],
+                    if (variant == JobCardVariant.postedJob) ...[
+                      AppButton(
+                        label: "Edit Job",
+                        onPressed: () {
+                          ref.read(postJobProvider.notifier).setEditData({
+                            "_id": job.id,
+                            "tuitionType": job.tuitionType,
+                            "category": job.category,
+                            "curriculum": job.curriculum,
+                            "class": job.classes,
+                            "subjects": job.subjects,
+                            "tutoringDays": job.tutoringDays,
+                            "tutoringTime": job.tutoringTime,
+                            "salary": job.salary,
+                            "studentGender": job.studentGender,
+                            "preferredTutorGender": job.preferredTutorGender,
+                            "numberOfStudents": job.numberOfStudents,
+                            "studentsInstituteName": job.instituteName,
+                            "otherRequirements": job.otherRequirements,
+                            "city": job.city,
+                            "area": job.area,
+                            "address": job.address,
+                          });
 
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Something went wrong"),
-                            ),
-                          );
-                        }
-                      },
-                      variant: AppButtonVariant.gradient,
-                      height: 40,
-                      width: 160,
-                      icon: isApplied ? Icons.undo : Icons.arrow_forward,
-                    ),
-                 ],
-                 if(variant == JobCardVariant.postedJob) ...[ AppButton(
-                      label: "Edit Job",
-                      onPressed:() {
-                      },
-                      variant: AppButtonVariant.gradient,
-                      height: 40,
-                      width: 160,
-                      icon: Icons.edit,
-                    ),
-                 ] ],
+                          Navigator.pop(context); // 🔥 CLOSE SHEET FIRST
+
+                          changeTab(1); // 🔥 SWITCH TAB
+                        },
+                        variant: AppButtonVariant.gradient,
+                        height: 40,
+                        width: 160,
+                        icon: Icons.edit,
+                      ),
+                    ],
+                  ],
                 ),
               ),
             ],

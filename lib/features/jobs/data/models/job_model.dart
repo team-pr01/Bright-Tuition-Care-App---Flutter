@@ -24,6 +24,7 @@ class JobModel {
   final List<String>? area;
   final String? address;
   final String? locationDirection;
+  final String? instituteName;
 
   final String? guardianName;
   final String? guardianPhoneNumber;
@@ -57,6 +58,7 @@ class JobModel {
     this.area,
     this.address,
     this.locationDirection,
+    this.instituteName,
     this.guardianName,
     this.guardianPhoneNumber,
     this.status,
@@ -86,6 +88,7 @@ class JobModel {
       otherRequirements: json['otherRequirements'],
 
       preferredTutorGender: json['preferredTutorGender'],
+      instituteName: json['studentsInstituteName'],
       numberOfStudents: json['numberOfStudents'],
       studentGender: json['studentGender'],
 

@@ -10,7 +10,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class MyApplicationPage extends ConsumerStatefulWidget {
   final String? initialStatus;
-  const MyApplicationPage({super.key, this.initialStatus,});
+  final Function(int, {String? status}) changeTab;
+
+  const MyApplicationPage({
+    super.key,
+    this.initialStatus,
+    required this.changeTab,
+  });
 
   @override
   ConsumerState<MyApplicationPage> createState() => _MyApplicationPageState();
@@ -223,6 +229,7 @@ class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
             job: application.job,
             application: application,
             variant: JobCardVariant.application,
+            changeTab: widget.changeTab,
           );
         },
       ),

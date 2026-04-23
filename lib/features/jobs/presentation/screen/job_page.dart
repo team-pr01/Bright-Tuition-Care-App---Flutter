@@ -4,7 +4,6 @@ import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/core/widgets/dashboard/dashboard_nav_links.dart';
 import 'package:btcclient/core/widgets/search_bar/search_bar.dart';
 import 'package:btcclient/features/jobs/presentation/enums/job_card_variant.dart';
-import 'package:btcclient/features/jobs/presentation/notifier/posted_jobs_notifier.dart';
 import 'package:btcclient/features/jobs/presentation/provider/job_provider.dart';
 import 'package:btcclient/features/jobs/presentation/provider/posted_job_provider.dart';
 import 'package:btcclient/features/jobs/presentation/widgets/filter_form.dart';
@@ -17,7 +16,13 @@ import 'dart:async';
 class JobsPage extends ConsumerStatefulWidget {
   final String role;
   final String? initialStatus;
-  const JobsPage({super.key, required this.role,  this.initialStatus,});
+ final Function(int, {String? status}) changeTab;
+  const JobsPage({
+    super.key,
+    required this.role,
+    this.initialStatus,
+    required this.changeTab,
+  });
 
   @override
   ConsumerState<JobsPage> createState() => _JobsPageState();
@@ -38,8 +43,9 @@ class _JobsPageState extends ConsumerState<JobsPage> {
       if (isTutor) {
         ref.read(jobsProvider.notifier).fetchJobs();
       } else {
-        ref.read(postedJobsProvider.notifier)
-        .fetchPostedJobs(status: widget.initialStatus);
+        ref
+            .read(postedJobsProvider.notifier)
+            .fetchPostedJobs(status: widget.initialStatus);
       }
     });
 
@@ -317,6 +323,7 @@ class _JobsPageState extends ConsumerState<JobsPage> {
           final job = state.jobs[index];
           print(job);
           return JobCard(
+  changeTab: widget.changeTab,
             job: job,
             variant: isTutor ? JobCardVariant.job : JobCardVariant.postedJob,
           );
