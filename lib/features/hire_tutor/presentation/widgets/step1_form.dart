@@ -95,7 +95,7 @@ void initState() {
             },
           ),
 
-          const SizedBox(height: 12),
+          
 
           /// 🔥 CATEGORY
           AppInputField(
@@ -113,7 +113,7 @@ void initState() {
             },
           ),
 
-          const SizedBox(height: 12),
+          
 
           /// 🔥 CURRICULUM (ONLY FOR ENGLISH MEDIUM)
           if ((data.category ?? "").toLowerCase() == "english medium")
@@ -127,7 +127,7 @@ void initState() {
               },
             ),
 
-          const SizedBox(height: 12),
+          
 
           /// 🔥 CLASS
           AppInputField(
@@ -145,7 +145,7 @@ void initState() {
             },
           ),
 
-          const SizedBox(height: 12),
+          
 
           /// 🔥 SUBJECTS
           AppInputField(
@@ -159,7 +159,7 @@ void initState() {
             },
           ),
 
-          const SizedBox(height: 12),
+          
 
           /// 🔥 TUTORING DAYS
           AppInputField(
@@ -173,7 +173,7 @@ void initState() {
             },
           ),
 
-          const SizedBox(height: 12),
+          
 
           /// 🔥 TUTORING TIME (FIXED)
           AppInputField(
@@ -188,13 +188,14 @@ void initState() {
           ),
           
 
-          const SizedBox(height: 12),
+          
 
           /// 🔥 SALARY (FIXED)
           AppInputField(
             label: "Salary",
             type: AppInputType.text,
             keyboardType: TextInputType.number,
+              hint: "eg:5000",
             controller: salaryController,
             // onChanged: (v) {
             //   notifier.update((d) => d.salary = v);

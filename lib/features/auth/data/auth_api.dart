@@ -111,6 +111,17 @@ Future<Response> updateProfile(Map<String, dynamic> data) async {
     data: data,
   );
 }
+Future<Response> getTutorTestimonials() async {
+  return await DioClient.dio.get(
+    "/testimonial/tutors",
+  );
+}
+
+Future<Response> getGuardianTestimonials() async {
+  return await DioClient.dio.get(
+    "/testimonial/guardians",
+  );
+}
 
 Future<Response> changePassword({
   required String currentPassword,

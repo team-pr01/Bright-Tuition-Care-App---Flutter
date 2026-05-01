@@ -47,9 +47,10 @@ class Step2Form extends ConsumerWidget {
           FormHelpers.field(
             AppInputField(
               label: "Number of Students",
+              hint: "e.g. 1, 2, 3",
               type: AppInputType.text,
               keyboardType: TextInputType.number,
-              value: data.numberOfStudents,
+              value: data.numberOfStudents.toString(),
               onChanged: (v) {
                 notifier.update((d) => d.numberOfStudents = v);
               },
@@ -59,8 +60,9 @@ class Step2Form extends ConsumerWidget {
           FormHelpers.field(
             AppInputField(
               label: "Institute Name",
+              hint: "e.g. ABC School, XYZ Coaching",
               type: AppInputType.text,
-              value: data.instituteName,
+              value: data.instituteName.toString(),
               onChanged: (v) {
                 notifier.update((d) => d.instituteName = v);
               },
@@ -70,9 +72,10 @@ class Step2Form extends ConsumerWidget {
           FormHelpers.field(
             AppInputField(
               label: "Other Requirements",
+              hint: "Please specify any additional requirements",
               type: AppInputType.text,
               maxLines: 4,
-              value: data.otherRequirements,
+              value: data.otherRequirements.toString(),
               onChanged: (v) {
                 notifier.update((d) => d.otherRequirements = v);
               },

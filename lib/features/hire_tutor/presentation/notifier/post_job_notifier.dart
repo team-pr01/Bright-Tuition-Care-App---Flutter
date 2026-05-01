@@ -72,7 +72,7 @@ class PostJobNotifier extends StateNotifier<PostJobState> {
       "subjects": data.subjects,
       "tutoringDays": data.tutoringDays,
       "tutoringTime": data.tutoringTime,
-
+      "curriculum": data.curriculum,
       "salary": data.salary.toString(),
       "numberOfStudents": data.numberOfStudents,
 
@@ -222,6 +222,10 @@ class PostJobNotifier extends StateNotifier<PostJobState> {
 
     print("UPDATED DATA => ${newData.toApi()}");
   }
+
+  void resetForm() {
+  state = PostJobState.initial();
+}
 
   void setEditData(Map<String, dynamic> job) {
     state = state.copyWith(

@@ -14,7 +14,7 @@ class StepIndicator extends StatelessWidget {
 
     final progress = isPreview
         ? 1.0
-        : (currentStep + 1) / totalSteps;
+        : (currentStep ) / totalSteps;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

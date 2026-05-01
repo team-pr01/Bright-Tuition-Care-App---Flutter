@@ -1,6 +1,7 @@
 import 'package:btcclient/core/storage/local_storage.dart';
 import 'package:btcclient/features/auth/data/auth_api.dart';
 import 'package:btcclient/features/auth/data/models/guardian_model.dart';
+import 'package:btcclient/features/auth/data/models/testimonial_model.dart';
 import 'package:btcclient/features/auth/data/models/tutor_model.dart';
 import 'package:btcclient/features/auth/data/requests/forgot_password_request.dart';
 import 'package:btcclient/features/auth/data/results/forgot_password_result.dart';
@@ -237,6 +238,26 @@ class AuthRepository {
     throw Exception("Unknown role");
   }
 } 
+
+Future<List<TestimonialModel>> getAllTestimonials() async {
+  final tutorRes = await api.getTutorTestimonials();
+  final guardianRes = await api.getGuardianTestimonials();
+
+  final tutorData = tutorRes.data["data"] as List;
+  final guardianData = guardianRes.data["data"] as List;
+
+  final tutors =
+      tutorData.map((e) => TestimonialModel.fromJson(e)).toList();
+
+  final guardians =
+      guardianData.map((e) => TestimonialModel.fromJson(e)).toList();
+
+  final combined = [...tutors, ...guardians];
+
+  combined.shuffle(); // 🔥 IMPORTANT
+
+  return combined;
+}
 
 Future<bool> changePassword({
   required String currentPassword,

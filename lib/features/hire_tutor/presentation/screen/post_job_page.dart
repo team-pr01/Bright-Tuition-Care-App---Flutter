@@ -1,3 +1,4 @@
+import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/features/hire_tutor/presentation/provider/post_job_provider.dart';
 import 'package:btcclient/features/hire_tutor/presentation/widgets/preview_step.dart';
@@ -8,46 +9,89 @@ import 'package:btcclient/features/hire_tutor/presentation/widgets/step_indicato
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PostJobPage extends ConsumerWidget {
+class PostJobPage extends ConsumerStatefulWidget {
   final Function(int, {String? status}) changeTab;
-  const PostJobPage({super.key, required this.changeTab});
+
+  const PostJobPage({
+    super.key,
+    required this.changeTab,
+  });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PostJobPage> createState() => _PostJobPageState();
+}
+
+class _PostJobPageState extends ConsumerState<PostJobPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final notifier = ref.read(postJobProvider.notifier);
+      final state = ref.read(postJobProvider);
+
+      if (!state.isEdit) {
+        notifier.resetForm();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final state = ref.watch(postJobProvider);
     final notifier = ref.read(postJobProvider.notifier);
 
     return Scaffold(
       body: Column(
         children: [
-          StepIndicator(currentStep: state.step),
+          
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              "Hire a Tutor",
+              textAlign: TextAlign.left, 
+              style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    color: AppColors.neutrals06,
+                    fontWeight: FontWeight.w600,
+                      ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              "Find expert tutors easily for personalized learning and academic success.",
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),  
+          !state.isEdit ? StepIndicator(currentStep: state.step) : SizedBox.shrink(),
           Expanded(
             child: IndexedStack(
               index: state.step,
-              children: [Step1Form(), Step2Form(), Step3Form(), PreviewStep()],
+              children: [
+                Step1Form(),
+                Step2Form(),
+                Step3Form(),
+                PreviewStep(),
+              ],
             ),
           ),
 
-          /// BUTTONS
           Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                /// 🔥 PREVIEW MODE
                 if (state.step == 3) ...[
                   Expanded(
                     child: AppButton(
                       variant: AppButtonVariant.outlineGray,
                       onPressed: () {
-                        notifier.goToStep(0); // 👈 jump to step 1
+                        notifier.goToStep(0);
                       },
                       label: "Edit",
                     ),
                   ),
                   const SizedBox(width: 10),
-                ]
-                /// 🔥 NORMAL STEPS
-                else if (state.step > 0) ...[
+                ] else if (state.step > 0) ...[
                   Expanded(
                     child: AppButton(
                       variant: AppButtonVariant.outlineGray,
@@ -58,17 +102,15 @@ class PostJobPage extends ConsumerWidget {
                   const SizedBox(width: 10),
                 ],
 
-                /// 🔥 NEXT / SUBMIT
                 Expanded(
                   child: AppButton(
                     variant: AppButtonVariant.gradient,
                     loading: state.isLoading,
-
                     onPressed: state.isLoading
-                        ? () {} // 🔥 disables button
+                        ? null
                         : () {
                             if (state.step == 3) {
-                              notifier.submit(context, changeTab);
+                              notifier.submit(context, widget.changeTab);
                             } else {
                               notifier.next();
                             }

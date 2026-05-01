@@ -74,7 +74,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
               /// Content
               Expanded(
                 child: SingleChildScrollView(
-                  child: _buildContent(theme, isProfileLocked),
+                  child: _buildContent(context, ref, theme, isProfileLocked),
                 ),
               ),
             ],
@@ -111,39 +111,52 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
   }
 
   /// 🔥 FIXED (takes isProfileLocked)
-  Widget _buildContent(ThemeData theme, bool isProfileLocked) {
-    switch (selectedTab) {
-      case SettingsTab.contactInfo:
-        return ContactForm(isProfileLocked: isProfileLocked);
-      case SettingsTab.changePassword:
-        return PasswordForm();
-      case SettingsTab.profileVerification:
-        final profile = ref.watch(profileProvider);
-        final verification = ref.watch(verificationProvider);
+ Widget _buildContent(
+  BuildContext context,
+  WidgetRef ref,
+  ThemeData theme,
+  bool isProfileLocked,
+) {
+  switch (selectedTab) {
+    case SettingsTab.contactInfo:
+      return ContactForm(isProfileLocked: isProfileLocked);
 
-        bool isVerified = false;
-        bool hasRequested = false;
+    case SettingsTab.changePassword:
+      return PasswordForm();
 
-        if (profile is GuardianProfileModel) {
-          isVerified = profile.isVerified;
-          hasRequested = profile.hasRequestedToVerify;
-        } else if (profile is TutorProfileModel) {
-          isVerified = profile.isVerified;
-          hasRequested = profile.hasRequestedToVerify;
-        }
-print("verify $isVerified");
-        return verificationForm(
-          context,
-          theme,
-          isVerified,
-          hasRequested,
-          verification?.status, // 🔥 PASS CURRENT STEP
-          verification?.addressCode,
-        );
-      case SettingsTab.profileLock:
-        return lockForm(context, theme, isProfileLocked);
-      case SettingsTab.deleteAccount:
-        return deleteForm(context, theme);
-    }
+    case SettingsTab.profileVerification:
+      final profile = ref.watch(profileProvider);
+      final verification = ref.watch(verificationProvider);
+
+      /// 🔥 FETCH DATA
+      ref.read(verificationProvider.notifier).fetchVerification();
+
+      bool isVerified = false;
+      bool hasRequested = false;
+
+      if (profile is GuardianProfileModel) {
+        isVerified = profile.isVerified;
+        hasRequested = profile.hasRequestedToVerify;
+      } else if (profile is TutorProfileModel) {
+        isVerified = profile.isVerified;
+        hasRequested = profile.hasRequestedToVerify;
+      }
+
+      return verificationForm(
+        context,
+        theme,
+        ref,
+        isVerified,
+        hasRequested,
+        verification.status,
+        verification.addressCode,
+      );
+
+    case SettingsTab.profileLock:
+      return lockForm(context, theme, isProfileLocked);
+
+    case SettingsTab.deleteAccount:
+      return deleteForm(context, theme);
   }
+}
 }

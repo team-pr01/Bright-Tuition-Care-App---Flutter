@@ -1,3 +1,5 @@
+import 'package:btcclient/features/settings/data/verification_api.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class VerificationState {
@@ -27,74 +29,59 @@ class VerificationState {
     );
   }
 }
+
 final verificationProvider =
     StateNotifierProvider<VerificationNotifier, VerificationState>(
-  (ref) => VerificationNotifier(),
-);
+      (ref) => VerificationNotifier(),
+    );
 
 class VerificationNotifier extends StateNotifier<VerificationState> {
-  VerificationNotifier() : super(
-    VerificationState(
-      status: "pending", // 🔥 default FIRST STEP
-    ),
-  );
+  VerificationNotifier()
+    : super(
+        VerificationState(
+          status: "idle", // 🔥 default FIRST STEP
+        ),
+      );
+   final api = VerificationApi();
+  Future<void> fetchVerification() async {
+    try {
+      state = state.copyWith(loading: true, error: null);
 
-  /// 🔥 FETCH VERIFICATION STATUS
-  // Future<void> fetchVerification() async {
-  //   try {
-  //     state = state.copyWith(loading: true);
+      final res = await api.getMyRequest();
+      final data = res.data["data"];
 
-  //     /// 🔥 API CALL
-  //     final res = await api.getMyVerificationRequest();
+      state = state.copyWith(
+        status: data?["status"] ?? "idle",
+        addressCode: data?["addressVerificationCode"],
+        loading: false,
+      );
+    } catch (e) {
+      state = state.copyWith(loading: false, error: e.toString());
+    }
+  }
 
-  //     final data = res.data["data"];
+  Future<bool> sendRequest() async {
+    try {
+      state = state.copyWith(loading: true, error: null);
 
-  //     state = state.copyWith(
-  //       status: data["status"] ?? "pending",
-  //       addressCode: data["addressVerificationCode"],
-  //       loading: false,
-  //     );
-  //   } catch (e) {
-  //     state = state.copyWith(
-  //       loading: false,
-  //       error: e.toString(),
-  //     );
-  //   }
-  // }
+      final res = await api.sendRequest();
+      print("✅ VERIFY SUCCESS => ${res.data}");
 
-  // /// 🔥 SUBMIT ADDRESS CODE
-  // Future<void> submitCode(String code) async {
-  //   try {
-  //     state = state.copyWith(loading: true);
+      state = state.copyWith(loading: false, status: "pending");
 
-  //     await api.submitAddressCode({
-  //       "addressVerificationCode": code,
-  //     });
+      return true;
+    } catch (e) {
+      if (e is DioException) {
+        print("❌ VERIFY ERROR => ${e.response?.data}");
+      } else {
+        print("❌ ERROR => $e");
+      }
 
-  //     /// 🔥 REFRESH AFTER SUBMIT
-  //     await fetchVerification();
-  //   } catch (e) {
-  //     state = state.copyWith(
-  //       loading: false,
-  //       error: e.toString(),
-  //     );
-  //   }
-  // }
+      state = state.copyWith(loading: false, error: e.toString());
 
-  // /// 🔥 SEND VERIFICATION REQUEST
-  // Future<void> sendRequest() async {
-  //   try {
-  //     state = state.copyWith(loading: true);
+      return false;
+    }
+  }
 
-  //     await api.sendVerificationRequest();
-
-  //     await fetchVerification();
-  //   } catch (e) {
-  //     state = state.copyWith(
-  //       loading: false,
-  //       error: e.toString(),
-  //     );
-  //   }
-  // }
-
+ 
 }

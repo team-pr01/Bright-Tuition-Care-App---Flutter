@@ -1,6 +1,6 @@
+import 'package:btcclient/features/auth/data/models/testimonial_model.dart';
 import 'package:flutter/material.dart';
 import '../../../core/config/theme.dart';
-import '../../models/testimonial_model.dart';
 import 'testimonial_card.dart';
 
 class TestimonialSection extends StatefulWidget {
@@ -26,9 +26,8 @@ class _TestimonialSectionState
   void initState() {
     super.initState();
 
-    /// SHOW PREVIEW OF SIDE CARDS
     _controller = PageController(
-      viewportFraction: 0.92, // controls preview amount
+      viewportFraction: 0.92,
     );
   }
 
@@ -40,9 +39,16 @@ class _TestimonialSectionState
 
   @override
   Widget build(BuildContext context) {
+
+    /// 🔥 SAFETY: HANDLE EMPTY STATE
+    if (widget.testimonials.isEmpty) {
+      return const SizedBox(); // or loader / placeholder
+    }
+
     return Column(
       children: [
 
+        /// SLIDER
         SizedBox(
           height: 160,
           child: PageView.builder(
@@ -53,15 +59,13 @@ class _TestimonialSectionState
                 _currentIndex = index;
               });
             },
-
-            /// GAP BETWEEN CARDS
             itemBuilder: (context, index) {
+              final item = widget.testimonials[index];
+
               return Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 3),
+                padding: const EdgeInsets.symmetric(horizontal: 3),
                 child: TestimonialCard(
-                  testimonial:
-                      widget.testimonials[index],
+                  testimonial: item,
                 ),
               );
             },
@@ -72,25 +76,19 @@ class _TestimonialSectionState
 
         /// DOT INDICATOR
         Row(
-          mainAxisAlignment:
-              MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(
             widget.testimonials.length,
             (index) => AnimatedContainer(
-              duration:
-                  const Duration(milliseconds: 250),
-              margin:
-                  const EdgeInsets.symmetric(horizontal: 4),
-              width: _currentIndex == index
-                  ? 16
-                  : 6,
+              duration: const Duration(milliseconds: 250),
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              width: _currentIndex == index ? 16 : 6,
               height: 6,
               decoration: BoxDecoration(
                 color: _currentIndex == index
                     ? AppColors.primary01
                     : Colors.grey[300],
-                borderRadius:
-                    BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
           ),

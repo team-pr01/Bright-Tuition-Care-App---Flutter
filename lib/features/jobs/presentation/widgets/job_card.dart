@@ -101,7 +101,7 @@ class JobCard extends ConsumerWidget {
               /// RIGHT ILLUSTRATION (optional)
               ///
               Opacity(
-                opacity: 0.6,
+                opacity: 0.3,
                 child: SvgPicture.asset(iconPath, height: 60),
               ),
             ],

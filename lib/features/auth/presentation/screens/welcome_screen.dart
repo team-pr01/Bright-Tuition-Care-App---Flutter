@@ -1,48 +1,33 @@
-import 'package:btcclient/core/models/testimonial_model.dart';
 import 'package:btcclient/core/widgets/testimonial/testimonial_section.dart';
+import 'package:btcclient/features/auth/presentation/provider/testimonial_notifier.dart';
 import 'package:btcclient/features/auth/presentation/screens/login_screen.dart';
 import 'package:btcclient/features/auth/presentation/screens/register_screen.dart';
 import 'package:btcclient/features/auth/presentation/widgets/welcome_nav_link.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/config/theme.dart';
 import '../../../../core/widgets/button/app_button.dart';
 
-final testimonials = [
-  TestimonialModel(
-    name: "Ahnof Rahat",
-    role: "Tutor",
-    message:
-        "Bright Tuition Care is the best platform for finding new tutoring opportunities... I found the perfect tutor within 24 hours. Highly recommended!",
-    image: "assets/images/user.jpg",
-  ),
-  TestimonialModel(
-    name: "Sarah Khan",
-    role: "Student",
-    message:
-        "I found the perfect tutor within 24 hours. Highly recommended I found the perfect tutor within 24 hours. Highly recommended!!",
-    image: "assets/images/user2.jpg",
-  ),
-  TestimonialModel(
-    name: "Sarah Beg",
-    role: "Student",
-    message:
-        "I found the perfect tutor within 24 hours. Highly recommended I found the perfect tutor within 24 hours. Highly recommended!!",
-    image: "assets/images/user2.jpg",
-  ),
-  TestimonialModel(
-    name: "Sarah Niyazi",
-    role: "Student",
-    message: "I found the perfect tutor within 24 hours.",
-    image: "assets/images/user2.jpg",
-  ),
-];
-
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends ConsumerStatefulWidget {
   const WelcomeScreen({super.key});
 
   @override
+  ConsumerState<WelcomeScreen> createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      ref.read(testimonialProvider).fetchTestimonials();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final state = ref.watch(testimonialProvider);
     return Scaffold(
       backgroundColor: AppColors.primary02,
       body: Stack(
@@ -262,7 +247,14 @@ class WelcomeScreen extends StatelessWidget {
                   ),
 
                   /// TESTIMONIAL FULL WIDTH (NO PADDING)
-                  TestimonialSection(testimonials: testimonials),
+                  state.isLoading
+                      ? const Padding(
+                          padding: EdgeInsets.all(20),
+                          child: CircularProgressIndicator(),
+                        )
+                      : state.testimonials.isEmpty
+                      ? const SizedBox()
+                      : TestimonialSection(testimonials: state.testimonials),
 
                   const SizedBox(height: 20),
                 ],
@@ -274,4 +266,3 @@ class WelcomeScreen extends StatelessWidget {
     );
   }
 }
-

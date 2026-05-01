@@ -160,19 +160,6 @@ class GuardianDashboardScreen extends ConsumerWidget {
         /// sidebar extra links
         menuItemsCommon: [
           SidebarItem(
-            label: "Refer and Earn",
-            icon: SvgPicture.asset(
-              "assets/icons/navigations/refer.svg",
-              width: 20,
-              height: 20,
-              colorFilter: const ColorFilter.mode(
-                Colors.white,
-                BlendMode.srcIn,
-              ),
-            ),
-            onTap: () {},
-          ),
-          SidebarItem(
             label: "Share The App",
             icon: SvgPicture.asset(
               "assets/icons/navigations/share.svg",
@@ -262,7 +249,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
           initialStatus: status, // 🔥 IMPORTANT
         ),
 
-        (changeTab, status) => PostJobPage( changeTab: changeTab,),
+        (changeTab, status) => PostJobPage( changeTab: changeTab),
 
         (changeTab, status) => GuardianHomeScreen(
           changeTab: changeTab, // 🔥 PASS IT

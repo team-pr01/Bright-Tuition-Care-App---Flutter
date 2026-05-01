@@ -1,5 +1,6 @@
-import 'package:btcclient/core/models/testimonial_model.dart';
+
 import 'package:btcclient/core/widgets/start_rating/start_rating.dart';
+import 'package:btcclient/features/auth/data/models/testimonial_model.dart';
 import 'package:flutter/material.dart';
 import '../../../core/config/theme.dart';
 
@@ -28,7 +29,7 @@ class _TestimonialCardState extends State<TestimonialCard> {
   void _checkOverflow() {
     final textPainter = TextPainter(
       text: TextSpan(
-        text: widget.testimonial.message,
+        text: widget.testimonial.review,
         style: Theme.of(context).textTheme.bodyMedium,
       ),
       maxLines: 3,
@@ -119,11 +120,11 @@ class _TestimonialCardState extends State<TestimonialCard> {
                             shape: BoxShape.circle,
                           ),
                           child: CircleAvatar(
-                            radius: 48,
-                            backgroundImage: AssetImage(
-                              widget.testimonial.image,
-                            ),
-                          ),
+  radius: 48,
+  backgroundImage: widget.testimonial.image.isNotEmpty
+      ? NetworkImage(widget.testimonial.image)
+      : const AssetImage("assets/images/user.jpg") as ImageProvider,
+),
                         ),
                       ),
                     ),
@@ -178,7 +179,7 @@ class _TestimonialCardState extends State<TestimonialCard> {
                       ),
                       child: Text(
                         textAlign: TextAlign.center,
-                        widget.testimonial.message,
+                        widget.testimonial.review,
                         style: Theme.of(
                           context,
                         ).textTheme.bodyMedium!.copyWith(height: 1.5),
@@ -210,8 +211,10 @@ class _TestimonialCardState extends State<TestimonialCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CircleAvatar(
-              radius: 30,
-              backgroundImage: AssetImage(widget.testimonial.image),
+              radius: 48,
+              backgroundImage: widget.testimonial.image.isNotEmpty
+                  ? NetworkImage(widget.testimonial.image)
+                  : const AssetImage("assets/images/user.jpg") as ImageProvider,
             ),
 
             const SizedBox(width: AppSpacing.sm),
@@ -245,7 +248,7 @@ class _TestimonialCardState extends State<TestimonialCard> {
                       children: [
                         Expanded(
                           child: Text(
-                            widget.testimonial.message,
+                            widget.testimonial.review,
                             maxLines: 3,
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.bodyMedium!

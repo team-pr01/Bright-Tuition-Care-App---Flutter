@@ -1,9 +1,11 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/core/widgets/reusable_bottom_sheet/reusable_bottom_sheet.dart';
+import 'package:btcclient/features/settings/prersentation/provider/verification_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-void showVerificationModal(BuildContext context) {
+void showVerificationModal(BuildContext context, WidgetRef ref) {
   bool isLoading = false;
   bool isSuccess = false;
 
@@ -20,16 +22,6 @@ void showVerificationModal(BuildContext context) {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                /// CLOSE
-                Align(
-                  alignment: Alignment.topRight,
-                  child: GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: const Icon(Icons.close),
-                  ),
-                ),
-
-                const SizedBox(height: AppSpacing.sm),
 
                 /// ICON
                 Container(
@@ -41,13 +33,9 @@ void showVerificationModal(BuildContext context) {
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
-                    isSuccess
-                        ? Icons.check_circle
-                        : Icons.verified_user,
+                    isSuccess ? Icons.check_circle : Icons.verified_user,
                     size: 40,
-                    color: isSuccess
-                        ? Colors.green
-                        : AppColors.primary01,
+                    color: isSuccess ? Colors.green : AppColors.primary01,
                   ),
                 ),
 
@@ -87,7 +75,8 @@ void showVerificationModal(BuildContext context) {
                       const SizedBox(width: AppSpacing.sm),
                       Expanded(
                         child: AppButton(
-                          label: isLoading ? "Sending..." : "Yes",
+                          label: "Yes",
+                          loading: isLoading,
                           variant: AppButtonVariant.gradient,
                           onPressed: isLoading
                               ? null
@@ -95,14 +84,18 @@ void showVerificationModal(BuildContext context) {
                                   setState(() => isLoading = true);
 
                                   try {
-                                    /// 🔥 API CALL HERE
-                                    await Future.delayed(
-                                        const Duration(seconds: 1));
+                                    final success = await ref
+                                        .read(verificationProvider.notifier)
+                                        .sendRequest();
 
-                                    setState(() {
-                                      isLoading = false;
-                                      isSuccess = true;
-                                    });
+                                    if (success) {
+                                      setState(() {
+                                        isLoading = false;
+                                        isSuccess = true;
+                                      });
+                                    } else {
+                                      setState(() => isLoading = false);
+                                    }
                                   } catch (e) {
                                     setState(() => isLoading = false);
                                   }
@@ -123,7 +116,7 @@ void showVerificationModal(BuildContext context) {
                   ),
               ],
             ),
-          );
+          );  
         },
       );
     },

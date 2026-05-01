@@ -54,7 +54,7 @@ class Step3Form extends ConsumerWidget {
             ),
           ),
 
-          const SizedBox(height: 12),
+         
 
           /// 🔥 AREA
           FormHelpers.field(
@@ -71,7 +71,7 @@ class Step3Form extends ConsumerWidget {
             ),
           ),
 
-          const SizedBox(height: 12),
+         
 
           /// 🔥 ADDRESS
           FormHelpers.field(

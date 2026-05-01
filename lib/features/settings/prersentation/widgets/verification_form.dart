@@ -3,21 +3,23 @@ import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/features/settings/prersentation/widgets/build_verification_step.dart';
 import 'package:btcclient/features/settings/prersentation/widgets/card_wrapper.dart';
 import 'package:btcclient/features/settings/prersentation/widgets/show_verification_modal.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 Widget verificationForm(
   BuildContext context,
   ThemeData theme,
+  WidgetRef ref,
   bool isVerified,
   bool hasRequested,
   String? currentStepFromApi,
   String? addressCode,
 ) {
-  /// 🔥 fallback (first step)
-  final currentStep =
-      currentStepFromApi ?? "pending";
+  final currentStep = currentStepFromApi ?? "idle";
 
-  if (!hasRequested && !isVerified) {
+  /// 🔥 CASE 1 → NO REQUEST YET
+  if (currentStep == "idle") {
     return cardWrapper(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,7 +42,7 @@ Widget verificationForm(
             label: "Request for Verification",
             variant: AppButtonVariant.gradient,
             onPressed: () {
-              showVerificationModal(context);
+              showVerificationModal(context, ref);
             },
           ),
         ],
@@ -48,7 +50,7 @@ Widget verificationForm(
     );
   }
 
-  /// 🔥 SAME AS REACT
+  /// 🔥 CASE 2 → ALL OTHER STATES (pending → verified)
   return cardWrapper(
     child: buildVerificationStep(
       theme: theme,
