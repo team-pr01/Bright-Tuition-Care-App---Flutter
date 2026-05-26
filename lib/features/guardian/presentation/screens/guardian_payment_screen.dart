@@ -1,6 +1,7 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/widgets/dashboard/action_card.dart';
 import 'package:btcclient/core/widgets/helpline_card/helpline_card.dart';
+import 'package:btcclient/features/invoices/presentation/screen/invoice_page.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -16,9 +17,7 @@ class GuardianPaymentScreen extends StatelessWidget {
           builder: (context, constraints) {
             return SingleChildScrollView(
               child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight,
-                ),
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: IntrinsicHeight(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -32,12 +31,18 @@ class GuardianPaymentScreen extends StatelessWidget {
                           description:
                               "A one-time fee of BDT 500 is required to complete the profile verification process, ensuring authenticity and trustworthiness on our platform.",
                           buttonText: "Click Here",
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    InvoiceScreen(role: "guardian"),
+                              ),
+                            );
+                          },
                         ),
 
                         const SizedBox(height: 16),
-
-                       
 
                         /// pushes helpline to bottom
                         const Spacer(),

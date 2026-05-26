@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class TutorPaymentScreen extends StatelessWidget {
-  const TutorPaymentScreen({super.key});
+  final Function(int) changeTab;
+
+  const TutorPaymentScreen({super.key, required this.changeTab});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,9 @@ class TutorPaymentScreen extends StatelessWidget {
                           description:
                               "A one-time platform fee is applicable after a tutor successfully confirms a tuition job. This fee is charged separately for each tuition job processed through the platform.",
                           buttonText: "Click Here",
-                          onPressed: () {},
+                          onPressed: () {
+                            changeTab(1);
+                          },
                         ),
 
                         const SizedBox(height: 16),
@@ -42,7 +46,9 @@ class TutorPaymentScreen extends StatelessWidget {
                           description:
                               "A one-time fee of BDT 500 is required to complete the profile verification process, ensuring authenticity and trustworthiness on our platform.",
                           buttonText: "Click Here",
-                          onPressed: () {},
+                          onPressed: () {
+                            changeTab(1);
+                          },
                         ),
 
                         const SizedBox(height: 16),

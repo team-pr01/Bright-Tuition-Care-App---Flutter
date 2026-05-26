@@ -9,6 +9,8 @@ import 'package:btcclient/features/guardian/presentation/screens/guardian_dashbo
 import 'package:btcclient/features/guardian/presentation/screens/guardian_payment_screen.dart';
 import 'package:btcclient/features/guardian/presentation/screens/how_it_works_screen.dart';
 import 'package:btcclient/features/hire_tutor/presentation/screen/post_job_page.dart';
+import 'package:btcclient/features/invoices/presentation/provider/invoice_provider.dart';
+import 'package:btcclient/features/invoices/presentation/screen/invoice_page.dart';
 import 'package:btcclient/features/jobs/presentation/screen/job_page.dart';
 import 'package:btcclient/features/legal/data/important_guidelines_data.dart';
 import 'package:btcclient/features/legal/presentation/important_guidelines_screen.dart';
@@ -136,6 +138,27 @@ class GuardianDashboardScreen extends ConsumerWidget {
             },
           ),
           SidebarItem(
+            label: "Invoices",
+            icon: SvgPicture.asset(
+              "assets/icons/navigations/invoice.svg",
+              width: 20,
+              height: 20,
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
+              ),
+            ),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const InvoiceScreen(role: "guardian"),
+                ),
+              );
+            },
+          ),
+          SidebarItem(
             label: "Settings",
             icon: SvgPicture.asset(
               "assets/icons/navigations/settings.svg",
@@ -151,7 +174,9 @@ class GuardianDashboardScreen extends ConsumerWidget {
 
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SettingScreen(role:"guardian")),
+                MaterialPageRoute(
+                  builder: (context) => SettingScreen(role: "guardian"),
+                ),
               );
             },
           ),
@@ -233,7 +258,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
 
         onLogout: () async {
           await ref.read(authProvider.notifier).logout();
-
+          ref.read(invoiceProvider.notifier).clear();
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (_) => const WelcomeScreen()),
@@ -249,7 +274,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
           initialStatus: status, // 🔥 IMPORTANT
         ),
 
-        (changeTab, status) => PostJobPage( changeTab: changeTab),
+        (changeTab, status) => PostJobPage(changeTab: changeTab),
 
         (changeTab, status) => GuardianHomeScreen(
           changeTab: changeTab, // 🔥 PASS IT

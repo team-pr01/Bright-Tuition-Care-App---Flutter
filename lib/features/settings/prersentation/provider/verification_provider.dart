@@ -1,3 +1,4 @@
+import 'package:btcclient/features/settings/data/requests/submit_address_code_request.dart';
 import 'package:btcclient/features/settings/data/verification_api.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -39,19 +40,23 @@ class VerificationNotifier extends StateNotifier<VerificationState> {
   VerificationNotifier()
     : super(
         VerificationState(
-          status: "idle", // 🔥 default FIRST STEP
+          status: "pending", // 🔥 default FIRST STEP
         ),
       );
-   final api = VerificationApi();
+  final api = VerificationApi();
   Future<void> fetchVerification() async {
     try {
       state = state.copyWith(loading: true, error: null);
 
       final res = await api.getMyRequest();
       final data = res.data["data"];
-
+      print("========== VERIFICATION API ==========");
+      print(res.data);
+      print("STATUS => ${data?["status"]}");
+      print("ADDRESS CODE => ${data?["addressVerificationCode"]}");
+      print("======================================");
       state = state.copyWith(
-        status: data?["status"] ?? "idle",
+        status: data?["status"],
         addressCode: data?["addressVerificationCode"],
         loading: false,
       );
@@ -83,5 +88,33 @@ class VerificationNotifier extends StateNotifier<VerificationState> {
     }
   }
 
- 
+  Future<bool> submitAddressCode(String code) async {
+    try {
+      state = state.copyWith(loading: true, error: null);
+
+      final request = SubmitAddressCodeRequest(addressVerificationCode: code);
+
+      final response = await api.submitAddressCode(request);
+
+      final success = response.data["success"] == true;
+
+      await fetchVerification();
+
+      state = state.copyWith(loading: false);
+
+      return success;
+    } catch (e) {
+      String errorMessage = "Something went wrong";
+
+      if (e is DioException) {
+        errorMessage = e.response?.data["message"] ?? e.message ?? errorMessage;
+
+        print("❌ ADDRESS CODE ERROR => ${e.response?.data}");
+      }
+
+      state = state.copyWith(loading: false, error: errorMessage);
+
+      return false;
+    }
+  }
 }

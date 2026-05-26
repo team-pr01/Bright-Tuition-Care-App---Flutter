@@ -1,29 +1,113 @@
 import 'package:btcclient/core/config/theme.dart';
+
 import 'package:flutter/material.dart';
 
-Widget verificationSuccess(ThemeData theme) {
-  return Container(
-    padding: const EdgeInsets.all(AppSpacing.lg),
-    decoration: BoxDecoration(
-      color: Colors.green.withOpacity(0.05),
-      borderRadius: BorderRadius.circular(AppRadius.large),
-    ),
-    child: Column(
-      children: [
-        const Icon(Icons.verified, size: 60, color: Colors.green),
+Widget verificationSuccess() {
 
-        const SizedBox(height: AppSpacing.md),
+  return Center(
+    child: Container(
 
-        Text("Verification Complete",
-            style: theme.textTheme.headlineSmall),
+      width: double.infinity,
 
-        const SizedBox(height: AppSpacing.sm),
+      padding: const EdgeInsets.all(
+        AppSpacing.xl,
+      ),
 
-        Text(
-          "Your profile has been successfully verified",
-          textAlign: TextAlign.center,
+      decoration: BoxDecoration(
+
+        color:
+            Colors.green.withOpacity(
+          0.05,
         ),
-      ],
+
+        borderRadius:
+            BorderRadius.circular(
+          AppRadius.large,
+        ),
+
+        border: Border.all(
+          color:
+              Colors.green.withOpacity(
+            0.15,
+          ),
+        ),
+      ),
+
+      child: Column(
+        mainAxisSize:
+            MainAxisSize.min,
+
+        children: [
+
+          /// ================= ICON =================
+          Container(
+            width: 90,
+            height: 90,
+
+            decoration: BoxDecoration(
+              color:
+                  Colors.green
+                      .withOpacity(
+                0.1,
+              ),
+
+              shape:
+                  BoxShape.circle,
+            ),
+
+            child: const Icon(
+              Icons.verified,
+
+              size: 50,
+
+              color: Colors.green,
+            ),
+          ),
+
+          const SizedBox(
+            height:
+                AppSpacing.lg,
+          ),
+
+          /// ================= TITLE =================
+          Text(
+            "Verification Complete 🎉",
+
+            textAlign:
+                TextAlign.center,
+
+            style: AppTextStyles
+                .headlineSmall
+                .copyWith(
+              color: Colors.green,
+              fontWeight:
+                  FontWeight.w700,
+            ),
+          ),
+
+          const SizedBox(
+            height:
+                AppSpacing.sm,
+          ),
+
+          /// ================= DESCRIPTION =================
+          Text(
+            "Your profile has been successfully verified.",
+
+            textAlign:
+                TextAlign.center,
+
+            style: AppTextStyles
+                .bodyMedium
+                .copyWith(
+              color:
+                  AppColors
+                      .neutrals03,
+              height: 1.5,
+            ),
+          ),
+        ],
+      ),
     ),
   );
 }

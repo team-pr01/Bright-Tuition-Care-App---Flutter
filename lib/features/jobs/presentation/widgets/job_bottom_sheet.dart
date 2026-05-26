@@ -274,164 +274,170 @@ class JobBottomSheet extends ConsumerWidget {
               Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  spacing: AppSpacing.lg,
+                  spacing: AppSpacing.md,
                   children: [
-                    AppButton(
-                      label: "Direction",
-                      onPressed: () async {
-                        final url = job.locationDirection;
-
-                        if (url == null || url.isEmpty) {
-                          debugPrint("URL is empty");
-                          return;
-                        }
-
-                        final uri = Uri.parse(url);
-
-                        try {
-                          await launchUrl(
-                            uri,
-                            mode:
-                                LaunchMode.externalApplication, // 🔥 IMPORTANT
-                          );
-                        } catch (e) {
-                          debugPrint("Launch failed: $e");
-                        }
-                      },
-                      variant: AppButtonVariant.outlineGray,
-                      height: 40,
-                      width: 120,
+                    Expanded(
+                      child: AppButton(
+                        label: "Direction",
+                        onPressed: () async {
+                          final url = job.locationDirection;
+                      
+                          if (url == null || url.isEmpty) {
+                            debugPrint("URL is empty");
+                            return;
+                          }
+                      
+                          final uri = Uri.parse(url);
+                      
+                          try {
+                            await launchUrl(
+                              uri,
+                              mode:
+                                  LaunchMode.externalApplication, // 🔥 IMPORTANT
+                            );
+                          } catch (e) {
+                            debugPrint("Launch failed: $e");
+                          }
+                        },
+                        variant: AppButtonVariant.outlineGray,
+                        height: 40,
+                        width: 120,
+                      ),
                     ),
 
                     /// APPLY BUTTON
                     if (variant != JobCardVariant.postedJob) ...[
-                      AppButton(
-                        label: isApplied ? "Undo Apply" : "Apply",
-                        onPressed: () async {
-                          final user = ref.read(authProvider).user;
-
-                          if (user == null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Please login first"),
-                              ),
-                            );
-                            return;
-                          }
-
-                          try {
-                            if (isApplied) {
-                              // 🔥 WITHDRAW FLOW
-
-                              final application = job.applications
-                                  ?.where((app) => app.userId == user?.id)
-                                  .cast<AppliedModel?>()
-                                  .firstOrNull;
-                              if (application == null) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("Application not found"),
-                                  ),
-                                );
-                                return;
-                              }
-
-                              final success = await ref
-                                  .read(jobsProvider.notifier)
-                                  .withdrawApplication(
-                                    applicationId: application.applicationId!,
-                                  );
-
-                              if (success) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("Withdraw successful"),
-                                  ),
-                                );
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("Withdraw failed"),
-                                  ),
-                                );
-                              }
-                            } else {
-                              // 🔥 APPLY FLOW
-
-                              final success = await ref
-                                  .read(jobsProvider.notifier)
-                                  .applyJob(jobId: job.id!, userId: user.id);
-
-                              if (success) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("Applied successfully"),
-                                  ),
-                                );
-
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) =>
-                                        const TutorDashboardScreen(),
-                                  ),
-                                );
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("Failed to apply"),
-                                  ),
-                                );
-                              }
+                      Expanded(
+                        child: AppButton(
+                          label: isApplied ? "Undo Apply" : "Apply",
+                          onPressed: () async {
+                            final user = ref.read(authProvider).user;
+                        
+                            if (user == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Please login first"),
+                                ),
+                              );
+                              return;
                             }
-                          } catch (e) {
-                            print("❌ ERROR: $e");
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Something went wrong"),
-                              ),
-                            );
-                          }
-                        },
-                        variant: AppButtonVariant.gradient,
-                        height: 40,
-                        width: 160,
-                        icon: isApplied ? Icons.undo : Icons.arrow_forward,
+                        
+                            try {
+                              if (isApplied) {
+                                // 🔥 WITHDRAW FLOW
+                        
+                                final application = job.applications
+                                    ?.where((app) => app.userId == user?.id)
+                                    .cast<AppliedModel?>()
+                                    .firstOrNull;
+                                if (application == null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("Application not found"),
+                                    ),
+                                  );
+                                  return;
+                                }
+                        
+                                final success = await ref
+                                    .read(jobsProvider.notifier)
+                                    .withdrawApplication(
+                                      applicationId: application.applicationId!,
+                                    );
+                        
+                                if (success) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("Withdraw successful"),
+                                    ),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("Withdraw failed"),
+                                    ),
+                                  );
+                                }
+                              } else {
+                                // 🔥 APPLY FLOW
+                        
+                                final success = await ref
+                                    .read(jobsProvider.notifier)
+                                    .applyJob(jobId: job.id!, userId: user.id);
+                        
+                                if (success) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("Applied successfully"),
+                                    ),
+                                  );
+                        
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          const TutorDashboardScreen(),
+                                    ),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("Failed to apply"),
+                                    ),
+                                  );
+                                }
+                              }
+                            } catch (e) {
+                              print("❌ ERROR: $e");
+                        
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Something went wrong"),
+                                ),
+                              );
+                            }
+                          },
+                          variant: AppButtonVariant.gradient,
+                          height: 40,
+                          width: 160,
+                          icon: isApplied ? Icons.undo : Icons.arrow_forward,
+                        ),
                       ),
                     ],
                     if (variant == JobCardVariant.postedJob) ...[
-                      AppButton(
-                        label: "Edit Job",
-                        onPressed: () {
-                          ref.read(postJobProvider.notifier).setEditData({
-                            "_id": job.id,
-                            "tuitionType": job.tuitionType,
-                            "category": job.category,
-                            "curriculum": job.curriculum,
-                            "class": job.classes,
-                            "subjects": job.subjects,
-                            "tutoringDays": job.tutoringDays,
-                            "tutoringTime": job.tutoringTime,
-                            "salary": job.salary,
-                            "studentGender": job.studentGender,
-                            "preferredTutorGender": job.preferredTutorGender,
-                            "numberOfStudents": job.numberOfStudents,
-                            "studentsInstituteName": job.instituteName,
-                            "otherRequirements": job.otherRequirements,
-                            "city": job.city,
-                            "area": job.area,
-                            "address": job.address,
-                          });
-
-                          Navigator.pop(context); // 🔥 CLOSE SHEET FIRST
-
-                          changeTab(1); // 🔥 SWITCH TAB
-                        },
-                        variant: AppButtonVariant.gradient,
-                        height: 40,
-                        width: 160,
-                        icon: Icons.edit,
+                      Expanded(
+                        child: AppButton(
+                          label: "Edit Job",
+                          onPressed: () {
+                            ref.read(postJobProvider.notifier).setEditData({
+                              "_id": job.id,
+                              "tuitionType": job.tuitionType,
+                              "category": job.category,
+                              "curriculum": job.curriculum,
+                              "class": job.classes,
+                              "subjects": job.subjects,
+                              "tutoringDays": job.tutoringDays,
+                              "tutoringTime": job.tutoringTime,
+                              "salary": job.salary,
+                              "studentGender": job.studentGender,
+                              "preferredTutorGender": job.preferredTutorGender,
+                              "numberOfStudents": job.numberOfStudents,
+                              "studentsInstituteName": job.instituteName,
+                              "otherRequirements": job.otherRequirements,
+                              "city": job.city,
+                              "area": job.area,
+                              "address": job.address,
+                            });
+                        
+                            Navigator.pop(context); // 🔥 CLOSE SHEET FIRST
+                        
+                            changeTab(1); // 🔥 SWITCH TAB
+                          },
+                          variant: AppButtonVariant.gradient,
+                          height: 40,
+                          width: 160,
+                          icon: Icons.edit,
+                        ),
                       ),
                     ],
                   ],

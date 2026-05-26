@@ -15,8 +15,8 @@ Widget lockForm( BuildContext context,ThemeData theme, bool isProfileLocked) {
 
           Text(
             isProfileLocked
-                ? "Your profile is now unlocked and you can edit it whenever you want."
-                : "Your profile is now locked and you can't edit it until you unlock it.",
+                ? "Your profile is now locked and you can't edit it until you unlock it."
+                : "Your profile is now unlocked and you can edit it whenever you want.",
             style: theme.textTheme.bodyMedium?.copyWith(
               color: AppColors.neutrals03,
             ),

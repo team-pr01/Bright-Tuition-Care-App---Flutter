@@ -13,7 +13,7 @@ void showVerificationModal(BuildContext context, WidgetRef ref) {
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (context) {
+    builder: (context) { 
       final theme = Theme.of(context);
 
       return StatefulBuilder(

@@ -29,8 +29,8 @@ class _ContactFormState extends ConsumerState<ContactForm> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-final authState = ref.watch(authProvider);
-final isLoading = authState.loading;  
+    final authState = ref.watch(authProvider);
+    final isLoading = authState.loading;
     return cardWrapper(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -88,6 +88,8 @@ final isLoading = authState.loading;
                   .updateProfile({"phoneNumber": phone});
 
               if (success) {
+                phnoController.clear();
+                FocusScope.of(context).unfocus();
                 AppSnackbar.show(
                   context,
                   "Profile updated successfully",

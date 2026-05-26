@@ -163,45 +163,6 @@ class _GuardianJobApplicationState
                   /// DATE + CLEAR
                   Row(
                     children: [
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () async {
-                            final picked = await showDatePicker(
-                              context: context,
-                              initialDate: selectedDate ?? DateTime.now(),
-                              firstDate: DateTime(2020),
-                              lastDate: DateTime(2100),
-                            );
-
-                            if (picked != null) {
-                              setState(() => selectedDate = picked);
-
-                              notifier.applyFilters(
-                                jobId: widget.jobId,
-                                newStatus: selectedStatus == "All"
-                                    ? ""
-                                    : selectedStatus,
-                                newKeyword: searchController.text,
-                                newDate: picked
-                                    .toIso8601String()
-                                    .split("T")
-                                    .first,
-                                newLimit: selectedLimit,
-                              );
-                            }
-                          },
-                          child: AbsorbPointer(
-                            child: AppInputField(
-                              label: "Demo Date",
-                              controller: dateController,
-                              hint: "Select Date",
-                              suffixIcon: const Icon(Icons.calendar_today),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(width: 10),
 
                       Expanded(
                         child: AppButton(

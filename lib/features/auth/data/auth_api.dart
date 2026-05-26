@@ -139,7 +139,7 @@ Future<Response> changePassword({
 Future<Response> requestUnlockProfile({
   required String reason,
 }) async {
-  return await DioClient.dio.post(
+  return await DioClient.dio.patch(
     "/user/request-to-unlock-profile",
     data: {
       "unlockRequestReason": reason,

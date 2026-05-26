@@ -19,12 +19,13 @@ class NoticeBottomSheet extends StatefulWidget {
 
 class _NoticeBottomSheetState extends State<NoticeBottomSheet> {
   late PageController _controller;
-
+  int currentIndex = 0;
   @override
-  void initState() {
-    super.initState();
-    _controller = PageController(initialPage: widget.initialIndex);
-  }
+void initState() {
+  super.initState();
+  currentIndex = widget.initialIndex; // 🔥 important
+  _controller = PageController(initialPage: widget.initialIndex);
+}
 
   @override
   void dispose() {
@@ -34,21 +35,47 @@ class _NoticeBottomSheetState extends State<NoticeBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    
    return ReusableBottomSheet(
   child: SizedBox(
-    height: 250,
-    child: PageView.builder(
-      controller: _controller,
-      itemCount: widget.notices.length,
-      itemBuilder: (context, index) {
+  height: 250,
+  child: PageView.builder(
+    controller: _controller,
+    itemCount: widget.notices.length,
 
-        final notice = widget.notices[index];
+    onPageChanged: (index) {
+      setState(() {
+        currentIndex = index;
+      });
+    },
 
-        return SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+    itemBuilder: (context, index) {
+      final notice = widget.notices[index];
 
+      return SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+
+            /// DOT INDICATOR
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                widget.notices.length,
+                (i) => AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  height: 6,
+                  width: currentIndex == i ? 20 : 6,
+                  decoration: BoxDecoration(
+                    color: currentIndex == i
+                        ? AppColors.primary01
+                        : Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+            ),
               /// HEADER
               Row(
                 children: [
@@ -84,6 +111,7 @@ class _NoticeBottomSheetState extends State<NoticeBottomSheet> {
                     .copyWith(height: 1.5),
               ),
             ],
+            
           ),
         );
       },

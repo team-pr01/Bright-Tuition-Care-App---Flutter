@@ -12,7 +12,7 @@ Widget deleteForm( BuildContext context,ThemeData theme) {
           Text(
             "Delete Account",
             style: theme.textTheme.headlineSmall?.copyWith(
-              color: AppColors.error,
+              color: AppColors.backgroundDark,
             ),
           ),
 
@@ -20,7 +20,7 @@ Widget deleteForm( BuildContext context,ThemeData theme) {
 
           Text(
             "Are you sure you want to delete your account? This action cannot be undone. Please proceed with caution.",
-            style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.error),
+            style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.neutrals02),
           ),
 
           const SizedBox(height: AppSpacing.lg),

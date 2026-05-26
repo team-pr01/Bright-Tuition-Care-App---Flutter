@@ -8,6 +8,7 @@ import 'package:btcclient/features/auth/data/requests/signup_request.dart';
 import 'package:btcclient/features/auth/data/requests/verify_otp_request.dart';
 import 'package:btcclient/features/auth/data/requests/verify_reset_password_otp_request.dart';
 import 'package:btcclient/features/auth/presentation/provider/profile_notifier.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:btcclient/features/auth/data/requests/forgot_password_request.dart';
 import 'auth_state.dart';
@@ -249,24 +250,40 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-Future<bool> requestUnlockProfile(String reason) async {
-  try {
-      print("🚀 API CALLED with reason: $reason");
-    state = state.copyWith(loading: true, error: null);
+  Future<bool> requestUnlockProfile(String reason) async {
+    try {
+      state = state.copyWith(loading: true, error: null);
 
-    final success = await repo.requestUnlockProfile(reason);
+      print("🚀 REQUEST UNLOCK API CALLED");
 
-    // 🔥 VERY IMPORTANT: refresh profile
-    await ref.read(profileProvider.notifier).fetchProfile();
+      print("📤 REASON: $reason");
 
-    state = state.copyWith(loading: false);
+      final success = await repo.requestUnlockProfile(reason);
 
-    return success;
-  } catch (e) {
-    state = state.copyWith(loading: false, error: e.toString());
-    return false;
+      /// REFRESH PROFILE
+      await ref.read(profileProvider.notifier).fetchProfile();
+
+      state = state.copyWith(loading: false);
+
+      return success;
+    } catch (e) {
+      String errorMessage = "Something went wrong";
+
+      if (e is DioException) {
+        print("❌ STATUS CODE: ${e.response?.statusCode}");
+
+        print("❌ RESPONSE DATA: ${e.response?.data}");
+
+        errorMessage = e.response?.data["message"] ?? e.message ?? errorMessage;
+      } else {
+        errorMessage = e.toString();
+      }
+
+      state = state.copyWith(loading: false, error: errorMessage);
+
+      print("❌ ERROR: $errorMessage");
+
+      return false;
+    }
   }
 }
-
-}
-

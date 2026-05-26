@@ -1,3 +1,4 @@
+import 'package:btcclient/core/widgets/navbar/common_appbar.dart';
 import 'package:btcclient/features/legal/data/models/imprtant_guideline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,9 +16,7 @@ class ImportantGuidelinesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(document.title),
-      ),
+       appBar: const CommonAppBar(),
 
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.md),

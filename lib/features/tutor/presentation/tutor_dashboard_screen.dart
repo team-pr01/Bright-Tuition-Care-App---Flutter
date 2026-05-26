@@ -1,5 +1,7 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/layout/dashboard_layout.dart';
+import 'package:btcclient/features/invoices/presentation/provider/invoice_provider.dart';
+import 'package:btcclient/features/invoices/presentation/screen/invoice_page.dart';
 import 'package:btcclient/features/jobs/presentation/screen/job_page.dart';
 import 'package:btcclient/features/settings/prersentation/screens/setting_screen.dart';
 // import 'package:btcclient/features/jobs/presentation/screens/job_page.dart';
@@ -265,7 +267,7 @@ class TutorDashboardScreen extends ConsumerWidget {
 
         onLogout: () async {
           await ref.read(authProvider.notifier).logout();
-
+          ref.read(invoiceProvider.notifier).clear();
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (_) => const WelcomeScreen()),
@@ -276,12 +278,12 @@ class TutorDashboardScreen extends ConsumerWidget {
 
       pages: [
         (changeTab, status) => JobsPage(role: "tutor", changeTab: changeTab),
-
+        (changeTab, status) => const InvoiceScreen(role: "tutor"),
         (changeTab, status) => TutorHomeScreen(
           changeTab: changeTab, // 🔥 KEEP THIS
         ),
 
-        (changeTab, status) => const TutorPaymentScreen(),
+        (changeTab, status) => TutorPaymentScreen(changeTab: changeTab),
       ],
       navItems: [
         BottomNavigationBarItem(
