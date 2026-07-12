@@ -1,3 +1,4 @@
+import 'package:btcclient/core/widgets/testimonial/skeletons/testimonial_section_skeleton.dart';
 import 'package:btcclient/core/widgets/testimonial/testimonial_section.dart';
 import 'package:btcclient/features/auth/presentation/provider/testimonial_notifier.dart';
 import 'package:btcclient/features/auth/presentation/screens/login_screen.dart';
@@ -249,8 +250,10 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                   /// TESTIMONIAL FULL WIDTH (NO PADDING)
                   state.isLoading
                       ? const Padding(
-                          padding: EdgeInsets.all(20),
-                          child: CircularProgressIndicator(),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: AppSpacing.lg,
+                          ),
+                          child: TestimonialSectionSkeleton(),
                         )
                       : state.testimonials.isEmpty
                       ? const SizedBox()

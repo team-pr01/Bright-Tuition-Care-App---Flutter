@@ -25,7 +25,7 @@ class ReusableSearchBar extends StatelessWidget {
             color: AppColors.primary01.withOpacity(0.15),
             offset: const Offset(0, 2),
             blurRadius: 2,
-          )
+          ),
         ],
         color: AppColors.primary03,
         borderRadius: BorderRadius.circular(30),
@@ -51,20 +51,24 @@ class ReusableSearchBar extends StatelessWidget {
               onChanged: onChanged,
               onTap: onTap,
               style: Theme.of(context).textTheme.titleSmall,
+
               cursorColor: AppColors.primary01,
               decoration: InputDecoration(
                 hintText: "Search For Tuition",
-                hintStyle: Theme.of(context)
-                    .textTheme
-                    .titleSmall!
-                    .copyWith(
-                      color: AppColors.neutrals03,
-                      height: 1.5,
-                    ),
+                hintStyle: Theme.of(context).textTheme.titleSmall!.copyWith(
+                  color: AppColors.neutrals03,
+                  
+                  height: 1.5,
+                ),
 
                 /// 🔴 REMOVE DEFAULT BORDERS
                 border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                disabledBorder: InputBorder.none,
+                errorBorder: InputBorder.none,
                 isDense: true,
+                filled : false,
                 contentPadding: EdgeInsets.zero,
               ),
             ),

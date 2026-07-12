@@ -9,20 +9,22 @@ class DioClient {
       connectTimeout: const Duration(seconds: 20),
       receiveTimeout: const Duration(seconds: 20),
       headers: {'Content-Type': 'application/json'},
+      // ADD THIS
+      validateStatus: (status) => status != null && status < 500,
     ),
   )..interceptors.add(AuthInterceptor());
 }
 
 class AuthInterceptor extends Interceptor {
+  bool _isRefreshing = false;
+
+  Future<String?>? _refreshFuture;
   @override
   void onRequest(
-      RequestOptions options,
-      RequestInterceptorHandler handler) async {
-
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
     final token = await LocalStorage.getToken();
-
-    print("TOKEN FROM STORAGE: $token");
-
     if (token != null && token.isNotEmpty) {
       options.headers["Authorization"] = token;
     }
@@ -31,38 +33,96 @@ class AuthInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    if (err.response?.statusCode == 401) {
-      try {
-        final refreshToken = await LocalStorage.getRefreshToken();
-
-        if (refreshToken == null) {
-          return handler.next(err);
-        }
-
-        final response = await Dio().post(
-          "${Env.baseUrl}/auth/refresh-token",
-          data: {"refreshToken": refreshToken},
-        );
-
-        final newAccessToken = response.data["data"]["accessToken"];
-
-        await LocalStorage.saveToken(newAccessToken);
-
-        /// retry original request
-        final options = err.requestOptions;
-
-        options.headers["Authorization"] = newAccessToken;
-
-        final cloneReq = await DioClient.dio.fetch(options);
-
-        return handler.resolve(cloneReq);
-      } catch (e) {
-        await LocalStorage.clear();
-
-        return handler.next(err);
-      }
+    if (err.response?.statusCode != 401) {
+      return handler.next(err);
     }
 
-    handler.next(err);
+    try {
+      final options = err.requestOptions;
+
+      // Prevent infinite retry
+      if (options.extra["retry"] == true) {
+        await LocalStorage.clearSession();
+        return handler.next(err);
+      }
+
+      String? newToken;
+
+      if (_isRefreshing) {
+        newToken = await _refreshFuture;
+      } else {
+        _isRefreshing = true;
+        _refreshFuture = _refreshToken();
+
+        newToken = await _refreshFuture;
+
+        _isRefreshing = false;
+      }
+
+      if (newToken == null) {
+        await LocalStorage.clearSession();
+        return handler.next(err);
+      }
+
+      options.headers["Authorization"] = newToken;
+
+      options.extra["retry"] = true;
+
+      final response = await DioClient.dio.fetch(options);
+
+      return handler.resolve(response);
+    } catch (_) {
+      _isRefreshing = false;
+
+      await LocalStorage.clearSession();
+
+      return handler.next(err);
+    }
+  }
+
+  Future<String?> _refreshToken() async {
+    final refreshToken = await LocalStorage.getRefreshToken();
+
+    if (refreshToken == null) {
+      return null;
+    }
+
+    try {
+      final dio = Dio(
+        BaseOptions(
+          baseUrl: Env.baseUrl,
+          headers: {"Content-Type": "application/json"},
+        ),
+      );
+
+      final response = await dio.post(
+        "/auth/refresh-token",
+        data: {"refreshToken": refreshToken},
+      );
+
+      final responseData = response.data;
+
+      if (responseData["success"] != true) {
+        return null;
+      }
+
+      final data = responseData["data"];
+
+      if (data == null) {
+        return null;
+      }
+
+      final accessToken = data["accessToken"];
+
+      if (accessToken == null) {
+        return null;
+      }
+
+      await LocalStorage.saveToken(accessToken);
+
+      return accessToken;
+    } catch (_) {
+      return null;
+    }
   }
 }

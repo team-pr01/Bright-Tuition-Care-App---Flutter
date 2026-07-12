@@ -220,74 +220,77 @@ class AuthRepository {
   }
 
   Future<dynamic> updateProfile(Map<String, dynamic> body) async {
-  final response = await api.updateProfile(body);
+    final response = await api.updateProfile(body);
 
-  final responseData = response.data;
+    final responseData = response.data;
 
-  if (responseData["success"] != true) {
-    throw Exception(responseData["message"]);
+    if (responseData["success"] != true) {
+      throw Exception(responseData["message"]);
+    }
+
+    final role = responseData["data"]?["userId"]?["role"];
+
+    if (role == "guardian") {
+      return GuardianProfileModel.fromJson(responseData);
+    } else if (role == "tutor") {
+      return TutorProfileModel.fromJson(responseData);
+    } else {
+      throw Exception("Unknown role");
+    }
   }
 
-  final role = responseData["data"]?["userId"]?["role"];
+  Future<List<TestimonialModel>> getAllTestimonials() async {
+    final responses = await Future.wait([
+      api.getTutorTestimonials(),
+      api.getGuardianTestimonials(),
+    ]);
 
-  if (role == "guardian") {
-    return GuardianProfileModel.fromJson(responseData);
-  } else if (role == "tutor") {
-    return TutorProfileModel.fromJson(responseData);
-  } else {
-    throw Exception("Unknown role");
-  }
-} 
+    final tutorRes = responses[0];
+    final guardianRes = responses[1];
 
-Future<List<TestimonialModel>> getAllTestimonials() async {
-  final tutorRes = await api.getTutorTestimonials();
-  final guardianRes = await api.getGuardianTestimonials();
+    final tutorData = (tutorRes.data["data"] ?? []) as List;
+    final guardianData = (guardianRes.data["data"] ?? []) as List;
 
-  final tutorData = tutorRes.data["data"] as List;
-  final guardianData = guardianRes.data["data"] as List;
+    final tutors = tutorData.map((e) => TestimonialModel.fromJson(e)).toList();
 
-  final tutors =
-      tutorData.map((e) => TestimonialModel.fromJson(e)).toList();
+    final guardians = guardianData
+        .map((e) => TestimonialModel.fromJson(e))
+        .toList();
 
-  final guardians =
-      guardianData.map((e) => TestimonialModel.fromJson(e)).toList();
+    final combined = [...tutors, ...guardians];
 
-  final combined = [...tutors, ...guardians];
+    combined.shuffle();
 
-  combined.shuffle(); // 🔥 IMPORTANT
-
-  return combined;
-}
-
-Future<bool> changePassword({
-  required String currentPassword,
-  required String newPassword,
-}) async {
-  final response = await api.changePassword(
-    currentPassword: currentPassword,
-    newPassword: newPassword,
-  );
-
-  final responseData = response.data;
-
-  if (responseData["success"] != true) {
-    throw Exception(responseData["message"]);
+    return combined;
   }
 
-  return true;
-}
+  Future<bool> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    final response = await api.changePassword(
+      currentPassword: currentPassword,
+      newPassword: newPassword,
+    );
 
-Future<bool> requestUnlockProfile(String reason) async {
-  final response = await api.requestUnlockProfile(reason: reason);
+    final responseData = response.data;
 
-  final responseData = response.data;
+    if (responseData["success"] != true) {
+      throw Exception(responseData["message"]);
+    }
 
-  if (responseData["success"] != true) {
-    throw Exception(responseData["message"]);
+    return true;
   }
 
-  return true;
-}
+  Future<bool> requestUnlockProfile(String reason) async {
+    final response = await api.requestUnlockProfile(reason: reason);
 
+    final responseData = response.data;
 
+    if (responseData["success"] != true) {
+      throw Exception(responseData["message"]);
+    }
+
+    return true;
+  }
 }

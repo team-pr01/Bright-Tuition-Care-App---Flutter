@@ -9,9 +9,8 @@ const ImportantGuidelinesData importantGuidelinesData =
 
     ImportantGuidelineSection(
       title: "Important Notes for Tutors",
-      description: """
-At Bright Tuition Care, we prioritize the safety and professionalism of our tutors. As a home tutor, being prepared and aware of potential risks is crucial to ensuring your safety during tutoring sessions. Anticipate possible scenarios and take proactive measures to protect yourself.
-""",
+      description: "At Bright Tuition Care, we prioritize the safety and professionalism of our tutors. As a home tutor, being prepared and aware of potential risks is crucial to ensuring your safety during tutoring sessions. Anticipate possible scenarios and take proactive measures to protect yourself."
+,
     ),
 
     ImportantGuidelineSection(

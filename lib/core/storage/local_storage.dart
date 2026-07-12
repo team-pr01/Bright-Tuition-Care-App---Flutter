@@ -3,117 +3,141 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
 
 class LocalStorage {
+  LocalStorage._();
 
-  static const FlutterSecureStorage _storage =
-      FlutterSecureStorage();
+  static const FlutterSecureStorage _storage = FlutterSecureStorage();
 
-  static const String _keyToken = 'token';
-  static const String _keyRefreshToken = 'refreshToken';
-  static const String _keyRole = 'role';
-  static const String _keyWelcome = 'welcome';
-  static const String _keyAuthIdentifier = 'authIdentifier';
- static const String _keyUser = "user";
+  // ==========================
+  // Storage Keys
+  // ==========================
 
-static Future<void> saveUser(UserModel user) async {
+  static const String _keyToken = "token";
+  static const String _keyRefreshToken = "refreshToken";
+  static const String _keyRole = "role";
+  static const String _keyUser = "user";
 
-    final jsonString =
-        jsonEncode(user.toJson());
+  static const String _keyWelcome = "welcome";
+  static const String _keyAuthIdentifier = "authIdentifier";
 
-    await _storage.write(
-      key: _keyUser,
-      value: jsonString,
-    );
+  // ==========================
+  // Access Token
+  // ==========================
 
-  }
-
-  static Future<UserModel?> getUser() async {
-
-    final jsonString =
-        await _storage.read(key: _keyUser);
-
-    if (jsonString == null) return null;
-
-    final Map<String, dynamic> jsonMap =
-        jsonDecode(jsonString);
-
-    return UserModel.fromJson(jsonMap);
-
-  }
-
-  static Future<void> clearUser() async {
-
-    await _storage.delete(key: _keyUser);
-
-  }
-
-  // TOKEN
   static Future<void> saveToken(String token) async {
     await _storage.write(key: _keyToken, value: token);
   }
 
   static Future<String?> getToken() async {
-    return await _storage.read(key: _keyToken);
+    return _storage.read(key: _keyToken);
   }
 
+  static Future<void> clearToken() async {
+    await _storage.delete(key: _keyToken);
+  }
 
-  // REFRESH TOKEN
+  // ==========================
+  // Refresh Token
+  // ==========================
+
   static Future<void> saveRefreshToken(String token) async {
     await _storage.write(key: _keyRefreshToken, value: token);
   }
 
   static Future<String?> getRefreshToken() async {
-    return await _storage.read(key: _keyRefreshToken);
+    return _storage.read(key: _keyRefreshToken);
   }
 
+  static Future<void> clearRefreshToken() async {
+    await _storage.delete(key: _keyRefreshToken);
+  }
 
-  // ROLE
+  // ==========================
+  // Role
+  // ==========================
+
   static Future<void> saveRole(String role) async {
     await _storage.write(key: _keyRole, value: role);
   }
 
   static Future<String?> getRole() async {
-    return await _storage.read(key: _keyRole);
+    return _storage.read(key: _keyRole);
   }
 
+  static Future<void> clearRole() async {
+    await _storage.delete(key: _keyRole);
+  }
 
-  // WELCOME FLAG
+  // ==========================
+  // User
+  // ==========================
+
+  static Future<void> saveUser(UserModel user) async {
+    await _storage.write(key: _keyUser, value: jsonEncode(user.toJson()));
+  }
+
+  static Future<UserModel?> getUser() async {
+    final json = await _storage.read(key: _keyUser);
+
+    if (json == null) return null;
+
+    return UserModel.fromJson(jsonDecode(json));
+  }
+
+  static Future<void> clearUser() async {
+    await _storage.delete(key: _keyUser);
+  }
+
+  // ==========================
+  // Welcome Flag
+  // ==========================
+
   static Future<void> setWelcomeSeen() async {
-    await _storage.write(key: _keyWelcome, value: 'true');
+    await _storage.write(key: _keyWelcome, value: "true");
   }
 
   static Future<bool> isWelcomeSeen() async {
-    return (await _storage.read(key: _keyWelcome)) == 'true';
+    return (await _storage.read(key: _keyWelcome)) == "true";
   }
 
   static Future<void> clearWelcome() async {
     await _storage.delete(key: _keyWelcome);
   }
 
+  // ==========================
+  // Auth Identifier
+  // ==========================
 
-  // AUTH IDENTIFIER (email or phone)
   static Future<void> saveAuthIdentifier(String value) async {
-    await _storage.write(
-      key: _keyAuthIdentifier,
-      value: value,
-    );
+    await _storage.write(key: _keyAuthIdentifier, value: value);
   }
 
   static Future<String?> getAuthIdentifier() async {
-    return await _storage.read(
-      key: _keyAuthIdentifier,
-    );
+    return _storage.read(key: _keyAuthIdentifier);
   }
 
   static Future<void> clearAuthIdentifier() async {
-    await _storage.delete(
-      key: _keyAuthIdentifier,
-    );
+    await _storage.delete(key: _keyAuthIdentifier);
   }
 
+  // ==========================
+  // Session
+  // ==========================
 
-  // CLEAR ALL
-  static Future<void> clear() async {
+  static Future<void> clearSession() async {
+    await Future.wait([
+      clearToken(),
+      clearRefreshToken(),
+      clearRole(),
+      clearUser(),
+      clearAuthIdentifier(),
+    ]);
+  }
+
+  // ==========================
+  // Clear Everything
+  // ==========================
+
+  static Future<void> clearAll() async {
     await _storage.deleteAll();
   }
-
 }

@@ -1,3 +1,4 @@
+import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/features/refer/data/models/lead_model.dart';
 import 'package:flutter/material.dart';
 
@@ -13,61 +14,140 @@ class LeadCard extends StatelessWidget {
   });
 
   @override
+  @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(bottom: BorderSide(width: 0.4)),
+      margin: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
       ),
-
+      decoration: BoxDecoration(
+        color: AppColors.neutrals01,
+        borderRadius: BorderRadius.circular(AppRadius.medium),
+        border: Border.all(color: AppColors.neutrals04),
+        boxShadow: const [
+          BoxShadow(
+            color: Color.fromRGBO(0, 0, 0, 0.04),
+            blurRadius: 8,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
       child: Column(
         children: [
-          /// 🔹 TOP ROW (ALWAYS VISIBLE)
-          ListTile(
+          InkWell(
+            borderRadius: BorderRadius.circular(AppRadius.medium),
             onTap: onTap,
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: Row(
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary03,
+                      borderRadius: BorderRadius.circular(AppRadius.small),
+                    ),
+                    child: const Icon(
+                      Icons.person_outline,
+                      color: AppColors.primary01,
+                    ),
+                  ),
 
-            title: Text(
-              lead.phone,
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            ),
+                  const SizedBox(width: AppSpacing.md),
 
-            subtitle: Text("Class ${lead.className} • ${lead.status}" ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          lead.phone,
+                          style: AppTextStyles.titleLarge.copyWith(
+                            color: AppColors.neutrals02,
+                          ),
+                        ),
 
-            trailing: Icon(
-              isOpen ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                        const SizedBox(height: 4),
+
+                        Text(
+                          "Class ${lead.className}",
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: AppColors.neutrals03,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary03,
+                      borderRadius: BorderRadius.circular(
+                        AppRadius.full.toDouble(),
+                      ),
+                    ),
+                    child: Text(
+                      lead.status,
+                      style: AppTextStyles.labelSmall.copyWith(
+                        color: AppColors.primary01,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(width: 8),
+
+                  Icon(
+                    isOpen
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: AppColors.neutrals03,
+                  ),
+                ],
+              ),
             ),
           ),
 
-          /// 🔹 EXPANDED SECTION
           if (isOpen)
-            Padding(
-              padding: const EdgeInsets.all(12),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.md,
+                0,
+                AppSpacing.md,
+                AppSpacing.md,
+              ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const Divider(color: AppColors.neutrals04),
+
                   _row("Address", lead.address),
                   _row("Details", lead.details),
                   _row("Date", lead.date),
 
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.md),
 
-                  /// 🔥 ACTION BUTTONS
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.edit, color: Colors.blue),
+                      _actionButton(
+                        icon: Icons.edit_outlined,
+                        color: AppColors.primary01,
+                        onTap: () {},
                       ),
-
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.payment, color: Colors.green),
+                      _actionButton(
+                        icon: Icons.payment_outlined,
+                        color: AppColors.success,
+                        onTap: () {},
                       ),
-
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.delete, color: Colors.red),
+                      _actionButton(
+                        icon: Icons.delete_outline,
+                        color: AppColors.error,
+                        onTap: () {},
                       ),
                     ],
                   ),
@@ -79,20 +159,51 @@ class LeadCard extends StatelessWidget {
     );
   }
 
+  Widget _actionButton({
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppRadius.small),
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(AppRadius.small),
+        ),
+        child: Icon(icon, color: color, size: 22),
+      ),
+    );
+  }
+
   Widget _row(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
-      child: RichText(
-        text: TextSpan(
-          style: const TextStyle(color: Colors.black87),
-          children: [
-            TextSpan(
-              text: "$label: ",
-              style: const TextStyle(fontWeight: FontWeight.w600),
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 70,
+            child: Text(
+              label,
+              style: AppTextStyles.labelMedium.copyWith(
+                color: AppColors.neutrals06,
+                fontWeight: FontWeight.w500
+              ),
             ),
-            TextSpan(text: value),
-          ],
-        ),
+          ),
+
+          Expanded(
+            child: Text(
+              value,
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.neutrals02,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

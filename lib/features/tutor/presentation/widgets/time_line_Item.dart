@@ -36,12 +36,12 @@ class TimelineItem extends StatelessWidget {
             ),
 
             /// LINE
-            if (!isLast)
-              Container(
-                width: 2,
-                height: 80,
-                color: Colors.grey[300],
-              ),
+            // if (!isLast)
+            //   Container(
+            //     width: 2,
+            //     height: 80,
+            //     color: Colors.grey[300],
+            //   ),
           ],
         ),
 

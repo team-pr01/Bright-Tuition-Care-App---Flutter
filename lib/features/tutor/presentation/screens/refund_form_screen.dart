@@ -27,7 +27,7 @@ class _RefundFormScreenState
   final reasonController = TextEditingController();
   final bankNameController = TextEditingController();
 
-  String? paymentMethod;
+  String? paymentMethod="bKash";
 
   final paymentMethods = ["bKash", "Nagad", "Rocket", "Bank Transfer"];
 

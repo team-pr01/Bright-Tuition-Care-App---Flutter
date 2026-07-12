@@ -79,7 +79,7 @@ class ReferralScreen extends ConsumerWidget {
                 Expanded(
                   child: AppButton(
                     label: "My Leads",
-                    variant: AppButtonVariant.gradient,
+                    variant: AppButtonVariant.outlineGray,
                      onPressed: () {
                             Navigator.push(
                               context,

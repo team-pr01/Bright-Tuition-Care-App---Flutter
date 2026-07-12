@@ -119,6 +119,10 @@ class PersonalInfo {
   final String? religion;
   final String? overview;
   final String? fatherPhoneNumber;
+  final String? fatherName;
+  final String? motherName;
+  final String? motherPhoneNumber;
+  final String? emergencyContactNumber;
 
   PersonalInfo({
     this.additionalPhone,
@@ -127,6 +131,10 @@ class PersonalInfo {
     this.religion,
     this.overview,
     this.fatherPhoneNumber,
+    this.fatherName,
+    this.motherName,
+    this.motherPhoneNumber,
+    this.emergencyContactNumber,
   });
 
   factory PersonalInfo.fromJson(Map<String, dynamic> json) {
@@ -137,6 +145,10 @@ class PersonalInfo {
       religion: json['religion'],
       overview: json['overview'],
       fatherPhoneNumber: json['fatherPhoneNumber'],
+      fatherName: json['fatherName'],
+      motherName: json['motherName'],
+      motherPhoneNumber: json['motherPhoneNumber'],
+      emergencyContactNumber: json['emergencyContactNumber'],
     );
   }
 }
@@ -154,14 +166,28 @@ class SocialMedia {
 }
 
 class TuitionPreference {
+   final String? tutoringMethod;
   final List<String> tuitionStyle;
   final List<String> availableDays;
   final List<String> preferredSubjects;
+  final List<String> preferredCategories;
+  final List<String> preferredClasses;
+  final List<String> preferredCities;
+  final List<String> preferredLocations;
+  final List<String> placeOfTuition;
+  final String expectedSalary;
 
   TuitionPreference({
+    this.tutoringMethod,
     required this.tuitionStyle,
     required this.availableDays,
     required this.preferredSubjects,
+    required this.preferredCategories,
+    required this.preferredClasses,
+    required this.preferredCities,
+    required this.preferredLocations,
+    required this.placeOfTuition,
+    required this.expectedSalary,
   });
 
   factory TuitionPreference.fromJson(Map<String, dynamic> json) {
@@ -169,6 +195,12 @@ class TuitionPreference {
       tuitionStyle: List<String>.from(json['tuitionStyle'] ?? []),
       availableDays: List<String>.from(json['availableDays'] ?? []),
       preferredSubjects: List<String>.from(json['preferredSubjects'] ?? []),
+      preferredCategories: List<String>.from(json['preferredCategories'] ?? []),
+      preferredClasses: List<String>.from(json['preferredClasses'] ?? []),
+      preferredCities: List<String>.from(json['preferredCities'] ?? []),
+      preferredLocations: List<String>.from(json['preferredLocations'] ?? []),
+      placeOfTuition: List<String>.from(json['placeOfTuition'] ?? []),
+      expectedSalary: json['expectedSalary'],
     );
   }
 }
@@ -191,11 +223,27 @@ class Education {
   final String level;
   final String degree;
   final String institute;
+  final String? board;
+  final String? curriculum;
+  final String? group;
+  final String? department;
+  final String? semester;
+  final String? result;
+  final String? passingYear;
+  final bool? isCurrentInstitute;
 
   Education({
     required this.level,
     required this.degree,
     required this.institute,
+    this.board,
+    this.curriculum,
+    this.group,
+    this.department,
+    this.semester,
+    this.result,
+    this.passingYear,
+    this.isCurrentInstitute,
   });
 
   factory Education.fromJson(Map<String, dynamic> json) {
@@ -203,6 +251,13 @@ class Education {
       level: json['levelOfEducation'] ?? "",
       degree: json['degree'] ?? "",
       institute: json['instituteName'] ?? "",
+      board: json['board'] ?? "",
+      curriculum: json['curriculum'] ?? "",
+      group: json['group'] ?? "",
+      department: json['department'] ?? "",
+      result: json['result'] ?? "",
+      passingYear: json['passingYear'] ?? "",
+      isCurrentInstitute: json['isCurrentInstitute'] ?? "",
     );
   }
 }

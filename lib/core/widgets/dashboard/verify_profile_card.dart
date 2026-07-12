@@ -5,10 +5,7 @@ import 'package:btcclient/core/config/theme.dart';
 class VerifyProfileCard extends StatelessWidget {
   final bool isVerified;
 
-  const VerifyProfileCard({
-    super.key,
-    required this.isVerified,
-  });
+  const VerifyProfileCard({super.key, required this.isVerified});
 
   @override
   Widget build(BuildContext context) {
@@ -46,10 +43,10 @@ class VerifyProfileCard extends StatelessWidget {
           /// DESCRIPTION
           Text(
             isVerified
-                ? "Your profile is verified."
+                ? "You are verified member of Bright Tuition Care community "
                 : "Verify your profile to build trust and ensure a safe learning environment. "
-                    "Verified accounts get higher visibility and faster matches. "
-                    "Complete verification to start connecting confidently.",
+                      "Verified accounts get higher visibility and faster matches. "
+                      "Complete verification to start connecting confidently.",
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: AppColors.neutrals03,
@@ -60,23 +57,27 @@ class VerifyProfileCard extends StatelessWidget {
           const SizedBox(height: 14),
 
           /// BUTTON (text only changed, UI same)
-          OutlinedButton(
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-              side: const BorderSide(color: AppColors.primary01, width: 1.5),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5),
+          if (!isVerified)
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 6,
+                ),
+                side: const BorderSide(color: AppColors.primary01, width: 1.5),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
               ),
-            ),
-            onPressed: () {},
-            child: Text(
-              isVerified ? "Verified" : "Verify Now",
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: AppColors.primary01,
-                height: 1.5,
+              onPressed: () {},
+              child: Text(
+                "Verify Now",
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: AppColors.primary01,
+                  height: 1.5,
+                ),
               ),
-            ),
-          ),
+            ),   
         ],
       ),
     );

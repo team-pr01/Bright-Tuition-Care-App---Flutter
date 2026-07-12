@@ -6,8 +6,9 @@ class AppSnackbar {
   static void show(
     BuildContext context,
     String message,
-    SnackType type,
-  ) {
+    SnackType type, {
+    bool showIcon = true,
+  }) {
     Color backgroundColor;
     IconData icon;
 
@@ -44,8 +45,10 @@ class AppSnackbar {
         ),
         content: Row(
           children: [
-            Icon(icon, color: backgroundColor),
-            const SizedBox(width: 10),
+            if (showIcon) ...[
+              Icon(icon, color: backgroundColor),
+              const SizedBox(width: 10),
+            ],
             Expanded(
               child: Text(
                 message,

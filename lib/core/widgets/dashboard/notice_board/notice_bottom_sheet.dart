@@ -38,7 +38,7 @@ void initState() {
     
    return ReusableBottomSheet(
   child: SizedBox(
-  height: 250,
+  height: 450,
   child: PageView.builder(
     controller: _controller,
     itemCount: widget.notices.length,

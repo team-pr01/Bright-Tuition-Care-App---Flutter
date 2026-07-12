@@ -72,7 +72,7 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
                 controller: detailsController,
                 type: AppInputType.multiline,
                 maxLines: 4,
-                required: true,
+                required: false,
               ),
 
               const SizedBox(height: 20),

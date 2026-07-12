@@ -11,6 +11,7 @@ import 'package:btcclient/features/hire_tutor/presentation/screen/post_job_page.
 import 'package:btcclient/features/jobs/data/models/application_modal.dart';
 import 'package:btcclient/features/jobs/data/models/applied_model.dart';
 import 'package:btcclient/features/jobs/presentation/enums/job_card_variant.dart';
+import 'package:btcclient/features/jobs/presentation/provider/applied_jobs_provider.dart';
 import 'package:btcclient/features/jobs/presentation/provider/job_provider.dart';
 import 'package:btcclient/features/jobs/presentation/widgets/icon_row.dart';
 import 'package:btcclient/features/jobs/presentation/widgets/job_bottom_sheet.dart';
@@ -43,10 +44,23 @@ class JobCard extends ConsumerWidget {
       className: job.subjects,
       gender: job.preferredTutorGender,
     );
-
-    final isApplied = user == null
+    final serverApplied = user == null
         ? false
         : job.applications?.any((app) => app.userId == user.id) ?? false;
+
+    final overrides = ref.watch(appliedJobsProvider);
+
+    bool isApplied;
+
+    if (overrides.containsKey(job.id)) {
+      isApplied = overrides[job.id] == ApplicationState.applied;
+    } else {
+      isApplied = serverApplied;
+    }
+
+    // final isApplied = user == null
+    //     ? false
+    //     : job.applications?.any((app) => app.userId == user.id) ?? false;
 
     final link = "https://brighttuitioncare.com/job-board/id/${job.jobId}";
     return Container(
@@ -286,8 +300,8 @@ class JobCard extends ConsumerWidget {
                       isScrollControlled: true,
                       builder: (_) => JobBottomSheet(
                         variant: JobCardVariant.job,
-                        job: job, 
-                        changeTab: changeTab,// 🔥 pass exact clicked job
+                        job: job,
+                        changeTab: changeTab, // 🔥 pass exact clicked job
                       ),
                     );
                   },
@@ -366,6 +380,9 @@ class JobCard extends ConsumerWidget {
                             );
 
                         if (success) {
+                          ref
+                              .read(appliedJobsProvider.notifier)
+                              .withdraw(job.id);
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text("Withdraw successful"),
@@ -384,6 +401,7 @@ class JobCard extends ConsumerWidget {
                             .applyJob(jobId: job.id!, userId: user.id);
 
                         if (success) {
+                          ref.read(appliedJobsProvider.notifier).apply(job.id);
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text("Applied successfully"),
@@ -393,7 +411,8 @@ class JobCard extends ConsumerWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => MyApplicationPage( changeTab: changeTab,),
+                              builder: (_) =>
+                                  MyApplicationPage(changeTab: changeTab),
                             ),
                           );
                         } else {

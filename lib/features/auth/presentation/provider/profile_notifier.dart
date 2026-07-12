@@ -4,30 +4,75 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final profileProvider =
     StateNotifierProvider<ProfileNotifier, dynamic>((ref) {
-  final repo = ref.read(authRepositoryProvider);
+
+  final repo =
+      ref.read(authRepositoryProvider);
+
   return ProfileNotifier(repo);
 });
 
-class ProfileNotifier extends StateNotifier<dynamic> {
+class ProfileNotifier
+    extends StateNotifier<dynamic> {
+
   final AuthRepository repo;
 
-  ProfileNotifier(this.repo) : super(null);
+  ProfileNotifier(this.repo)
+      : super(null);
 
   bool isLoading = false;
+
   String? error;
 
+  /// ================= FETCH =================
+
   Future<void> fetchProfile() async {
+
     try {
+
       isLoading = true;
+
       error = null;
 
-      final profile = await repo.getProfile(); // 🔥 /user/me
+      state = null;
+
+      final profile =
+          await repo.getProfile();
+
+      print(
+        "✅ PROFILE RESPONSE => $profile",
+      );
 
       state = profile;
+
     } catch (e) {
+
+      print(
+        "❌ PROFILE ERROR => $e",
+      );
+
       error = e.toString();
+
     } finally {
+
       isLoading = false;
     }
+  }
+
+  /// ================= REFRESH =================
+
+  Future<void> refreshProfile() async {
+
+    await fetchProfile();
+  }
+
+  /// ================= CLEAR =================
+
+  void clearProfile() {
+
+    state = null;
+
+    error = null;
+
+    isLoading = false;
   }
 }

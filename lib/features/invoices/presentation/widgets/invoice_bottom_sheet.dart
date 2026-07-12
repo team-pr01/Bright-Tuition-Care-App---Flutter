@@ -77,6 +77,7 @@ class InvoiceBottomSheet extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     /// ================= BILL TO =================
                     const Text(
@@ -91,6 +92,7 @@ class InvoiceBottomSheet extends ConsumerWidget {
 
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         _infoText(title: "Name", value: "Prerna Badwane"),
 
@@ -106,12 +108,11 @@ class InvoiceBottomSheet extends ConsumerWidget {
                         _infoText(title: "Phone", value: "01608249337"),
                       ],
                     ),
-
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 24),
 
                     /// ================= PAYMENT STATUS =================
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         const Text(
                           "Payment Status: ",
@@ -148,44 +149,46 @@ class InvoiceBottomSheet extends ConsumerWidget {
                       ],
                     ),
 
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 12),
 
                     /// ================= DATES =================
                     /// ================= DATES =================
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _infoText(
-                          title: "Issue Date",
-                          value: invoice.createdDate != null
-                              ? DateFormatter.formattedDate(
-                                  invoice.createdDate!,
-                                )
-                              : "N/A",
-                        ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _infoText(
+                            title: "Issue Date",
+                            value: invoice.createdDate != null
+                                ? DateFormatter.formattedDate(
+                                    invoice.createdDate!,
+                                  )
+                                : "N/A",
+                          ),
 
-                        const SizedBox(height: 12),
-
-                        _infoText(
-                          title: "Due Date",
-                          value: invoice.dueDate != null
-                              ? DateFormatter.formattedDate(invoice.dueDate!)
-                              : "N/A",
-                        ),
-
-                        if (invoice.paidDate != null) ...[
                           const SizedBox(height: 12),
 
                           _infoText(
-                            title: "Paid Date",
-                            value: DateFormatter.formattedDate(
-                              invoice.paidDate!,
-                            ),
+                            title: "Due Date",
+                            value: invoice.dueDate != null
+                                ? DateFormatter.formattedDate(invoice.dueDate!)
+                                : "N/A",
                           ),
-                        ],
-                      ],
-                    ),
 
+                          if (invoice.paidDate != null) ...[
+                            const SizedBox(height: 12),
+
+                            _infoText(
+                              title: "Paid Date",
+                              value: DateFormatter.formattedDate(
+                                invoice.paidDate!,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
                     const SizedBox(height: 34),
 
                     /// ================= INVOICE DETAILS =================
@@ -326,7 +329,7 @@ class InvoiceBottomSheet extends ConsumerWidget {
         children: [
           TextSpan(
             text: "$title: ",
-            style: const TextStyle(fontWeight: FontWeight.w700),
+            style: const TextStyle(fontWeight: FontWeight.w500),
           ),
 
           TextSpan(

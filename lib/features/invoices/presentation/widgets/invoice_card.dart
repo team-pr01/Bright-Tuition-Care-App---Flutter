@@ -76,7 +76,7 @@ class InvoiceCard extends StatelessWidget {
                           : "Platform Charge",
 
                       style: AppTextStyles.headlineSmall.copyWith(
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
 

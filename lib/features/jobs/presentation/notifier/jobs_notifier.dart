@@ -1,3 +1,4 @@
+import 'package:btcclient/features/jobs/data/models/applied_model.dart';
 import 'package:btcclient/features/jobs/data/models/jobs_meta.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -180,4 +181,5 @@ class JobsNotifier extends StateNotifier<JobsState> {
       return false;
     }
   }
-}
+
+ }

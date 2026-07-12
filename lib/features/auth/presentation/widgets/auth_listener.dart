@@ -30,19 +30,6 @@ class AuthListener extends ConsumerWidget {
 
       }
 
-      /// LOGIN SUCCESS
-      if (previous?.loggedIn != true &&
-          next.loggedIn == true) {
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Login successful"),
-            backgroundColor: Colors.green,
-          ),
-        );
-
-      }
-
     });
 
     return child;

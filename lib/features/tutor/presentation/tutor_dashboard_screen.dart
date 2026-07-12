@@ -3,6 +3,7 @@ import 'package:btcclient/core/layout/dashboard_layout.dart';
 import 'package:btcclient/features/invoices/presentation/provider/invoice_provider.dart';
 import 'package:btcclient/features/invoices/presentation/screen/invoice_page.dart';
 import 'package:btcclient/features/jobs/presentation/screen/job_page.dart';
+import 'package:btcclient/features/profile/presentation/screens/tutor_profile_page.dart';
 import 'package:btcclient/features/settings/prersentation/screens/setting_screen.dart';
 // import 'package:btcclient/features/jobs/presentation/screens/job_page.dart';
 // import 'package:btcclient/features/jobs/presentation/widgets/job_card.dart';
@@ -284,6 +285,7 @@ class TutorDashboardScreen extends ConsumerWidget {
         ),
 
         (changeTab, status) => TutorPaymentScreen(changeTab: changeTab),
+        (changeTab, status) => TutorProfileScreen(),
       ],
       navItems: [
         BottomNavigationBarItem(

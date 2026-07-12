@@ -24,7 +24,7 @@ class DevResetButton extends ConsumerWidget {
         onPressed: () async {
           await LocalStorage.clearWelcome();
           await LocalStorage.clearAuthIdentifier();
-          await LocalStorage.clear();
+          await LocalStorage.clearAll();
 
           ref.read(authProvider.notifier).logout();
            Navigator.pushNamedAndRemoveUntil(

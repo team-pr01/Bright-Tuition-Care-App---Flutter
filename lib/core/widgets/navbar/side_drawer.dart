@@ -32,13 +32,13 @@ class AppSidebar extends StatelessWidget {
         child: Column(
           children: [
             SizedBox(height: 10),
-            Center(
-              child: Image.asset(
-                "assets/images/logo-white.png",
-                height: 38,
-                fit: BoxFit.contain,
-              ),
-            ),
+            // Center(
+            //   child: Image.asset(
+            //     "assets/images/logo-white.png",
+            //     height: 38,
+            //     fit: BoxFit.contain,
+            //   ),
+            // ),
 
             /// USER HEADER
             ProfileSection(
