@@ -69,5 +69,56 @@ class StatusDataFormatter {
       return Colors.grey;
   }
 }
+static String getApplicationStatus({
+  required String? applicationStatus,
+  required String? jobStatus,
+}) {
+  if (jobStatus == null || jobStatus.isEmpty) return "N/A";
+
+  if (jobStatus == "closed") {
+    return "Closed";
+  }
+
+  switch (applicationStatus) {
+    case "rejected":
+    case "confirmed":
+      return "Closed";
+
+    case "appointed":
+      return "Appointed";
+
+    case "applied":
+    case "shortlisted":
+      return "Ongoing";
+
+    default:
+      return jobStatus == "live" ? "Ongoing" : "Closed";
+  }
+}
+ static Color getApplicationStatusColor({
+  required String? applicationStatus,
+  required String? jobStatus,
+}) {
+
+  if (jobStatus == "closed") {
+    return Colors.red;
+  }
+
+  switch (applicationStatus) {
+    case "rejected":
+    case "confirmed":
+      return Colors.red;
+
+    case "appointed":
+       return Colors.green;
+
+    case "applied":
+    case "shortlisted":
+       return Colors.yellow;
+
+    default:
+       return Colors.grey;
+  }
+}
 
 }

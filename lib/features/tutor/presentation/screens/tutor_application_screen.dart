@@ -4,6 +4,7 @@ import 'package:btcclient/core/widgets/navbar/common_appbar.dart';
 import 'package:btcclient/features/jobs/presentation/enums/job_card_variant.dart';
 import 'package:btcclient/features/jobs/presentation/provider/application_provider.dart';
 import 'package:btcclient/features/jobs/presentation/widgets/job_card.dart';
+import 'package:btcclient/features/jobs/presentation/widgets/skeleton/job_card_skeleton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -32,8 +33,13 @@ class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
 
     /// 🔥 CALL APPLICATION API (NOT JOBS)
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(applicationsProvider.notifier)
-   .fetchApplications(status: widget.initialStatus);
+      final state = ref.read(applicationsProvider);
+
+      if (state.applications.isEmpty) {
+        ref
+            .read(applicationsProvider.notifier)
+            .fetchApplications(status: widget.initialStatus);
+      }
     });
 
     _scrollController.addListener(() {
@@ -196,7 +202,12 @@ class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
   Widget _buildBody(state) {
     /// LOADING
     if (state.isLoading && state.applications.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
+      return Center(
+        child: ListView.builder(
+          itemCount: 6,
+          itemBuilder: (_, __) => const JobCardSkeleton(),
+        ),
+      );
     }
 
     /// ERROR
@@ -239,9 +250,11 @@ class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
   /// ================= PAGINATION =================
   Widget _buildPaginationLoader(state) {
     if (state.isLoadingMore) {
-      return const Padding(
-        padding: EdgeInsets.all(16),
-        child: Center(child: CircularProgressIndicator()),
+      return Center(
+        child: ListView.builder(
+          itemCount: 6,
+          itemBuilder: (_, __) => const JobCardSkeleton(),
+        ),
       );
     }
 

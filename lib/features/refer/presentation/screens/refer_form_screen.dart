@@ -1,5 +1,8 @@
+import 'package:btcclient/core/network/api_error_handler.dart';
+import 'package:btcclient/core/widgets/snackbar/app_snackbar.dart';
 import 'package:btcclient/features/refer/data/request/add_lead_request.dart';
 import 'package:btcclient/features/refer/presentation/provider/refer_provider.dart';
+import 'package:btcclient/features/refer/presentation/screens/my_leads_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -24,6 +27,32 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(referProvider, (previous, next) {
+      next.whenOrNull(
+        data: (response) {
+          if (!mounted || response == null) return;
+
+          if (response.success) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const MyLeadsScreen()),
+            );
+          } else {
+            AppSnackbar.show(context, response.message, SnackType.error);
+          }
+        },
+        error: (error, stack) {
+          if (!mounted) return;
+
+          AppSnackbar.show(
+            context,
+            ApiErrorHandler.getMessage(error),
+            SnackType.error,
+          );
+        },
+      );
+    });
+    final leadState = ref.watch(referProvider);
     return Scaffold(
       appBar: const CommonAppBar(),
 
@@ -51,12 +80,14 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
                 label: "Class",
                 controller: classController,
                 required: true,
+                hint: "Enter Class",
               ),
               AppInputField(
                 label: "Guardian Phone Number",
                 controller: guardianPhoneController,
                 keyboardType: TextInputType.phone,
                 required: true,
+                hint: "Enter Guardian Phone Number",
               ),
 
               /// ADDRESS
@@ -64,6 +95,7 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
                 label: "Address",
                 controller: addressController,
                 required: true,
+                hint: "Enter Address",
               ),
 
               /// DETAILS (MULTILINE ✅)
@@ -73,6 +105,8 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
                 type: AppInputType.multiline,
                 maxLines: 4,
                 required: false,
+                hint:
+                    "Enter details of lead including salary expectations , subjects ,etc.",
               ),
 
               const SizedBox(height: 20),
@@ -81,7 +115,8 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
               AppButton(
                 label: "Submit Lead",
                 variant: AppButtonVariant.gradient,
-                onPressed: submitLead,
+                loading: leadState.isLoading,
+                onPressed: leadState.isLoading ? null : submitLead,
               ),
             ],
           ),
@@ -90,16 +125,16 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
     );
   }
 
- Future<void> submitLead() async {
-  if (!_formKey.currentState!.validate()) return;
+  Future<void> submitLead() async {
+    if (!_formKey.currentState!.validate()) return;
 
-  final request = AddLeadRequest(
-    classes: classController.text.trim(),
-    guardianPhoneNumber: guardianPhoneController.text.trim(),
-    address: addressController.text.trim(),
-    details: detailsController.text.trim(),
-  );
+    final request = AddLeadRequest(
+      classes: classController.text.trim(),
+      guardianPhoneNumber: guardianPhoneController.text.trim(),
+      address: addressController.text.trim(),
+      details: detailsController.text.trim(),
+    );
 
-  await ref.read(referProvider.notifier).addLead(request);
-}
+    await ref.read(referProvider.notifier).addLead(request);
+  }
 }

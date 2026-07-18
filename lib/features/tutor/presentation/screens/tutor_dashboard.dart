@@ -1,5 +1,7 @@
 import 'package:btcclient/core/models/notice_model.dart';
+import 'package:btcclient/core/widgets/dashboard/skeletons/home_skeleton.dart';
 import 'package:btcclient/core/widgets/dashboard/verify_profile_card.dart';
+import 'package:btcclient/features/jobs/data/models/job_filter.dart';
 import 'package:btcclient/features/tutor/presentation/provider/tutor_dashboard_provider.dart';
 import 'package:btcclient/features/tutor/presentation/screens/tutor_application_screen.dart';
 import 'package:btcclient/features/tutor/presentation/widgets/tutor_cards_section.dart';
@@ -14,12 +16,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class TutorHomeScreen extends ConsumerStatefulWidget {
- final Function(int, {String? status}) changeTab;
+  final Function(int, {String? status}) changeTab;
 
-const TutorHomeScreen({
-  super.key,
-  required this.changeTab,
-});
+  const TutorHomeScreen({super.key, required this.changeTab});
 
   @override
   ConsumerState<TutorHomeScreen> createState() => _TutorHomeScreenState();
@@ -30,42 +29,74 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
   void initState() {
     super.initState();
 
-    /// call dashboard API when screen opens
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(tutorDashboardProvider.notifier).fetchStats();
+      final state = ref.read(tutorDashboardProvider);
+
+      if (state.data == null) {
+        ref.read(tutorDashboardProvider.notifier).fetchStats();
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final dashboardData = ref.watch(tutorDashboardProvider);
+    final dashboardState = ref.watch(tutorDashboardProvider);
+    final dashboardData = dashboardState.data;
+    if (dashboardState.loading && dashboardState.data == null) {
+      return const Scaffold(body: SafeArea(child: HomeSkeleton()));
+    }
+    if (dashboardState.error != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(dashboardState.error!),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                ref.read(tutorDashboardProvider.notifier).fetchStats();
+              },
+              child: const Text("Retry"),
+            ),
+          ],
+        ),
+      );
+    }
+    final data = dashboardData?["data"] ?? {};
+    final tutor = data["tutorOfTheMonth"];
+    final applications = data["applications"] ?? {};
     final notices = (dashboardData?["data"]?["notices"] as List? ?? [])
         .map((notice) => NoticeModel.fromJson(notice))
         .toList();
     final isVerified = dashboardData != null
-        ? dashboardData["data"]["isVerified"] ?? false
+        ? data["isVerified"] ?? false
         : false;
     final profileCompleted = dashboardData != null
-        ? dashboardData["data"]["profileCompleted"]
+        ? data["profileCompleted"]
         : 0;
-    final totalNearbyJobs = dashboardData != null
-        ? dashboardData["data"]["totalNearbyJobs"]
-        : 0;
+    final totalNearbyJobs = dashboardData != null ? data["totalNearbyJobs"] : 0;
+    final preferredCities = List<String>.from(data["preferredCities"] ?? []);
+
+    final preferredLocations = List<String>.from(
+      data["preferredLocations"] ?? [],
+    );
     final confirmationLetters = dashboardData != null
-        ? dashboardData["data"]["confirmationLetterCount"]
+        ? data["confirmationLetterCount"]
         : 0;
-    final invoices = dashboardData != null
-        ? dashboardData["data"]["invoiceCount"]
-        : 0;
+    final invoices = dashboardData != null ? data["invoiceCount"] : 0;
     return RefreshIndicator(
-  onRefresh: () async {
-    await ref.read(tutorDashboardProvider.notifier).fetchStats();
-  },
+      onRefresh: () {
+        return ref
+            .read(tutorDashboardProvider.notifier)
+            .fetchStats(refresh: true);
+      },
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(
           children: [
+            if (dashboardState.refreshing) const LinearProgressIndicator(),
+
             /// SEARCH BAR
             TutorSearchBar(
               onTap: () {
@@ -93,14 +124,15 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) =>
-                            MyApplicationPage( changeTab: widget.changeTab,initialStatus: "applied"),
+                        builder: (_) => MyApplicationPage(
+                          changeTab: widget.changeTab,
+                          initialStatus: "applied",
+                        ),
                       ),
                     );
                   },
                   label: "Applied",
-                  count:
-                      dashboardData?["data"]?["applications"]["applied"] ?? 0,
+                  count: applications["applied"] ?? 0,
                 ),
                 DashboardNavLinks(
                   icon: SvgPicture.asset(
@@ -116,15 +148,15 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) =>
-                            MyApplicationPage( changeTab: widget.changeTab,initialStatus: "shortlisted"),
+                        builder: (_) => MyApplicationPage(
+                          changeTab: widget.changeTab,
+                          initialStatus: "shortlisted",
+                        ),
                       ),
                     );
                   },
                   label: "Shortlisted",
-                  count:
-                      dashboardData?["data"]?["applications"]["shortlisted"] ??
-                      0,
+                  count: applications["shortlisted"] ?? 0,
                 ),
                 DashboardNavLinks(
                   icon: SvgPicture.asset(
@@ -140,14 +172,15 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) =>
-                            MyApplicationPage( changeTab: widget.changeTab,initialStatus: "appointed"),
+                        builder: (_) => MyApplicationPage(
+                          changeTab: widget.changeTab,
+                          initialStatus: "appointed",
+                        ),
                       ),
                     );
                   },
                   label: "Appointed",
-                  count:
-                      dashboardData?["data"]?["applications"]["appointed"] ?? 0,
+                  count: applications["appointed"] ?? 0,
                 ),
                 DashboardNavLinks(
                   icon: SvgPicture.asset(
@@ -163,14 +196,15 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) =>
-                            MyApplicationPage( changeTab: widget.changeTab,initialStatus: "confirmed"),
+                        builder: (_) => MyApplicationPage(
+                          changeTab: widget.changeTab,
+                          initialStatus: "confirmed",
+                        ),
                       ),
                     );
                   },
                   label: "Confirmed",
-                  count:
-                      dashboardData?["data"]?["applications"]["confirmed"] ?? 0,
+                  count: applications["confirmed"] ?? 0,
                 ),
                 DashboardNavLinks(
                   icon: SvgPicture.asset(
@@ -186,14 +220,15 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) =>
-                            MyApplicationPage( changeTab: widget.changeTab,initialStatus: "cancelled"),
+                        builder: (_) => MyApplicationPage(
+                          changeTab: widget.changeTab,
+                          initialStatus: "cancelled",
+                        ),
                       ),
                     );
                   },
                   label: "Cancelled",
-                  count:
-                      dashboardData?["data"]?["applications"]["rejected"] ?? 0,
+                  count: applications["rejected"] ?? 0,
                 ),
               ],
             ),
@@ -206,19 +241,11 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
             /// TUTOR OF THE MONTH (FROM API)
             if (dashboardData != null)
               RecognitionCard(
-                image:
-                    dashboardData["data"]?["tutorOfTheMonth"]["imageUrl"] ??
-                    "assets/images/logo-1.png",
+                image: tutor["imageUrl"] ?? "assets/images/dummy-avatar.jpg",
                 title: "Tutor of the Month",
-                tutorId:
-                    dashboardData["data"]?["tutorOfTheMonth"]["tutorId"] ?? "",
-                rating:
-                    dashboardData["data"]?["tutorOfTheMonth"]["rating"]
-                        .toString() ??
-                    "0",
-                name:
-                    dashboardData["data"]?["tutorOfTheMonth"]["userId"]["name"] ??
-                    "",
+                tutorId: tutor["tutorId"] ?? "",
+                rating: tutor["rating"].toString() ?? "0",
+                name: tutor["userId"]["name"] ?? "",
                 date: "This Month",
               ),
 
@@ -229,6 +256,9 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
               nearbyJobsCount: totalNearbyJobs,
               confirmationLettersCount: confirmationLetters,
               invoicesCount: invoices,
+              preferredCities: preferredCities,
+              preferredLocations: preferredLocations,
+              changeTab: widget.changeTab,
             ),
 
             const SizedBox(height: 20),

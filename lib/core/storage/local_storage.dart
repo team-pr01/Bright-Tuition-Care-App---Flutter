@@ -77,7 +77,7 @@ class LocalStorage {
 
   static Future<UserModel?> getUser() async {
     final json = await _storage.read(key: _keyUser);
-
+ print(json);
     if (json == null) return null;
 
     return UserModel.fromJson(jsonDecode(json));

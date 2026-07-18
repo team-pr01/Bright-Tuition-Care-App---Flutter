@@ -64,8 +64,6 @@ class JobsState {
   }
 }
 
-
-
 /// ================= NOTIFIER =================
 class JobsNotifier extends StateNotifier<JobsState> {
   final JobsRepository repo;
@@ -86,8 +84,7 @@ class JobsNotifier extends StateNotifier<JobsState> {
     );
 
     state = state.copyWith(
-      isLoading: true,
-      jobs: [],
+      isLoading: state.jobs.isEmpty,
       hasMore: true,
       error: null,
       filter: filter,
@@ -147,11 +144,20 @@ class JobsNotifier extends StateNotifier<JobsState> {
   }
 
   /// ================= REFRESH =================
-  Future<void> refresh() async {
-    print("REFRESH CALLED");
+ Future<void> refresh() async {
+  try {
+    final res = await repo.getJobs(state.filter);
 
-    await fetchJobs(newFilter: state.filter);
+    state = state.copyWith(
+      jobs: res.jobs,
+      meta: res.meta,
+      hasMore: res.meta.hasMore,
+      error: null,
+    );
+  } catch (e) {
+    state = state.copyWith(error: e.toString());
   }
+}
 
   Future<bool> applyJob({required String jobId, required String userId}) async {
     try {
@@ -181,5 +187,4 @@ class JobsNotifier extends StateNotifier<JobsState> {
       return false;
     }
   }
-
- }
+}

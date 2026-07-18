@@ -21,7 +21,9 @@ class DashboardLargeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GestureDetector(
+      onTap: onTap,
+      child:Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: AppColors.primary03,
@@ -96,6 +98,6 @@ class DashboardLargeCard extends StatelessWidget {
           icon!,
         ],
       ),
-    );
+    ));
   }
 }

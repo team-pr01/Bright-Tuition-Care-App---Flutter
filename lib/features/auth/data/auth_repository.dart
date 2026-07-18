@@ -1,3 +1,4 @@
+import 'package:btcclient/core/network/api_exception.dart';
 import 'package:btcclient/core/storage/local_storage.dart';
 import 'package:btcclient/features/auth/data/auth_api.dart';
 import 'package:btcclient/features/auth/data/models/guardian_model.dart';
@@ -51,7 +52,7 @@ class AuthRepository {
     final responseData = response.data;
 
     if (responseData["success"] != true) {
-      throw Exception(responseData["message"]);
+      throw ApiException(responseData["message"]);
     }
 
     final data = responseData["data"];
@@ -82,7 +83,7 @@ class AuthRepository {
     final responseData = response.data;
 
     if (responseData["success"] != true) {
-      throw Exception(responseData["message"]);
+      throw ApiException(responseData["message"]);
     }
 
     final data = responseData["data"];
@@ -204,7 +205,7 @@ class AuthRepository {
     final responseData = response.data;
 
     if (responseData["success"] != true) {
-      throw Exception(responseData["message"]);
+      throw ApiException(responseData["message"]);
     }
 
     final data = responseData["data"];
@@ -225,7 +226,7 @@ class AuthRepository {
     final responseData = response.data;
 
     if (responseData["success"] != true) {
-      throw Exception(responseData["message"]);
+      throw ApiException(responseData["message"]);
     }
 
     final role = responseData["data"]?["userId"]?["role"];
@@ -276,7 +277,7 @@ class AuthRepository {
     final responseData = response.data;
 
     if (responseData["success"] != true) {
-      throw Exception(responseData["message"]);
+      throw ApiException(responseData["message"]);
     }
 
     return true;
@@ -288,7 +289,7 @@ class AuthRepository {
     final responseData = response.data;
 
     if (responseData["success"] != true) {
-      throw Exception(responseData["message"]);
+      throw ApiException(responseData["message"]);
     }
 
     return true;

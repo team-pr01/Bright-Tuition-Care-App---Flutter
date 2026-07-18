@@ -17,18 +17,18 @@ class AuthListener extends ConsumerWidget {
 
     ref.listen(authProvider, (previous, next) {
 
-      /// ERROR
-      if (next.error != null &&
-          next.error != previous?.error) {
+      // /// ERROR
+      // if (next.error != null &&
+      //     next.error != previous?.error) {
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(next.error!),
-            backgroundColor: Colors.red,
-          ),
-        );
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     SnackBar(
+      //       content: Text(next.error!),
+      //       backgroundColor: Colors.red,
+      //     ),
+      //   );
 
-      }
+      // }
 
     });
 

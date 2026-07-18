@@ -38,10 +38,6 @@ class ProfileNotifier
       final profile =
           await repo.getProfile();
 
-      print(
-        "✅ PROFILE RESPONSE => $profile",
-      );
-
       state = profile;
 
     } catch (e) {

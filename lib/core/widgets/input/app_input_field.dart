@@ -128,30 +128,50 @@ class _AppInputFieldState extends State<AppInputField> {
         break;
 
       case AppInputType.dropdown:
-        field = Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _SearchableDropdown(
-              items: widget.dropdownItems ?? [],
-              hint: widget.hint,
-              value: widget.value,
-              multiSelect: widget.multiSelect,
-              selectedValues: widget.selectedValues ?? [],
-              onChanged: widget.onChanged,
-              onMultiChanged: widget.onMultiChanged,
-            ),
+        field = FormField<String>(
+          initialValue: widget.value,
+          validator: (_) {
+            if (widget.validator != null) {
+              return widget.validator!(widget.value);
+            }
 
             if (widget.required &&
                 !widget.multiSelect &&
-                (widget.value == null || widget.value!.isEmpty))
-              const Padding(
-                padding: EdgeInsets.only(top: 6, left: 4),
-                child: Text(
-                  "This field is required",
-                  style: TextStyle(color: Colors.red, fontSize: 12),
+                (widget.value == null || widget.value!.isEmpty)) {
+              return "${widget.label} is required";
+            }
+
+            return null;
+          },
+          builder: (fieldState) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _SearchableDropdown(
+                  items: widget.dropdownItems ?? [],
+                  hint: widget.hint,
+                  value: widget.value,
+                  multiSelect: widget.multiSelect,
+                  selectedValues: widget.selectedValues ?? [],
+                  hasError: fieldState.hasError,
+                  onChanged: (value) {
+                    fieldState.didChange(value);
+                    widget.onChanged?.call(value);
+                  },
+                  onMultiChanged: widget.onMultiChanged,
                 ),
-              ),
-          ],
+
+                if (fieldState.hasError)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6, left: 16),
+                    child: Text(
+                      fieldState.errorText!,
+                      style: const TextStyle(color: Colors.red, fontSize: 12),
+                    ),
+                  ),
+              ],
+            );
+          },
         );
         break;
 
@@ -215,6 +235,7 @@ class _SearchableDropdown extends StatefulWidget {
   final bool multiSelect;
   final List<String> selectedValues;
   final Function(List<String>)? onMultiChanged;
+  final bool hasError;
 
   const _SearchableDropdown({
     required this.items,
@@ -224,6 +245,7 @@ class _SearchableDropdown extends StatefulWidget {
     this.selectedValues = const [],
     this.onChanged,
     this.onMultiChanged,
+    this.hasError = false,
   });
 
   @override
@@ -369,19 +391,39 @@ class _SearchableDropdownState extends State<_SearchableDropdown> {
 
     return GestureDetector(
       onTap: openDropdown,
-      child: Container(
-        height: 45,
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        height: 48,
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
         decoration: BoxDecoration(
-          color: AppColors.neutrals01,
-          borderRadius: BorderRadius.circular(5),
-          border: Border.all(color: AppColors.primary01.withOpacity(0.3)),
+          // color: Theme.of(context).inputDecorationTheme.fillColor,
+          borderRadius: widget.hasError
+              ? BorderRadius.circular(AppRadius.medium)
+              : BorderRadius.circular(5),
+          border: Border.all(
+            color: widget.hasError
+                ? AppColors.error
+                : AppColors.primary01.withOpacity(0.3),
+            width: widget.hasError ? 1.5 : 1,
+          ),
         ),
-        alignment: Alignment.centerLeft,
         child: Row(
           children: [
-            Expanded(child: Text(text, style: const TextStyle(fontSize: 14))),
-            const Icon(Icons.keyboard_arrow_down),
+            Expanded(
+              child: Text(
+                text,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: widget.value == null
+                      ? AppColors.neutrals03
+                      : AppColors.neutrals02,
+                ),
+              ),
+            ),
+            Icon(
+              Icons.keyboard_arrow_down_rounded,
+              color: AppColors.neutrals03,
+            ),
           ],
         ),
       ),

@@ -9,6 +9,7 @@ import '../../data/jobs_repository.dart';
 class ApplicationsState {
   final List<ApplicationModel> applications;
   final bool isLoading;
+  final bool refreshing;
   final bool isLoadingMore;
   final bool hasMore;
   final String? error;
@@ -17,6 +18,7 @@ class ApplicationsState {
   ApplicationsState({
     required this.applications,
     required this.isLoading,
+    required this.refreshing,
     required this.isLoadingMore,
     required this.hasMore,
     this.error,
@@ -27,6 +29,7 @@ class ApplicationsState {
     return ApplicationsState(
       applications: [],
       isLoading: false,
+      refreshing: false,
       isLoadingMore: false,
       hasMore: true,
       meta: null, // ✅ ADD THIS
@@ -36,6 +39,7 @@ class ApplicationsState {
   ApplicationsState copyWith({
     List<ApplicationModel>? applications,
     bool? isLoading,
+    bool? refreshing,
     bool? isLoadingMore,
     bool? hasMore,
     String? error,
@@ -44,6 +48,7 @@ class ApplicationsState {
     return ApplicationsState(
       applications: applications ?? this.applications,
       isLoading: isLoading ?? this.isLoading,
+     refreshing: refreshing ?? this.refreshing,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       hasMore: hasMore ?? this.hasMore,
       error: error ?? this.error,
@@ -67,10 +72,10 @@ class ApplicationsNotifier extends StateNotifier<ApplicationsState> {
     if (token == null) return;
 
     skip = 0;
-
+    final firstLoad = state.applications.isEmpty;
     state = state.copyWith(
-      isLoading: true,
-      applications: [],
+      isLoading: firstLoad,
+      refreshing: !firstLoad,
       hasMore: true,
       error: null,
     );
@@ -88,11 +93,12 @@ class ApplicationsNotifier extends StateNotifier<ApplicationsState> {
         applications: res.applications,
         meta: res.meta, // 🔥 THIS WAS MISSING
         isLoading: false,
+        refreshing: false,
         hasMore: res.meta.hasMore,
         
       );
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      state = state.copyWith(isLoading: false,refreshing: false, error: e.toString());
     }
   }
 

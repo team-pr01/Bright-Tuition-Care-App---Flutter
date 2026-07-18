@@ -1,61 +1,148 @@
 import 'package:btcclient/core/widgets/navbar/common_appbar.dart';
-import 'package:btcclient/features/refer/data/models/lead_model.dart';
+import 'package:btcclient/features/refer/presentation/provider/my_leads_provider.dart';
 import 'package:btcclient/features/refer/presentation/widgets/lead_card.dart';
+import 'package:btcclient/features/refer/presentation/widgets/skeleton/lead_card_skeleton.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MyLeadsScreen extends StatefulWidget {
+class MyLeadsScreen extends ConsumerStatefulWidget {
   const MyLeadsScreen({super.key});
 
   @override
-  State<MyLeadsScreen> createState() => _MyLeadsScreenState();
+  ConsumerState<MyLeadsScreen> createState() => _MyLeadsScreenState();
 }
 
-class _MyLeadsScreenState extends State<MyLeadsScreen> {
+class _MyLeadsScreenState extends ConsumerState<MyLeadsScreen> {
   int? expandedIndex;
 
-  final List<Lead> leads = [
-    Lead(
-      id: "1",
-      phone: "9876543210",
-      className: "10",
-      address: "Nagpur",
-      details: "Maths tuition required",
-      status: "Pending",
-      date: "12 Feb",
-    ),
-    Lead(
-      id: "2",
-      phone: "9123456780",
-      className: "8",
-      address: "Pune",
-      details: "Science help",
-      status: "Confirmed",
-      date: "15 Feb",
-    ),
-  ];
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.microtask(() {
+      ref.read(myLeadsProvider.notifier).fetchLeads();
+    });
+
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      ref.read(myLeadsProvider.notifier).loadMore();
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(myLeadsProvider);
+
     return Scaffold(
       appBar: const CommonAppBar(),
-
-      body: ListView.builder(
-        padding: const EdgeInsets.all(12),
-        itemCount: leads.length,
-        itemBuilder: (context, index) {
-          final lead = leads[index];
-          final isOpen = expandedIndex == index;
-
-          return LeadCard(
-            lead: lead,
-            isOpen: isOpen,
-            onTap: () {
-              setState(() {
-                expandedIndex = isOpen ? null : index;
-              });
-            },
-          );
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await ref.read(myLeadsProvider.notifier).refresh();
         },
+        child: Builder(
+          builder: (context) {
+            if (state.loading) {
+              return ListView.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(12),
+                itemCount: 6,
+                itemBuilder: (_, __) => const Padding(
+                  padding: EdgeInsets.only(bottom: 12),
+                  child: LeadCardSkeleton(),
+                ),
+              );
+            }
+
+            if (state.error != null) {
+              return ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * .7,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(state.error!, textAlign: TextAlign.center),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () {
+                              ref.read(myLeadsProvider.notifier).fetchLeads();
+                            },
+                            child: const Text("Retry"),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }
+
+            if (state.leads.isEmpty) {
+              return ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * .7,
+                    child: const Center(child: Text("No Leads Found")),
+                  ),
+                ],
+              );
+            }
+
+            return ListView.builder(
+              controller: _scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(16),
+              itemCount: state.leads.length + (state.loadingMore ? 1 : 0),
+              itemBuilder: (context, index) {
+                if (index == state.leads.length) {
+                  return ListView.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(12),
+                itemCount: 6,
+                itemBuilder: (_, __) => const Padding(
+                  padding: EdgeInsets.only(bottom: 12),
+                  child: LeadCardSkeleton(),
+                ),
+              );
+                }
+
+                final lead = state.leads[index];
+
+                final isOpen = expandedIndex == index;
+
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: LeadCard(
+                    lead: lead,
+                    isOpen: isOpen,
+                    onTap: () {
+                      setState(() {
+                        expandedIndex = isOpen ? null : index;
+                      });
+                    },
+                  ),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

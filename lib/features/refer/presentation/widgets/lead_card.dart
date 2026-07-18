@@ -1,209 +1,197 @@
 import 'package:btcclient/core/config/theme.dart';
+import 'package:btcclient/core/utils/date_formatter.dart';
+import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/features/refer/data/models/lead_model.dart';
 import 'package:flutter/material.dart';
 
 class LeadCard extends StatelessWidget {
-  final Lead lead;
+  final LeadModel lead;
   final bool isOpen;
   final VoidCallback onTap;
+  final VoidCallback? onEdit;
+  final VoidCallback? onPayment;
 
   const LeadCard({
+    super.key,
     required this.lead,
     required this.isOpen,
     required this.onTap,
+    this.onEdit,
+    this.onPayment,
   });
-
-  @override
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.sm,
-      ),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppColors.neutrals01,
         borderRadius: BorderRadius.circular(AppRadius.medium),
         border: Border.all(color: AppColors.neutrals04),
         boxShadow: const [
           BoxShadow(
-            color: Color.fromRGBO(0, 0, 0, 0.04),
-            blurRadius: 8,
-            offset: Offset(0, 2),
+            color: Color.fromRGBO(0, 0, 0, .05),
+            blurRadius: 10,
+            offset: Offset(0, 4),
           ),
         ],
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          InkWell(
-            borderRadius: BorderRadius.circular(AppRadius.medium),
-            onTap: onTap,
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              child: Row(
-                children: [
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary03,
-                      borderRadius: BorderRadius.circular(AppRadius.small),
-                    ),
-                    child: const Icon(
-                      Icons.person_outline,
-                      color: AppColors.primary01,
-                    ),
-                  ),
-
-                  const SizedBox(width: AppSpacing.md),
-
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          lead.phone,
-                          style: AppTextStyles.titleLarge.copyWith(
-                            color: AppColors.neutrals02,
-                          ),
-                        ),
-
-                        const SizedBox(height: 4),
-
-                        Text(
-                          "Class ${lead.className}",
-                          style: AppTextStyles.bodySmall.copyWith(
-                            color: AppColors.neutrals03,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary03,
-                      borderRadius: BorderRadius.circular(
-                        AppRadius.full.toDouble(),
-                      ),
-                    ),
-                    child: Text(
-                      lead.status,
-                      style: AppTextStyles.labelSmall.copyWith(
-                        color: AppColors.primary01,
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(width: 8),
-
-                  Icon(
-                    isOpen
-                        ? Icons.keyboard_arrow_up
-                        : Icons.keyboard_arrow_down,
-                    color: AppColors.neutrals03,
-                  ),
-                ],
+          /// Header
+          Row(
+            children: [
+              Text(
+                "Lead #${lead.leadId}",
+                style: AppTextStyles.titleMedium.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-            ),
+
+              const Spacer(),
+
+              _statusChip(),
+            ],
           ),
 
-          if (isOpen)
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.md,
-                0,
-                AppSpacing.md,
-                AppSpacing.md,
+          const SizedBox(height: AppSpacing.md),
+
+          /// Phone
+          Row(
+            children: [
+              const Icon(Icons.phone_outlined, size: 18),
+              const SizedBox(width: 8),
+
+              Text(lead.guardianPhoneNumber, style: AppTextStyles.titleLarge),
+            ],
+          ),
+
+          const SizedBox(height: AppSpacing.md),
+
+          /// ================= DAYS + SALARY =================
+          Row(
+            children: [
+              Expanded(
+                child: _infoTile(Icons.school_outlined, "Class", lead.classes),
               ),
-              child: Column(
-                children: [
-                  const Divider(color: AppColors.neutrals04),
-
-                  _row("Address", lead.address),
-                  _row("Details", lead.details),
-                  _row("Date", lead.date),
-
-                  const SizedBox(height: AppSpacing.md),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _actionButton(
-                        icon: Icons.edit_outlined,
-                        color: AppColors.primary01,
-                        onTap: () {},
-                      ),
-                      _actionButton(
-                        icon: Icons.payment_outlined,
-                        color: AppColors.success,
-                        onTap: () {},
-                      ),
-                      _actionButton(
-                        icon: Icons.delete_outline,
-                        color: AppColors.error,
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
-                ],
+              Expanded(
+                child: _infoTile(
+                  Icons.calendar_today_outlined,
+                  "Added On",
+                  DateFormatter.formattedDate(lead.createdAt),
+                ),
               ),
-            ),
+            ],
+          ),
+
+          _infoTile(Icons.location_on_outlined, "Address", lead.address),
+
+          _infoTile(Icons.description_outlined, "Details", lead.details),
+
+          _infoTile(
+            Icons.account_balance_wallet_outlined,
+            "Payment",
+            lead.paymentMethod ?? "Add Payment Method",
+            valueColor: lead.paymentMethod == null
+                ? AppColors.primary01
+                : AppColors.neutrals02,
+          ),
+
+          const SizedBox(height: AppSpacing.lg),
+          AppButton(
+            label: "Edit Lead",
+            onPressed: onEdit,
+            variant: AppButtonVariant.outline,
+            textColor: AppColors.primary01,
+            height: 40,
+            icon: (Icons.edit_outlined),
+          ),
         ],
       ),
     );
   }
 
-  Widget _actionButton({
-    required IconData icon,
-    required Color color,
-    required VoidCallback onTap,
+  @override
+  Widget _infoTile(
+    IconData icon,
+    String title,
+    String value, {
+    Color? valueColor,
   }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(AppRadius.small),
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.08),
-          borderRadius: BorderRadius.circular(AppRadius.small),
-        ),
-        child: Icon(icon, color: color, size: 22),
-      ),
-    );
-  }
-
-  Widget _row(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+      padding: const EdgeInsets.only(bottom: 14),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 70,
-            child: Text(
-              label,
-              style: AppTextStyles.labelMedium.copyWith(
-                color: AppColors.neutrals06,
-                fontWeight: FontWeight.w500
-              ),
-            ),
-          ),
+          Icon(icon, size: 18, color: AppColors.primary01),
+
+          const SizedBox(width: 10),
 
           Expanded(
-            child: Text(
-              value,
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.neutrals02,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: AppTextStyles.labelMedium.copyWith(
+                    color: AppColors.neutrals06,
+                  ),
+                ),
+
+                const SizedBox(height: 3),
+
+                Text(
+                  value,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: valueColor ?? AppColors.neutrals02,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _statusChip() {
+    Color bg;
+    Color text;
+
+    switch (lead.status.toLowerCase()) {
+      case "accepted":
+      case "confirmed":
+        bg = const Color(0xffE8F7EF);
+        text = const Color(0xff1F9254);
+        break;
+
+      case "pending":
+        bg = const Color(0xffFFF4E5);
+        text = const Color(0xffF59E0B);
+        break;
+
+      case "rejected":
+        bg = const Color(0xffFDECEC);
+        text = const Color(0xffDC2626);
+        break;
+
+      default:
+        bg = AppColors.primary03;
+        text = AppColors.primary01;
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: Text(
+        lead.status,
+        style: AppTextStyles.labelSmall.copyWith(
+          color: text,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }

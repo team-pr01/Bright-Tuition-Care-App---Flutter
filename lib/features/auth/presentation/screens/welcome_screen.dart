@@ -4,9 +4,11 @@ import 'package:btcclient/features/auth/presentation/provider/testimonial_notifi
 import 'package:btcclient/features/auth/presentation/screens/login_screen.dart';
 import 'package:btcclient/features/auth/presentation/screens/register_screen.dart';
 import 'package:btcclient/features/auth/presentation/widgets/welcome_nav_link.dart';
+import 'package:btcclient/features/legal/presentation/terms_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/config/theme.dart';
 import '../../../../core/widgets/button/app_button.dart';
 
@@ -200,11 +202,12 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                 ),
                               ),
                               label: "Job Board",
+                              onTap: () {},
                             ),
 
                             WelcomeNavLink(
                               icon: SvgPicture.asset(
-                                "assets/icons/navigations/dashboard-square-edit.svg",
+                                "assets/icons/navigations/video-ai.svg",
                                 width: 24,
                                 height: 24,
                                 colorFilter: const ColorFilter.mode(
@@ -212,7 +215,23 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                   BlendMode.srcIn,
                                 ),
                               ),
-                              label: "Highlights",
+                              label: "Tutorials",
+                              onTap: () async {
+                                final url = Uri.parse(
+                                  "https://www.brighttuitioncare.com/tutorial",
+                                );
+
+                                if (!await launchUrl(
+                                  url,
+                                  mode: LaunchMode.externalApplication,
+                                )) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("Could not open tutorial"),
+                                    ),
+                                  );
+                                }
+                              },
                             ),
 
                             WelcomeNavLink(
@@ -226,11 +245,14 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                 ),
                               ),
                               label: "Helpline",
+                              onTap: () {
+                                launchUrl(Uri.parse("tel:+8801616012365"));
+                              },
                             ),
 
                             WelcomeNavLink(
                               icon: SvgPicture.asset(
-                                "assets/icons/navigations/video-ai.svg",
+                                "assets/icons/navigations/dashboard-square-edit.svg",
                                 width: 24,
                                 height: 24,
                                 colorFilter: const ColorFilter.mode(
@@ -238,7 +260,15 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                   BlendMode.srcIn,
                                 ),
                               ),
-                              label: "Tutorial",
+                              label: "Terms",
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const TermsScreen(),
+                                  ),
+                                );
+                              },
                             ),
                           ],
                         ),

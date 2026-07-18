@@ -200,7 +200,7 @@ class TuitionPreference {
       preferredCities: List<String>.from(json['preferredCities'] ?? []),
       preferredLocations: List<String>.from(json['preferredLocations'] ?? []),
       placeOfTuition: List<String>.from(json['placeOfTuition'] ?? []),
-      expectedSalary: json['expectedSalary'],
+      expectedSalary: json['expectedSalary'] ?? "",
     );
   }
 }
@@ -257,7 +257,7 @@ class Education {
       department: json['department'] ?? "",
       result: json['result'] ?? "",
       passingYear: json['passingYear'] ?? "",
-      isCurrentInstitute: json['isCurrentInstitute'] ?? "",
+      isCurrentInstitute: json['isCurrentInstitute'] ?? false,
     );
   }
 }

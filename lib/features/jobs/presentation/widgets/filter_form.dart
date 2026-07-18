@@ -1,19 +1,21 @@
 import 'package:btcclient/features/jobs/data/constant/filter_data.dart';
+import 'package:btcclient/features/jobs/presentation/provider/selected_job_filter_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/models/job_filter.dart';
 import '../../../../core/widgets/button/app_button.dart';
 import '../../../../core/widgets/input/app_input_field.dart';
 
-class FilterSidebar extends StatefulWidget {
-  final Function(JobFilter) onApply;
-
-  const FilterSidebar({super.key, required this.onApply});
+class FilterSidebar extends ConsumerStatefulWidget {
+const FilterSidebar({
+  super.key,
+});
 
   @override
-  State<FilterSidebar> createState() => _FilterSidebarState();
+  ConsumerState<FilterSidebar> createState() => _FilterSidebarState();
 }
 
-class _FilterSidebarState extends State<FilterSidebar> {
+class _FilterSidebarState extends ConsumerState<FilterSidebar> {
   /// 🔥 MULTI SELECT STATES
   List<String> cities = [];
   List<String> areas = [];
@@ -90,47 +92,72 @@ class _FilterSidebarState extends State<FilterSidebar> {
   }
 
   /// ================= APPLY =================
- void _apply() {
-  final filter = JobFilter(
-    status: "live",
-    city: cities,
-    area: areas,
-    category: categories,
-    className: classes,
-    tutoringDays: days,
-    tuitionType: tuitionTypes,
-    subjects: subjects,
+  void _apply() {
+    final filter = JobFilter(
+      status: "live",
+      city: cities,
+      area: areas,
+      category: categories,
+      className: classes,
+      tutoringDays: days,
+      tuitionType: tuitionTypes,
+      subjects: subjects,
 
-    /// 🔥 FIXED
-    preferredTutorGender:
-        tutorGender.contains("All") ? null : tutorGender,
-    studentGender: studentGender,
-  );
+      /// 🔥 FIXED
+      preferredTutorGender: tutorGender.contains("All") ? null : tutorGender,
+      studentGender: studentGender,
+    );
 
-  widget.onApply(filter);
-  Navigator.pop(context);
-}
+    ref.read(selectedJobFilterProvider.notifier).state = filter;
+
+    Navigator.pop(context);
+  }
+
   /// ================= RESET =================
   void _reset() {
-  setState(() {
-    cities = [];
-    areas = [];
-    categories = [];
-    classes = [];
-    subjects = [];
-    days = [];
-    tuitionTypes = [];
-    tutorGender = [];
-    studentGender = [];
+    setState(() {
+      cities = [];
+      areas = [];
+      categories = [];
+      classes = [];
+      subjects = [];
+      days = [];
+      tuitionTypes = [];
+      tutorGender = [];
+      studentGender = [];
 
-    areaOptions = [];
-    classOptions = [];
-    subjectOptions = [];
-  });
+      areaOptions = [];
+      classOptions = [];
+      subjectOptions = [];
+    });
 
-  widget.onApply(JobFilter(status: "live"));
-  Navigator.pop(context);
+    ref.read(selectedJobFilterProvider.notifier).state =
+    JobFilter(status: "live");
+    Navigator.pop(context);
+  }
+  @override
+void initState() {
+  super.initState();
+
+  final filter = ref.read(selectedJobFilterProvider);
+
+  if (filter == null) return;
+
+  cities = List.from(filter.city ?? []);
+  areas = List.from(filter.area ?? []);
+  categories = List.from(filter.category ?? []);
+  classes = List.from(filter.className ?? []);
+  subjects = List.from(filter.subjects ?? []);
+  days = List.from(filter.tutoringDays ?? []);
+  tuitionTypes = List.from(filter.tuitionType ?? []);
+  tutorGender = List.from(filter.preferredTutorGender ?? []);
+  studentGender = List.from(filter.studentGender ?? []);
+
+  _onCityChanged(cities);
+  _onCategoryChanged(categories);
+  _onClassChanged(classes);
 }
+
   @override
   Widget build(BuildContext context) {
     return Material(

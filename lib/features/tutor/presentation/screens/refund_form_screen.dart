@@ -1,3 +1,4 @@
+import 'package:btcclient/core/network/api_error_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,12 +14,10 @@ class RefundFormScreen extends ConsumerStatefulWidget {
   const RefundFormScreen({super.key});
 
   @override
-  ConsumerState<RefundFormScreen> createState() =>
-      _RefundFormScreenState();
+  ConsumerState<RefundFormScreen> createState() => _RefundFormScreenState();
 }
 
-class _RefundFormScreenState
-    extends ConsumerState<RefundFormScreen> {
+class _RefundFormScreenState extends ConsumerState<RefundFormScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final jobIdController = TextEditingController();
@@ -27,7 +26,7 @@ class _RefundFormScreenState
   final reasonController = TextEditingController();
   final bankNameController = TextEditingController();
 
-  String? paymentMethod="bKash";
+  String? paymentMethod = "bKash";
 
   final paymentMethods = ["bKash", "Nagad", "Rocket", "Bank Transfer"];
 
@@ -36,38 +35,44 @@ class _RefundFormScreenState
     super.initState();
 
     // ✅ LISTEN TO PROVIDER (handles success/error)
-    Future.microtask(() {
-      ref.listen(refundProvider, (previous, next) {
-        next.whenOrNull(
-          data: (response) {
-            if (response != null && response.success) {
-              AppSnackbar.show(
-                context,
-                response.message,
-                SnackType.success,
-              );
-            } else {
-              AppSnackbar.show(
-                context,
-                response?.message ?? "Failed",
-                SnackType.error,
-              );
-            }
-          },
-          error: (e, _) {
-            AppSnackbar.show(
-              context,
-              "Something went wrong",
-              SnackType.error,
-            );
-          },
-        );
-      });
-    });
   }
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(refundProvider, (previous, next) {
+      next.whenOrNull(
+        data: (response) {
+          if (!mounted || response == null) return;
+
+          AppSnackbar.show(
+            context,
+            response.message,
+            response.success ? SnackType.success : SnackType.error,
+          );
+
+          if (response.success) {
+            _formKey.currentState?.reset();
+
+            jobIdController.clear();
+            amountController.clear();
+            accountController.clear();
+            reasonController.clear();
+            bankNameController.clear();
+
+            setState(() {
+              paymentMethod = "bKash";
+            });
+             Navigator.of(context).pop();
+          }
+        },
+        error: (error, stack) {
+          if (!mounted) return;
+
+          AppSnackbar.show(context, error.toString(), SnackType.error);
+        },
+      );
+    });
+    final refundState = ref.watch(refundProvider);
     return Scaffold(
       appBar: const CommonAppBar(),
 
@@ -149,7 +154,8 @@ class _RefundFormScreenState
               AppButton(
                 label: "Submit Refund Request",
                 variant: AppButtonVariant.gradient,
-                onPressed: submitRefund, // ✅ FIXED
+                onPressed: refundState.isLoading ? null : submitRefund,
+                loading: refundState.isLoading,
               ),
             ],
           ),

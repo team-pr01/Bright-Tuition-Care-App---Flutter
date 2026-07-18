@@ -11,15 +11,17 @@ import 'package:btcclient/features/jobs/data/models/application_modal.dart';
 import 'package:btcclient/features/jobs/data/models/applied_model.dart';
 import 'package:btcclient/features/jobs/data/models/job_model.dart';
 import 'package:btcclient/features/jobs/presentation/enums/job_card_variant.dart';
+import 'package:btcclient/features/jobs/presentation/helper/job_apply_helper.dart';
 import 'package:btcclient/features/jobs/presentation/provider/job_provider.dart';
 import 'package:btcclient/features/jobs/presentation/widgets/icon_row.dart';
+import 'package:btcclient/features/tutor/presentation/screens/tutor_application_screen.dart';
 import 'package:btcclient/features/tutor/presentation/tutor_dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class JobBottomSheet extends ConsumerWidget {
+class JobBottomSheet extends ConsumerStatefulWidget {
   final JobModel job;
   final JobCardVariant variant;
   final ApplicationModel? application;
@@ -30,12 +32,20 @@ class JobBottomSheet extends ConsumerWidget {
     required this.job,
     required this.variant,
     this.application,
-     required this.changeTab,
+    required this.changeTab,
   });
-
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    print("variant: $variant");
+  ConsumerState<JobBottomSheet> createState() => _JobCardState();
+}
+
+class _JobCardState extends ConsumerState<JobBottomSheet> {
+  bool _isWithdrawing = false;
+  @override
+  Widget build(BuildContext context) {
+    final job = widget.job;
+    final variant = widget.variant;
+    final changeTab = widget.changeTab;
+    final application = widget.application;
     final user = ref.watch(authProvider).user;
     final iconPath = JobIconHelper.getCategoryIcon(
       category: job.category ?? "",
@@ -89,10 +99,14 @@ class JobBottomSheet extends ConsumerWidget {
                     Text("Status :"),
                     const SizedBox(width: 8),
                     Text(
-                      StatusDataFormatter.getStatusLabel(application?.status),
+                      StatusDataFormatter.getApplicationStatus(
+                        applicationStatus: application?.status,
+                        jobStatus: job.status,
+                      ),
                       style: TextStyle(
-                        color: StatusDataFormatter.getStatusColor(
-                          application?.status,
+                        color: StatusDataFormatter.getApplicationStatusColor(
+                         applicationStatus: application?.status,
+                        jobStatus: job.status,
                         ),
                         fontWeight: FontWeight.w500,
                       ),
@@ -233,7 +247,13 @@ class JobBottomSheet extends ConsumerWidget {
                           ? "assets/icons/visual/prefered-tutor.svg"
                           : "assets/icons/visual/gender.svg",
                       title: "Prefer Tutor",
-                      value: safe(job.preferredTutorGender),
+                      value: safe(
+                        job.preferredTutorGender == "male"
+                            ? "Male"
+                            : job.preferredTutorGender == "female"
+                            ? "Female"
+                            : "Other",
+                      ),
                     ),
                   ),
                 ],
@@ -268,6 +288,14 @@ class JobBottomSheet extends ConsumerWidget {
                   "${job.address ?? ""}, ${job.area?.join(", ") ?? "-"}-${job.city?.join(", ") ?? "-"}",
                 ),
               ),
+              const SizedBox(height: 12),
+
+              /// ================= LOCATION =================
+              IconRow(
+                icon: "assets/icons/visual/requirements.svg",
+                title: "Other Requirements",
+                value: safe("${job.otherRequirements ?? ""} "),
+              ),
 
               const SizedBox(height: 16),
 
@@ -281,19 +309,19 @@ class JobBottomSheet extends ConsumerWidget {
                         label: "Direction",
                         onPressed: () async {
                           final url = job.locationDirection;
-                      
+
                           if (url == null || url.isEmpty) {
                             debugPrint("URL is empty");
                             return;
                           }
-                      
+
                           final uri = Uri.parse(url);
-                      
+
                           try {
                             await launchUrl(
                               uri,
-                              mode:
-                                  LaunchMode.externalApplication, // 🔥 IMPORTANT
+                              mode: LaunchMode
+                                  .externalApplication, // 🔥 IMPORTANT
                             );
                           } catch (e) {
                             debugPrint("Launch failed: $e");
@@ -310,93 +338,120 @@ class JobBottomSheet extends ConsumerWidget {
                       Expanded(
                         child: AppButton(
                           label: isApplied ? "Undo Apply" : "Apply",
-                          onPressed: () async {
-                            final user = ref.read(authProvider).user;
-                        
-                            if (user == null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Please login first"),
-                                ),
-                              );
-                              return;
-                            }
-                        
-                            try {
-                              if (isApplied) {
-                                // 🔥 WITHDRAW FLOW
-                        
-                                final application = job.applications
-                                    ?.where((app) => app.userId == user?.id)
-                                    .cast<AppliedModel?>()
-                                    .firstOrNull;
-                                if (application == null) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text("Application not found"),
-                                    ),
-                                  );
-                                  return;
-                                }
-                        
-                                final success = await ref
-                                    .read(jobsProvider.notifier)
-                                    .withdrawApplication(
-                                      applicationId: application.applicationId!,
+                          loading: _isWithdrawing,
+                          onPressed: _isWithdrawing
+                              ? null
+                              : () async {
+                                  final user = ref.read(authProvider).user;
+
+                                  if (user == null) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text("Please login first"),
+                                      ),
                                     );
-                        
-                                if (success) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text("Withdraw successful"),
-                                    ),
-                                  );
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text("Withdraw failed"),
-                                    ),
-                                  );
-                                }
-                              } else {
-                                // 🔥 APPLY FLOW
-                        
-                                final success = await ref
-                                    .read(jobsProvider.notifier)
-                                    .applyJob(jobId: job.id!, userId: user.id);
-                        
-                                if (success) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text("Applied successfully"),
-                                    ),
-                                  );
-                        
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) =>
-                                          const TutorDashboardScreen(),
-                                    ),
-                                  );
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text("Failed to apply"),
-                                    ),
-                                  );
-                                }
-                              }
-                            } catch (e) {
-                              print("❌ ERROR: $e");
-                        
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Something went wrong"),
-                                ),
-                              );
-                            }
-                          },
+                                    return;
+                                  }
+
+                                  try {
+                                    if (isApplied) {
+                                      // 🔥 WITHDRAW FLOW
+
+                                      final application = job.applications
+                                          ?.where(
+                                            (app) => app.userId == user?.id,
+                                          )
+                                          .cast<AppliedModel?>()
+                                          .firstOrNull;
+                                      if (application == null) {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                              "Application not found",
+                                            ),
+                                          ),
+                                        );
+                                        return;
+                                      }
+                                      setState(() => _isWithdrawing = true);
+                                      final success = await ref
+                                          .read(jobsProvider.notifier)
+                                          .withdrawApplication(
+                                            applicationId:
+                                                application.applicationId!,
+                                          );
+
+                                      if (success) {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                              "Withdraw successful",
+                                            ),
+                                          ),
+                                        );
+                                        setState(() => _isWithdrawing = false);
+                                      } else {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          const SnackBar(
+                                            content: Text("Withdraw failed"),
+                                          ),
+                                        );
+                                      }
+                                    } else {
+                                      // 🔥 APPLY FLOW
+
+                                      await showApplyConfirmation(
+                                        context: context,
+                                        onApply: (dialogContext) async {
+                                          final success = await ref
+                                              .read(jobsProvider.notifier)
+                                              .applyJob(
+                                                jobId: job.id!,
+                                                userId: user.id,
+                                              );
+
+                                          if (success) {
+                                            Navigator.pop(dialogContext);
+
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                  "Applied successfully",
+                                                ),
+                                              ),
+                                            );
+
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (_) =>
+                                                    MyApplicationPage(
+                                                      changeTab: changeTab,
+                                                    ),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                      );
+                                    }
+                                  } catch (e) {
+                                    print("❌ ERROR: $e");
+
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text("Something went wrong"),
+                                      ),
+                                    );
+                                  }
+                                },
                           variant: AppButtonVariant.gradient,
                           height: 40,
                           width: 160,
@@ -428,9 +483,9 @@ class JobBottomSheet extends ConsumerWidget {
                               "area": job.area,
                               "address": job.address,
                             });
-                        
+
                             Navigator.pop(context); // 🔥 CLOSE SHEET FIRST
-                        
+
                             changeTab(1); // 🔥 SWITCH TAB
                           },
                           variant: AppButtonVariant.gradient,

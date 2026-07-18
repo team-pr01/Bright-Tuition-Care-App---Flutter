@@ -11,6 +11,7 @@ import 'package:btcclient/features/hire_tutor/presentation/screen/post_job_page.
 import 'package:btcclient/features/jobs/data/models/application_modal.dart';
 import 'package:btcclient/features/jobs/data/models/applied_model.dart';
 import 'package:btcclient/features/jobs/presentation/enums/job_card_variant.dart';
+import 'package:btcclient/features/jobs/presentation/helper/job_apply_helper.dart';
 import 'package:btcclient/features/jobs/presentation/provider/applied_jobs_provider.dart';
 import 'package:btcclient/features/jobs/presentation/provider/job_provider.dart';
 import 'package:btcclient/features/jobs/presentation/widgets/icon_row.dart';
@@ -22,7 +23,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../data/models/job_model.dart';
 
-class JobCard extends ConsumerWidget {
+class JobCard extends ConsumerStatefulWidget {
   final JobModel job;
   final JobCardVariant variant;
   final ApplicationModel? application;
@@ -37,7 +38,18 @@ class JobCard extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<JobCard> createState() => _JobCardState();
+}
+
+class _JobCardState extends ConsumerState<JobCard> {
+  bool _isWithdrawing = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final job = widget.job;
+    final variant = widget.variant;
+    final application = widget.application;
+    final changeTab = widget.changeTab;
     final user = ref.watch(authProvider).user;
     final iconPath = JobIconHelper.getCategoryIcon(
       category: job.category ?? "",
@@ -137,10 +149,11 @@ class JobCard extends ConsumerWidget {
                     Text("Status :"),
                     const SizedBox(width: 8),
                     Text(
-                      StatusDataFormatter.getStatusLabel(application?.status),
+                      StatusDataFormatter.getApplicationStatus(applicationStatus:application?.status,jobStatus:job.status ),
                       style: TextStyle(
-                        color: StatusDataFormatter.getStatusColor(
-                          application?.status,
+                         color: StatusDataFormatter.getApplicationStatusColor(
+                         applicationStatus: application?.status,
+                        jobStatus: job.status,
                         ),
                         fontWeight: FontWeight.w500,
                       ),
@@ -272,7 +285,13 @@ class JobCard extends ConsumerWidget {
                 ? "assets/icons/visual/prefered-tutor.svg"
                 : "assets/icons/visual/gender.svg",
             title: "Prefer Tutor",
-            value: safe(job.preferredTutorGender),
+            value: safe(
+              job.preferredTutorGender == "male"
+                  ? "Male"
+                  : job.preferredTutorGender == "female"
+                  ? "Female"
+                  : "Other",
+            ),
           ),
 
           const SizedBox(height: 12),
@@ -344,91 +363,94 @@ class JobCard extends ConsumerWidget {
                 /// APPLY BUTTON
                 AppButton(
                   label: isApplied ? "Undo Apply" : "Apply",
-                  onPressed: () async {
-                    final user = ref.read(authProvider).user;
+                  loading: _isWithdrawing,
+                  onPressed: _isWithdrawing
+                      ? null
+                      : () async {
+                          final user = ref.read(authProvider).user;
 
-                    if (user == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Please login first to apply on job"),
-                        ),
-                      );
-                      return;
-                    }
-
-                    try {
-                      if (isApplied) {
-                        // 🔥 WITHDRAW FLOW
-
-                        final application = job.applications
-                            ?.where((app) => app.userId == user?.id)
-                            .cast<AppliedModel?>()
-                            .firstOrNull;
-                        if (application == null) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Application not found"),
-                            ),
-                          );
-                          return;
-                        }
-
-                        final success = await ref
-                            .read(jobsProvider.notifier)
-                            .withdrawApplication(
-                              applicationId: application.applicationId!,
+                          if (user == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  "Please login first to apply on job",
+                                ),
+                              ),
                             );
+                            return;
+                          }
 
-                        if (success) {
-                          ref
-                              .read(appliedJobsProvider.notifier)
-                              .withdraw(job.id);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Withdraw successful"),
-                            ),
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Withdraw failed")),
-                          );
-                        }
-                      } else {
-                        // 🔥 APPLY FLOW
+                          try {
+                            if (isApplied) {
+                              // 🔥 WITHDRAW FLOW
 
-                        final success = await ref
-                            .read(jobsProvider.notifier)
-                            .applyJob(jobId: job.id!, userId: user.id);
+                              final application = job.applications
+                                  ?.where((app) => app.userId == user?.id)
+                                  .cast<AppliedModel?>()
+                                  .firstOrNull;
+                              if (application == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Application not found"),
+                                  ),
+                                );
+                                return;
+                              }
+                               setState(() => _isWithdrawing = true);
+                              final success = await ref
+                                  .read(jobsProvider.notifier)
+                                  .withdrawApplication(
+                                    applicationId: application.applicationId!,
+                                  );
 
-                        if (success) {
-                          ref.read(appliedJobsProvider.notifier).apply(job.id);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Applied successfully"),
-                            ),
-                          );
+                              if (success) {
+                                ref
+                                    .read(appliedJobsProvider.notifier)
+                                    .withdraw(job.id);
+                              
+                                setState(() => _isWithdrawing = false);
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Withdraw failed"),
+                                  ),
+                                );
+                              }
+                            } else {
+                              await showApplyConfirmation(
+                                context: context,
+                                onApply: (dialogContext) async {
+                                  final success = await ref
+                                      .read(jobsProvider.notifier)
+                                      .applyJob(
+                                        jobId: job.id!,
+                                        userId: user.id,
+                                      );
 
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) =>
-                                  MyApplicationPage(changeTab: changeTab),
-                            ),
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Failed to apply")),
-                          );
-                        }
-                      }
-                    } catch (e) {
-                      print("❌ ERROR: $e");
+                                  if (success) {
+                                    Navigator.pop(dialogContext);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => MyApplicationPage(
+                                          changeTab: changeTab,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                              );
+                            }
+                          } catch (e) {
+                            print("❌ ERROR: $e");
 
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Something went wrong")),
-                      );
-                    }
-                  },
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Something went wrong"),
+                              ),
+                            );
+                          }
+                        },
                   variant: AppButtonVariant.gradient,
                   height: 40,
                   width: 160,

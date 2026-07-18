@@ -1,3 +1,6 @@
+import 'package:btcclient/features/auth/data/models/user_model.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
 class InvoiceModel {
   final String id;
   final String invoiceId;

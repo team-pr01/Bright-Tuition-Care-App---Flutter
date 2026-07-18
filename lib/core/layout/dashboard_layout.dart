@@ -1,6 +1,7 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/widgets/navbar/bottom_navbar.dart';
 import 'package:btcclient/core/widgets/snackbar/app_snackbar.dart';
+import 'package:btcclient/features/jobs/data/models/job_filter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/services.dart';
@@ -65,7 +66,7 @@ class _DashboardLayoutState extends State<DashboardLayout> {
             context,
             "Press back again to exit",
             SnackType.natural,
-             showIcon: false,
+            showIcon: false,
           );
 
           return;

@@ -10,8 +10,6 @@ class TutorApi {
       "/tutor/stats",
     );
 
-    print("RAW API RESPONSE: ${response.data}");
-
     return response.data;
   }
   Future<RefundResponse> applyRefund(RefundApplicationRequest request) async {

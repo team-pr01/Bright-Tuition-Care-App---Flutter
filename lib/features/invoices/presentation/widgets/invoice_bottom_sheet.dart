@@ -1,5 +1,6 @@
 import 'package:btcclient/core/utils/date_formatter.dart';
 import 'package:btcclient/core/utils/number_formatter.dart';
+import 'package:btcclient/features/auth/data/models/user_model.dart';
 import 'package:btcclient/features/payment/presentation/widgets/select_payment_method_sheet.dart';
 import 'package:btcclient/features/payment/presentation/widgets/selected_payment_method_sheet.dart';
 import 'package:flutter/material.dart';
@@ -12,17 +13,21 @@ import '../../data/models/invoice_model.dart';
 
 class InvoiceBottomSheet extends ConsumerWidget {
   final InvoiceModel invoice;
-
-  const InvoiceBottomSheet({super.key, required this.invoice});
+  final UserModel? user;
+  final Function onPayNow;
+  const InvoiceBottomSheet({
+    super.key,
+    required this.invoice,
+    required this.user,
+    required this.onPayNow,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isPaid = invoice.status == "paid";
-
+    print(invoice);
     return ReusableBottomSheet(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: SingleChildScrollView(
+      child: SingleChildScrollView(
           child: Column(
             children: [
               /// ================= PAYMENT HELPLINE =================
@@ -79,7 +84,9 @@ class InvoiceBottomSheet extends ConsumerWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    /// ================= BILL TO =================
+                   
+
+                    /// ================= PAYMENT STATUS =================
                     const Text(
                       "Bill To",
                       style: TextStyle(
@@ -90,27 +97,36 @@ class InvoiceBottomSheet extends ConsumerWidget {
 
                     const SizedBox(height: 20),
 
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        _infoText(title: "Name", value: "Prerna Badwane"),
+                    /// ================= DATES =================
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _infoText(
+                            title: "Name",
+                            value: user?.name ?? "N'A",
+                          ),
 
-                        const SizedBox(height: 8),
+                          const SizedBox(height: 12),
 
-                        _infoText(
-                          title: "Email",
-                          value: "prernabadwane@gmail.com",
-                        ),
+                          _infoText(
+                            title: "Email",
+                            value: user?.email ?? "N'A",
+                          ),
 
-                        const SizedBox(height: 8),
+                            const SizedBox(height: 12),
 
-                        _infoText(title: "Phone", value: "01608249337"),
-                      ],
+                            _infoText(
+                              title: "Phone",
+                              value: user?.phoneNumber ?? "N/A",
+                              ),
+                            
+                          
+                        ]
+                      ),
                     ),
-                    const SizedBox(height: 24),
-
-                    /// ================= PAYMENT STATUS =================
+                    const SizedBox(height: 34),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -137,7 +153,7 @@ class InvoiceBottomSheet extends ConsumerWidget {
                           ),
 
                           child: Text(
-                            isPaid ? "Paid" : "Due",
+                            isPaid ? "Paid" : invoice.status,
 
                             style: TextStyle(
                               color: isPaid ? Colors.green : Colors.red,
@@ -151,7 +167,6 @@ class InvoiceBottomSheet extends ConsumerWidget {
 
                     const SizedBox(height: 12),
 
-                    /// ================= DATES =================
                     /// ================= DATES =================
                     Align(
                       alignment: Alignment.centerLeft,
@@ -262,50 +277,53 @@ class InvoiceBottomSheet extends ConsumerWidget {
 
                         child: AppButton(
                           label: "Pay Now",
+onPressed: () {
+  Navigator.pop(context); // Close invoice details
+  onPayNow();             // Let parent open payment sheet
+},
+                          // onPressed: () async {
+                          //   showModalBottomSheet(
+                          //     context: context,
 
-                          onPressed: () async {
-                            showModalBottomSheet(
-                              context: context,
+                          //     isScrollControlled: true,
 
-                              isScrollControlled: true,
+                          //     backgroundColor: Colors.transparent,
 
-                              backgroundColor: Colors.transparent,
+                          //     builder: (_) {
+                          //       return SelectPaymentMethodSheet(
+                          //         onSelected: (selectedMethod) async {
+                          //           /// CLOSE METHOD SHEET
+                          //           Navigator.pop(context);
 
-                              builder: (_) {
-                                return SelectPaymentMethodSheet(
-                                  onSelected: (selectedMethod) async {
-                                    /// CLOSE METHOD SHEET
-                                    Navigator.pop(context);
+                          //           await Future.delayed(
+                          //             const Duration(milliseconds: 250),
+                          //           );
 
-                                    await Future.delayed(
-                                      const Duration(milliseconds: 250),
-                                    );
+                          //           /// OPEN PAYMENT DETAILS
+                          //           showModalBottomSheet(
+                          //             context: context,
 
-                                    /// OPEN PAYMENT DETAILS
-                                    showModalBottomSheet(
-                                      context: context,
+                          //             isScrollControlled: true,
 
-                                      isScrollControlled: true,
+                          //             backgroundColor: Colors.transparent,
 
-                                      backgroundColor: Colors.transparent,
+                          //             builder: (_) {
+                          //               return SelectedPaymentMethodSheet(
+                          //                 selectedPaymentMethod: selectedMethod,
 
-                                      builder: (_) {
-                                        return SelectedPaymentMethodSheet(
-                                          selectedPaymentMethod: selectedMethod,
+                          //                 amount: invoice.amount,
 
-                                          amount: invoice.amount,
+                          //                 invoiceId: invoice.invoiceId,
 
-                                          invoiceId: invoice.invoiceId,
-
-                                          paidFor: invoice.invoiceType,
-                                        );
-                                      },
-                                    );
-                                  },
-                                );
-                              },
-                            );
-                          },
+                          //                 paidFor: invoice.invoiceType,
+                          //               );
+                          //             },
+                          //           );
+                          //         },
+                          //       );
+                          //     },
+                          //   );
+                          // },
                           variant: AppButtonVariant.gradient,
 
                           height: 45,
@@ -317,7 +335,7 @@ class InvoiceBottomSheet extends ConsumerWidget {
             ],
           ),
         ),
-      ),
+      
     );
   }
 

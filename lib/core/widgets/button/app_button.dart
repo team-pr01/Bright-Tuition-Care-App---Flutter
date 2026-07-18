@@ -6,13 +6,13 @@ enum AppButtonVariant {
   secondary,
   outline,
   text,
-  gradient, 
+  gradient,
   outlineGray,
-  delete 
+  delete,
 }
 
 class AppButton extends StatelessWidget {
-  final String label;
+  final String? label;
   final VoidCallback? onPressed;
   final AppButtonVariant variant;
   final bool loading;
@@ -22,10 +22,11 @@ class AppButton extends StatelessWidget {
   final double fontSize;
   final FontWeight fontWeight;
   final Color? textColor;
+  final bool iconOnly;
 
   const AppButton({
     super.key,
-    required this.label,
+    this.label,
     required this.onPressed,
     this.variant = AppButtonVariant.primary,
     this.loading = false,
@@ -35,6 +36,7 @@ class AppButton extends StatelessWidget {
     this.fontSize = 16,
     this.fontWeight = FontWeight.w500,
     this.textColor,
+    this.iconOnly = false,
   });
 
   @override
@@ -48,18 +50,19 @@ class AppButton extends StatelessWidget {
               color: Colors.white,
             ),
           )
+        : iconOnly
+        ? Center(child: Icon(icon, size: 18,color:textColor ,))
         : Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (icon != null) ...[
-                Icon(icon, size: 18),
+                Icon(icon, size: 18,color:textColor),
                 const SizedBox(width: 8),
               ],
-
               Flexible(
                 child: Text(
-                  label,
+                  label!,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: fontSize,
@@ -78,7 +81,10 @@ class AppButton extends StatelessWidget {
       button = Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-              colors: [AppColors.primaryGradientStart, AppColors.primaryGradientEnd],
+            colors: [
+              AppColors.primaryGradientStart,
+              AppColors.primaryGradientEnd,
+            ],
           ),
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
@@ -134,6 +140,9 @@ class AppButton extends StatelessWidget {
           backgroundColor: AppColors.primary01,
           foregroundColor: Colors.white,
           elevation: 0,
+          padding: iconOnly
+              ? EdgeInsets.zero
+              : const EdgeInsets.symmetric(horizontal: 16),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         );
 
@@ -143,7 +152,12 @@ class AppButton extends StatelessWidget {
           backgroundColor: AppColors.primary01,
           foregroundColor: Colors.white,
           elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+          padding: iconOnly
+              ? EdgeInsets.zero
+              : const EdgeInsets.symmetric(horizontal: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(40),
+          ),
         );
 
       /// EXISTING OUTLINE
@@ -151,7 +165,12 @@ class AppButton extends StatelessWidget {
         return OutlinedButton.styleFrom(
           foregroundColor: AppColors.primary01,
           side: BorderSide(color: AppColors.primary01),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+          padding: iconOnly
+              ? EdgeInsets.zero
+              : const EdgeInsets.symmetric(horizontal: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(40),
+          ),
         );
 
       /// EXISTING TEXT
@@ -165,6 +184,9 @@ class AppButton extends StatelessWidget {
           shadowColor: Colors.transparent,
           foregroundColor: Colors.white,
           elevation: 0,
+          padding: iconOnly
+              ? EdgeInsets.zero
+              : const EdgeInsets.symmetric(horizontal: 16),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         );
 
@@ -174,19 +196,21 @@ class AppButton extends StatelessWidget {
           backgroundColor: AppColors.neutrals01,
           foregroundColor: AppColors.primary01,
           elevation: 0,
-
           side: BorderSide(color: AppColors.neutrals04),
-
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          padding: iconOnly
+              ? EdgeInsets.zero
+              : const EdgeInsets.symmetric(horizontal: 16),
         );
       case AppButtonVariant.delete:
         return ElevatedButton.styleFrom(
           backgroundColor: AppColors.error,
           foregroundColor: AppColors.neutrals01,
           elevation: 0,
-
+          padding: iconOnly
+              ? EdgeInsets.zero
+              : const EdgeInsets.symmetric(horizontal: 16),
           side: BorderSide(color: AppColors.neutrals04),
-
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         );
     }

@@ -1,4 +1,5 @@
 import 'package:btcclient/core/utils/date_formatter.dart';
+import 'package:btcclient/features/auth/data/models/user_model.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/config/theme.dart';
@@ -8,6 +9,7 @@ import '../../data/models/invoice_model.dart';
 
 class InvoiceCard extends StatelessWidget {
   final InvoiceModel invoice;
+ 
 
   final VoidCallback onView;
 

@@ -1,5 +1,10 @@
+import 'package:btcclient/core/storage/local_storage.dart';
 import 'package:btcclient/core/widgets/navbar/common_appbar.dart';
+import 'package:btcclient/features/auth/data/models/user_model.dart';
 import 'package:btcclient/features/invoices/presentation/notifier/invoice_notifier.dart';
+import 'package:btcclient/features/invoices/presentation/widgets/skeleton/invoice_card_skeleton.dart';
+import 'package:btcclient/features/payment/presentation/widgets/select_payment_method_sheet.dart';
+import 'package:btcclient/features/payment/presentation/widgets/selected_payment_method_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -16,12 +21,18 @@ class InvoiceScreen extends ConsumerStatefulWidget {
 }
 
 class _InvoiceScreenState extends ConsumerState<InvoiceScreen> {
+  UserModel? currentUser;
   @override
   void initState() {
     super.initState();
 
     /// INITIAL FETCH
-    Future.microtask(() {
+    Future.microtask(() async {
+      currentUser = await LocalStorage.getUser();
+
+      if (mounted) {
+        setState(() {});
+      }
       ref.read(invoiceProvider.notifier).fetchInvoices();
     });
   }
@@ -29,7 +40,6 @@ class _InvoiceScreenState extends ConsumerState<InvoiceScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(invoiceProvider);
-
     return Scaffold(
       appBar: widget.role == "guardian"
           ? const CommonAppBar()
@@ -43,7 +53,13 @@ class _InvoiceScreenState extends ConsumerState<InvoiceScreen> {
   Widget _buildBody(InvoiceState state) {
     /// INITIAL LOADING
     if (state.isLoading && state.invoices.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
+     return ListView.separated(
+      physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      itemCount: 5,
+      separatorBuilder: (_, __) => const SizedBox(height: 4),
+      itemBuilder: (_, __) => const InvoiceCardSkeleton(),
+    );
     }
 
     /// ERROR
@@ -71,7 +87,7 @@ class _InvoiceScreenState extends ConsumerState<InvoiceScreen> {
 
           return InvoiceCard(
             invoice: invoice,
-
+ 
             onView: () {
               showModalBottomSheet(
                 context: context,
@@ -81,7 +97,46 @@ class _InvoiceScreenState extends ConsumerState<InvoiceScreen> {
                 backgroundColor: Colors.transparent,
 
                 builder: (_) {
-                  return InvoiceBottomSheet(invoice: invoice);
+                  return InvoiceBottomSheet(invoice: invoice  ,user: currentUser, 
+                  onPayNow: () async {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              builder: (_) {
+                                return SelectPaymentMethodSheet(
+                                  onSelected: (selectedMethod) async {
+                                    /// CLOSE METHOD SHEET
+                                    Navigator.pop(context);
+                                    await Future.delayed(
+                                      const Duration(milliseconds: 250),
+                                    );
+
+                                    /// OPEN PAYMENT DETAILS
+                                    showModalBottomSheet(
+                                      context: context,
+
+                                      isScrollControlled: true,
+
+                                      backgroundColor: Colors.transparent,
+
+                                      builder: (_) {
+                                        return SelectedPaymentMethodSheet(
+                                          selectedPaymentMethod: selectedMethod,
+
+                                          amount: invoice.amount,
+
+                                          invoiceId: invoice.invoiceId,
+
+                                          paidFor: invoice.invoiceType,
+                                        );
+                                      },
+                                    );
+                                  },
+                                );
+                              },
+                            );
+                          },);
                 },
               );
             },

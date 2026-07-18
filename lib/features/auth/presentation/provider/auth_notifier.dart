@@ -1,3 +1,4 @@
+import 'package:btcclient/core/network/api_error_handler.dart';
 import 'package:btcclient/core/storage/local_storage.dart';
 import 'package:btcclient/features/auth/data/auth_api.dart';
 import 'package:btcclient/features/auth/data/auth_repository.dart';
@@ -48,32 +49,54 @@ class AuthNotifier extends StateNotifier<AuthState> {
         state = const AuthState(loggedIn: false, loading: false);
       }
     } catch (e) {
-      state = AuthState(loggedIn: false, loading: false, error: e.toString());
+      state = AuthState(
+        loggedIn: false,
+        loading: false,
+        error: ApiErrorHandler.getMessage(e),
+      );
     }
   }
 
-  Future<void> signup(SignupRequest request) async {
-    state = state.copyWith(loading: true, error: null);
+ Future<bool> signup(SignupRequest request) async {
+  state = state.copyWith(
+    loading: true,
+    error: null,
+  );
 
-    try {
-      state = state.copyWith(loading: false);
-    } catch (e) {
-      state = state.copyWith(loading: false, error: e.toString());
-    }
+  try {
+    await repo.signup(request);
+
+    state = state.copyWith(
+      loading: false,
+    );
+
+    return true;
+  } catch (e) {
+    state = state.copyWith(
+      loading: false,
+      error: ApiErrorHandler.getMessage(e),
+    );
+
+    return false;
   }
+}
 
   Future<bool> forgetPassword({required String phoneNumber}) async {
     try {
+      state = state.copyWith(loading: true, error: null);
       await repo.forgetPassword(
         ForgetPasswordRequest(phoneNumber: phoneNumber),
       );
 
       /// SAVE identifier here
       await LocalStorage.saveAuthIdentifier(phoneNumber);
-
+      state = state.copyWith(loading: false);
       return true;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(
+        loading: false,
+        error: ApiErrorHandler.getMessage(e),
+      );
 
       return false;
     }
@@ -104,15 +127,17 @@ class AuthNotifier extends StateNotifier<AuthState> {
         user: result.user,
       );
     } catch (e) {
-      state = state.copyWith(loading: false, error: e.toString());
+      state = state.copyWith(
+        loading: false,
+        error: ApiErrorHandler.getMessage(e),
+      );
     }
   }
 
   // ================= LOGOUT =================
 
   Future<void> logout() async {
-    await LocalStorage.clearUser();
-    await LocalStorage.clearAll();
+    await LocalStorage.clearSession();
 
     state = const AuthState(loggedIn: false, loading: false);
   }
@@ -124,6 +149,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final result = await repo.verifyOtp(
         VerifyOtpRequest(email: email, otp: otp),
       );
+      await LocalStorage.setWelcomeSeen();
       await ref.read(profileProvider.notifier).fetchProfile();
 
       /// set full auth state
@@ -136,7 +162,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
       return true;
     } catch (e) {
-      state = state.copyWith(loading: false, error: e.toString());
+      state = state.copyWith(
+        loading: false,
+        error: ApiErrorHandler.getMessage(e),
+      );
 
       return false;
     }
@@ -144,11 +173,18 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<bool> resendOtp({required String email}) async {
     try {
+      state = state.copyWith(loading: true, error: null);
+
       await repo.resendOtp(ResendOtpRequest(email: email));
+
+      state = state.copyWith(loading: false);
 
       return true;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(
+        loading: false,
+        error: ApiErrorHandler.getMessage(e),
+      );
 
       return false;
     }
@@ -159,14 +195,20 @@ class AuthNotifier extends StateNotifier<AuthState> {
     required String otp,
   }) async {
     try {
-      print("Verifying OTP for phone: $phoneNumber with OTP: $otp");
-      final result = await repo.verifyResetPasswordOtp(
+      state = state.copyWith(loading: true, error: null);
+
+      await repo.verifyResetPasswordOtp(
         VerifyResetPasswordOtpRequest(phoneNumber: phoneNumber, otp: otp),
       );
-      print("Verify Reset Password OTP Result: ${result.message}");
+
+      state = state.copyWith(loading: false);
+
       return true;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(
+        loading: false,
+        error: ApiErrorHandler.getMessage(e),
+      );
 
       return false;
     }
@@ -174,14 +216,20 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<bool> resendForgotPasswordOtp({required String phoneNumber}) async {
     try {
-      final result = await repo.resendForgotPasswordOtp(
+      state = state.copyWith(loading: true, error: null);
+
+      await repo.resendForgotPasswordOtp(
         ResendForgotPasswordOtpRequest(phoneNumber: phoneNumber),
       );
-      print(result);
+
+      state = state.copyWith(loading: false);
 
       return true;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(
+        loading: false,
+        error: ApiErrorHandler.getMessage(e),
+      );
 
       return false;
     }
@@ -205,7 +253,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
       await ref.read(profileProvider.notifier).fetchProfile();
       return true;
     } catch (e) {
-      state = state.copyWith(loading: false, error: e.toString());
+      state = state.copyWith(
+        loading: false,
+        error: ApiErrorHandler.getMessage(e),
+      );
 
       return false;
     }
@@ -217,14 +268,16 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
       final updatedProfile = await repo.updateProfile(body);
       await ref.read(profileProvider.notifier).fetchProfile();
-      // 🔥 Refresh profile globally
-      await ref.read(profileProvider.notifier).fetchProfile();
 
       state = state.copyWith(loading: false);
 
       return true;
     } catch (e) {
-      state = state.copyWith(loading: false, error: e.toString());
+      state = state.copyWith(
+        loading: false,
+        error: ApiErrorHandler.getMessage(e),
+      );
+
       return false;
     }
   }
@@ -245,7 +298,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
       return success;
     } catch (e) {
-      state = state.copyWith(loading: false, error: e.toString());
+      state = state.copyWith(
+        loading: false,
+        error: ApiErrorHandler.getMessage(e),
+      );
+
       return false;
     }
   }
@@ -267,21 +324,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
       return success;
     } catch (e) {
-      String errorMessage = "Something went wrong";
-
-      if (e is DioException) {
-        print("❌ STATUS CODE: ${e.response?.statusCode}");
-
-        print("❌ RESPONSE DATA: ${e.response?.data}");
-
-        errorMessage = e.response?.data["message"] ?? e.message ?? errorMessage;
-      } else {
-        errorMessage = e.toString();
-      }
-
-      state = state.copyWith(loading: false, error: errorMessage);
-
-      print("❌ ERROR: $errorMessage");
+      state = state.copyWith(
+        loading: false,
+        error: ApiErrorHandler.getMessage(e),
+      );
 
       return false;
     }

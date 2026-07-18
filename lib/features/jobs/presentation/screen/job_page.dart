@@ -3,11 +3,14 @@ import 'package:btcclient/core/utils/get_cout.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/core/widgets/dashboard/dashboard_nav_links.dart';
 import 'package:btcclient/core/widgets/search_bar/search_bar.dart';
+import 'package:btcclient/features/jobs/data/models/job_filter.dart';
 import 'package:btcclient/features/jobs/presentation/enums/job_card_variant.dart';
 import 'package:btcclient/features/jobs/presentation/provider/job_provider.dart';
 import 'package:btcclient/features/jobs/presentation/provider/posted_job_provider.dart';
+import 'package:btcclient/features/jobs/presentation/provider/selected_job_filter_provider.dart';
 import 'package:btcclient/features/jobs/presentation/widgets/filter_form.dart';
 import 'package:btcclient/features/jobs/presentation/widgets/job_card.dart';
+import 'package:btcclient/features/jobs/presentation/widgets/skeleton/job_card_skeleton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -16,7 +19,7 @@ import 'dart:async';
 class JobsPage extends ConsumerStatefulWidget {
   final String role;
   final String? initialStatus;
- final Function(int, {String? status}) changeTab;
+  final Function(int, {String? status}) changeTab;
   const JobsPage({
     super.key,
     required this.role,
@@ -39,15 +42,19 @@ class _JobsPageState extends ConsumerState<JobsPage> {
     super.initState();
 
     /// 🔥 INITIAL FETCH (ROLE BASED)
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (isTutor) {
-        ref.read(jobsProvider.notifier).fetchJobs();
-      } else {
-        ref
-            .read(postedJobsProvider.notifier)
-            .fetchPostedJobs(status: widget.initialStatus);
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!isTutor) {
+          ref
+              .read(postedJobsProvider.notifier)
+              .fetchPostedJobs(status: widget.initialStatus);
+        }
+        if (isTutor) {
+        final filter = ref.read(selectedJobFilterProvider);
+
+        ref.read(jobsProvider.notifier).fetchJobs(newFilter: filter);
       }
-    });
+      });
 
     /// 🔥 PAGINATION
     _scrollController.addListener(() {
@@ -74,8 +81,12 @@ class _JobsPageState extends ConsumerState<JobsPage> {
     /// 🔥 SWITCH STATE BASED ON ROLE
     final jobsState = ref.watch(jobsProvider);
     final postedState = ref.watch(postedJobsProvider);
-
     final state = isTutor ? jobsState : postedState;
+    ref.listen<JobFilter?>(selectedJobFilterProvider, (previous, next) {
+      if (isTutor && next != null) {
+        ref.read(jobsProvider.notifier).fetchJobs(newFilter: next);
+      }
+    });
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -90,6 +101,20 @@ class _JobsPageState extends ConsumerState<JobsPage> {
 
   /// ================= TOP BAR =================
   Widget _buildTopBar(state) {
+    
+    final selectedFilter = ref.watch(selectedJobFilterProvider);
+       final hasFilters =
+        (selectedFilter?.city?.isNotEmpty ?? false) ||
+        (selectedFilter?.area?.isNotEmpty ?? false) ||
+        (selectedFilter?.category?.isNotEmpty ?? false) ||
+        (selectedFilter?.className?.isNotEmpty ?? false) ||
+        (selectedFilter?.curriculum?.isNotEmpty ?? false) ||
+        (selectedFilter?.tutoringDays?.isNotEmpty ?? false) ||
+        (selectedFilter?.preferredTutorGender?.isNotEmpty ?? false) ||
+        (selectedFilter?.studentGender?.isNotEmpty ?? false) ||
+        (selectedFilter?.tuitionType?.isNotEmpty ?? false) ||
+        (selectedFilter?.subjects?.isNotEmpty ?? false) ||
+        ((selectedFilter?.keyword?.isNotEmpty ?? false));
     void openFilter(BuildContext context) {
       showGeneralDialog(
         context: context,
@@ -100,18 +125,7 @@ class _JobsPageState extends ConsumerState<JobsPage> {
         pageBuilder: (_, __, ___) {
           return Align(
             alignment: Alignment.centerRight,
-            child: FilterSidebar(
-              onApply: (filter) {
-                if (isTutor) {
-                  ref.read(jobsProvider.notifier).applyFilter(filter);
-                } else {
-                  /// 🔥 POSTED JOB FILTER
-                  ref
-                      .read(postedJobsProvider.notifier)
-                      .fetchPostedJobs(status: filter.status);
-                }
-              },
-            ),
+            child: FilterSidebar(),
           );
         },
         transitionBuilder: (_, animation, __, child) {
@@ -273,13 +287,41 @@ class _JobsPageState extends ConsumerState<JobsPage> {
               ),
 
               if (isTutor) ...[
-                AppButton(
-                  label: "Filter",
-                  onPressed: () => openFilter(context),
-                  variant: AppButtonVariant.outline,
-                  height: 32,
-                  width: 130,
-                  icon: Icons.tune,
+                /// Clear Filters
+                Row(
+                  children: [
+                    if (hasFilters)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 6),
+                        child: AppButton(
+                          iconOnly: true,
+                          icon: Icons.filter_alt_off_rounded,
+                          variant: AppButtonVariant.outline,
+                          width: 42,
+                          height: 32,
+                          onPressed: () async {
+
+                            ref.read(selectedJobFilterProvider.notifier).state =
+                                JobFilter(status: "live");
+
+                            await ref
+                                .read(jobsProvider.notifier)
+                                .applyFilter(JobFilter(status: "live"));
+                          },
+                        ),
+                      ),
+
+                    const SizedBox(width: 6),
+
+                    AppButton(
+                      label: "Filter",
+                      onPressed: () => openFilter(context),
+                      variant: AppButtonVariant.outline,
+                      height: 32,
+                      width: 130,
+                      icon: Icons.tune,
+                    ),
+                  ],
                 ),
               ],
             ],
@@ -292,7 +334,12 @@ class _JobsPageState extends ConsumerState<JobsPage> {
   /// ================= BODY =================
   Widget _buildBody(state) {
     if (state.isLoading && state.jobs.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
+      return Center(
+        child: ListView.builder(
+          itemCount: 6,
+          itemBuilder: (_, __) => const JobCardSkeleton(),
+        ),
+      );
     }
 
     if (state.error != null && state.jobs.isEmpty) {
@@ -323,7 +370,7 @@ class _JobsPageState extends ConsumerState<JobsPage> {
           final job = state.jobs[index];
           print(job);
           return JobCard(
-  changeTab: widget.changeTab,
+            changeTab: widget.changeTab,
             job: job,
             variant: isTutor ? JobCardVariant.job : JobCardVariant.postedJob,
           );
@@ -335,9 +382,11 @@ class _JobsPageState extends ConsumerState<JobsPage> {
   /// ================= PAGINATION =================
   Widget _buildPaginationLoader(state) {
     if (state.isLoadingMore) {
-      return const Padding(
-        padding: EdgeInsets.all(16),
-        child: Center(child: CircularProgressIndicator()),
+      return Center(
+        child: ListView.builder(
+          itemCount: 3,
+          itemBuilder: (_, __) => const JobCardSkeleton(),
+        ),
       );
     }
 

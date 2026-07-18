@@ -79,7 +79,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     if (!rememberMe) {
       AppSnackbar.show(
         context,
-        "You must accept Terms & Privacy Policy",
+        "You must accept Terms & Conditions",
         SnackType.warning,
       );
       return;
@@ -98,71 +98,73 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       password: passwordController.text.trim(),
     );
 
-    await ref.read(authProvider.notifier).signup(request);
+    final success = await ref.read(authProvider.notifier).signup(request);
+
+    if (!mounted) return;
+
+    if (success) {
+      AppSnackbar.show(context, "OTP sent successfully", SnackType.success);
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => OtpScreen(
+            title: "Verify OTP",
+            subtitle: "Enter OTP sent to",
+            phoneNumber: phoneController.text.trim(),
+
+            onVerify: (otp) async {
+              return await ref
+                  .read(authProvider.notifier)
+                  .verifyOtp(email: emailController.text.trim(), otp: otp);
+            },
+
+            onResend: () async {
+              final success = await ref
+                  .read(authProvider.notifier)
+                  .resendOtp(email: emailController.text.trim());
+
+              if (success) {
+                AppSnackbar.show(
+                  context,
+                  "OTP resent successfully",
+                  SnackType.success,
+                );
+              } else {
+                final error = ref.read(authProvider).error;
+
+                if (error != null) {
+                  AppSnackbar.show(context, error, SnackType.error);
+                }
+              }
+            },
+
+            onSuccess: () {
+              final role = ref.read(authProvider).role;
+
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => AppRouter.getDashboardByRole(role),
+                ),
+                (_) => false,
+              );
+            },
+          ),
+        ),
+      );
+    } else {
+      final error = ref.read(authProvider).error;
+
+      if (error != null) {
+        AppSnackbar.show(context, error, SnackType.error);
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
-    ref.listen(authProvider, (previous, next) {
-      /// Signup success
-      if (previous?.loading == true &&
-          next.loading == false &&
-          next.error == null) {
-        AppSnackbar.show(context, "OTP sent successfully", SnackType.success);
-
-        /// Navigate to OTP screen
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => OtpScreen(
-              title: "Verify OTP",
-              subtitle: "Enter OTP sent to",
-              phoneNumber: phoneController.text.trim(),
-
-              onVerify: (otp) async {
-                final success = await ref
-                    .read(authProvider.notifier)
-                    .verifyOtp(email: emailController.text.trim(), otp: otp);
-
-                return success;
-              },
-
-              onResend: () async {
-                final success = await ref
-                    .read(authProvider.notifier)
-                    .resendOtp(email: emailController.text.trim());
-
-                if (success) {
-                  AppSnackbar.show(
-                    context,
-                    "OTP resent successfully",
-                    SnackType.success,
-                  );
-                }
-              },
-
-              onSuccess: () {
-                final role = ref.read(authProvider).role;
-
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => AppRouter.getDashboardByRole(role),
-                  ),
-                  (route) => false,
-                );
-              },
-            ),
-          ),
-        );
-      }
-
-      /// Error handling
-      if (next.error != null && next.error != previous?.error) {
-        AppSnackbar.show(context, next.error!, SnackType.error);
-      }
-    });
     return AuthListener(
       child: AuthLayout(
         title: "Create Account",
@@ -299,29 +301,33 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
               const SizedBox(height: 14),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    height: 16,
-                    width: 16,
-                    child: Checkbox(
-                      value: rememberMe,
-                      onChanged: (val) {
-                        setState(() {
-                          rememberMe = val ?? false;
-                        });
-                      },
-                      activeColor: AppColors.primary01,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(3),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 2),
+                    child: SizedBox(
+                      height: 16,
+                      width: 16,
+                      child: Checkbox(
+                        value: rememberMe,
+                        onChanged: (val) {
+                          setState(() {
+                            rememberMe = val ?? false;
+                          });
+                        },
+                        activeColor: AppColors.primary01,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                        side: BorderSide(color: AppColors.neutrals03),
                       ),
-                      side: BorderSide(color: AppColors.neutrals03),
                     ),
                   ),
 
                   const SizedBox(width: 8),
 
                   RichText(
+                    textAlign: TextAlign.left,
                     text: TextSpan(
                       style: Theme.of(context).textTheme.labelSmall!.copyWith(
                         color: AppColors.neutrals03,
@@ -347,24 +353,24 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             },
                         ),
 
-                        const TextSpan(text: " and "),
+                        const TextSpan(text: "."),
 
-                        TextSpan(
-                          text: "Privacy Policy",
-                          style: const TextStyle(
-                            color: AppColors.primary01,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (_) => const PrivacyScreen(),
-                              //   ),
-                              // );
-                            },
-                        ),
+                        // TextSpan(
+                        //   text: "Privacy Policy",
+                        //   style: const TextStyle(
+                        //     color: AppColors.primary01,
+                        //     fontWeight: FontWeight.w600,
+                        //   ),
+                        //   recognizer: TapGestureRecognizer()
+                        //     ..onTap = () {
+                        //       // Navigator.push(
+                        //       //   context,
+                        //       //   MaterialPageRoute(
+                        //       //     builder: (_) => const PrivacyScreen(),
+                        //       //   ),
+                        //       // );
+                        //     },
+                        // ),
                       ],
                     ),
                   ),
@@ -384,10 +390,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
-                  
                   style: Theme.of(
                     context,
-                  ).textTheme.labelSmall!.copyWith(color: AppColors.neutrals03, ),
+                  ).textTheme.labelSmall!.copyWith(color: AppColors.neutrals03),
 
                   children: [
                     const TextSpan(text: "Already have an account?"),

@@ -89,3 +89,4 @@ Future<Map<String, dynamic>> fetchApplications({
 }
 
 }
+  
