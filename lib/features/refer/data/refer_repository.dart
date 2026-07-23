@@ -1,6 +1,7 @@
 import 'package:btcclient/features/refer/data/models/lead_model.dart';
 import 'package:btcclient/features/refer/data/refer_api.dart';
 import 'package:btcclient/features/refer/data/request/add_lead_request.dart';
+import 'package:btcclient/features/refer/data/request/payment_request.dart';
 import 'package:btcclient/features/refer/data/request/update_lead_request.dart';
 import 'package:btcclient/features/refer/data/response/add_lead_response.dart';
 import 'package:btcclient/features/refer/data/response/lead_list_response.dart';
@@ -43,4 +44,13 @@ class ReferRepository {
       request: request,
     );
   }
+  Future<AddLeadResponse> updatePayment({
+  required String id,
+  required UpdatePaymentRequest request,
+}) {
+  return api.updatePayment(
+    id: id,
+    request: request,
+  );
+}
 }

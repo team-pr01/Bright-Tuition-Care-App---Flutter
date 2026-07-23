@@ -1,4 +1,5 @@
 import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
+import 'package:btcclient/features/refer/data/referral_data.dart';
 import 'package:btcclient/features/refer/presentation/screens/my_leads_screen.dart';
 import 'package:btcclient/features/refer/presentation/screens/refer_form_screen.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +9,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/core/widgets/navbar/common_appbar.dart';
 import 'package:btcclient/core/widgets/snackbar/app_snackbar.dart';
-
-import 'package:btcclient/features/refer/data/referral_data.dart';
 import 'package:btcclient/features/refer/presentation/widgets/referral_card.dart';
 
 import '../../../../core/config/theme.dart';
@@ -80,14 +79,14 @@ class ReferralScreen extends ConsumerWidget {
                   child: AppButton(
                     label: "My Leads",
                     variant: AppButtonVariant.outlineGray,
-                     onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const MyLeadsScreen(),
-                              ),
-                            );
-                          },
+                    onPressed: () async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const MyLeadsScreen(),
+                        ),
+                      );
+                    },
                   ),
                 ),
 
@@ -95,21 +94,28 @@ class ReferralScreen extends ConsumerWidget {
 
                 Expanded(
                   child: AppButton(
-                    variant: AppButtonVariant.gradient,
                     label: "Add New Lead",
-                    onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const AddLeadScreen(),
-                              ),
-                            );
-                          },
+                    variant: AppButtonVariant.gradient,
+                    onPressed: () async {
+                      final result = await Navigator.push<bool>(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const AddLeadScreen(),
+                        ),
+                      );
+
+                      if (result == true && context.mounted) {
+                        AppSnackbar.show(
+                          context,
+                          "Lead added successfully",
+                          SnackType.success,
+                        );
+                      }
+                    },
                   ),
                 ),
               ],
             ),
-
             const SizedBox(height: 16),
 
             /// MY LEADS
@@ -119,7 +125,7 @@ class ReferralScreen extends ConsumerWidget {
                 variant: AppButtonVariant.outlineGray,
                 icon: Icons.copy,
                 onPressed: () {
-                  copyLink(context,link);
+                  copyLink(context, link);
                 },
               ),
             ),

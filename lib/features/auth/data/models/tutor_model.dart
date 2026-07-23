@@ -27,7 +27,7 @@ class TutorProfileModel {
   final PersonalInfo personalInfo;
   final SocialMedia socialMedia; // 🔥 ADDED
   final TuitionPreference tuitionPreference;
-  final Experience experience;
+  final List<Experience> experience;
   final List<Education> education;
   final List<Identity> identity;
   final EmergencyInfo emergencyInfo;
@@ -80,8 +80,8 @@ class TutorProfileModel {
 
       profileStatus: data['profileStatus'] ?? "unlocked",
       isVerified: data['isVerified'] ?? false,
-      profileCompleted: data['profileCompleted'] ?? 0,
-      rating: (data['rating'] ?? 0).toDouble(),
+      profileCompleted: (data['profileCompleted'] as num?)?.toInt() ?? 0,
+      rating: (data['rating'] as num?)?.toDouble() ?? 0,
 
       hasConfirmedAnyJob: data['hasConfirmedAnyJob'] ?? false,
       hasRequestedToVerify: data['hasRequestedToVerify'] ?? false,
@@ -90,14 +90,20 @@ class TutorProfileModel {
       hasPlatformChargeGiven: data['hasPlatformChargeGiven'] ?? false,
       tutorOfTheMonth: data['tutorOfTheMonth'] ?? false,
 
-      imageUrl: data['imageUrl'],
+      imageUrl: (data['imageUrl'] as String?)?.trim().isNotEmpty == true
+          ? data['imageUrl']
+          : null,
 
       personalInfo: PersonalInfo.fromJson(data['personalInformation'] ?? {}),
-      socialMedia: SocialMedia.fromJson(data['socialMediaInformation'] ?? {}), // 🔥
-      tuitionPreference:
-          TuitionPreference.fromJson(data['tuitionPreference'] ?? {}),
-      experience: Experience.fromJson(data['experience'] ?? {}),
-
+      socialMedia: SocialMedia.fromJson(
+        data['socialMediaInformation'] ?? {},
+      ), // 🔥
+      tuitionPreference: TuitionPreference.fromJson(
+        data['tuitionPreference'] ?? {},
+      ),
+      experience: (data['experience'] as List? ?? [])
+          .map((e) => Experience.fromJson(e))
+          .toList(),
       education: (data['educationalInformation'] as List? ?? [])
           .map((e) => Education.fromJson(e))
           .toList(),
@@ -106,8 +112,7 @@ class TutorProfileModel {
           .map((e) => Identity.fromJson(e))
           .toList(),
 
-      emergencyInfo:
-          EmergencyInfo.fromJson(data['emergencyInformation'] ?? {}),
+      emergencyInfo: EmergencyInfo.fromJson(data['emergencyInformation'] ?? {}),
     );
   }
 }
@@ -159,16 +164,28 @@ class SocialMedia {
   SocialMedia({this.facebook});
 
   factory SocialMedia.fromJson(Map<String, dynamic> json) {
-    return SocialMedia(
-      facebook: json['facebook'],
-    );
+    return SocialMedia(facebook: json['facebook']);
   }
 }
 
 class TuitionPreference {
-   final String? tutoringMethod;
+  String get subjects => preferredSubjects.join(", ");
+
+  String get classes => preferredClasses.join(", ");
+
+  String get cities => preferredCities.join(", ");
+
+  String get locations => preferredLocations.join(", ");
+
+  String get categories => preferredCategories.join(", ");
+
+  String get teachingStyle => tuitionStyle.join(", ");
+
+  String get tutoringPlaces => placeOfTuition.join(", ");
+
+  final String? tutoringMethod;
   final List<String> tuitionStyle;
-  final List<String> availableDays;
+  // final List<String> availableDays;
   final List<String> preferredSubjects;
   final List<String> preferredCategories;
   final List<String> preferredClasses;
@@ -180,7 +197,7 @@ class TuitionPreference {
   TuitionPreference({
     this.tutoringMethod,
     required this.tuitionStyle,
-    required this.availableDays,
+    // required this.availableDays,
     required this.preferredSubjects,
     required this.preferredCategories,
     required this.preferredClasses,
@@ -192,30 +209,47 @@ class TuitionPreference {
 
   factory TuitionPreference.fromJson(Map<String, dynamic> json) {
     return TuitionPreference(
-      tuitionStyle: List<String>.from(json['tuitionStyle'] ?? []),
-      availableDays: List<String>.from(json['availableDays'] ?? []),
-      preferredSubjects: List<String>.from(json['preferredSubjects'] ?? []),
-      preferredCategories: List<String>.from(json['preferredCategories'] ?? []),
-      preferredClasses: List<String>.from(json['preferredClasses'] ?? []),
-      preferredCities: List<String>.from(json['preferredCities'] ?? []),
-      preferredLocations: List<String>.from(json['preferredLocations'] ?? []),
-      placeOfTuition: List<String>.from(json['placeOfTuition'] ?? []),
-      expectedSalary: json['expectedSalary'] ?? "",
+     tutoringMethod: json['tutoringMethod']?.toString(),
+      // availableDays: List<String>.from(json['availableDays'] ?? []),
+      preferredSubjects: List<String>.from(
+        (json['preferredSubjects'] ?? []).whereType<String>(),
+      ),
+      tuitionStyle: List<String>.from(
+        (json['tuitionStyle'] ?? []).whereType<String>(),
+      ),
+
+      preferredCategories: List<String>.from(
+        (json['preferredCategories'] ?? []).whereType<String>(),
+      ),
+
+      preferredClasses: List<String>.from(
+        (json['preferredClasses'] ?? []).whereType<String>(),
+      ),
+
+      preferredCities: List<String>.from(
+        (json['preferredCities'] ?? []).whereType<String>(),
+      ),
+
+      preferredLocations: List<String>.from(
+        (json['preferredLocations'] ?? []).whereType<String>(),
+      ),
+
+      placeOfTuition: List<String>.from(
+        (json['placeOfTuition'] ?? []).whereType<String>(),
+      ),
+
+      expectedSalary: json['expectedSalary']?.toString() ?? "",
     );
   }
 }
 
 class Experience {
   final String? totalExperience;
-  final String? details;
 
-  Experience({this.totalExperience, this.details});
+  Experience({this.totalExperience});
 
   factory Experience.fromJson(Map<String, dynamic> json) {
-    return Experience(
-      totalExperience: json['totalExperience'],
-      details: json['experienceDetails'],
-    );
+    return Experience(totalExperience: json['totalExperience']);
   }
 }
 
@@ -258,6 +292,7 @@ class Education {
       result: json['result'] ?? "",
       passingYear: json['passingYear'] ?? "",
       isCurrentInstitute: json['isCurrentInstitute'] ?? false,
+      semester: json['semester'] ?? "",
     );
   }
 }
@@ -266,10 +301,7 @@ class Identity {
   final String fileType;
   final String fileUrl;
 
-  Identity({
-    required this.fileType,
-    required this.fileUrl,
-  });
+  Identity({required this.fileType, required this.fileUrl});
 
   factory Identity.fromJson(Map<String, dynamic> json) {
     return Identity(

@@ -1,5 +1,7 @@
 import 'package:btcclient/core/widgets/navbar/common_appbar.dart';
 import 'package:btcclient/features/refer/presentation/provider/my_leads_provider.dart';
+import 'package:btcclient/features/refer/presentation/screens/refer_form_screen.dart';
+import 'package:btcclient/features/refer/presentation/widgets/add_payment_method_screen.dart';
 import 'package:btcclient/features/refer/presentation/widgets/lead_card.dart';
 import 'package:btcclient/features/refer/presentation/widgets/skeleton/lead_card_skeleton.dart';
 import 'package:flutter/material.dart';
@@ -113,29 +115,48 @@ class _MyLeadsScreenState extends ConsumerState<MyLeadsScreen> {
               itemBuilder: (context, index) {
                 if (index == state.leads.length) {
                   return ListView.builder(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(12),
-                itemCount: 6,
-                itemBuilder: (_, __) => const Padding(
-                  padding: EdgeInsets.only(bottom: 12),
-                  child: LeadCardSkeleton(),
-                ),
-              );
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.all(12),
+                    itemCount: 6,
+                    itemBuilder: (_, __) => const Padding(
+                      padding: EdgeInsets.only(bottom: 12),
+                      child: LeadCardSkeleton(),
+                    ),
+                  );
                 }
 
                 final lead = state.leads[index];
-
-                final isOpen = expandedIndex == index;
 
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
                   child: LeadCard(
                     lead: lead,
-                    isOpen: isOpen,
-                    onTap: () {
-                      setState(() {
-                        expandedIndex = isOpen ? null : index;
-                      });
+                    onPayment: () async {
+  final updated = await Navigator.push<bool>(
+    context,
+    MaterialPageRoute(
+      builder: (_) => AddPaymentMethodScreen(
+        lead: lead,
+      ),
+    ),
+  );
+
+  if (updated == true && mounted) {
+    ref.read(myLeadsProvider.notifier).refresh();
+  }
+},
+                    onEdit: () async {
+                      final updated = await Navigator.push<bool>(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              AddLeadScreen(lead: lead, isEditing: true),
+                        ),
+                      );
+
+                      if (updated == true && mounted) {
+                        ref.read(myLeadsProvider.notifier).refresh();
+                      }
                     },
                   ),
                 );

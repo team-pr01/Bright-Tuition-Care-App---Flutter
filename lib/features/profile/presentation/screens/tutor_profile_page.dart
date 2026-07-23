@@ -8,6 +8,7 @@ import 'package:btcclient/features/profile/presentation/widgets/tuition_section_
 import 'package:btcclient/features/profile/presentation/widgets/tutor_profile_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:btcclient/features/profile/presentation/widgets/education_section_card.dart';
 
 class TutorProfileScreen extends ConsumerStatefulWidget {
   const TutorProfileScreen({super.key});
@@ -177,14 +178,28 @@ class _TutorProfileScreenState extends ConsumerState<TutorProfileScreen> {
         );
       case 1:
       
-        return EducationSectionCard(educations: profile.education);
+       return EducationSectionCard(
+  educations: profile.education,
+  onEdit: (education) {
+    // TODO: Navigate to your Add/Edit Education screen
+    //
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (_) => AddEducationScreen(
+    //       education: education,
+    //     ),
+    //   ),
+    // );
+  },
+);
     case 2:
   return TuitionSectionCard(
     profile: profile,
   );case 3:
-  return CredentialSectionCard(
-    identities: profile.identity,
-  );
+  // return CredentialSectionCard(
+  //   identities: profile.identity,
+  // );
       default:
         return const SizedBox.shrink();
     }

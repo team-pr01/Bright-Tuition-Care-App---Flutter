@@ -6,16 +6,12 @@ import 'package:flutter/material.dart';
 
 class LeadCard extends StatelessWidget {
   final LeadModel lead;
-  final bool isOpen;
-  final VoidCallback onTap;
   final VoidCallback? onEdit;
   final VoidCallback? onPayment;
 
   const LeadCard({
     super.key,
     required this.lead,
-    required this.isOpen,
-    required this.onTap,
     this.onEdit,
     this.onPayment,
   });
@@ -88,14 +84,7 @@ class LeadCard extends StatelessWidget {
 
           _infoTile(Icons.description_outlined, "Details", lead.details),
 
-          _infoTile(
-            Icons.account_balance_wallet_outlined,
-            "Payment",
-            lead.paymentMethod ?? "Add Payment Method",
-            valueColor: lead.paymentMethod == null
-                ? AppColors.primary01
-                : AppColors.neutrals02,
-          ),
+          _paymentTile(),
 
           const SizedBox(height: AppSpacing.lg),
           AppButton(
@@ -153,6 +142,61 @@ class LeadCard extends StatelessWidget {
       ),
     );
   }
+
+Widget _paymentTile() {
+  final hasPayment =
+      lead.paymentMethod != null &&
+      lead.paymentAccountNumber != null;
+
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 14),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Icon(
+          Icons.account_balance_wallet_outlined,
+          size: 18,
+          color: AppColors.primary01,
+        ),
+
+        const SizedBox(width: 10),
+
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Payment",
+                style: AppTextStyles.labelMedium.copyWith(
+                  color: AppColors.neutrals06,
+                ),
+              ),
+
+              const SizedBox(height: 4),
+
+              if (hasPayment)
+                Text(
+                  "${lead.paymentMethod}\n${lead.paymentAccountNumber}",
+                  style: AppTextStyles.bodyMedium,
+                )
+              else
+                InkWell(
+                  onTap: onPayment,
+                  child: Text(
+                    "Add Payment Method",
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      color: AppColors.primary01,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
 
   Widget _statusChip() {
     Color bg;

@@ -1,5 +1,7 @@
 import 'package:btcclient/features/refer/data/refer_repository.dart';
 import 'package:btcclient/features/refer/data/request/add_lead_request.dart';
+import 'package:btcclient/features/refer/data/request/payment_request.dart';
+import 'package:btcclient/features/refer/data/request/update_lead_request.dart';
 import 'package:btcclient/features/refer/data/response/add_lead_response.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,4 +20,39 @@ class ReferNotifier extends StateNotifier<AsyncValue<AddLeadResponse?>> {
       state = AsyncValue.error(e, stack);
     }
   }
+
+  Future<void> updateLead({
+    required String id,
+    required UpdateLeadRequest request,
+  }) async {
+    state = const AsyncValue.loading();
+
+    try {
+      final response = await repository.updateLead(
+        id: id,
+        request: request,
+      );
+
+      state = AsyncValue.data(response);
+    } catch (e, stack) {
+      state = AsyncValue.error(e, stack);
+    }
+  }
+  Future<void> updatePayment({
+  required String id,
+  required UpdatePaymentRequest request,
+}) async {
+  state = const AsyncValue.loading();
+
+  try {
+    final response = await repository.updatePayment(
+      id: id,
+      request: request,
+    );
+
+    state = AsyncValue.data(response);
+  } catch (e, stack) {
+    state = AsyncValue.error(e, stack);
+  }
+}
 }
