@@ -1,184 +1,250 @@
+import 'package:btcclient/features/profile/presentation/widgets/shared/profile_info_row.dart';
 import 'package:flutter/material.dart';
 import 'package:btcclient/features/auth/data/models/tutor_model.dart';
-import 'package:btcclient/features/profile/presentation/widgets/shared/profile_info_row.dart';
 
-class EducationItemCard extends StatefulWidget {
+class EducationItemCard extends StatelessWidget {
   final Education education;
   final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
 
   const EducationItemCard({
     super.key,
     required this.education,
     this.onEdit,
+    this.onDelete,
   });
 
-  @override
-  State<EducationItemCard> createState() => EducationItemCardState();
-}
-
-class EducationItemCardState extends State<EducationItemCard> {
-  bool expanded = false;
+  bool get _isSchoolLevel {
+    return education.level == "Secondary" ||
+        education.level == "Higher Secondary" ||
+        education.level == "O Level" ||
+        education.level == "A Level";
+  }
 
   @override
   Widget build(BuildContext context) {
-    final education = widget.education;
+    final bool isCurrent =
+        education.isCurrentInstitute ?? false;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      width: double.infinity,
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        color: const Color(0xffF8FAFD),
+        borderRadius: BorderRadius.circular(18),
         border: Border.all(
           color: Colors.grey.shade300,
         ),
       ),
       child: Column(
-        children: [
-          InkWell(
-            borderRadius: BorderRadius.circular(16),
-            onTap: () {
-              setState(() {
-                expanded = !expanded;
-              });
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(18),
-              child: Row(
-                children: [
-                  Container(
-                    height: 52,
-                    width: 52,
-                    decoration: BoxDecoration(
-                      color: const Color(0xffEDF4FF),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Icon(
-                      Icons.school_outlined,
-                      color: Color(0xff246BFD),
-                    ),
-                  ),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [          Row(
+            children: [
 
-                  const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start,
+                  children: [
 
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          education.level.isEmpty
-                              ? "Education"
-                              : education.level,
-                          style: const TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-
-                        const SizedBox(height: 4),
-
-                        Text(
-                          education.institute.isEmpty
-                              ? "Institute not added"
-                              : education.institute,
-                          style: TextStyle(
-                            color: Colors.grey.shade700,
-                          ),
-                        ),
-
-                        const SizedBox(height: 4),
-
-                        Text(
-                          education.passingYear!=null?
-                               ""
-                              : "Passing Year • ${education.passingYear}",
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.grey.shade600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  if (widget.onEdit != null)
-                    IconButton(
-                      onPressed: widget.onEdit,
-                      icon: const Icon(Icons.edit_outlined),
+                    Text(
+                      education.degree.isEmpty
+                          ? "Education"
+                          : education.degree,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
 
-                  AnimatedRotation(
-                    turns: expanded ? .5 : 0,
-                    duration: const Duration(milliseconds: 250),
-                    child: const Icon(Icons.keyboard_arrow_down),
-                  ),
-                ],
+                    const SizedBox(height: 6),
+
+                    Text(
+                      education.institute.isEmpty
+                          ? "Institute Not Provided"
+                          : education.institute,
+                      style: TextStyle(
+                        color: Colors.grey.shade700,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
+
+              if (isCurrent)
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color:
+                        Colors.green.withOpacity(.1),
+                    borderRadius:
+                        BorderRadius.circular(20),
+                  ),
+                  child: const Text(
+                    "Current",
+                    style: TextStyle(
+                      color: Colors.green,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+
+              const SizedBox(width: 12),
+
+              IconButton(
+                onPressed: onEdit,
+                icon: const Icon(
+                  Icons.edit_outlined,
+                ),
+              ),
+
+              IconButton(
+                onPressed: onDelete,
+                icon: const Icon(
+                  Icons.delete_outline,
+                  color: Colors.red,
+                ),
+              ),
+            ],
           ),
 
-          AnimatedCrossFade(
-            duration: const Duration(milliseconds: 250),
-            crossFadeState: expanded
-                ? CrossFadeState.showSecond
-                : CrossFadeState.showFirst,
-            firstChild: const SizedBox.shrink(),
-            secondChild: Padding(
-              padding: const EdgeInsets.fromLTRB(18, 0, 18, 18),
-              child: Column(
-                children: [
-                  const Divider(),
+          const SizedBox(height: 20),          Wrap(
+            runSpacing: 14,
+            spacing: 20,
+            children: [
 
-                  const SizedBox(height: 12),
-
-                  ProfileInfoRow(
-                    label: "Level",
-                    value: education.level,
-                  ),
-
-                  ProfileInfoRow(
-                    label: "Institute",
-                    value: education.institute,
-                  ),
-
-                  ProfileInfoRow(
-                    label: "Board",
-                    value: education.board,
-                  ),
-
-                  ProfileInfoRow(
-                    label: "Curriculum",
-                    value: education.curriculum,
-                  ),
-
-                  ProfileInfoRow(
-                    label: "Department",
-                    value: education.department,
-                  ),
-
-                  ProfileInfoRow(
-                    label: "Semester",
-                    value: education.semester,
-                  ),
-
-                  ProfileInfoRow(
-                    label: "Result",
-                    value: education.result,
-                  ),
-
-                  ProfileInfoRow(
-                    label: "Passing Year",
-                    value: education.passingYear,
-                  ),
-
-                  ProfileInfoRow(
-                    label: "Current Institute",
-                    value: education.institute,
-                  ),
-                ],
+              ProfileInfoRow(
+                label: "Level",
+                value: education.level,
               ),
-            ),
+
+              ProfileInfoRow(
+                label: "Degree",
+                value: education.degree,
+              ),
+
+              ProfileInfoRow(
+                label: "Institute",
+                value: education.institute,
+              ),
+
+              ProfileInfoRow(
+                label: "Curriculum",
+                value: education.curriculum,
+              ),              /// GROUP & BOARD
+              if (_isSchoolLevel) ...[
+                ProfileInfoRow(
+                  label: "Group",
+                  value: education.group,
+                ),
+
+                ProfileInfoRow(
+                  label: "Board",
+                  value: education.board,
+                ),
+              ],
+
+              /// DEPARTMENT & SEMESTER
+              if (!_isSchoolLevel) ...[
+                ProfileInfoRow(
+                  label: "Department",
+                  value: education.department,
+                ),
+
+                ProfileInfoRow(
+                  label: "Semester",
+                  value: education.semester,
+                ),
+              ],
+
+              ProfileInfoRow(
+                label: "Result",
+                value: education.result,
+              ),
+
+              if (!isCurrent)
+                ProfileInfoRow(
+                  label: "Passing Year",
+                  value: education.passingYear,
+                ),  ],
           ),
-        ],
+
+          const SizedBox(height: 18),
+
+          Divider(
+            color: Colors.grey.shade300,
+            height: 1,
+          ),
+
+          const SizedBox(height: 14),          Row(
+            children: [
+
+              _StatusChip(
+                text: education.level,
+                color: const Color(0xff246BFD),
+              ),
+
+              const SizedBox(width: 10),
+
+              if (isCurrent)
+                const _StatusChip(
+                  text: "Current Institute",
+                  color: Colors.green,
+                ),
+
+              const Spacer(),
+
+              Text(
+                education.result?.isNotEmpty == true
+                    ? education.result!
+                    : "Not Provided",
+                style: TextStyle(
+                  color: education.result?.isNotEmpty == true
+                      ? Colors.black87
+                      : Colors.red,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),        ],
+      ),
+    );
+  }
+}
+class _StatusChip extends StatelessWidget {
+  final String text;
+  final Color color;
+
+  const _StatusChip({
+    required this.text,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 6,
+      ),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(
+          color: color.withOpacity(0.25),
+        ),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: color,
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }

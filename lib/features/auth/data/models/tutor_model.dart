@@ -1,3 +1,6 @@
+import 'package:btcclient/core/utils/date_formatter.dart';
+import 'package:dio/dio.dart';
+
 class TutorProfileModel {  
   final String id;
   final String tutorId;
@@ -152,7 +155,9 @@ class PersonalInfo {
     return PersonalInfo(
       additionalPhone: json['additionalPhoneNumber'],
       address: json['address'],
-      dateOfBirth: json['dateOfBirth'],
+    dateOfBirth: json['dateOfBirth'] == null
+    ? null
+    : DateFormatter.formattedFormalDate(json['dateOfBirth']),
       religion: json['religion'],
       overview: json['overview'],
       fatherPhoneNumber: json['fatherPhoneNumber'],
@@ -260,6 +265,8 @@ class Experience {
 }
 
 class Education {
+  final String id; // <-- Add this
+
   final String level;
   final String degree;
   final String institute;
@@ -273,6 +280,7 @@ class Education {
   final bool? isCurrentInstitute;
 
   Education({
+    required this.id, // <-- Add this
     required this.level,
     required this.degree,
     required this.institute,
@@ -288,6 +296,8 @@ class Education {
 
   factory Education.fromJson(Map<String, dynamic> json) {
     return Education(
+      id: json['_id'] ?? "", // <-- Add this
+
       level: json['levelOfEducation'] ?? "",
       degree: json['degree'] ?? "",
       institute: json['instituteName'] ?? "",
@@ -295,14 +305,13 @@ class Education {
       curriculum: json['curriculum'] ?? "",
       group: json['group'] ?? "",
       department: json['department'] ?? "",
+      semester: json['semester']?.toString() ?? "",
       result: json['result'] ?? "",
-      passingYear: json['passingYear'] ?? "",
+      passingYear: json['passingYear']?.toString() ?? "",
       isCurrentInstitute: json['isCurrentInstitute'] ?? false,
-      semester: json['semester'] ?? "",
     );
   }
 }
-
 class Identity {
   final String fileType;
   final String file;

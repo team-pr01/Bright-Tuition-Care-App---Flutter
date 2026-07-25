@@ -50,6 +50,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   file_picker: ^11.0.2
   collection: ^1.18.0
+  image_picker: ^1.2.0
 
 dev_dependencies:
   flutter_test:

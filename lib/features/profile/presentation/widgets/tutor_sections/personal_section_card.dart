@@ -6,11 +6,7 @@ class PersonalSectionCard extends StatelessWidget {
   final TutorProfileModel profile;
   final VoidCallback? onEdit;
 
-  const PersonalSectionCard({
-    super.key,
-    required this.profile,
-    this.onEdit,
-  });
+  const PersonalSectionCard({super.key, required this.profile, this.onEdit});
 
   @override
   Widget build(BuildContext context) {
@@ -20,9 +16,7 @@ class PersonalSectionCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.grey.shade300,
-        ),
+        border: Border.all(color: Colors.grey.shade300),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,10 +26,7 @@ class PersonalSectionCard extends StatelessWidget {
               const Expanded(
                 child: Text(
                   "Personal Information",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                 ),
               ),
               if (onEdit != null)
@@ -49,17 +40,8 @@ class PersonalSectionCard extends StatelessWidget {
           const SizedBox(height: 10),
 
           if ((profile.personalInfo.overview ?? "").trim().isNotEmpty) ...[
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: const Color(0xffF7F9FC),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Colors.grey.shade300,
-                ),
-              ),
-              child: Text(
+           
+              Text(
                 profile.personalInfo.overview!,
                 style: const TextStyle(
                   fontSize: 14,
@@ -67,34 +49,23 @@ class PersonalSectionCard extends StatelessWidget {
                   color: Colors.black87,
                 ),
               ),
-            ),
-            const SizedBox(height: 24),
+            
+            const SizedBox(height: 12),
           ],
+          Divider(),
 
-          ProfileInfoRow(
-            label: "Email",
-            value: profile.email,
-          ),
+          ProfileInfoRow(label: "Email", value: profile.email),
 
-          ProfileInfoRow(
-            label: "Phone Number",
-            value: profile.phoneNumber,
-          ),
+          ProfileInfoRow(label: "Phone Number", value: profile.phoneNumber),
 
           ProfileInfoRow(
             label: "Additional Number",
             value: profile.personalInfo.additionalPhone,
           ),
 
-          ProfileInfoRow(
-            label: "Area",
-            value: profile.area,
-          ),
+          ProfileInfoRow(label: "Area", value: profile.area),
 
-          ProfileInfoRow(
-            label: "City",
-            value: profile.city,
-          ),
+          ProfileInfoRow(label: "City", value: profile.city),
 
           ProfileInfoRow(
             label: "Present Address",
@@ -127,10 +98,7 @@ class PersonalSectionCard extends StatelessWidget {
 
           const Text(
             "Emergency Contact",
-            style: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w600,
-            ),
+            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
           ),
 
           const SizedBox(height: 16),
@@ -143,6 +111,25 @@ class PersonalSectionCard extends StatelessWidget {
           ProfileInfoRow(
             label: "Phone Number",
             value: profile.emergencyInfo.phone,
+          ),
+          ProfileInfoRow(
+            label: "Father's Name",
+            value: profile.personalInfo.fatherName,
+          ),
+
+          ProfileInfoRow(
+            label: "Father's Phone Number",
+            value: profile.personalInfo.fatherPhoneNumber,
+          ),
+
+          ProfileInfoRow(
+            label: "Mother's Name",
+            value: profile.personalInfo.motherName,
+          ),
+
+          ProfileInfoRow(
+            label: "Mother's Phone Number",
+            value: profile.personalInfo.motherPhoneNumber,
           ),
         ],
       ),

@@ -134,7 +134,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
             ),
             onTap: () {
               Navigator.pop(context);
-              changeTab(4);
+              changeTab(3);
             },
           ),
           SidebarItem(
@@ -280,6 +280,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
           changeTab: changeTab, // 🔥 PASS IT
         ),
 
+        (changeTab, status) => const GuardianPaymentScreen(),
         (changeTab, status) => const GuardianPaymentScreen(),
       ],
 

@@ -7,16 +7,13 @@ class InvoiceRepository {
 
   InvoiceRepository(this.api);
 
-  Future<List<InvoiceModel>> getAllInvoices({
-    String? status,
-    String? dueDate,
-  }) async {
-    final response = await api.getAllInvoices(status: status, dueDate: dueDate);
+  Future<List<InvoiceModel>> getMyInvoices() async {
+  final response = await api.getMyInvoices();
 
-    return (response.data["data"] as List)
-        .map((e) => InvoiceModel.fromJson(e))
-        .toList();
-  }
+  return (response.data["data"] as List)
+      .map((e) => InvoiceModel.fromJson(e))
+      .toList();
+}
 
   Future<InvoiceModel> getSingleInvoice(String id) async {
     final response = await api.getSingleInvoiceById(id);

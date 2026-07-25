@@ -69,7 +69,7 @@ class _InvoiceScreenState extends ConsumerState<InvoiceScreen> {
 
     /// EMPTY
     if (!state.isLoading && state.invoices.isEmpty) {
-      return const Center(child: Text("No invoices found"));
+      return const Center(child: Text("No invoices yet"));
     }
 
     return RefreshIndicator(

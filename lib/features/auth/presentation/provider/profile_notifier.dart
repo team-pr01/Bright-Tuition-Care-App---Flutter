@@ -1,11 +1,13 @@
+import 'package:btcclient/core/network/api_error_handler.dart';
 import 'package:btcclient/features/auth/data/auth_repository.dart';
+import 'package:btcclient/features/auth/data/requests/education_request.dart';
 import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
 import 'package:btcclient/features/profile/data/requests/update_personal_info_request.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final profileProvider = StateNotifierProvider<ProfileNotifier, dynamic>((ref) {
+final profileProvider =
+    StateNotifierProvider<ProfileNotifier, dynamic>((ref) {
   final repo = ref.read(authRepositoryProvider);
-
   return ProfileNotifier(repo);
 });
 
@@ -15,65 +17,110 @@ class ProfileNotifier extends StateNotifier<dynamic> {
   ProfileNotifier(this.repo) : super(null);
 
   bool isLoading = false;
-
   String? error;
-
-  /// ================= FETCH =================
 
   Future<void> fetchProfile() async {
     try {
       isLoading = true;
-
       error = null;
-
-      state = null;
 
       final profile = await repo.getProfile();
 
       state = profile;
     } catch (e) {
-      print("❌ PROFILE ERROR => $e");
-
-      error = e.toString();
+      error = ApiErrorHandler.getMessage(e);
     } finally {
       isLoading = false;
     }
   }
 
-  /// ================= REFRESH =================
-
   Future<void> refreshProfile() async {
     await fetchProfile();
   }
 
-  Future<bool> updatePersonalInfo(UpdatePersonalInfoRequest request) async {
+  Future<bool> updatePersonalInfo(
+    UpdatePersonalInfoRequest request,
+  ) async {
     try {
       isLoading = true;
-      state = state;
       error = null;
 
       await repo.updatePersonalInfo(request);
 
-      final profile = await repo.getProfile();
-
-      state = profile;
+      await fetchProfile();
 
       return true;
     } catch (e) {
-      error = e.toString();
+      error = ApiErrorHandler.getMessage(e);
       return false;
     } finally {
       isLoading = false;
     }
   }
 
-  /// ================= CLEAR =================
+  Future<bool> addEducation(EducationRequest request) async {
+    try {
+      isLoading = true;
+      error = null;
+
+      await repo.addEducation(request);
+
+      await fetchProfile();
+
+      return true;
+    } catch (e) {
+      error = ApiErrorHandler.getMessage(e);
+      return false;
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  Future<bool> updateEducation({
+    required String id,
+    required EducationRequest request,
+  }) async {
+    try {
+      isLoading = true;
+      error = null;
+
+      await repo.updateEducation(
+        id: id,
+        request: request,
+      );
+
+      await fetchProfile();
+
+      return true;
+    } catch (e) {
+      error = ApiErrorHandler.getMessage(e);
+      return false;
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  Future<bool> deleteEducation(String id) async {
+    try {
+      isLoading = true;
+      error = null;
+
+      await repo.deleteEducation(id);
+
+      await fetchProfile();
+
+      return true;
+    } catch (e) {
+      error = ApiErrorHandler.getMessage(e);
+      return false;
+    } finally {
+      isLoading = false;
+    }
+  }
 
   void clearProfile() {
     state = null;
-
     error = null;
-
     isLoading = false;
   }
 }

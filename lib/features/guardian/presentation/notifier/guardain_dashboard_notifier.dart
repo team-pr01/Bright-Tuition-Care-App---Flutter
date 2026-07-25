@@ -1,31 +1,37 @@
+import 'package:btcclient/core/network/api_error_handler.dart';
+import 'package:btcclient/features/guardian/data/guardain_repository.dart';
+import 'package:btcclient/features/guardian/presentation/notifier/guardian_dashboard_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/guardain_repository.dart';
 
 class GuardianDashboardNotifier
-    extends StateNotifier<Map<String, dynamic>?> {
-
+    extends StateNotifier<GuardianDashboardState> {
   final GuardianRepository repository;
 
-  GuardianDashboardNotifier(this.repository) : super(null) {
-    print("NOTIFIER CREATED");
-  }
+  GuardianDashboardNotifier(this.repository)
+      : super(const GuardianDashboardState());
 
-  Future<void> fetchStats() async {
-
-    print("FETCH STATS CALLED");
+  Future<void> fetchStats({bool refresh = false}) async {
+    state = state.copyWith(
+      loading: state.data == null,
+      refreshing: state.data != null,
+      error: null,
+    );
 
     try {
-
       final result = await repository.getStats();
 
-      print("API DATA: $result");
-
-      state = result;
-
+      state = state.copyWith(
+        loading: false,
+        refreshing: false,
+        data: result,
+        error: null,
+      );
     } catch (e) {
-
-      print("API ERROR: $e");
-
+      state = state.copyWith(
+        loading: false,
+        refreshing: false,
+        error: ApiErrorHandler.getMessage(e),
+      );
     }
   }
 }

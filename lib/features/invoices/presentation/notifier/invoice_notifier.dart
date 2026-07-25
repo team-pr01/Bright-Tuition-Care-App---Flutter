@@ -36,7 +36,7 @@ class InvoiceNotifier extends StateNotifier<InvoiceState> {
     try {
       state = state.copyWith(isLoading: true, error: null);
 
-      final invoices = await repository.getAllInvoices();
+      final invoices = await repository.getMyInvoices();
 
       state = state.copyWith(isLoading: false, invoices: invoices);
     } catch (e) {

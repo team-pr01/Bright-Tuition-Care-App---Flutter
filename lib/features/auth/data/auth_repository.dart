@@ -4,6 +4,7 @@ import 'package:btcclient/features/auth/data/auth_api.dart';
 import 'package:btcclient/features/auth/data/models/guardian_model.dart';
 import 'package:btcclient/features/auth/data/models/testimonial_model.dart';
 import 'package:btcclient/features/auth/data/models/tutor_model.dart';
+import 'package:btcclient/features/auth/data/requests/education_request.dart';
 import 'package:btcclient/features/auth/data/requests/forgot_password_request.dart';
 import 'package:btcclient/features/auth/data/results/forgot_password_result.dart';
 import 'package:btcclient/features/auth/data/requests/resend_forgot_password_otp_request.dart';
@@ -295,9 +296,23 @@ class AuthRepository {
 
     return true;
   }
-  Future<void> updatePersonalInfo(
-  UpdatePersonalInfoRequest request,
-) async {
-  await api.updatePersonalInfo(request);
-}
+
+  Future<void> updatePersonalInfo(UpdatePersonalInfoRequest request) async {
+    await api.updatePersonalInfo(request);
+  }
+
+  Future<void> addEducation(EducationRequest request) async {
+    await api.addEducation(request);
+  }
+
+  Future<void> updateEducation({
+    required String id,
+    required EducationRequest request,
+  }) async {
+    await api.updateEducation(id: id, request: request);
+  }
+
+  Future<void> deleteEducation(String id) async {
+    await api.deleteEducation(id);
+  }
 }

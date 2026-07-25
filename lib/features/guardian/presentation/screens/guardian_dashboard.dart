@@ -1,4 +1,5 @@
 import 'package:btcclient/core/models/notice_model.dart';
+import 'package:btcclient/core/widgets/dashboard/skeletons/home_skeleton.dart';
 import 'package:btcclient/core/widgets/dashboard/verify_profile_card.dart';
 import 'package:btcclient/core/widgets/recognition_card.dart';
 import 'package:btcclient/features/guardian/presentation/provider/guardain_dashboard_provider.dart';
@@ -32,8 +33,30 @@ class _GuardianHomeScreenState extends ConsumerState<GuardianHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final dashboardData = ref.watch(guardianDashboardProvider);
+    final dashboardState = ref.watch(guardianDashboardProvider);
+    final dashboardData = dashboardState.data;
+    if (dashboardState.loading && dashboardState.data == null) {
+      return const Scaffold(body: SafeArea(child: HomeSkeleton()));
+    }
+    if (dashboardState.error != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(dashboardState.error!),
 
+            const SizedBox(height: 16),
+
+            ElevatedButton(
+              onPressed: () {
+                ref.read(guardianDashboardProvider.notifier).fetchStats();
+              },
+              child: const Text("Retry"),
+            ),
+          ],
+        ),
+      );
+    }
     final isVerified = dashboardData != null
         ? dashboardData["data"]["isVerified"] ?? false
         : false;
@@ -51,8 +74,10 @@ class _GuardianHomeScreenState extends ConsumerState<GuardianHomeScreen> {
         : 0;
 
     return RefreshIndicator(
-      onRefresh: () async {
-        await ref.read(guardianDashboardProvider.notifier).fetchStats();
+      onRefresh: () {
+        return ref
+            .read(guardianDashboardProvider.notifier)
+            .fetchStats(refresh: true);
       },
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(), // 🔥 IMPORTANT FIX

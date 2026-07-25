@@ -1,5 +1,6 @@
 import 'package:btcclient/core/network/api_error_handler.dart';
 import 'package:btcclient/core/network/api_exception.dart';
+import 'package:btcclient/features/auth/data/requests/education_request.dart';
 import 'package:btcclient/features/auth/data/requests/resend_forgot_password_otp_request.dart';
 import 'package:btcclient/features/auth/data/requests/resend_otp_request.dart';
 import 'package:btcclient/features/auth/data/requests/reset_password_request.dart';
@@ -9,6 +10,7 @@ import 'package:btcclient/features/auth/data/requests/verify_otp_request.dart';
 import 'package:btcclient/features/auth/data/requests/verify_reset_password_otp_request.dart';
 import 'package:btcclient/features/profile/data/requests/update_personal_info_request.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/rendering.dart';
 import '../../../core/network/dio_client.dart';
 
 class AuthApi {
@@ -105,17 +107,45 @@ class AuthApi {
       data: {"unlockRequestReason": reason},
     );
   }
-  Future<void> updatePersonalInfo(
-  UpdatePersonalInfoRequest request,
-) async {
-  try {
-    await DioClient.dio.patch(
-      "/user/update-profile",
+
+  Future<void> updatePersonalInfo(UpdatePersonalInfoRequest request) async {
+    try {
+      await DioClient.dio.patch("/user/update-profile", data: request.toJson());
+    } on DioException catch (e) {
+      throw ApiException(ApiErrorHandler.getMessage(e));
+    } catch (e) {
+      throw ApiException(ApiErrorHandler.getMessage(e));
+    }
+  }
+
+  Future<void> addEducation(EducationRequest request) async {
+    try {
+      final response = await DioClient.dio.post(
+        "/user/education/add",
+        data: request.toJson(),
+      );
+
+      debugPrint("✅ ADD EDUCATION RESPONSE:");
+      debugPrint(response.data.toString());
+    } on DioException catch (e) {
+      debugPrint("❌ ADD EDUCATION ERROR");
+      debugPrint(e.response?.data.toString());
+
+      rethrow;
+    }
+  }
+
+  Future<void> updateEducation({
+    required String id,
+    required EducationRequest request,
+  }) async {
+    await DioClient.dio.put(
+      "/user/education/update/$id",
       data: request.toJson(),
     );
-  } on DioException catch (e) {
-    throw ApiException(ApiErrorHandler.getMessage(e));
-  } catch (e) {
-    throw ApiException(ApiErrorHandler.getMessage(e));
   }
-}}
+
+  Future<void> deleteEducation(String id) async {
+    await DioClient.dio.delete("/user/education/delete/$id");
+  }
+}

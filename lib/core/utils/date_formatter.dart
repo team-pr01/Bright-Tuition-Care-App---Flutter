@@ -18,5 +18,13 @@ class DateFormatter {
       return date;
     }
   }
+  static String formattedFormalDate(String date) {
+  try {
+    final parsed = DateTime.parse(date);
+    return DateFormat('dd/MM/yyyy').format(parsed);
+  } catch (e) {
+    return date;
+  }
+}
 
 }

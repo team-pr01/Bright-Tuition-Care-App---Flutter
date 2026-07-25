@@ -1,107 +1,136 @@
-import 'package:btcclient/features/profile/presentation/widgets/shared/education_item_card.dart';
 import 'package:flutter/material.dart';
 import 'package:btcclient/features/auth/data/models/tutor_model.dart';
-
+import 'package:btcclient/features/profile/presentation/widgets/shared/education_item_card.dart';
+import 'package:btcclient/features/profile/presentation/widgets/shared/education_progress_bar.dart';
+import 'package:btcclient/features/profile/presentation/widgets/shared/education_empty_widget.dart';
 
 class EducationSectionCard extends StatelessWidget {
   final List<Education> educations;
-  final void Function(Education education)? onEdit;
+
+  final void Function(Education)? onEdit;
+
+  final VoidCallback? onAdd;
 
   const EducationSectionCard({
     super.key,
     required this.educations,
     this.onEdit,
+    this.onAdd,
   });
 
   @override
   Widget build(BuildContext context) {
+
+    final progressBars = [
+      educations.length > 0,
+      educations.length > 1,
+      educations.length > 2,
+    ];
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(18),
         border: Border.all(
           color: Colors.grey.shade300,
         ),
       ),
+
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+
+          /// HEADER
           Row(
             children: [
+
               const Expanded(
                 child: Text(
                   "Educational Information",
                   style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
+                    fontSize: 21,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
 
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: const Color(0xffEDF4FF),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  "${educations.length} Record${educations.length == 1 ? "" : "s"}",
-                  style: const TextStyle(
-                    color: Color(0xff246BFD),
-                    fontWeight: FontWeight.w600,
-                    fontSize: 13,
-                  ),
+              FilledButton.icon(
+                onPressed: onAdd,
+                icon: const Icon(Icons.add),
+                label: Text(
+                  educations.isEmpty
+                      ? "Add Education"
+                      : "Add More",
                 ),
               ),
             ],
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: 24),
+
+          /// PROGRESS BAR
+          Row(
+            children: [
+
+              EducationProgressBar(
+                label: "Education 1",
+                completed: progressBars[0],
+              ),
+
+              const SizedBox(width: 12),
+
+              EducationProgressBar(
+                label: "Education 2",
+                completed: progressBars[1],
+              ),
+
+              const SizedBox(width: 12),
+
+              EducationProgressBar(
+                label: "Education 3",
+                completed: progressBars[2],
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 30),
 
           if (educations.isEmpty)
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(
-                vertical: 40,
-                horizontal: 20,
-              ),
-              decoration: BoxDecoration(
-                color: const Color(0xffF8FAFC),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Colors.grey.shade300,
-                ),
-              ),
-              child: Column(
-                children: const [
-                  Icon(
-                    Icons.school_outlined,
-                    size: 48,
-                    color: Colors.grey,
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    "No education information available.",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black54,
-                    ),
-                  ),
-                ],
-              ),
+
+            EducationEmptyWidget(
+              onAdd: onAdd ?? () {},
             )
+
           else
-            ...educations.map(
-              (education) => EducationItemCard(
-                education: education,
-                onEdit: onEdit == null
-                    ? null
-                    : () => onEdit!(education),
+
+            AnimatedSwitcher(
+              duration: const Duration(
+                milliseconds: 350,
+              ),
+
+              child: Column(
+                children: List.generate(
+                  educations.length,
+                  (index) {
+
+                    final education = educations[index];
+
+                    return Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: 18,
+                      ),
+
+                      child: EducationItemCard(
+                        education: education,
+                        onEdit: onEdit == null
+                            ? null
+                            : () => onEdit!(education),
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
         ],

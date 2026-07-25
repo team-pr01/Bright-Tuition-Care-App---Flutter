@@ -1,8 +1,9 @@
 import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../config/theme.dart';
 
-enum AppInputType { text, password, multiline, dropdown }
+enum AppInputType { text, password, multiline, dropdown, phone, date }
 
 class AppInputField extends StatefulWidget {
   final String? label;
@@ -26,6 +27,8 @@ class AppInputField extends StatefulWidget {
   final List<String>? selectedValues;
   final Function(List<String>)? onMultiChanged;
   final String? Function(String?)? validator;
+  final DateTime? firstDate;
+  final DateTime? lastDate;
 
   final int maxLines;
 
@@ -47,6 +50,8 @@ class AppInputField extends StatefulWidget {
     this.maxLines = 1,
     this.validator,
     this.enabled = true,
+    this.firstDate,
+    this.lastDate,
   });
 
   @override
@@ -175,6 +180,82 @@ class _AppInputFieldState extends State<AppInputField> {
         );
         break;
 
+      case AppInputType.phone:
+        field = TextFormField(
+          enabled: widget.enabled,
+          controller: widget.controller,
+          keyboardType: TextInputType.phone,
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(11),
+            TextInputFormatter.withFunction((oldValue, newValue) {
+              String text = newValue.text;
+
+              // Don't allow deleting the prefix
+              if (text.isEmpty) {
+                text = '01';
+              }
+
+              // Always keep the prefix as 01
+              if (!text.startsWith('01')) {
+                if (text.length == 1) {
+                  text = '01';
+                } else {
+                  text = '01${text.replaceFirst(RegExp(r'^0?1?'), '')}';
+                }
+              }
+
+              return TextEditingValue(
+                text: text,
+                selection: TextSelection.collapsed(offset: text.length),
+              );
+            }),
+          ],
+          maxLength: 10,
+          style: inputStyle,
+          decoration: _decoration().copyWith(counterText: ""),
+          validator: (value) {
+            if (widget.required && (value == null || value.trim().isEmpty)) {
+              return "${widget.label} is required";
+            }
+
+            if (value != null &&
+                value.isNotEmpty &&
+                !RegExp(r'^\d{10}$').hasMatch(value)) {
+              return "Enter a valid 10 digit phone number";
+            }
+
+            return null;
+          },
+        );
+        break;
+
+      case AppInputType.date:
+        field = TextFormField(
+          enabled: widget.enabled,
+          controller: widget.controller,
+          keyboardType: TextInputType.datetime,
+          style: inputStyle,
+          decoration: _decoration().copyWith(
+            hintText: "DD/MM/YYYY",
+            suffixIcon: IconButton(
+              icon: const Icon(Icons.calendar_today_outlined),
+              onPressed: _pickDate,
+            ),
+          ),
+          validator: (value) {
+            if (widget.required && (value == null || value.trim().isEmpty)) {
+              return "${widget.label} is required";
+            }
+
+            if (value != null && value.isNotEmpty && !_isValidDate(value)) {
+              return "Enter a valid date";
+            }
+
+            return null;
+          },
+        );
+        break;
       default:
         field = TextFormField(
           enabled: widget.enabled,
@@ -221,6 +302,49 @@ class _AppInputFieldState extends State<AppInputField> {
       ),
     );
   }
+
+  Future<void> _pickDate() async {
+    final now = DateTime.now();
+
+    DateTime initial = now;
+
+    if (widget.controller?.text.isNotEmpty == true) {
+      try {
+        final parts = widget.controller!.text.split("/");
+        if (parts.length == 3) {
+          initial = DateTime(
+            int.parse(parts[2]),
+            int.parse(parts[1]),
+            int.parse(parts[0]),
+          );
+        }
+      } catch (_) {}
+    }
+
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initial,
+      firstDate: widget.firstDate ?? DateTime(1950),
+      lastDate: widget.lastDate ?? now,
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(primary: AppColors.primary01),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null) {
+      final day = picked.day.toString().padLeft(2, "0");
+      final month = picked.month.toString().padLeft(2, "0");
+      final year = picked.year.toString();
+
+      widget.controller?.text = "$day/$month/$year";
+      setState(() {});
+    }
+  }
 }
 
 class _SearchableDropdown extends StatefulWidget {
@@ -250,6 +374,38 @@ class _SearchableDropdown extends StatefulWidget {
 
   @override
   State<_SearchableDropdown> createState() => _SearchableDropdownState();
+}
+
+bool _isValidDate(String value) {
+  final regex = RegExp(r'^\d{2}/\d{2}/\d{4}$');
+
+  if (!regex.hasMatch(value)) return false;
+
+  try {
+    final parts = value.split("/");
+
+    final date = DateTime(
+      int.parse(parts[2]), // year
+      int.parse(parts[1]), // month
+      int.parse(parts[0]), // day
+    );
+
+    // Prevent impossible dates like 31/02/2024
+    if (date.day != int.parse(parts[0]) ||
+        date.month != int.parse(parts[1]) ||
+        date.year != int.parse(parts[2])) {
+      return false;
+    }
+
+    // Prevent future dates (useful for Date of Birth)
+    if (date.isAfter(DateTime.now())) {
+      return false;
+    }
+
+    return true;
+  } catch (_) {
+    return false;
+  }
 }
 
 class _SearchableDropdownState extends State<_SearchableDropdown> {
