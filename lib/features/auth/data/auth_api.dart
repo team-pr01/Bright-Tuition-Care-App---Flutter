@@ -1,3 +1,5 @@
+import 'package:btcclient/core/network/api_error_handler.dart';
+import 'package:btcclient/core/network/api_exception.dart';
 import 'package:btcclient/features/auth/data/requests/resend_forgot_password_otp_request.dart';
 import 'package:btcclient/features/auth/data/requests/resend_otp_request.dart';
 import 'package:btcclient/features/auth/data/requests/reset_password_request.dart';
@@ -5,6 +7,7 @@ import 'package:btcclient/features/auth/data/requests/signup_request.dart';
 import 'package:btcclient/features/auth/data/requests/forgot_password_request.dart';
 import 'package:btcclient/features/auth/data/requests/verify_otp_request.dart';
 import 'package:btcclient/features/auth/data/requests/verify_reset_password_otp_request.dart';
+import 'package:btcclient/features/profile/data/requests/update_personal_info_request.dart';
 import 'package:dio/dio.dart';
 import '../../../core/network/dio_client.dart';
 
@@ -102,4 +105,17 @@ class AuthApi {
       data: {"unlockRequestReason": reason},
     );
   }
-}
+  Future<void> updatePersonalInfo(
+  UpdatePersonalInfoRequest request,
+) async {
+  try {
+    await DioClient.dio.patch(
+      "/user/update-profile",
+      data: request.toJson(),
+    );
+  } on DioException catch (e) {
+    throw ApiException(ApiErrorHandler.getMessage(e));
+  } catch (e) {
+    throw ApiException(ApiErrorHandler.getMessage(e));
+  }
+}}

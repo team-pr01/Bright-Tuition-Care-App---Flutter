@@ -1,0 +1,151 @@
+import 'package:btcclient/features/profile/presentation/widgets/shared/profile_info_row.dart';
+import 'package:flutter/material.dart';
+import 'package:btcclient/features/auth/data/models/tutor_model.dart';
+
+class PersonalSectionCard extends StatelessWidget {
+  final TutorProfileModel profile;
+  final VoidCallback? onEdit;
+
+  const PersonalSectionCard({
+    super.key,
+    required this.profile,
+    this.onEdit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Colors.grey.shade300,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Expanded(
+                child: Text(
+                  "Personal Information",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              if (onEdit != null)
+                IconButton(
+                  onPressed: onEdit,
+                  icon: const Icon(Icons.edit_outlined),
+                ),
+            ],
+          ),
+
+          const SizedBox(height: 10),
+
+          if ((profile.personalInfo.overview ?? "").trim().isNotEmpty) ...[
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xffF7F9FC),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: Colors.grey.shade300,
+                ),
+              ),
+              child: Text(
+                profile.personalInfo.overview!,
+                style: const TextStyle(
+                  fontSize: 14,
+                  height: 1.6,
+                  color: Colors.black87,
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+          ],
+
+          ProfileInfoRow(
+            label: "Email",
+            value: profile.email,
+          ),
+
+          ProfileInfoRow(
+            label: "Phone Number",
+            value: profile.phoneNumber,
+          ),
+
+          ProfileInfoRow(
+            label: "Additional Number",
+            value: profile.personalInfo.additionalPhone,
+          ),
+
+          ProfileInfoRow(
+            label: "Area",
+            value: profile.area,
+          ),
+
+          ProfileInfoRow(
+            label: "City",
+            value: profile.city,
+          ),
+
+          ProfileInfoRow(
+            label: "Present Address",
+            value: profile.personalInfo.address,
+          ),
+
+          ProfileInfoRow(
+            label: "Religion",
+            value: profile.personalInfo.religion,
+          ),
+
+          ProfileInfoRow(
+            label: "Facebook",
+            value: profile.socialMedia.facebook,
+          ),
+
+          ProfileInfoRow(
+            label: "Gender",
+            value: profile.gender.isEmpty
+                ? null
+                : "${profile.gender[0].toUpperCase()}${profile.gender.substring(1)}",
+          ),
+
+          ProfileInfoRow(
+            label: "Date Of Birth",
+            value: profile.personalInfo.dateOfBirth,
+          ),
+
+          const Divider(height: 32),
+
+          const Text(
+            "Emergency Contact",
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          ProfileInfoRow(
+            label: "Contact Person",
+            value: profile.emergencyInfo.name,
+          ),
+
+          ProfileInfoRow(
+            label: "Phone Number",
+            value: profile.emergencyInfo.phone,
+          ),
+        ],
+      ),
+    );
+  }
+}

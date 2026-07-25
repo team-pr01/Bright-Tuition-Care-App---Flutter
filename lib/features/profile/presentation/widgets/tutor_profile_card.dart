@@ -26,6 +26,79 @@ class TutorProfileCard extends StatelessWidget {
     required this.profileCompleted,
     required this.rating,
   });
+  Color _getProfileCompletionColor() {
+    if (profileCompleted <= 20) {
+      return AppColors.error;
+    } else if (profileCompleted <= 40) {
+      return Colors.orange;
+    } else if (profileCompleted <= 60) {
+      return Colors.amber;
+    } else if (profileCompleted <= 80) {
+      return AppColors.success;
+    } else {
+      return AppColors.success;
+    }
+  }
+
+  Color _progressCardColor() {
+    if (profileCompleted < 30) return Colors.orange.shade50;
+    if (profileCompleted < 70) return Colors.blue.shade50;
+    if (profileCompleted < 100) return Colors.green.shade50;
+    return Colors.green.shade100;
+  }
+
+  Color _progressBorderColor() {
+    if (profileCompleted < 30) return Colors.orange.shade200;
+    if (profileCompleted < 70) return Colors.blue.shade200;
+    if (profileCompleted < 100) return Colors.green.shade200;
+    return Colors.green.shade400;
+  }
+
+  Color _progressIconBackground() {
+    if (profileCompleted < 30) return Colors.orange.shade100;
+    if (profileCompleted < 70) return Colors.blue.shade100;
+    if (profileCompleted < 100) return Colors.green.shade100;
+    return Colors.green.shade200;
+  }
+
+  IconData _progressIcon() {
+    if (profileCompleted < 30) return Icons.flag_outlined;
+    if (profileCompleted < 70) return Icons.trending_up;
+    if (profileCompleted < 100) return Icons.verified_user_outlined;
+    return Icons.workspace_premium;
+  }
+
+  String _progressTitle() {
+    if (profileCompleted < 30) {
+      return "Get Started";
+    }
+
+    if (profileCompleted < 70) {
+      return "$profileCompleted% Completed";
+    }
+
+    if (profileCompleted < 100) {
+      return "Almost There";
+    }
+
+    return "Profile Complete 🎉";
+  }
+
+  String _progressSubtitle() {
+    if (profileCompleted < 30) {
+      return "Complete your profile to receive tuition requests faster.";
+    }
+
+    if (profileCompleted < 70) {
+      return "Keep going! A complete profile builds more trust.";
+    }
+
+    if (profileCompleted < 100) {
+      return "You're close! Complete the remaining details.";
+    }
+
+    return "Excellent! Your profile is ready for students.";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -147,19 +220,22 @@ class TutorProfileCard extends StatelessWidget {
                     /// RATING
                     Row(
                       children: [
-                        ...List.generate(
-                          5,
-                          (index) => const Padding(
-                            padding: EdgeInsets.only(right: 1),
+                        ...List.generate(5, (index) {
+                          IconData icon;
 
-                            child: Icon(
-                              Icons.star,
-                              size: 18,
-                              color: Colors.amber,
-                            ),
-                          ),
-                        ),
+                          if (rating >= index + 1) {
+                            icon = Icons.star_rounded;
+                          } else if (rating >= index + 0.5) {
+                            icon = Icons.star_half_rounded;
+                          } else {
+                            icon = Icons.star_border_rounded;
+                          }
 
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 2),
+                            child: Icon(icon, size: 18, color: Colors.amber),
+                          );
+                        }),
                         const SizedBox(width: 6),
 
                         Text(
@@ -183,28 +259,25 @@ class TutorProfileCard extends StatelessWidget {
           /// ================= PROGRESS CARD =================
           Container(
             padding: const EdgeInsets.all(16),
-
             decoration: BoxDecoration(
-              color: Colors.green.withOpacity(0.06),
-
+              color: _progressCardColor(),
               borderRadius: BorderRadius.circular(AppRadius.medium),
-
-              border: Border.all(color: Colors.green.withOpacity(0.15)),
+              border: Border.all(color: _progressBorderColor()),
             ),
-
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  width: 46,
-                  height: 46,
-
+                  width: 48,
+                  height: 48,
                   decoration: BoxDecoration(
-                    color: Colors.green.withOpacity(0.12),
+                    color: _progressIconBackground(),
                     shape: BoxShape.circle,
                   ),
-
-                  child: const Center(
-                    child: Text("👏", style: TextStyle(fontSize: 20)),
+                  child: Icon(
+                    _progressIcon(),
+                    color: _getProfileCompletionColor(),
+                    size: 24,
                   ),
                 ),
 
@@ -213,41 +286,44 @@ class TutorProfileCard extends StatelessWidget {
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-
                     children: [
                       Text(
-                        "Profile Completion",
-
-                        style: AppTextStyles.bodyMedium.copyWith(
+                        _progressTitle(),
+                        style: AppTextStyles.titleMedium.copyWith(
                           fontWeight: FontWeight.w700,
+                        ),
+                      ),
+
+                      const SizedBox(height: 4),
+
+                      Text(
+                        _progressSubtitle(),
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: AppColors.neutrals02,
+                        ),
+                      ),
+
+                      const SizedBox(height: 12),
+
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: LinearProgressIndicator(
+                          value: profileCompleted.clamp(0, 100) / 100,
+                          minHeight: 10,
+                          backgroundColor: AppColors.neutrals04,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            _getProfileCompletionColor(),
+                          ),
                         ),
                       ),
 
                       const SizedBox(height: 8),
 
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(100),
-
-                        child: LinearProgressIndicator(
-                          value: profileCompleted / 100,
-
-                          minHeight: 10,
-
-                          backgroundColor: AppColors.neutrals04,
-
-                          valueColor: const AlwaysStoppedAnimation(
-                            Colors.green,
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 6),
-
                       Text(
                         "$profileCompleted% Complete",
-
                         style: AppTextStyles.bodySmall.copyWith(
-                          color: AppColors.neutrals03,
+                          fontWeight: FontWeight.w600,
+                          color: _getProfileCompletionColor(),
                         ),
                       ),
                     ],
@@ -256,7 +332,6 @@ class TutorProfileCard extends StatelessWidget {
               ],
             ),
           ),
-
           const SizedBox(height: 24),
 
           /// ================= INFO SECTION =================

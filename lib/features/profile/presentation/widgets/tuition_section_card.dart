@@ -1,6 +1,7 @@
-import 'package:btcclient/features/auth/data/models/tutor_model.dart';
-import 'package:btcclient/features/profile/presentation/widgets/profile_overview_card.dart';
+import 'package:btcclient/features/profile/presentation/widgets/shared/profile_chip_row.dart';
+import 'package:btcclient/features/profile/presentation/widgets/shared/profile_info_row.dart';
 import 'package:flutter/material.dart';
+import 'package:btcclient/features/auth/data/models/tutor_model.dart';
 
 class TuitionSectionCard extends StatelessWidget {
   final TutorProfileModel profile;
@@ -16,30 +17,32 @@ class TuitionSectionCard extends StatelessWidget {
       children: [
         _TuitionInfoCard(
           title: "Accessibility Information",
-          items: [
-            ProfileInfoItem(
-              "Tutoring Method",
-              profile.tuitionPreference.tutoringMethod,
+          children: [
+            ProfileInfoRow(
+              label: "Tutoring Method",
+              value: profile.tuitionPreference.tutoringMethod,
             ),
 
-            ProfileInfoItem(
-              "Tutoring Styles",
-              profile.tuitionPreference.tuitionStyle.join(", "),
+            ProfileChipRow(
+              label: "Tutoring Styles",
+              items: profile.tuitionPreference.tuitionStyle,
             ),
 
-            ProfileInfoItem(
-              "Expected Salary",
-              profile.tuitionPreference.expectedSalary,
+            ProfileInfoRow(
+              label: "Expected Salary",
+              value: profile.tuitionPreference.expectedSalary.isEmpty
+                  ? null
+                  : "৳ ${profile.tuitionPreference.expectedSalary}",
             ),
 
-            ProfileInfoItem(
-              "Preferred Cities",
-              profile.tuitionPreference.preferredCities.join(", "),
+            ProfileChipRow(
+              label: "Preferred Cities",
+              items: profile.tuitionPreference.preferredCities,
             ),
 
-            ProfileInfoItem(
-              "Preferred Locations",
-              profile.tuitionPreference.preferredLocations.join(", "),
+            ProfileChipRow(
+              label: "Preferred Locations",
+              items: profile.tuitionPreference.preferredLocations,
             ),
           ],
         ),
@@ -48,30 +51,30 @@ class TuitionSectionCard extends StatelessWidget {
 
         _TuitionInfoCard(
           title: "Additional Information",
-          items: [
-            ProfileInfoItem(
-              "Preferred Categories",
-              profile.tuitionPreference.preferredCategories.join(", "),
+          children: [
+            ProfileChipRow(
+              label: "Preferred Categories",
+              items: profile.tuitionPreference.preferredCategories,
             ),
 
-            ProfileInfoItem(
-              "Preferred Classes",
-              profile.tuitionPreference.preferredClasses.join(", "),
+            ProfileChipRow(
+              label: "Preferred Classes",
+              items: profile.tuitionPreference.preferredClasses,
             ),
 
-            ProfileInfoItem(
-              "Preferred Subjects",
-              profile.tuitionPreference.preferredSubjects.join(", "),
+            ProfileChipRow(
+              label: "Preferred Subjects",
+              items: profile.tuitionPreference.preferredSubjects,
             ),
 
-            ProfileInfoItem(
-              "Place Of Tutoring",
-              profile.tuitionPreference.placeOfTuition.join(", "),
+            ProfileChipRow(
+              label: "Place Of Tutoring",
+              items: profile.tuitionPreference.placeOfTuition,
             ),
 
-            ProfileInfoItem(
-              "Total Experience",
-              profile.experience.totalExperience,
+            ProfileInfoRow(
+              label: "Total Experience",
+              value: profile.totalExperience,
             ),
           ],
         ),
@@ -79,22 +82,21 @@ class TuitionSectionCard extends StatelessWidget {
     );
   }
 }
+
 class _TuitionInfoCard extends StatelessWidget {
   final String title;
-  final List<ProfileInfoItem> items;
+  final List<Widget> children;
 
   const _TuitionInfoCard({
     required this.title,
-    required this.items,
+    required this.children,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-
       padding: const EdgeInsets.all(20),
-
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -102,7 +104,6 @@ class _TuitionInfoCard extends StatelessWidget {
           color: Colors.grey.shade300,
         ),
       ),
-
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -114,65 +115,9 @@ class _TuitionInfoCard extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: 18),
 
-          ...items.map(
-            (item) => TuitionInfoRow(
-              label: item.label,
-              value: item.value,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class TuitionInfoRow extends StatelessWidget {
-  final String label;
-  final String? value;
-
-  const TuitionInfoRow({
-    required this.label,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final isMissing =
-        value == null ||
-        value!.trim().isEmpty;
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 140,
-            child: Text(
-              label,
-              style: const TextStyle(
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-
-          const Text(": "),
-
-          Expanded(
-            child: Text(
-              isMissing
-                  ? "Not Provided"
-                  : value!,
-              style: TextStyle(
-                color: isMissing
-                    ? Colors.red
-                    : Colors.black87,
-              ),
-            ),
-          ),
+          ...children,
         ],
       ),
     );

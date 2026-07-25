@@ -1,4 +1,4 @@
-class TutorProfileModel {
+class TutorProfileModel {  
   final String id;
   final String tutorId;
 
@@ -61,6 +61,12 @@ class TutorProfileModel {
     required this.identity,
     required this.emergencyInfo,
   });
+  
+  String get totalExperience {
+  if (experience.isEmpty) return "";
+
+  return experience.first.totalExperience ?? "";
+}
 
   factory TutorProfileModel.fromJson(Map<String, dynamic> json) {
     final data = json['data'] ?? {};
@@ -299,14 +305,14 @@ class Education {
 
 class Identity {
   final String fileType;
-  final String fileUrl;
+  final String file;
 
-  Identity({required this.fileType, required this.fileUrl});
+  Identity({required this.fileType, required this.file});
 
   factory Identity.fromJson(Map<String, dynamic> json) {
     return Identity(
       fileType: json['fileType'] ?? "",
-      fileUrl: json['file'] ?? "",
+      file: json['file'] ?? "",
     );
   }
 }

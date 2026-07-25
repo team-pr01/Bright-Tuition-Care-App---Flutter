@@ -19,6 +19,7 @@ import 'package:btcclient/features/auth/data/requests/verify_otp_request.dart';
 import 'package:btcclient/features/auth/data/requests/verify_reset_password_otp_request.dart';
 import 'package:btcclient/features/auth/data/results/verify_reset_password_otp_result.dart';
 import 'package:btcclient/features/auth/presentation/provider/profile_notifier.dart';
+import 'package:btcclient/features/profile/data/requests/update_personal_info_request.dart';
 
 class AuthResult {
   final String token;
@@ -294,4 +295,9 @@ class AuthRepository {
 
     return true;
   }
+  Future<void> updatePersonalInfo(
+  UpdatePersonalInfoRequest request,
+) async {
+  await api.updatePersonalInfo(request);
+}
 }
