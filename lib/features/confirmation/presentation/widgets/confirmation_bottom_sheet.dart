@@ -2,7 +2,7 @@ import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/utils/date_formatter.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/core/widgets/reusable_bottom_sheet/reusable_bottom_sheet.dart';
-import 'package:btcclient/features/guradinan/presentation/provider/confirmation_provider.dart';
+import 'package:btcclient/features/confirmation/presentation/provider/confirmation_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

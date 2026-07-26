@@ -1,6 +1,6 @@
 import 'package:btcclient/core/network/api_exception.dart';
-import 'package:btcclient/features/guradinan/data/confirmation_api.dart';
-import 'package:btcclient/features/guradinan/data/models/confirmation_letter_model.dart';
+import 'package:btcclient/features/confirmation/data/confirmation_api.dart';
+import 'package:btcclient/features/confirmation/data/models/confirmation_letter_model.dart';
 
 class ConfirmationRepository {
   final ConfirmationApi api;

@@ -1,7 +1,7 @@
 import 'package:btcclient/core/network/dio_client.dart';
-import 'package:btcclient/features/guradinan/data/confirmation_api.dart';
-import 'package:btcclient/features/guradinan/data/confirmation_repository.dart';
-import 'package:btcclient/features/guradinan/presentation/notifier/confirmation_notifier.dart';
+import 'package:btcclient/features/confirmation/data/confirmation_api.dart';
+import 'package:btcclient/features/confirmation/data/confirmation_repository.dart';
+import 'package:btcclient/features/confirmation/presentation/notifier/confirmation_notifier.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// ================= API =================

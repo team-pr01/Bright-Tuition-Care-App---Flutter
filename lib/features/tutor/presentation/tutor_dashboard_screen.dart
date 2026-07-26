@@ -1,6 +1,6 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/layout/dashboard_layout.dart';
-import 'package:btcclient/features/guradinan/presentation/screen/confirmation_page.dart';
+import 'package:btcclient/features/confirmation/presentation/screen/confirmation_page.dart';
 import 'package:btcclient/features/invoices/presentation/provider/invoice_provider.dart';
 import 'package:btcclient/features/invoices/presentation/screen/invoice_page.dart';
 import 'package:btcclient/features/jobs/presentation/screen/job_page.dart';

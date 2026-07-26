@@ -1,8 +1,8 @@
 import 'package:btcclient/core/widgets/navbar/common_appbar.dart';
-import 'package:btcclient/features/guradinan/presentation/notifier/confirmation_notifier.dart';
-import 'package:btcclient/features/guradinan/presentation/provider/confirmation_provider.dart';
-import 'package:btcclient/features/guradinan/presentation/widgets/confirmation_bottom_sheet.dart';
-import 'package:btcclient/features/guradinan/presentation/widgets/confirmation_card.dart';
+import 'package:btcclient/features/confirmation/presentation/notifier/confirmation_notifier.dart';
+import 'package:btcclient/features/confirmation/presentation/provider/confirmation_provider.dart';
+import 'package:btcclient/features/confirmation/presentation/widgets/confirmation_bottom_sheet.dart';
+import 'package:btcclient/features/confirmation/presentation/widgets/confirmation_card.dart';
 
 import 'package:btcclient/features/invoices/presentation/widgets/skeleton/invoice_card_skeleton.dart';
 import 'package:flutter/material.dart';
