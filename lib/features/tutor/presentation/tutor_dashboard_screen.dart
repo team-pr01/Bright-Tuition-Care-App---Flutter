@@ -1,5 +1,6 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/layout/dashboard_layout.dart';
+import 'package:btcclient/features/guradinan/presentation/screen/confirmation_page.dart';
 import 'package:btcclient/features/invoices/presentation/provider/invoice_provider.dart';
 import 'package:btcclient/features/invoices/presentation/screen/invoice_page.dart';
 import 'package:btcclient/features/jobs/presentation/screen/job_page.dart';
@@ -128,7 +129,7 @@ class TutorDashboardScreen extends ConsumerWidget {
             ),
             onTap: () {
               Navigator.pop(context);
-              changeTab(3);
+              changeTab(4);
             },
           ),
 
@@ -146,6 +147,28 @@ class TutorDashboardScreen extends ConsumerWidget {
             onTap: () {
               Navigator.pop(context);
               changeTab(3);
+            },
+          ),
+          SidebarItem(
+            label: "Confirmation Letter",
+            icon: SvgPicture.asset(
+              "assets/icons/navigations/confirmed.svg",
+              width: 20,
+              height: 20,
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
+              ),
+            ),
+            onTap: () {
+              Navigator.pop(context);
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const ConfirmationScreen(role: "tutor"),
+                ),
+              );
             },
           ),
           SidebarItem(

@@ -341,7 +341,13 @@ class _AppInputFieldState extends State<AppInputField> {
       final month = picked.month.toString().padLeft(2, "0");
       final year = picked.year.toString();
 
-      widget.controller?.text = "$day/$month/$year";
+      final value = "$day/$month/$year";
+
+      widget.controller?.text = value;
+
+      // 🔥 Notify parent
+      widget.onChanged?.call(value);
+
       setState(() {});
     }
   }

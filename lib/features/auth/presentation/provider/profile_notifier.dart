@@ -5,8 +5,7 @@ import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart
 import 'package:btcclient/features/profile/data/requests/update_personal_info_request.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final profileProvider =
-    StateNotifierProvider<ProfileNotifier, dynamic>((ref) {
+final profileProvider = StateNotifierProvider<ProfileNotifier, dynamic>((ref) {
   final repo = ref.read(authRepositoryProvider);
   return ProfileNotifier(repo);
 });
@@ -38,9 +37,7 @@ class ProfileNotifier extends StateNotifier<dynamic> {
     await fetchProfile();
   }
 
-  Future<bool> updatePersonalInfo(
-    UpdatePersonalInfoRequest request,
-  ) async {
+  Future<bool> updatePersonalInfo(UpdatePersonalInfoRequest request) async {
     try {
       isLoading = true;
       error = null;
@@ -62,7 +59,9 @@ class ProfileNotifier extends StateNotifier<dynamic> {
     try {
       isLoading = true;
       error = null;
-
+      print("===== EDUCATION PAYLOAD =====");
+      print(request.toJson());
+      print("=============================");
       await repo.addEducation(request);
 
       await fetchProfile();
@@ -84,10 +83,7 @@ class ProfileNotifier extends StateNotifier<dynamic> {
       isLoading = true;
       error = null;
 
-      await repo.updateEducation(
-        id: id,
-        request: request,
-      );
+      await repo.updateEducation(id: id, request: request);
 
       await fetchProfile();
 

@@ -6,6 +6,7 @@ import 'package:btcclient/core/utils/get_appointed_status.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/core/widgets/input/app_input_field.dart';
 import 'package:btcclient/core/widgets/navbar/common_appbar.dart';
+import 'package:btcclient/features/guardian/presentation/widgets/skeleton/job_application_skeleton_card.dart';
 import 'package:btcclient/features/jobs/presentation/provider/job_application_provider.dart';
 import 'package:btcclient/core/widgets/application_search_bar/application_search_bar.dart';
 import 'package:btcclient/features/jobs/presentation/widgets/icon_row.dart';
@@ -25,7 +26,8 @@ class GuardianJobApplication extends ConsumerStatefulWidget {
 class _GuardianJobApplicationState
     extends ConsumerState<GuardianJobApplication> {
   final TextEditingController searchController = TextEditingController();
-  final TextEditingController dateController = TextEditingController();
+  final TextEditingController demoDateController = TextEditingController();
+  final TextEditingController appointedDateController = TextEditingController();
 
   Timer? debounce;
 
@@ -45,27 +47,28 @@ class _GuardianJobApplicationState
   void dispose() {
     debounce?.cancel();
     searchController.dispose();
-    dateController.dispose();
+    demoDateController.dispose();
+    appointedDateController.dispose();
     super.dispose();
   }
 
-  String get formattedDate {
-    if (selectedDate == null) return "";
-    return selectedDate!.toIso8601String().split("T").first;
+  Future<void> _refreshWithIndicator() async {
+    _refreshKey.currentState?.show();
   }
 
+  final GlobalKey<RefreshIndicatorState> _refreshKey =
+      GlobalKey<RefreshIndicatorState>();
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(jobApplicationProvider);
     final notifier = ref.read(jobApplicationProvider.notifier);
 
-    dateController.text = formattedDate;
-
     return Scaffold(
       appBar: const CommonAppBar(),
       body: RefreshIndicator(
+        key: _refreshKey,
         onRefresh: () async {
-          await notifier.fetchInitial(widget.jobId);
+          await notifier.fetchInitial(widget.jobId, refresh: true);
         },
         child: Column(
           children: [
@@ -87,7 +90,7 @@ class _GuardianJobApplicationState
                           newStatus: selectedStatus == "All"
                               ? ""
                               : selectedStatus,
-                          newDate: formattedDate.isEmpty ? null : formattedDate,
+
                           newLimit: selectedLimit,
                         );
                       });
@@ -119,9 +122,14 @@ class _GuardianJobApplicationState
                               jobId: widget.jobId,
                               newStatus: value == "All" ? "" : value,
                               newKeyword: searchController.text,
-                              newDate: formattedDate.isEmpty
+                              newDemoDate: demoDateController.text.isEmpty
                                   ? null
-                                  : formattedDate,
+                                  : demoDateController.text,
+
+                              newAppointedDate:
+                                  appointedDateController.text.isEmpty
+                                  ? null
+                                  : appointedDateController.text,
                               newLimit: selectedLimit,
                             );
                           },
@@ -147,9 +155,14 @@ class _GuardianJobApplicationState
                                   ? ""
                                   : selectedStatus,
                               newKeyword: searchController.text,
-                              newDate: formattedDate.isEmpty
+                              newDemoDate: demoDateController.text.isEmpty
                                   ? null
-                                  : formattedDate,
+                                  : demoDateController.text,
+
+                              newAppointedDate:
+                                  appointedDateController.text.isEmpty
+                                  ? null
+                                  : appointedDateController.text,
                               newLimit: limit,
                             );
                           },
@@ -157,31 +170,86 @@ class _GuardianJobApplicationState
                       ),
                     ],
                   ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AppInputField(
+                          controller: demoDateController,
+                          label: "Demo Date",
+                          type: AppInputType.date,
+                          onChanged: (_) {
+                            notifier.applyFilters(
+                              jobId: widget.jobId,
+                              newStatus: selectedStatus == "All"
+                                  ? ""
+                                  : selectedStatus,
+                              newKeyword: searchController.text,
+                              newDemoDate: demoDateController.text.isEmpty
+                                  ? null
+                                  : demoDateController.text,
+                              newAppointedDate:
+                                  appointedDateController.text.isEmpty
+                                  ? null
+                                  : appointedDateController.text,
+                              newLimit: selectedLimit,
+                            );
+                          },
+                        ),
+                      ),
 
+                      const SizedBox(width: 10),
+
+                      Expanded(
+                        child: AppInputField(
+                          controller: appointedDateController,
+                          label: "Appointed Date",
+                          type: AppInputType.date,
+                          onChanged: (_) {
+                            notifier.applyFilters(
+                              jobId: widget.jobId,
+                              newStatus: selectedStatus == "All"
+                                  ? ""
+                                  : selectedStatus,
+                              newKeyword: searchController.text,
+                              newDemoDate: demoDateController.text.isEmpty
+                                  ? null
+                                  : demoDateController.text,
+                              newAppointedDate:
+                                  appointedDateController.text.isEmpty
+                                  ? null
+                                  : appointedDateController.text,
+                              newLimit: selectedLimit,
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 10),
 
                   /// DATE + CLEAR
                   Row(
                     children: [
-
                       Expanded(
                         child: AppButton(
                           label: "Clear",
                           variant: AppButtonVariant.gradient,
                           onPressed: () {
                             searchController.clear();
+                            demoDateController.clear();
+                            appointedDateController.clear();
 
                             setState(() {
                               selectedStatus = "All";
                               selectedLimit = 10;
-                              selectedDate = null;
                             });
 
                             notifier.applyFilters(
                               jobId: widget.jobId,
                               newStatus: "",
                               newKeyword: "",
-                              newDate: null,
+                              newDemoDate: null,
+                              newAppointedDate: null,
                               newLimit: 10,
                             );
                           },
@@ -199,9 +267,16 @@ class _GuardianJobApplicationState
                 children: [
                   /// LIST
                   Expanded(
-                    child: state.isLoading
-                        ? const Center(child: CircularProgressIndicator())
-                        : ListView.builder(
+                    child: Stack(
+                      children: [
+                        if (state.isLoading && state.applications.isEmpty)
+                          ListView.builder(
+                            itemCount: 6,
+                            itemBuilder: (_, __) =>
+                                const JobApplicationSkeletonCard(),
+                          )
+                        else
+                          ListView.builder(
                             itemCount: state.applications.length,
                             itemBuilder: (context, index) {
                               final app = state.applications[index];
@@ -388,6 +463,36 @@ class _GuardianJobApplicationState
                               );
                             },
                           ),
+                        if (state.isRefreshing)
+                          Positioned(
+                            top: 12,
+                            left: 0,
+                            right: 0,
+                            child: Center(
+                              child: Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(30),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black12,
+                                      blurRadius: 8,
+                                    ),
+                                  ],
+                                ),
+                                child: const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
 
                   /// PAGINATION
@@ -408,7 +513,7 @@ class _GuardianJobApplicationState
                           Flexible(
                             child: AppButton(
                               label: "Prev",
-                         variant: AppButtonVariant.outlineGray,
+                              variant: AppButtonVariant.outlineGray,
                               onPressed: state.meta!.page > 1
                                   ? () => notifier.goToPage(
                                       widget.jobId,
@@ -430,7 +535,7 @@ class _GuardianJobApplicationState
                           Flexible(
                             child: AppButton(
                               label: "Next",
-                               variant: AppButtonVariant.outlineGray,
+                              variant: AppButtonVariant.outlineGray,
                               onPressed:
                                   state.meta!.page < state.meta!.totalPages
                                   ? () => notifier.goToPage(

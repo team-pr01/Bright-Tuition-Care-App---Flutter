@@ -69,6 +69,7 @@ Future<Map<String, dynamic>> fetchApplications({
   String? status,
   String? keyword,
   String? demoDate,
+  String? appointedOn,
 }) async {
   final query = {
     "page": page,
@@ -76,6 +77,7 @@ Future<Map<String, dynamic>> fetchApplications({
     if (status != null && status.isNotEmpty) "status": status,
     if (keyword != null && keyword.isNotEmpty) "keyword": keyword,
     if (demoDate != null && demoDate.isNotEmpty) "demoDate": demoDate,
+    if (appointedOn != null && appointedOn.isNotEmpty) "appointedOn": appointedOn,
   };
 
   final response = await DioClient.dio.get(

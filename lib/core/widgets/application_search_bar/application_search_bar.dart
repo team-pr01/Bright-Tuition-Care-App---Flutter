@@ -46,21 +46,22 @@ class ApplicationSearchBar extends StatelessWidget {
             child: TextField(
               controller: controller,
               onChanged: onChanged,
+
               cursorColor: AppColors.primary01,
               style: Theme.of(context).textTheme.titleSmall,
               decoration: InputDecoration(
                 hintText: "Search...",
                 border: InputBorder.none,
                 isDense: true,
-
+                focusedBorder: InputBorder.none,
                 // 🔥 IMPORTANT (prevents white background)
                 filled: true,
                 fillColor: Colors.transparent,
 
                 hintStyle: Theme.of(context).textTheme.titleSmall!.copyWith(
-                      color: AppColors.neutrals03,
-                      height: 1.5,
-                    ),
+                  color: AppColors.neutrals03,
+                  height: 1.5,
+                ),
               ),
             ),
           ),

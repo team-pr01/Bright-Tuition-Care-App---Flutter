@@ -86,6 +86,7 @@ Future<(List<JobApplicationModel>, JobApplicationMeta)> getApplications({
     String? status,
     String? keyword,
     String? demoDate,
+    String? appointedOn,
   }) async {
     final res = await api.fetchApplications(
       jobId: jobId,
@@ -94,6 +95,7 @@ Future<(List<JobApplicationModel>, JobApplicationMeta)> getApplications({
       status: status,
       keyword: keyword,
       demoDate: demoDate,
+       appointedOn: appointedOn,
     );
 
     final data = res['data'];

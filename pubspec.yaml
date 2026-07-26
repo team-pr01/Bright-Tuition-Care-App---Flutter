@@ -83,6 +83,7 @@ flutter:
     - assets/icons/social_media/
     - assets/icons/job_card_icons/
   fonts:
+  
     - family: Outfit
       fonts:
         - asset: assets/fonts/Outfit-Thin.ttf
@@ -102,7 +103,10 @@ flutter:
         - asset: assets/fonts/Outfit-ExtraBold.ttf
           weight: 800
         - asset: assets/fonts/Outfit-Black.ttf
-          weight: 900  
+          weight: 900 
+    - family: AlexBrush
+      fonts:
+        - asset: assets/fonts/AlexBrush-Regular.ttf       
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

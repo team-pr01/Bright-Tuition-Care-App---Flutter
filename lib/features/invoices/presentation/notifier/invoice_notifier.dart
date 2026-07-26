@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:btcclient/core/network/api_error_handler.dart';
 
 import '../../data/models/invoice_model.dart';
 import '../../data/invoice_repository.dart';
@@ -6,12 +7,14 @@ import '../../data/requests/update_invoice_request.dart';
 
 class InvoiceState {
   final bool isLoading;
-
   final List<InvoiceModel> invoices;
-
   final String? error;
 
-  InvoiceState({this.isLoading = false, this.invoices = const [], this.error});
+  const InvoiceState({
+    this.isLoading = false,
+    this.invoices = const [],
+    this.error,
+  });
 
   InvoiceState copyWith({
     bool? isLoading,
@@ -29,51 +32,73 @@ class InvoiceState {
 class InvoiceNotifier extends StateNotifier<InvoiceState> {
   final InvoiceRepository repository;
 
-  InvoiceNotifier(this.repository) : super(InvoiceState());
+  InvoiceNotifier(this.repository) : super(const InvoiceState());
 
-  /// ================= FETCH =================
   Future<void> fetchInvoices() async {
     try {
-      state = state.copyWith(isLoading: true, error: null);
+      state = state.copyWith(
+        isLoading: true,
+        error: null,
+      );
 
       final invoices = await repository.getMyInvoices();
 
-      state = state.copyWith(isLoading: false, invoices: invoices);
+      state = state.copyWith(
+        isLoading: false,
+        invoices: invoices,
+        error: null,
+      );
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      state = state.copyWith(
+        isLoading: false,
+        error: ApiErrorHandler.getMessage(e),
+      );
     }
   }
 
-  /// ================= REFRESH =================
   Future<void> refresh() async {
     await fetchInvoices();
   }
 
-  /// ================= DELETE =================
   Future<void> deleteInvoice(String id) async {
-    await repository.deleteInvoice(id);
+    try {
+      await repository.deleteInvoice(id);
 
-    state = state.copyWith(
-      invoices: state.invoices.where((e) => e.id != id).toList(),
-    );
+      state = state.copyWith(
+        invoices: state.invoices.where((e) => e.id != id).toList(),
+      );
+    } catch (e) {
+      state = state.copyWith(
+        error: ApiErrorHandler.getMessage(e),
+      );
+      rethrow;
+    }
   }
 
-  /// ================= UPDATE =================
   Future<void> updateInvoice({
     required String id,
     required double amount,
     required String dueDate,
   }) async {
-    await repository.updateInvoice(
-      id: id,
+    try {
+      await repository.updateInvoice(
+        id: id,
+        request: UpdateInvoiceRequest(
+          amount: amount,
+          dueDate: dueDate,
+        ),
+      );
 
-      request: UpdateInvoiceRequest(amount: amount, dueDate: dueDate),
-    );
-
-    await fetchInvoices();
+      await fetchInvoices();
+    } catch (e) {
+      state = state.copyWith(
+        error: ApiErrorHandler.getMessage(e),
+      );
+      rethrow;
+    }
   }
 
   void clear() {
-    state = InvoiceState(invoices: [], isLoading: false, error: null);
+    state = const InvoiceState();
   }
 }

@@ -1,3 +1,5 @@
+import 'package:btcclient/core/config/theme.dart';
+import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/features/profile/presentation/widgets/shared/profile_info_row.dart';
 import 'package:flutter/material.dart';
 import 'package:btcclient/features/auth/data/models/tutor_model.dart';
@@ -23,34 +25,26 @@ class EducationItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isCurrent =
-        education.isCurrentInstitute ?? false;
+    final bool isCurrent = education.isCurrentInstitute ?? false;
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: const Color(0xffF8FAFD),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: Colors.grey.shade300,
-        ),
-      ),
+      // decoration: BoxDecoration(
+      //   color: const Color(0xffF8FAFD),
+      //   borderRadius: BorderRadius.circular(18),
+      //   border: Border.all(color: Colors.grey.shade300),
+      // ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [          Row(
+        children: [
+          Row(
             children: [
-
               Expanded(
                 child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     Text(
-                      education.degree.isEmpty
-                          ? "Education"
-                          : education.degree,
+                      education.degree.isEmpty ? "Education" : education.degree,
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -63,9 +57,7 @@ class EducationItemCard extends StatelessWidget {
                       education.institute.isEmpty
                           ? "Institute Not Provided"
                           : education.institute,
-                      style: TextStyle(
-                        color: Colors.grey.shade700,
-                      ),
+                      style: TextStyle(color: Colors.grey.shade700),
                     ),
                   ],
                 ),
@@ -73,16 +65,13 @@ class EducationItemCard extends StatelessWidget {
 
               if (isCurrent)
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: 12,
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color:
-                        Colors.green.withOpacity(.1),
-                    borderRadius:
-                        BorderRadius.circular(20),
+                    color: Colors.green.withOpacity(.1),
+                    borderRadius: BorderRadius.circular(20),
                   ),
                   child: const Text(
                     "Current",
@@ -95,57 +84,44 @@ class EducationItemCard extends StatelessWidget {
 
               const SizedBox(width: 12),
 
-              IconButton(
+              AppButton(
+                iconOnly: true,
+                icon: Icons.edit_outlined,
+                variant: AppButtonVariant.outline,
+                width: 42,
+                height: 32,
                 onPressed: onEdit,
-                icon: const Icon(
-                  Icons.edit_outlined,
-                ),
               ),
 
-              IconButton(
+              const SizedBox(width: 12),
+              AppButton(
+                iconOnly: true,
+                icon: Icons.delete_outline,
+                variant: AppButtonVariant.delete,
+                width: 42,
+                height: 32,
                 onPressed: onDelete,
-                icon: const Icon(
-                  Icons.delete_outline,
-                  color: Colors.red,
-                ),
+                textColor: AppColors.error,
               ),
             ],
           ),
 
-          const SizedBox(height: 20),          Wrap(
-            runSpacing: 14,
-            spacing: 20,
+          const SizedBox(height: 20),
+          Wrap(
             children: [
+              ProfileInfoRow(label: "Level", value: education.level),
 
-              ProfileInfoRow(
-                label: "Level",
-                value: education.level,
-              ),
+              ProfileInfoRow(label: "Degree", value: education.degree),
 
-              ProfileInfoRow(
-                label: "Degree",
-                value: education.degree,
-              ),
+              ProfileInfoRow(label: "Institute", value: education.institute),
 
-              ProfileInfoRow(
-                label: "Institute",
-                value: education.institute,
-              ),
+              ProfileInfoRow(label: "Curriculum", value: education.curriculum),
 
-              ProfileInfoRow(
-                label: "Curriculum",
-                value: education.curriculum,
-              ),              /// GROUP & BOARD
+              /// GROUP & BOARD
               if (_isSchoolLevel) ...[
-                ProfileInfoRow(
-                  label: "Group",
-                  value: education.group,
-                ),
+                ProfileInfoRow(label: "Group", value: education.group),
 
-                ProfileInfoRow(
-                  label: "Board",
-                  value: education.board,
-                ),
+                ProfileInfoRow(label: "Board", value: education.board),
               ],
 
               /// DEPARTMENT & SEMESTER
@@ -155,39 +131,31 @@ class EducationItemCard extends StatelessWidget {
                   value: education.department,
                 ),
 
-                ProfileInfoRow(
-                  label: "Semester",
-                  value: education.semester,
-                ),
+                ProfileInfoRow(label: "Semester", value: education.semester),
               ],
 
-              ProfileInfoRow(
-                label: "Result",
-                value: education.result,
-              ),
-
+              // ProfileInfoRow(
+              //   label: "Result",
+              //   value: education.result,
+              // ),
               if (!isCurrent)
                 ProfileInfoRow(
                   label: "Passing Year",
                   value: education.passingYear,
-                ),  ],
+                ),
+            ],
           ),
 
           const SizedBox(height: 18),
+          Divider(color: AppColors.primary01, height: 1),
 
-          Divider(
-            color: Colors.grey.shade300,
-            height: 1,
-          ),
-
-          const SizedBox(height: 14),          Row(
+          const SizedBox(height: 14),
+          Row(
             children: [
-
-              _StatusChip(
-                text: education.level,
-                color: const Color(0xff246BFD),
-              ),
-
+              // _StatusChip(
+              //   text: education.level,
+              //   color: const Color(0xff246BFD),
+              // ),
               const SizedBox(width: 10),
 
               if (isCurrent)
@@ -200,7 +168,7 @@ class EducationItemCard extends StatelessWidget {
 
               Text(
                 education.result?.isNotEmpty == true
-                    ? education.result!
+                    ? "Result : ${education.result!}"
                     : "Not Provided",
                 style: TextStyle(
                   color: education.result?.isNotEmpty == true
@@ -210,33 +178,27 @@ class EducationItemCard extends StatelessWidget {
                 ),
               ),
             ],
-          ),        ],
+          ),
+        ],
       ),
     );
   }
 }
+
 class _StatusChip extends StatelessWidget {
   final String text;
   final Color color;
 
-  const _StatusChip({
-    required this.text,
-    required this.color,
-  });
+  const _StatusChip({required this.text, required this.color});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 6,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: color.withOpacity(0.12),
         borderRadius: BorderRadius.circular(30),
-        border: Border.all(
-          color: color.withOpacity(0.25),
-        ),
+        border: Border.all(color: color.withOpacity(0.25)),
       ),
       child: Text(
         text,
