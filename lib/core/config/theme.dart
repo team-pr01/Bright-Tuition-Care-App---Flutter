@@ -30,6 +30,7 @@ class AppColors {
   static const success = Color(0xFF4CAF50);
   static const warning = Color(0xFFFFA000);
   static const error = Color(0xFFE53935);
+  static const error02 = Color(0xFFfb2c36);
 
   // Quiz States
   static const quizCorrect = Color(0xFF2E7D32);

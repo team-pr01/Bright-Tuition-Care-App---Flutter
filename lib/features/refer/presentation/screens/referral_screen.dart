@@ -34,7 +34,7 @@ class ReferralScreen extends ConsumerWidget {
       appBar: const CommonAppBar(),
 
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.only(right: 16, left: 16, top: 24, bottom: 24),
 
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

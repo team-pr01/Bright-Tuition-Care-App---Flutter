@@ -122,6 +122,7 @@ class ShareCard extends StatelessWidget {
                 Share.share(link);
               },
               width: 120,
+              height: 40,
             ),
             const SizedBox(height: 45),
             Container(

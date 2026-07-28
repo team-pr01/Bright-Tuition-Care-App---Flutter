@@ -27,19 +27,17 @@ class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _searchController = TextEditingController();
 
+  late String _selectedStatus;
   @override
   void initState() {
     super.initState();
 
-    /// 🔥 CALL APPLICATION API (NOT JOBS)
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final state = ref.read(applicationsProvider);
+    _selectedStatus = widget.initialStatus ?? "applied";
 
-      if (state.applications.isEmpty) {
-        ref
-            .read(applicationsProvider.notifier)
-            .fetchApplications(status: widget.initialStatus);
-      }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref
+          .read(applicationsProvider.notifier)
+          .fetchApplications(status: _selectedStatus);
     });
 
     _scrollController.addListener(() {
@@ -183,7 +181,7 @@ class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
             children: [
               Expanded(
                 child: Text(
-                  "${state.applications.length} Applications",
+                  "${state.applications.length} ${_selectedStatus == "appointed" ? "Appointed" :_selectedStatus == "shortlisted" ? "Shortlisted":_selectedStatus == "applied" ? "Applied": _selectedStatus == "confirmed" ? "Confirmed": _selectedStatus == "cancelled" ? "Cancelled" : "Rejected"} Applications",
                   style: Theme.of(context).textTheme.titleLarge!.copyWith(
                     color: AppColors.neutrals02,
                     fontWeight: FontWeight.w400,

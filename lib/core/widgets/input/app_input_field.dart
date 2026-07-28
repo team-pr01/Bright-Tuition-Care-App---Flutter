@@ -490,11 +490,13 @@ class _SearchableDropdownState extends State<_SearchableDropdown> {
                         value: selected,
 
                         title: Text(item, style: const TextStyle(fontSize: 14)),
-
+                        visualDensity: const VisualDensity(
+                          vertical: -4,
+                          horizontal: -4,
+                        ),
                         controlAffinity: ListTileControlAffinity.leading,
-
                         activeColor: AppColors.primary01,
-
+                        dense: true,
                         onChanged: (checked) {
                           modalSetState(() {
                             if (checked == true) {

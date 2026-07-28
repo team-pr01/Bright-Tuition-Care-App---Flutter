@@ -1,6 +1,7 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/utils/number_formatter.dart';
 import 'package:btcclient/core/widgets/dashboard/dashboard_cards/profile_progress_icon.dart';
+import 'package:btcclient/features/confirmation/presentation/screen/confirmation_page.dart';
 import 'package:btcclient/features/jobs/data/models/job_filter.dart';
 import 'package:btcclient/features/jobs/presentation/provider/selected_job_filter_provider.dart';
 import 'package:flutter/material.dart';
@@ -9,16 +10,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../core/widgets/dashboard/dashboard_cards/dashboard_small_card.dart';
 import '../../../../core/widgets/dashboard/dashboard_cards/dashboard_large_card.dart';
+
 class TutorCardsSection extends ConsumerWidget {
   final int profileCompletion;
   final int nearbyJobsCount;
   final int confirmationLettersCount;
   final int invoicesCount;
 
-  final void Function(
-    int, {
-    String? status,
-  }) changeTab;
+  final void Function(int, {String? status}) changeTab;
 
   final List<String> preferredCities;
   final List<String> preferredLocations;
@@ -35,7 +34,7 @@ class TutorCardsSection extends ConsumerWidget {
   });
 
   @override
- Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
         /// TOP TWO CARDS (SAME HEIGHT)
@@ -62,15 +61,15 @@ class TutorCardsSection extends ConsumerWidget {
               Expanded(
                 child: DashboardSmallCard(
                   onAction: () {
-                    ref.read(selectedJobFilterProvider.notifier).state = JobFilter(
-  city: preferredCities,
-  area: preferredLocations,
-);
-
-changeTab(0);
-                    changeTab(
-                      0,
+                    ref
+                        .read(selectedJobFilterProvider.notifier)
+                        .state = JobFilter(
+                      city: preferredCities,
+                      area: preferredLocations,
                     );
+
+                    changeTab(0);
+                    changeTab(0);
                   },
                   subtitle: "Nearby Jobs",
                   title: formatNumber(nearbyJobsCount).toString(),
@@ -100,7 +99,14 @@ changeTab(0);
               ? "$confirmationLettersCount confirmation letter(s) available."
               : "You have not confirmed any tuition jobs yet.",
           actionText: confirmationLettersCount > 0 ? "View All" : "",
-          onTap: () => changeTab(2),
+          onTap: () => {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const ConfirmationScreen(role: "tutor"),
+              ),
+            ),
+          },
           icon: SvgPicture.asset(
             "assets/icons/visual/letter.svg",
             width: 80,

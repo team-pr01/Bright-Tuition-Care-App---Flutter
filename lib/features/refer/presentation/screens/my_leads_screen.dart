@@ -132,19 +132,17 @@ class _MyLeadsScreenState extends ConsumerState<MyLeadsScreen> {
                   child: LeadCard(
                     lead: lead,
                     onPayment: () async {
-  final updated = await Navigator.push<bool>(
-    context,
-    MaterialPageRoute(
-      builder: (_) => AddPaymentMethodScreen(
-        lead: lead,
-      ),
-    ),
-  );
+                      final updated = await Navigator.push<bool>(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => AddPaymentMethodScreen(lead: lead),
+                        ),
+                      );
 
-  if (updated == true && mounted) {
-    ref.read(myLeadsProvider.notifier).refresh();
-  }
-},
+                      if (updated == true && mounted) {
+                        ref.read(myLeadsProvider.notifier).refresh();
+                      }
+                    },
                     onEdit: () async {
                       final updated = await Navigator.push<bool>(
                         context,

@@ -34,6 +34,7 @@ class _AddPaymentMethodScreenState
     "Bkash",
     "Nagad",
     "Rocket",
+    "Bank",
   ];
 
   @override

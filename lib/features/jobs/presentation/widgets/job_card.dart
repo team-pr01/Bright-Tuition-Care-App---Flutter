@@ -343,8 +343,8 @@ class _JobCardState extends ConsumerState<JobCard> {
                   child: Row(
                     children: [
                       SvgPicture.asset(
-                        "assets/icons/visual/send.svg",
-                        height: 16,
+                        "assets/icons/operations/share.svg",
+                        height: 14,
                         color: AppColors.neutrals02,
                       ),
                       const SizedBox(width: 6),

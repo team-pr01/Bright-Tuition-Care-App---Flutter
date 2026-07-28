@@ -1,4 +1,3 @@
-
 import 'package:btcclient/core/widgets/start_rating/start_rating.dart';
 import 'package:btcclient/features/auth/data/models/testimonial_model.dart';
 import 'package:flutter/material.dart';
@@ -120,11 +119,12 @@ class _TestimonialCardState extends State<TestimonialCard> {
                             shape: BoxShape.circle,
                           ),
                           child: CircleAvatar(
-  radius: 48,
-  backgroundImage: widget.testimonial.image.isNotEmpty
-      ? NetworkImage(widget.testimonial.image)
-      : const AssetImage("assets/images/user.jpg") as ImageProvider,
-),
+                            radius: 48,
+                            backgroundImage: widget.testimonial.image.isNotEmpty
+                                ? NetworkImage(widget.testimonial.image)
+                                : const AssetImage("assets/images/user.jpg")
+                                      as ImageProvider,
+                          ),
                         ),
                       ),
                     ),
@@ -143,7 +143,7 @@ class _TestimonialCardState extends State<TestimonialCard> {
                       alignment: Alignment.center,
                       transform: Matrix4.identity()
                         // ..rotateZ(3.14) // rotate 180°
-                      ..scale(1.0, 1.0), // mirror horizontally
+                        ..scale(1.0, 1.0), // mirror horizontally
                       child: Image.asset(
                         'assets/icons/quote.png',
                         width: 46,
@@ -169,14 +169,12 @@ class _TestimonialCardState extends State<TestimonialCard> {
 
                   /// TEXT CONTENT
                   SizedBox(
-                      width: double.infinity,
+                    width: double.infinity,
                     child: Padding(
-                      
-                      padding: const EdgeInsets.only(
-                        left: 24,
-                        top: 36,
-                        bottom: 36,
-                      ),
+                     padding: const EdgeInsets.symmetric(
+  horizontal: 40,
+  vertical: 36,
+),
                       child: Text(
                         textAlign: TextAlign.center,
                         widget.testimonial.review,

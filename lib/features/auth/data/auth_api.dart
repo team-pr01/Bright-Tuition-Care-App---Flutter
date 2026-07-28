@@ -120,31 +120,29 @@ class AuthApi {
     }
   }
 
- Future<void> updateProfileImage(File image) async {
-  try {
-    final formData = FormData.fromMap({
-      "file": await MultipartFile.fromFile(
-        image.path,
-        filename: image.path.split('/').last,
-      ),
-    });
+  Future<void> updateProfileImage(File image) async {
+    try {
+      final formData = FormData.fromMap({
+        "file": await MultipartFile.fromFile(
+          image.path,
+          filename: image.path.split('/').last,
+        ),
+      });
 
-    await DioClient.dio.patch(
-      "/user/update-profile",
-      data: formData,
-    );
-  } on DioException catch (e) {
-    throw ApiException(ApiErrorHandler.getMessage(e));
-  } catch (e) {
-    throw ApiException(ApiErrorHandler.getMessage(e));
+      await DioClient.dio.patch("/user/update-profile", data: formData);
+    } on DioException catch (e) {
+      throw ApiException(ApiErrorHandler.getMessage(e));
+    } catch (e) {
+      throw ApiException(ApiErrorHandler.getMessage(e));
+    }
   }
-}
 
   Future<void> addEducation(EducationRequest request) async {
+    print("Adding education1: ${request.toJson()}");
     try {
       final response = await DioClient.dio.post(
         "/user/education/add",
-        data: request.toJson(),
+        data: {"educationalInformation": request.toJson()},
       );
 
       debugPrint("✅ ADD EDUCATION RESPONSE:");

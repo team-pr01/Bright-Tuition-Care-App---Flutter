@@ -53,7 +53,7 @@ class _SelectPaymentMethodSheetState extends State<SelectPaymentMethodSheet> {
   Widget build(BuildContext context) {
     return ReusableBottomSheet(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(0),
 
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -64,7 +64,7 @@ class _SelectPaymentMethodSheetState extends State<SelectPaymentMethodSheet> {
 
               textAlign: TextAlign.center,
 
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
 
             const SizedBox(height: 24),
@@ -84,7 +84,7 @@ class _SelectPaymentMethodSheetState extends State<SelectPaymentMethodSheet> {
 
                   margin: const EdgeInsets.only(bottom: 14),
 
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(12),
 
                   decoration: BoxDecoration(
                     color: isSelected ? AppColors.primary01 : Colors.white,
@@ -103,21 +103,19 @@ class _SelectPaymentMethodSheetState extends State<SelectPaymentMethodSheet> {
                       Container(
                         height: 56,
                         width: 56,
-
-                        // decoration: BoxDecoration(
-                        //   color: isSelected
-                        //       ? Colors.white.withOpacity(0.2)
-                        //       : AppColors.primary01.withOpacity(0.08),
-
-                        //   shape: BoxShape.circle,
-                        // ),
-
-                        child: SvgPicture.asset(
-                          method["icon"],
-
-                          width: 24,
-                          height: 24,
-                          fit: BoxFit.contain,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: SizedBox(
+                            width: 28,
+                            height: 28,
+                            child: SvgPicture.asset(
+                              method["icon"],
+                              fit: BoxFit.contain,
+                            ),
+                          ),
                         ),
                       ),
 
@@ -132,15 +130,15 @@ class _SelectPaymentMethodSheetState extends State<SelectPaymentMethodSheet> {
                               method["title"],
 
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 16,
 
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.w500,
 
                                 color: isSelected ? Colors.white : Colors.black,
                               ),
                             ),
 
-                            const SizedBox(height: 4),
+                            const SizedBox(height: 2),
 
                             Text(
                               method["subtitle"],

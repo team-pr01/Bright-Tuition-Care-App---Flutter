@@ -30,7 +30,7 @@ class VerifyProfileCard extends StatelessWidget {
 
           /// TITLE
           Text(
-            isVerified ? "Profile Verified" : "Verify Your Profile",
+            isVerified ? "Verified" : "Verify Your Profile",
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
               fontWeight: FontWeight.w500,
               color: Colors.black,

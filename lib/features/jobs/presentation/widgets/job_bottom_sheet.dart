@@ -221,7 +221,9 @@ class _JobCardState extends ConsumerState<JobBottomSheet> {
                     child: IconRow(
                       icon: "assets/icons/visual/salary.svg",
                       title: "Salary",
-                      value: safe(job.salary),
+                      value:( job.salary != null && job.salary!.isNotEmpty)
+                          ? "${job.salary} BDT"
+                          : "-",
                     ),
                   ),
                 ],

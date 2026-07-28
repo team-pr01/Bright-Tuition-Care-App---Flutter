@@ -308,13 +308,14 @@ class AuthRepository {
 }
 
   Future<void> addEducation(EducationRequest request) async {
+    print("Adding education2: ${request.toJson()}"); 
     await api.addEducation(request);
   }
 
   Future<void> updateEducation({
     required String id,
     required EducationRequest request,
-  }) async {
+  }) async { 
     await api.updateEducation(id: id, request: request);
   }
 

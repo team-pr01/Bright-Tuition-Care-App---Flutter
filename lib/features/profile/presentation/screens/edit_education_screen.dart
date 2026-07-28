@@ -90,13 +90,19 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
     super.dispose();
   }
 
-  bool get isSchoolLevel {
+  bool get shouldShowSchoolLevelFields {
     return _levelController.text == "Secondary" ||
         _levelController.text == "Higher Secondary" ||
         _levelController.text == "O Level" ||
         _levelController.text == "A Level";
   }
-
+  bool get shouldShowHigherEducationFields { 
+    return _levelController.text == "Secondary" &&
+        _levelController.text == "Higher Secondary" &&
+        _levelController.text == "O Level" &&
+        _levelController.text == "A Level";
+  } 
+ 
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -108,12 +114,12 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
       final request = EducationRequest(
         levelOfEducation: _levelController.text.trim(),
         instituteName: _instituteController.text.trim(),
-        curriculum: _curriculumController.text.trim(),
+        curriculum: _curriculumController.text.trim(), 
         degree: _degreeController.text.trim(),
-        group: isSchoolLevel ? _groupController.text.trim() : null,
-        board: isSchoolLevel ? _boardController.text.trim() : null,
-        department: !isSchoolLevel ? _departmentController.text.trim() : null,
-        semester: !isSchoolLevel ? _semesterController.text.trim() : null,
+        group: shouldShowSchoolLevelFields ? _groupController.text.trim() : null,
+        board: shouldShowSchoolLevelFields ? _boardController.text.trim() : null,
+        department: !shouldShowSchoolLevelFields ? _departmentController.text.trim() : null,
+        semester: !shouldShowSchoolLevelFields ? _semesterController.text.trim() : null,
         result: _resultController.text.trim(),
         passingYear: _currentInstitute
             ? null
@@ -228,7 +234,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
 
                 const SizedBox(height: 20),
                 Text(
-                  isSchoolLevel ? "School Information" : "Higher Education",
+                  shouldShowSchoolLevelFields ? "School Information" : "Higher Education",
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -236,7 +242,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                 ),
 
                 const SizedBox(height: 20),
-                if (isSchoolLevel) ...[
+                if (shouldShowSchoolLevelFields) ...[
                   AppInputField(
                     label: "Group",
                     type: AppInputType.dropdown,
@@ -269,7 +275,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
 
                   const SizedBox(height: 18),
                 ],
-                if (!isSchoolLevel) ...[
+                if (shouldShowHigherEducationFields) ...[
                   AppInputField(
                     label: "Department / Subject",
                     type: AppInputType.dropdown,

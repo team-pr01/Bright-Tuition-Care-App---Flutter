@@ -6,38 +6,67 @@ class DashboardNavLinks extends StatelessWidget {
   final Widget icon;
   final String label;
   final int count;
-  final VoidCallback? onTap; // ✅ ADD THIS
+  final VoidCallback? onTap;
+  final bool isSelected;
 
   const DashboardNavLinks({
     super.key,
     required this.icon,
     required this.label,
     this.count = 0,
-    this.onTap, // ✅ ADD THIS
+    this.onTap,
+    this.isSelected = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap, // ✅ CLICK HANDLER
-      borderRadius: BorderRadius.circular(12), // nice UX
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
       child: Column(
         children: [
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [
-                  AppColors.primaryGradientStart,
-                  AppColors.primaryGradientEnd
-                ],
-                stops: [0.0082, 1],
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                      AppColors.primaryGradientStart,
+                      AppColors.primaryGradientEnd,
+                    ],
+                  ),
+                  shape: BoxShape.circle,
+                ),
+                child: icon,
               ),
-              shape: BoxShape.circle,
-            ),
-            child: icon,
+
+              if (isSelected)
+                Positioned(
+                  top: -2,
+                  right: -2,
+                  child: Container(
+                    height: 18,
+                    width: 18,
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white,
+                        width: 2,
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.check,
+                      size: 10,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+            ],
           ),
 
           const SizedBox(height: 6),

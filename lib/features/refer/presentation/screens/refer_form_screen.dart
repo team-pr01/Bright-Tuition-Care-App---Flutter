@@ -7,6 +7,7 @@ import 'package:btcclient/features/refer/data/models/lead_model.dart';
 import 'package:btcclient/features/refer/data/request/add_lead_request.dart';
 import 'package:btcclient/features/refer/data/request/update_lead_request.dart';
 import 'package:btcclient/features/refer/presentation/provider/refer_provider.dart';
+import 'package:btcclient/features/refer/presentation/screens/my_leads_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -66,6 +67,12 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
 
           if (response.success) {
             Navigator.pop(context, true);
+            Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const MyLeadsScreen(),
+                        ),
+                      );
           } else {
             AppSnackbar.show(
               context,
@@ -129,7 +136,7 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
               ),
 
               AppInputField(
-                label: "Details",
+                label: "Details (Optional)",
                 controller: detailsController,
                 type: AppInputType.multiline,
                 maxLines: 4,

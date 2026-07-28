@@ -139,7 +139,7 @@ class _SubmitProofFormState extends ConsumerState<SubmitProofForm> {
 
             children: [
               Text(
-                "Payment Screenshot",
+                "Payment Screenshot (Optional)",
 
                 style: AppTextStyles.titleLarge.copyWith(
                   fontWeight: FontWeight.w400,
@@ -175,7 +175,7 @@ class _SubmitProofFormState extends ConsumerState<SubmitProofForm> {
                       Expanded(
                         child: Text(
                           selectedFile == null
-                              ? "Upload screenshot or PDF"
+                              ? "Upload screenshot"
                               : selectedFile!.path.split("/").last,
 
                           style: AppTextStyles.bodyMedium.copyWith(
@@ -198,7 +198,7 @@ class _SubmitProofFormState extends ConsumerState<SubmitProofForm> {
           AppInputField(
             label: "Amount",
 
-            controller: TextEditingController(text: widget.amount.toString()),
+            controller: TextEditingController(text: widget.amount.toString() + " BDT"),
 
             enabled: false,
           ),

@@ -109,7 +109,7 @@ class InvoiceCard extends StatelessWidget {
                 ),
 
                 decoration: BoxDecoration(
-                  color: isPaid ? AppColors.success : AppColors.error,
+                  color: isPaid ? AppColors.success : AppColors.error02,
 
                   borderRadius: BorderRadius.circular(100),
                 ),
@@ -117,10 +117,10 @@ class InvoiceCard extends StatelessWidget {
                 child: Text(
                   invoice.status.toUpperCase(),
 
-                  style: AppTextStyles.bodySmall.copyWith(
+                  style: TextStyle(
                     color: Colors.white,
-
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 10,
                   ),
                 ),
               ),
@@ -140,14 +140,14 @@ class InvoiceCard extends StatelessWidget {
             isBold: true,
           ),
 
-          const SizedBox(height: AppSpacing.sm),
+          // const SizedBox(height: AppSpacing.sm),
 
-          _infoRow(
-            title: "Invoice Type",
-            value: invoice.invoiceType == "verificationCharge"
-                ? "Verification Charge"
-                : "Platform Charge",
-          ),
+          // _infoRow(
+          //   title: "Invoice Type",
+          //   value: invoice.invoiceType == "verificationCharge"
+          //       ? "Verification Charge"
+          //       : "Platform Charge",
+          // ),
 
           if (invoice.jobId != null) ...[
             const SizedBox(height: AppSpacing.sm),
@@ -173,11 +173,11 @@ class InvoiceCard extends StatelessWidget {
 
             onPressed: onView,
 
-            variant: AppButtonVariant.gradient,
+            variant: AppButtonVariant.outline,
 
             icon: Icons.remove_red_eye,
 
-            height: 48,
+            height: 40,
           ),
         ],
       ),

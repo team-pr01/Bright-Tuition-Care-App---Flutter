@@ -62,7 +62,7 @@ class ProfileNotifier extends StateNotifier<dynamic> {
       isLoading = true;
       error = null;
       print("===== EDUCATION PAYLOAD =====");
-      print(request.toJson());
+       print("Adding education3: ${request.toJson()}"); 
       print("=============================");
       await repo.addEducation(request);
 

@@ -1,3 +1,4 @@
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -77,4 +78,26 @@ class PdfService {
       },
     );
   }
-}
+  static Future<void> downloadOnly({
+  required String fileName,
+  required pw.Widget child,
+}) async {
+  final pdf = pw.Document();
+
+  pdf.addPage(
+    pw.MultiPage(
+      pageFormat: PdfPageFormat.a4,
+      margin: const pw.EdgeInsets.all(24),
+      build: (_) => [child],
+    ),
+  );
+
+  final Uint8List bytes = await pdf.save();
+
+  await FileSaver.instance.saveFile(
+    name: fileName.replaceAll(".pdf", ""),
+    bytes: bytes,
+    ext: "pdf",
+    mimeType: MimeType.pdf,
+  );
+}}

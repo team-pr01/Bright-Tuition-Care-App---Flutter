@@ -79,7 +79,7 @@ class _SelectedPaymentMethodSheetState
     return ReusableBottomSheet(
       child: Padding(
         padding: const EdgeInsets.all(
-          AppSpacing.md,
+         0
         ),
 
         child: SingleChildScrollView(
@@ -107,10 +107,10 @@ class _SelectedPaymentMethodSheetState
                           TextAlign.center,
 
                       style: AppTextStyles
-                          .headlineLarge
+                          .titleLarge
                           .copyWith(
                         fontWeight:
-                            FontWeight.w700,
+                            FontWeight.w600,
                       ),
                     ),
 
@@ -226,7 +226,7 @@ class _SelectedPaymentMethodSheetState
 
                                 style:
                                     AppTextStyles
-                                        .headlineSmall
+                                        .titleMedium
                                         .copyWith(
                                   fontWeight:
                                       FontWeight
@@ -251,7 +251,7 @@ class _SelectedPaymentMethodSheetState
 
                                 style:
                                     AppTextStyles
-                                        .headlineMedium
+                                        .titleLarge
                                         .copyWith(
                                   fontWeight:
                                       FontWeight
@@ -395,7 +395,7 @@ class _SelectedPaymentMethodSheetState
 
                               style:
                                   AppTextStyles
-                                      .headlineSmall
+                                      .titleMedium
                                       .copyWith(
                                 fontWeight:
                                     FontWeight

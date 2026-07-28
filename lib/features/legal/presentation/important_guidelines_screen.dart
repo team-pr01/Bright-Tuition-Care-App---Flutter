@@ -56,7 +56,7 @@ class ImportantGuidelinesScreen extends ConsumerWidget {
                     /// Description (optional)
                     if (section.description != null)
                       Padding(
-                        padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                        padding: const EdgeInsets.only(bottom:0),
                         child: Text(
                           section.description!,
                           style: Theme.of(context)
