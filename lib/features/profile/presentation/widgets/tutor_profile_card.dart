@@ -13,6 +13,8 @@ class TutorProfileCard extends StatelessWidget {
   final double rating;
   final bool isVerified;
   final int profileCompleted;
+  final VoidCallback? onDownload;
+  final VoidCallback? onEditImage;
 
   const TutorProfileCard({
     super.key,
@@ -25,6 +27,8 @@ class TutorProfileCard extends StatelessWidget {
     required this.isVerified,
     required this.profileCompleted,
     required this.rating,
+    this.onDownload,
+    this.onEditImage,
   });
   Color _getProfileCompletionColor() {
     if (profileCompleted <= 20) {
@@ -102,6 +106,13 @@ class TutorProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ImageProvider provider;
+
+    if (profileImage.isNotEmpty && profileImage.startsWith('http')) {
+      provider = NetworkImage(profileImage);
+    } else {
+      provider = const AssetImage('assets/images/dummy-avatar.jpg');
+    }
     return Container(
       width: double.infinity,
 
@@ -140,7 +151,7 @@ class TutorProfileCard extends StatelessWidget {
                       ),
 
                       image: DecorationImage(
-                        image: NetworkImage(profileImage),
+                        image: provider,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -149,21 +160,20 @@ class TutorProfileCard extends StatelessWidget {
                   Positioned(
                     right: 2,
                     bottom: 2,
-
-                    child: Container(
-                      padding: const EdgeInsets.all(6),
-
-                      decoration: BoxDecoration(
-                        color: AppColors.primary01,
-                        shape: BoxShape.circle,
-
-                        border: Border.all(color: Colors.white, width: 2),
-                      ),
-
-                      child: const Icon(
-                        Icons.edit,
-                        size: 14,
-                        color: Colors.white,
+                    child: GestureDetector(
+                      onTap: onEditImage,
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary01,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                        child: const Icon(
+                          Icons.camera_alt,
+                          size: 15,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
@@ -362,7 +372,7 @@ class TutorProfileCard extends StatelessWidget {
             height: 50,
             fontWeight: FontWeight.w600,
             icon: Icons.download_rounded,
-            onPressed: () {},
+            onPressed: onDownload,
           ),
 
           const SizedBox(height: 10),

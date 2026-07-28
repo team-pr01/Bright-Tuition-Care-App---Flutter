@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:btcclient/core/network/api_error_handler.dart';
 import 'package:btcclient/features/auth/data/auth_repository.dart';
 import 'package:btcclient/features/auth/data/requests/education_request.dart';
@@ -113,6 +115,23 @@ class ProfileNotifier extends StateNotifier<dynamic> {
       isLoading = false;
     }
   }
+  Future<bool> updateProfileImage(File image) async {
+  try {
+    isLoading = true;
+    error = null;
+
+    await repo.updateProfileImage(image);
+
+    await fetchProfile();
+
+    return true;
+  } catch (e) {
+    error = ApiErrorHandler.getMessage(e);
+    return false;
+  } finally {
+    isLoading = false;
+  }
+}
 
   void clearProfile() {
     state = null;

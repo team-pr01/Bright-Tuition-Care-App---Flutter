@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class UpdatePersonalInfoRequest {
   final String? name;
   final String? email;
@@ -5,6 +7,7 @@ class UpdatePersonalInfoRequest {
   final String? gender;
   final String? city;
   final String? area;
+   final File? profileImage;
 
   final PersonalInformationRequest personalInformation;
 
@@ -19,6 +22,7 @@ class UpdatePersonalInfoRequest {
     this.area,
     required this.personalInformation,
     required this.socialMediaInformation,
+    this.profileImage,
   });
 
   Map<String, dynamic> toJson() {

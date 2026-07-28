@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:btcclient/core/network/api_error_handler.dart';
 import 'package:btcclient/core/network/api_exception.dart';
 import 'package:btcclient/features/auth/data/requests/education_request.dart';
@@ -117,6 +119,26 @@ class AuthApi {
       throw ApiException(ApiErrorHandler.getMessage(e));
     }
   }
+
+ Future<void> updateProfileImage(File image) async {
+  try {
+    final formData = FormData.fromMap({
+      "file": await MultipartFile.fromFile(
+        image.path,
+        filename: image.path.split('/').last,
+      ),
+    });
+
+    await DioClient.dio.patch(
+      "/user/update-profile",
+      data: formData,
+    );
+  } on DioException catch (e) {
+    throw ApiException(ApiErrorHandler.getMessage(e));
+  } catch (e) {
+    throw ApiException(ApiErrorHandler.getMessage(e));
+  }
+}
 
   Future<void> addEducation(EducationRequest request) async {
     try {

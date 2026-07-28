@@ -1,7 +1,9 @@
 import 'package:btcclient/core/config/theme.dart';
+import 'package:btcclient/core/pdf/pdf_service.dart';
 import 'package:btcclient/core/utils/date_formatter.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/core/widgets/reusable_bottom_sheet/reusable_bottom_sheet.dart';
+import 'package:btcclient/features/confirmation/pdf/confirmation_letter_pdf.dart';
 import 'package:btcclient/features/confirmation/presentation/provider/confirmation_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -248,10 +250,19 @@ class _ConfirmationBottomSheetState
             const SizedBox(height: 28),
 
             AppButton(
-              label: "Download PDF (Coming Soon)",
-              onPressed: null,
+              label: "Download PDF",
               variant: AppButtonVariant.outline,
               icon: Icons.download,
+              onPressed: () async {
+                final pdfWidget = await ConfirmationLetterPdf.build(
+                  letter: letter,
+                );
+
+                await PdfService.download(
+                  fileName: "Confirmation_Letter_${letter.job.jobId}.pdf",
+                  child: pdfWidget,
+                );
+              },
             ),
 
             const SizedBox(height: 14),

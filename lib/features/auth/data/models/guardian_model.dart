@@ -1,7 +1,6 @@
 class GuardianProfileModel {
   final String id;
   final String guardianId;
-
   final String name;
   final String email;
   final String phoneNumber;
@@ -9,7 +8,6 @@ class GuardianProfileModel {
   final String gender;
   final String city;
   final String area;
-
   final String profileStatus;
   final bool isVerified;
   final bool hasPlatformChargeGiven;
@@ -18,7 +16,7 @@ class GuardianProfileModel {
   final bool hasRequestedToVerify;
   final String unlockRequestReason;
   final int profileCompleted;
-
+  final String imageUrl;
   final double rating;
   final bool hasPostedAnyJob;
 
@@ -61,6 +59,7 @@ class GuardianProfileModel {
     this.additionalPhone,
     this.dateOfBirth,
     this.address,
+    required this.imageUrl,
     this.religion,
     this.nationality,
     this.facebook,
@@ -80,7 +79,7 @@ class GuardianProfileModel {
     return GuardianProfileModel(
       id: data['_id'] ?? "",
       guardianId: data['guardianId'] ?? "",
-
+      imageUrl: data['imageUrl'] ?? "",
       name: user['name'] ?? "",
       email: user['email'] ?? "",
       phoneNumber: user['phoneNumber'] ?? "",

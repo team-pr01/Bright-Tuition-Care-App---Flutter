@@ -15,6 +15,7 @@ import 'package:btcclient/features/jobs/presentation/screen/job_page.dart';
 import 'package:btcclient/features/legal/data/important_guidelines_data.dart';
 import 'package:btcclient/features/legal/presentation/important_guidelines_screen.dart';
 import 'package:btcclient/core/screens/share_app.dart';
+import 'package:btcclient/features/profile/presentation/screens/guardian_profile_page.dart';
 import 'package:btcclient/features/settings/prersentation/screens/setting_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -281,7 +282,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
         ),
 
         (changeTab, status) => const GuardianPaymentScreen(),
-        (changeTab, status) => const GuardianPaymentScreen(),
+        (changeTab, status) => const GuardianProfilePage(),
       ],
 
       navItems: [

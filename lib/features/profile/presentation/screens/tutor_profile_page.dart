@@ -1,5 +1,9 @@
+import 'package:btcclient/core/pdf/pdf_service.dart';
+import 'package:btcclient/core/utils/file_picker_utils.dart';
 import 'package:btcclient/features/auth/data/models/tutor_model.dart';
 import 'package:btcclient/features/auth/presentation/provider/profile_notifier.dart';
+import 'package:btcclient/features/profile/data/requests/update_personal_info_request.dart';
+import 'package:btcclient/features/profile/pdf/tutor_resume_pdf.dart';
 import 'package:btcclient/features/profile/presentation/screens/edit_education_screen.dart';
 import 'package:btcclient/features/profile/presentation/screens/edit_personal_information_screen.dart';
 import 'package:btcclient/features/profile/presentation/widgets/profile_tab_card.dart';
@@ -10,6 +14,7 @@ import 'package:btcclient/features/profile/presentation/widgets/tutor_sections/e
 import 'package:btcclient/features/profile/presentation/widgets/tutor_sections/personal_section_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:btcclient/core/utils/image_picker_bottom_sheet.dart';
 
 class TutorProfileScreen extends ConsumerStatefulWidget {
   const TutorProfileScreen({super.key});
@@ -71,10 +76,41 @@ class _TutorProfileScreenState extends ConsumerState<TutorProfileScreen> {
             email: profile.email,
             phone: profile.phoneNumber,
             address: profile.personalInfo.address ?? "Not Provided",
-            profileImage: profile.imageUrl ?? "https://i.pravatar.cc/300",
+            profileImage: profile.imageUrl ?? "",
             isVerified: profile.isVerified,
             profileCompleted: profile.profileCompleted,
             rating: profile.rating,
+
+            onDownload: () async {
+              final pdf = await TutorResumePdf.build(profile: profile);
+
+              await PdfService.download(
+                fileName:
+                    "Bright_Tuition_Care_${profile.name.replaceAll(' ', '_')}.pdf",
+                child: pdf,
+              );
+            },
+            onEditImage: () async {
+              final image = await ImagePickerBottomSheet.show(context);
+
+              if (image == null) return;
+
+              final success = await ref
+                  .read(profileProvider.notifier)
+                  .updateProfileImage(image);
+
+              if (!mounted) return;
+
+              if (success) {
+                await ref.read(profileProvider.notifier).refreshProfile();
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text("Profile image updated successfully"),
+                  ),
+                );
+              }
+            },
           ),
 
           const SizedBox(height: 20),
@@ -178,7 +214,6 @@ class _TutorProfileScreenState extends ConsumerState<TutorProfileScreen> {
           },
         );
 
-   
       case 1:
         return EducationSectionCard(
           educations: profile.education,

@@ -195,47 +195,8 @@ TutorProfileModel get profile =>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
 
+
                 const SizedBox(height: 12),
-
-                Center(
-                  child: Stack(
-                    children: [
-                      CircleAvatar(
-                        radius: 55,
-                        backgroundImage: profile.imageUrl != null
-                            ? NetworkImage(profile.imageUrl!)
-                            : null,
-                        child: profile.imageUrl == null
-                            ? const Icon(Icons.person,size:55)
-                            : null,
-                      ),
-
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: InkWell(
-                          onTap: () {
-                            // image picker later
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.blue,
-                            ),
-                            child: const Icon(
-                              Icons.camera_alt,
-                              color: Colors.white,
-                              size: 18,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 32),
 
                 const Text(
                   "Basic Information",

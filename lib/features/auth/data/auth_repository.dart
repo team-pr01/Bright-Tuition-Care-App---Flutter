@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:btcclient/core/network/api_exception.dart';
 import 'package:btcclient/core/storage/local_storage.dart';
 import 'package:btcclient/features/auth/data/auth_api.dart';
@@ -301,6 +303,10 @@ class AuthRepository {
     await api.updatePersonalInfo(request);
   }
 
+  Future<void> updateProfileImage(File image) {
+  return api.updateProfileImage(image);
+}
+
   Future<void> addEducation(EducationRequest request) async {
     await api.addEducation(request);
   }
@@ -315,4 +321,6 @@ class AuthRepository {
   Future<void> deleteEducation(String id) async {
     await api.deleteEducation(id);
   }
+
+  
 }
