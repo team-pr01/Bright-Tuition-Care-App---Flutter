@@ -16,7 +16,7 @@ class ImportantGuidelinesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-       appBar: const CommonAppBar(),
+       appBar: const CommonAppBar( title: "Important Guidelines",),
 
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.md),

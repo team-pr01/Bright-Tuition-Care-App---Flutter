@@ -7,9 +7,7 @@ import '../../../../core/widgets/button/app_button.dart';
 import '../../../../core/widgets/input/app_input_field.dart';
 
 class FilterSidebar extends ConsumerStatefulWidget {
-const FilterSidebar({
-  super.key,
-});
+  const FilterSidebar({super.key});
 
   @override
   ConsumerState<FilterSidebar> createState() => _FilterSidebarState();
@@ -26,6 +24,9 @@ class _FilterSidebarState extends ConsumerState<FilterSidebar> {
   List<String> tuitionTypes = [];
   List<String> tutorGender = [];
   List<String> studentGender = [];
+  final TextEditingController postedFromController = TextEditingController();
+
+  final TextEditingController postedToController = TextEditingController();
 
   /// 🔥 OPTIONS
   List<String> areaOptions = [];
@@ -93,6 +94,8 @@ class _FilterSidebarState extends ConsumerState<FilterSidebar> {
 
   /// ================= APPLY =================
   void _apply() {
+    print("FROM: ${postedFromController.text}");
+    print("TO: ${postedToController.text}");
     final filter = JobFilter(
       status: "live",
       city: cities,
@@ -102,14 +105,19 @@ class _FilterSidebarState extends ConsumerState<FilterSidebar> {
       tutoringDays: days,
       tuitionType: tuitionTypes,
       subjects: subjects,
-
-      /// 🔥 FIXED
       preferredTutorGender: tutorGender.contains("All") ? null : tutorGender,
       studentGender: studentGender,
+      postedFrom: postedFromController.text.isEmpty
+          ? null
+          : _toApiDate(postedFromController.text),
+
+      postedTo: postedToController.text.isEmpty
+          ? null
+          : _toApiDate(postedToController.text),
     );
 
     ref.read(selectedJobFilterProvider.notifier).state = filter;
-
+    print(filter.toQuery());
     Navigator.pop(context);
   }
 
@@ -129,34 +137,50 @@ class _FilterSidebarState extends ConsumerState<FilterSidebar> {
       areaOptions = [];
       classOptions = [];
       subjectOptions = [];
+
+      postedFromController.clear();
+      postedToController.clear();
     });
 
-    ref.read(selectedJobFilterProvider.notifier).state =
-    JobFilter(status: "live");
+    ref.read(selectedJobFilterProvider.notifier).state = JobFilter(
+      status: "live",
+    );
+
     Navigator.pop(context);
   }
+
   @override
-void initState() {
-  super.initState();
+  void initState() {
+    super.initState();
 
-  final filter = ref.read(selectedJobFilterProvider);
+    final filter = ref.read(selectedJobFilterProvider);
 
-  if (filter == null) return;
+    if (filter == null) return;
 
-  cities = List.from(filter.city ?? []);
-  areas = List.from(filter.area ?? []);
-  categories = List.from(filter.category ?? []);
-  classes = List.from(filter.className ?? []);
-  subjects = List.from(filter.subjects ?? []);
-  days = List.from(filter.tutoringDays ?? []);
-  tuitionTypes = List.from(filter.tuitionType ?? []);
-  tutorGender = List.from(filter.preferredTutorGender ?? []);
-  studentGender = List.from(filter.studentGender ?? []);
+    cities = List.from(filter.city ?? []);
+    areas = List.from(filter.area ?? []);
+    categories = List.from(filter.category ?? []);
+    classes = List.from(filter.className ?? []);
+    subjects = List.from(filter.subjects ?? []);
+    days = List.from(filter.tutoringDays ?? []);
+    tuitionTypes = List.from(filter.tuitionType ?? []);
+    tutorGender = List.from(filter.preferredTutorGender ?? []);
+    studentGender = List.from(filter.studentGender ?? []);
 
-  _onCityChanged(cities);
-  _onCategoryChanged(categories);
-  _onClassChanged(classes);
-}
+    postedFromController.text = filter.postedFrom ?? "";
+    postedToController.text = filter.postedTo ?? "";
+
+    _onCityChanged(cities);
+    _onCategoryChanged(categories);
+    _onClassChanged(classes);
+  }
+
+  @override
+  void dispose() {
+    postedFromController.dispose();
+    postedToController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -291,6 +315,26 @@ void initState() {
                       selectedValues: studentGender,
                       onMultiChanged: (v) => setState(() => studentGender = v),
                     ),
+
+                    /// POSTED DATE FROM
+                    /// POSTED DATE FROM
+                    AppInputField(
+                      controller: postedFromController,
+                      label: "Posted Date From",
+                      type: AppInputType.date,
+                      lastDate: DateTime.now(),
+                    ),
+
+                    /// POSTED DATE TO
+                    AppInputField(
+                      controller: postedToController,
+                      label: "Posted Date To",
+                      type: AppInputType.date,
+                      firstDate: postedFromController.text.isNotEmpty
+                          ? _parseDate(postedFromController.text)
+                          : DateTime(1950),
+                      lastDate: DateTime.now(),
+                    ),
                   ],
                 ),
               ),
@@ -321,4 +365,27 @@ void initState() {
       ),
     );
   }
+}
+
+DateTime _parseDate(String value) {
+  try {
+    final parts = value.split('/');
+
+    return DateTime(
+      int.parse(parts[2]), // year
+      int.parse(parts[1]), // month
+      int.parse(parts[0]), // day
+    );
+  } catch (_) {
+    return DateTime(1950);
+  }
+}
+
+String _toApiDate(String value) {
+  print("RAW DATE = '$value'");
+
+  final parts = value.split('/');
+  print(parts);
+
+  return value;
 }

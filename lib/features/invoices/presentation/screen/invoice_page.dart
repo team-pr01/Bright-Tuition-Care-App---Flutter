@@ -42,7 +42,7 @@ class _InvoiceScreenState extends ConsumerState<InvoiceScreen> {
     final state = ref.watch(invoiceProvider);
     return Scaffold(
       appBar: widget.role == "guardian"
-          ? const CommonAppBar()
+          ? const CommonAppBar(title: "Invoices",)
           : null,
 
       body: SafeArea(child: _buildBody(state)),

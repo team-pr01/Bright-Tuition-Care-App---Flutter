@@ -32,7 +32,7 @@ class _ConfirmationScreenState extends ConsumerState<ConfirmationScreen> {
     final state = ref.watch(confirmationProvider);
 
     return Scaffold(
-      appBar: const CommonAppBar(),
+      appBar: const CommonAppBar(title: "Confirmation Letters",),
 
       body: SafeArea(child: _buildBody(state)),
     );

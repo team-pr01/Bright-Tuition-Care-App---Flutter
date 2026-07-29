@@ -1,3 +1,4 @@
+import 'package:btcclient/features/settings/prersentation/screens/verification_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:btcclient/core/config/theme.dart';
@@ -69,7 +70,12 @@ class VerifyProfileCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(5),
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const VerificationScreen()),
+                );
+              },
               child: Text(
                 "Verify Now",
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
@@ -77,7 +83,7 @@ class VerifyProfileCard extends StatelessWidget {
                   height: 1.5,
                 ),
               ),
-            ),   
+            ),
         ],
       ),
     );

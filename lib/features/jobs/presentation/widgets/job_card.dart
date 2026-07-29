@@ -149,11 +149,14 @@ class _JobCardState extends ConsumerState<JobCard> {
                     Text("Status :"),
                     const SizedBox(width: 8),
                     Text(
-                      StatusDataFormatter.getApplicationStatus(applicationStatus:application?.status,jobStatus:job.status ),
-                      style: TextStyle(
-                         color: StatusDataFormatter.getApplicationStatusColor(
-                         applicationStatus: application?.status,
+                      StatusDataFormatter.getApplicationStatus(
+                        applicationStatus: application?.status,
                         jobStatus: job.status,
+                      ),
+                      style: TextStyle(
+                        color: StatusDataFormatter.getApplicationStatusColor(
+                          applicationStatus: application?.status,
+                          jobStatus: job.status,
                         ),
                         fontWeight: FontWeight.w500,
                       ),
@@ -364,6 +367,8 @@ class _JobCardState extends ConsumerState<JobCard> {
                 AppButton(
                   label: isApplied ? "Undo Apply" : "Apply",
                   loading: _isWithdrawing,
+                   showShimmer:  !isApplied ?true:false,
+                  iconPosition:  isApplied ? AppButtonIconPosition.left:AppButtonIconPosition.right,
                   onPressed: _isWithdrawing
                       ? null
                       : () async {
@@ -396,7 +401,7 @@ class _JobCardState extends ConsumerState<JobCard> {
                                 );
                                 return;
                               }
-                               setState(() => _isWithdrawing = true);
+                              setState(() => _isWithdrawing = true);
                               final success = await ref
                                   .read(jobsProvider.notifier)
                                   .withdrawApplication(
@@ -407,7 +412,7 @@ class _JobCardState extends ConsumerState<JobCard> {
                                 ref
                                     .read(appliedJobsProvider.notifier)
                                     .withdraw(job.id);
-                              
+
                                 setState(() => _isWithdrawing = false);
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(

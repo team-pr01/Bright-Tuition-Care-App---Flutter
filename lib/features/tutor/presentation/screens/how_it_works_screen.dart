@@ -12,7 +12,7 @@ class HowItWorksScreen extends StatelessWidget {
     final steps = tutorSteps ;
 
     return Scaffold(
-      appBar: const CommonAppBar(),
+      appBar: const CommonAppBar( title: "How It Works",),
 
       body: ListView.builder(
         padding: const EdgeInsets.all(16),

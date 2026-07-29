@@ -89,7 +89,9 @@ class _AddPaymentMethodScreenState
     final state = ref.watch(referProvider);
 
     return Scaffold(
-      appBar: const CommonAppBar(),
+      appBar: const CommonAppBar( 
+        title: "Refer & Earn",
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),

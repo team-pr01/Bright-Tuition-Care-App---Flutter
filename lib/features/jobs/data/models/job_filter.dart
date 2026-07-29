@@ -12,6 +12,8 @@ class JobFilter {
   final List<String>? studentGender;
   final List<String>? tuitionType;
   final List<String>? subjects;
+  final String? postedFrom;
+  final String? postedTo;
 
   final int skip;
   final int limit;
@@ -28,6 +30,8 @@ class JobFilter {
     this.preferredTutorGender,
     this.studentGender,
     this.tuitionType,
+     this.postedFrom,
+  this.postedTo,
     this.subjects,
     this.skip = 0,
     this.limit = 10,
@@ -70,6 +74,12 @@ class JobFilter {
       if (subjects != null && subjects!.isNotEmpty)
         "subjects": subjects!.join(","),
 
+        if (postedFrom != null && postedFrom!.isNotEmpty)
+  "postedFrom": postedFrom,
+
+if (postedTo != null && postedTo!.isNotEmpty)
+  "postedTo": postedTo,
+
       "skip": skip,
       "limit": limit,
     };
@@ -88,6 +98,8 @@ class JobFilter {
     List<String>? studentGender,
     List<String>? tuitionType,
     List<String>? subjects,
+    String? postedFrom,
+String? postedTo,
     int? skip,
     int? limit,
   }) {
@@ -105,6 +117,8 @@ class JobFilter {
       studentGender: studentGender ?? this.studentGender,
       tuitionType: tuitionType ?? this.tuitionType,
       subjects: subjects ?? this.subjects,
+       postedFrom: postedFrom ?? this.postedFrom,
+  postedTo: postedTo ?? this.postedTo,
       skip: skip ?? this.skip,
       limit: limit ?? this.limit,
     );

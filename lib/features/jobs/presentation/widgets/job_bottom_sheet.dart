@@ -336,11 +336,13 @@ class _JobCardState extends ConsumerState<JobBottomSheet> {
                     ),
 
                     /// APPLY BUTTON
-                    if (variant != JobCardVariant.postedJob) ...[
+                    if (variant != JobCardVariant.postedJob && job.status!= "confirmed" && application?.status!= "rejected"  && application?.status!= "confirmed"  && application?.status!= "appointed" ) ...[
                       Expanded(
                         child: AppButton(
+                            
                           label: isApplied ? "Undo Apply" : "Apply",
                           loading: _isWithdrawing,
+                          iconPosition:  isApplied ? AppButtonIconPosition.left:AppButtonIconPosition.right,
                           onPressed: _isWithdrawing
                               ? null
                               : () async {

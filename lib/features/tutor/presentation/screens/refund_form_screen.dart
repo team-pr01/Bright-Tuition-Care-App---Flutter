@@ -74,7 +74,7 @@ class _RefundFormScreenState extends ConsumerState<RefundFormScreen> {
     });
     final refundState = ref.watch(refundProvider);
     return Scaffold(
-      appBar: const CommonAppBar(),
+      appBar: const CommonAppBar( title: "Refunds",),
 
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),

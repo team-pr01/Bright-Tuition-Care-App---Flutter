@@ -64,7 +64,7 @@ class _GuardianJobApplicationState
     final notifier = ref.read(jobApplicationProvider.notifier);
 
     return Scaffold(
-      appBar: const CommonAppBar(),
+      appBar: const CommonAppBar( title: "Job Applications",),
       body: RefreshIndicator(
         key: _refreshKey,
         onRefresh: () async {

@@ -25,7 +25,7 @@ class CommunityPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.neutrals01,
-       appBar: const CommonAppBar(),
+       appBar: const CommonAppBar(title: "Join Community"),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),

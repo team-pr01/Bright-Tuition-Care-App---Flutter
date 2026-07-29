@@ -60,7 +60,7 @@ class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
     final state = ref.watch(applicationsProvider);
     print("application meta ${state.meta?.counts?.applied}");
     return Scaffold(
-      appBar: const CommonAppBar(),
+      appBar: const CommonAppBar(title: "My Applications",),
       body: SafeArea(
         child: Column(
           children: [

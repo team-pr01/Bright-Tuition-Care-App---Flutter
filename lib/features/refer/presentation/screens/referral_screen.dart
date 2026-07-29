@@ -31,7 +31,9 @@ class ReferralScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F7FB),
 
-      appBar: const CommonAppBar(),
+      appBar: const CommonAppBar( 
+        title: "Refer & Earn",
+      ),
 
       body: SingleChildScrollView(
         padding: const EdgeInsets.only(right: 16, left: 16, top: 24, bottom: 24),

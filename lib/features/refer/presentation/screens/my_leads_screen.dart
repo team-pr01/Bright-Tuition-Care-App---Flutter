@@ -50,7 +50,7 @@ class _MyLeadsScreenState extends ConsumerState<MyLeadsScreen> {
     final state = ref.watch(myLeadsProvider);
 
     return Scaffold(
-      appBar: const CommonAppBar(),
+      appBar: const CommonAppBar(title: "My Leads",),
       body: RefreshIndicator(
         onRefresh: () async {
           await ref.read(myLeadsProvider.notifier).refresh();
@@ -131,6 +131,7 @@ class _MyLeadsScreenState extends ConsumerState<MyLeadsScreen> {
                   padding: const EdgeInsets.only(bottom: 12),
                   child: LeadCard(
                     lead: lead,
+                    isInitiallyExpanded: index == 0,
                     onPayment: () async {
                       final updated = await Navigator.push<bool>(
                         context,

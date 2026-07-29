@@ -52,7 +52,7 @@ class ReferralCard extends StatelessWidget {
             step.title,
             style: Theme.of(context).textTheme.titleMedium!.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: AppColors.primary02,
+                  color: AppColors.primary04,
                 ),
           ),
 

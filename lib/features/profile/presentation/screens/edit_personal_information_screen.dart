@@ -185,7 +185,9 @@ TutorProfileModel get profile =>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CommonAppBar(),
+      appBar: const CommonAppBar( 
+        title: "Personal Information",
+      ),
       body: SafeArea(
         child: Form(
           key: _formKey,

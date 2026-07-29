@@ -11,6 +11,8 @@ enum AppButtonVariant {
   delete,
 }
 
+enum AppButtonIconPosition { left, right }
+
 class AppButton extends StatelessWidget {
   final String? label;
   final VoidCallback? onPressed;
@@ -23,6 +25,8 @@ class AppButton extends StatelessWidget {
   final FontWeight fontWeight;
   final Color? textColor;
   final bool iconOnly;
+  final AppButtonIconPosition iconPosition;
+  final bool showShimmer;
 
   const AppButton({
     super.key,
@@ -37,6 +41,8 @@ class AppButton extends StatelessWidget {
     this.fontWeight = FontWeight.w500,
     this.textColor,
     this.iconOnly = false,
+    this.iconPosition = AppButtonIconPosition.left,
+    this.showShimmer = false,
   });
 
   @override
@@ -51,13 +57,14 @@ class AppButton extends StatelessWidget {
             ),
           )
         : iconOnly
-        ? Center(child: Icon(icon, size: 18,color:textColor ,))
+        ? Center(child: Icon(icon, size: 18, color: textColor))
         : Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (icon != null) ...[
-                Icon(icon, size: 18,color:textColor),
+              if (icon != null &&
+                  iconPosition == AppButtonIconPosition.left) ...[
+                Icon(icon, size: 18, color: textColor),
                 const SizedBox(width: 8),
               ],
               Flexible(
@@ -71,6 +78,11 @@ class AppButton extends StatelessWidget {
                   ),
                 ),
               ),
+              if (icon != null &&
+                  iconPosition == AppButtonIconPosition.right) ...[
+                const SizedBox(width: 8),
+                Icon(icon, size: 18, color: textColor),
+              ],
             ],
           );
 
@@ -126,10 +138,12 @@ class AppButton extends StatelessWidget {
     }
 
     return SizedBox(
-      height: height,
-      width: width ?? double.infinity,
-      child: button,
-    );
+  height: height,
+  width: width ?? double.infinity,
+  child: showShimmer
+      ? _ButtonShimmer(child: button)
+      : button,
+);
   }
 
   ButtonStyle _style() {
@@ -214,5 +228,91 @@ class AppButton extends StatelessWidget {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         );
     }
+  }
+}
+class _ButtonShimmer extends StatefulWidget {
+  final Widget child;
+
+  const _ButtonShimmer({
+    required this.child,
+  });
+
+  @override
+  State<_ButtonShimmer> createState() =>
+      _ButtonShimmerState();
+}
+
+class _ButtonShimmerState
+    extends State<_ButtonShimmer>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1800),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (_, __) {
+        return ShaderMask(
+          shaderCallback: (Rect bounds) {
+            final width = bounds.width;
+
+            final dx =
+                (_controller.value * 2 - 1) * width;
+
+            return LinearGradient(
+              begin: Alignment.bottomRight,
+              end: Alignment.topLeft,
+              colors: const [
+               Colors.white10,
+                Colors.white30,
+                Colors.white10,
+              ],
+              stops: const [0.35, 0.5, 0.65],
+              transform:
+                  _SlidingGradientTransform(dx),
+            ).createShader(bounds);
+          },
+          blendMode: BlendMode.srcATop,
+          child: widget.child,
+        );
+      },
+    );
+  }
+}
+
+class _SlidingGradientTransform
+    extends GradientTransform {
+  final double slidePercent;
+
+  const _SlidingGradientTransform(
+    this.slidePercent,
+  );
+
+  @override
+  Matrix4? transform(
+      Rect bounds, {
+        TextDirection? textDirection,
+      }) {
+    return Matrix4.translationValues(
+      slidePercent,
+      0,
+      0,
+    );
   }
 }

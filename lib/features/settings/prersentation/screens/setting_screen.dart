@@ -118,7 +118,9 @@ class _SettingScreenState
           AppColors.neutrals01,
 
       appBar:
-          const CommonAppBar(),
+          const CommonAppBar( 
+            title: "Settings",
+          ),
 
       body: SafeArea(
         child: RefreshIndicator(

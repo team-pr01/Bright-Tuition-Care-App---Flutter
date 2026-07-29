@@ -8,7 +8,7 @@ class ShareScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CommonAppBar(),
+      appBar: const CommonAppBar( title: "Share App",),
 
       body: Center(
         child: ShareCard(

@@ -1,15 +1,24 @@
+import 'dart:ui';
+
 import 'package:btcclient/core/config/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class CommonAppBar extends StatefulWidget implements PreferredSizeWidget {
-  const CommonAppBar({super.key});
+class CommonAppBar extends StatefulWidget
+    implements PreferredSizeWidget {
+  final String title;
+
+  const CommonAppBar({
+    super.key,
+    required this.title,
+  });
 
   @override
   Size get preferredSize => const Size.fromHeight(56);
 
   @override
-  State<CommonAppBar> createState() => _CommonAppBarState();
+  State<CommonAppBar> createState() =>
+      _CommonAppBarState();
 }
 
 class _CommonAppBarState extends State<CommonAppBar> {
@@ -22,113 +31,145 @@ class _CommonAppBarState extends State<CommonAppBar> {
   }
 
   Future<void> fetchNotifications() async {
-    /// CALL YOUR API HERE
     await Future.delayed(const Duration(seconds: 1));
-
-    /// Example response
-    int apiCount = 3;
 
     if (mounted) {
       setState(() {
-        notificationCount = apiCount;
+        notificationCount = 3;
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Color.fromRGBO(0, 0, 0, 0.10),
-            offset: Offset(0, 1.4),
-            blurRadius: 1.4,
-          ),
-        ],
-      ),
-      child: SafeArea(
-        bottom: false,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            /// MENU BUTTON
-            Align(
-              alignment: Alignment.centerLeft,
-              child: IconButton(
-                onPressed: () {
-                  Navigator.pop(context); // go back
-                },
-                icon: Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    border: Border.all(color: Colors.grey.shade300),
-                  ),
-                  child: const Icon(
-                    Icons.arrow_back,
-                    color: AppColors.primary01,
-                    size: 20,
-                  ),
-                ),
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(
+          sigmaX: 15,
+          sigmaY: 15,
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.75),
+            border: Border(
+              bottom: BorderSide(
+                color: Colors.grey.shade200,
               ),
             ),
-
-            /// LOGO
-            Center(child: Image.asset("assets/images/logo.png", height: 32)),
-
-            /// NOTIFICATION BUTTON
-            Align(
-              alignment: Alignment.centerRight,
+            boxShadow: const [
+              BoxShadow(
+                color: Color.fromRGBO(0, 0, 0, 0.08),
+                blurRadius: 10,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: SafeArea(
+            bottom: false,
+            child: SizedBox(
+              height: 56,
               child: Stack(
+                alignment: Alignment.center,
                 children: [
-                  IconButton(
-                    onPressed: () {},
-                    icon: Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: Colors.grey.shade300),
-                      ),
-                      child: SvgPicture.asset(
-                        "assets/icons/operations/notification.svg",
-                        width: 20,
-                        height: 20,
-                      ),
-                    ),
-                  ),
-
-                  if (notificationCount > 0)
-                    Positioned(
-                      right: 5,
-                      top: 5,
-                      child: Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(
-                          color: Colors.red,
-                          shape: BoxShape.circle,
-                        ),
-                        constraints: const BoxConstraints(
-                          minWidth: 16,
-                          minHeight: 16,
-                        ),
-                        child: Text(
-                          "$notificationCount",
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
+                  /// Back Button
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.only(left: 12),
+                      child: IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: Container(
+                          padding:
+                              const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.circular(30),
+                            border: Border.all(
+                              color: Colors.grey.shade300,
+                            ),
+                          ),
+                          child: const Icon(
+                            Icons.arrow_back,
+                            color: AppColors.primary01,
+                            size: 20,
                           ),
                         ),
                       ),
                     ),
+                  ),
+
+                  /// Title
+                  Text(
+                    widget.title,
+                    style: AppTextStyles.titleMedium.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+
+                  /// Notification
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.only(right: 12),
+                      child: Stack(
+                        children: [
+                          IconButton(
+                            onPressed: () {},
+                            icon: Container(
+                              padding:
+                                  const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.circular(30),
+                                border: Border.all(
+                                  color:
+                                      Colors.grey.shade300,
+                                ),
+                              ),
+                              child: SvgPicture.asset(
+                                "assets/icons/operations/notification.svg",
+                                width: 20,
+                                height: 20,
+                              ),
+                            ),
+                          ),
+                          if (notificationCount > 0)
+                            Positioned(
+                              right: 5,
+                              top: 5,
+                              child: Container(
+                                width: 16,
+                                height: 16,
+                                alignment: Alignment.center,
+                                decoration:
+                                    const BoxDecoration(
+                                  color: Colors.red,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Text(
+                                  "$notificationCount",
+                                  style:
+                                      const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 9,
+                                    fontWeight:
+                                        FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );

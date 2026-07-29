@@ -164,7 +164,9 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CommonAppBar(),
+      appBar: const CommonAppBar( 
+        title: "Edit Education",
+      ),
 
       body: SafeArea(
         child: Form(

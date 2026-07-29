@@ -96,7 +96,7 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
     final leadState = ref.watch(referProvider);
 
     return Scaffold(
-      appBar: const CommonAppBar(),
+      appBar: const CommonAppBar(title: "Refer & Earn",),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Form(
