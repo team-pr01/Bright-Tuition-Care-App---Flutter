@@ -54,7 +54,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
             },
           ),
           SidebarItem(
-            label: "Job Board",
+            label: "Posted Jobs",
             icon: SvgPicture.asset(
               "assets/icons/navigations/job-board.svg",
               width: 20,

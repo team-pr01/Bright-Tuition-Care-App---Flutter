@@ -12,6 +12,7 @@ import 'package:btcclient/features/jobs/data/models/applied_model.dart';
 import 'package:btcclient/features/jobs/data/models/job_model.dart';
 import 'package:btcclient/features/jobs/presentation/enums/job_card_variant.dart';
 import 'package:btcclient/features/jobs/presentation/helper/job_apply_helper.dart';
+import 'package:btcclient/features/jobs/presentation/provider/applied_jobs_provider.dart';
 import 'package:btcclient/features/jobs/presentation/provider/job_provider.dart';
 import 'package:btcclient/features/jobs/presentation/widgets/icon_row.dart';
 import 'package:btcclient/features/tutor/presentation/screens/tutor_application_screen.dart';
@@ -52,9 +53,15 @@ class _JobCardState extends ConsumerState<JobBottomSheet> {
       className: job.subjects,
       gender: job.preferredTutorGender,
     );
-    final isApplied = user == null
+    final serverApplied = user == null
         ? false
         : job.applications?.any((app) => app.userId == user.id) ?? false;
+
+    final overrides = ref.watch(appliedJobsProvider);
+
+    final isApplied = overrides.containsKey(job.id)
+        ? overrides[job.id] == ApplicationState.applied
+        : serverApplied;
     return ReusableBottomSheet(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -105,8 +112,8 @@ class _JobCardState extends ConsumerState<JobBottomSheet> {
                       ),
                       style: TextStyle(
                         color: StatusDataFormatter.getApplicationStatusColor(
-                         applicationStatus: application?.status,
-                        jobStatus: job.status,
+                          applicationStatus: application?.status,
+                          jobStatus: job.status,
                         ),
                         fontWeight: FontWeight.w500,
                       ),
@@ -221,7 +228,7 @@ class _JobCardState extends ConsumerState<JobBottomSheet> {
                     child: IconRow(
                       icon: "assets/icons/visual/salary.svg",
                       title: "Salary",
-                      value:( job.salary != null && job.salary!.isNotEmpty)
+                      value: (job.salary != null && job.salary!.isNotEmpty)
                           ? "${job.salary} BDT"
                           : "-",
                     ),
@@ -336,13 +343,18 @@ class _JobCardState extends ConsumerState<JobBottomSheet> {
                     ),
 
                     /// APPLY BUTTON
-                    if (variant != JobCardVariant.postedJob && job.status!= "confirmed" && application?.status!= "rejected"  && application?.status!= "confirmed"  && application?.status!= "appointed" ) ...[
+                    if (variant != JobCardVariant.postedJob &&
+                        job.status != "confirmed" &&
+                        application?.status != "rejected" &&
+                        application?.status != "confirmed" &&
+                        application?.status != "appointed") ...[
                       Expanded(
                         child: AppButton(
-                            
                           label: isApplied ? "Undo Apply" : "Apply",
                           loading: _isWithdrawing,
-                          iconPosition:  isApplied ? AppButtonIconPosition.left:AppButtonIconPosition.right,
+                          iconPosition: isApplied
+                              ? AppButtonIconPosition.left
+                              : AppButtonIconPosition.right,
                           onPressed: _isWithdrawing
                               ? null
                               : () async {
@@ -388,6 +400,9 @@ class _JobCardState extends ConsumerState<JobBottomSheet> {
                                           );
 
                                       if (success) {
+                                        ref
+                                            .read(appliedJobsProvider.notifier)
+                                            .withdraw(job.id);
                                         ScaffoldMessenger.of(
                                           context,
                                         ).showSnackBar(
@@ -421,6 +436,11 @@ class _JobCardState extends ConsumerState<JobBottomSheet> {
                                               );
 
                                           if (success) {
+                                            ref
+                                                .read(
+                                                  appliedJobsProvider.notifier,
+                                                )
+                                                .apply(job.id);
                                             Navigator.pop(dialogContext);
 
                                             ScaffoldMessenger.of(

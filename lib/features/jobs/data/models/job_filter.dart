@@ -30,8 +30,8 @@ class JobFilter {
     this.preferredTutorGender,
     this.studentGender,
     this.tuitionType,
-     this.postedFrom,
-  this.postedTo,
+    this.postedFrom,
+    this.postedTo,
     this.subjects,
     this.skip = 0,
     this.limit = 10,
@@ -42,11 +42,9 @@ class JobFilter {
       if (keyword != null) "keyword": keyword,
       if (status != null) "status": status,
 
-      if (city != null && city!.isNotEmpty)
-        "city": city!.join(","),
+      if (city != null && city!.isNotEmpty) "city": city!.join(","),
 
-      if (area != null && area!.isNotEmpty)
-        "area": area!.join(","),
+      if (area != null && area!.isNotEmpty) "area": area!.join(","),
 
       if (category != null && category!.isNotEmpty)
         "category": category!.join(","),
@@ -60,10 +58,8 @@ class JobFilter {
       if (tutoringDays != null && tutoringDays!.isNotEmpty)
         "tutoringDays": tutoringDays!.join(","),
 
-      if (preferredTutorGender != null &&
-          preferredTutorGender!.isNotEmpty)
-        "preferredTutorGender":
-            preferredTutorGender!.join(","),
+      if (preferredTutorGender != null && preferredTutorGender!.isNotEmpty)
+        "preferredTutorGender": preferredTutorGender!.join(","),
 
       if (studentGender != null && studentGender!.isNotEmpty)
         "studentGender": studentGender!.join(","),
@@ -74,11 +70,11 @@ class JobFilter {
       if (subjects != null && subjects!.isNotEmpty)
         "subjects": subjects!.join(","),
 
-        if (postedFrom != null && postedFrom!.isNotEmpty)
-  "postedFrom": postedFrom,
+      if (postedFrom != null && postedFrom!.isNotEmpty)
+        "jobPostedFrom": _formatDate(postedFrom!),
 
-if (postedTo != null && postedTo!.isNotEmpty)
-  "postedTo": postedTo,
+      if (postedTo != null && postedTo!.isNotEmpty)
+        "jobPostedTo": _formatDate(postedTo!),
 
       "skip": skip,
       "limit": limit,
@@ -99,7 +95,7 @@ if (postedTo != null && postedTo!.isNotEmpty)
     List<String>? tuitionType,
     List<String>? subjects,
     String? postedFrom,
-String? postedTo,
+    String? postedTo,
     int? skip,
     int? limit,
   }) {
@@ -112,15 +108,22 @@ String? postedTo,
       className: className ?? this.className,
       curriculum: curriculum ?? this.curriculum,
       tutoringDays: tutoringDays ?? this.tutoringDays,
-      preferredTutorGender:
-          preferredTutorGender ?? this.preferredTutorGender,
+      preferredTutorGender: preferredTutorGender ?? this.preferredTutorGender,
       studentGender: studentGender ?? this.studentGender,
       tuitionType: tuitionType ?? this.tuitionType,
       subjects: subjects ?? this.subjects,
-       postedFrom: postedFrom ?? this.postedFrom,
-  postedTo: postedTo ?? this.postedTo,
+      postedFrom: postedFrom ?? this.postedFrom,
+      postedTo: postedTo ?? this.postedTo,
       skip: skip ?? this.skip,
       limit: limit ?? this.limit,
     );
   }
+}
+
+String _formatDate(String date) {
+  final parts = date.split('/');
+
+  if (parts.length != 3) return date;
+
+  return '${parts[2]}-${parts[1]}-${parts[0]}';
 }

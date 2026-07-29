@@ -433,6 +433,7 @@ class _JobCardState extends ConsumerState<JobCard> {
                                       );
 
                                   if (success) {
+                                    ref.read(appliedJobsProvider.notifier).apply(job.id);
                                     Navigator.pop(dialogContext);
                                     Navigator.push(
                                       context,
