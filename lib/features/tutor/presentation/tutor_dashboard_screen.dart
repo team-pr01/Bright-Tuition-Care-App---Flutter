@@ -188,7 +188,7 @@ class TutorDashboardScreen extends ConsumerWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SettingScreen(role: "tutor"),
+                  builder: (context) => SettingScreen(),
                 ),
               );
             },

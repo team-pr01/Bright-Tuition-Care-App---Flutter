@@ -1,3 +1,4 @@
+import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/pdf/pdf_service.dart';
 import 'package:btcclient/core/utils/file_picker_utils.dart';
 import 'package:btcclient/features/auth/data/models/tutor_model.dart';
@@ -64,133 +65,138 @@ class _TutorProfileScreenState extends ConsumerState<TutorProfileScreen> {
       return const Center(child: Text("Profile not found"));
     }
 
-    return SingleChildScrollView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TutorProfileCard(
-            name: profile.name,
-            tutorId: profile.tutorId,
-            email: profile.email,
-            phone: profile.phoneNumber,
-            address: profile.personalInfo.address ?? "Not Provided",
-            profileImage: profile.imageUrl ?? "",
-            isVerified: profile.isVerified,
-            profileCompleted: profile.profileCompleted,
-            rating: profile.rating,
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: [
+            AppColors.primaryGradientStart,
+            AppColors.primaryGradientEnd,
+          ],
+          stops: [0.0082, 1],
+        ),
+      ),
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TutorProfileCard(
+              name: profile.name,
+              tutorId: profile.tutorId,
+              email: profile.email,
+              phone: profile.phoneNumber,
+              address: profile.personalInfo.address ?? "Not Provided",
+              profileImage: profile.imageUrl ?? "",
+              isVerified: profile.isVerified,
+              profileCompleted: profile.profileCompleted,
+              rating: profile.rating,
 
-            onDownload: () async {
-              final pdf = await TutorResumePdf.build(profile: profile);
+              onDownload: () async {
+                final pdf = await TutorResumePdf.build(profile: profile);
 
-              await PdfService.download(
-                fileName:
-                    "Bright_Tuition_Care_${profile.name.replaceAll(' ', '_')}.pdf",
-                child: pdf,
-              );
-            },
-            onEditImage: () async {
-              final image = await ImagePickerBottomSheet.show(context);
-
-              if (image == null) return;
-
-              final success = await ref
-                  .read(profileProvider.notifier)
-                  .updateProfileImage(image);
-
-              if (!mounted) return;
-
-              if (success) {
-                await ref.read(profileProvider.notifier).refreshProfile();
-
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text("Profile image updated successfully"),
-                  ),
+                await PdfService.download(
+                  fileName:
+                      "Bright_Tuition_Care_${profile.name.replaceAll(' ', '_')}.pdf",
+                  child: pdf,
                 );
-              }
-            },
-          ),
+              },
+              onEditImage: () async {
+                final image = await ImagePickerBottomSheet.show(context);
 
-          const SizedBox(height: 20),
+                if (image == null) return;
 
-          SizedBox(
-            height: 100,
-            child: Row(
-              children: [
-                Expanded(
-                  child: ProfileTabCard(
-                    title: "Personal",
-                    subtitle: "Information",
-                    icon: Icons.person_outline,
-                    isActive: selectedTab == 0,
-                    isCompleted: selectedTab == 0,
-                    onTap: () {
-                      setState(() => selectedTab = 0);
-                    },
-                  ),
-                ),
+                final success = await ref
+                    .read(profileProvider.notifier)
+                    .updateProfileImage(image);
 
-                const SizedBox(width: 12),
+                if (!mounted) return;
 
-                Expanded(
-                  child: ProfileTabCard(
-                    title: "Educational",
-                    subtitle: "Information",
-                    icon: Icons.school_outlined,
-                    isActive: selectedTab == 1,
-                    isCompleted: selectedTab == 1,
-                    onTap: () {
-                      setState(() => selectedTab = 1);
-                    },
-                  ),
-                ),
+                if (success) {
+                  await ref.read(profileProvider.notifier).refreshProfile();
 
-                const SizedBox(width: 12),
-
-                Expanded(
-                  child: ProfileTabCard(
-                    title: "Tuition",
-                    subtitle: "Preference",
-                    icon: Icons.work_outline,
-                    isActive: selectedTab == 2,
-                    isCompleted: selectedTab == 2,
-                    onTap: () {
-                      setState(() => selectedTab = 2);
-                    },
-                  ),
-                ),
-
-                const SizedBox(width: 12),
-
-                Expanded(
-                  child: ProfileTabCard(
-                    title: "Credential",
-                    subtitle: "Information",
-                    icon: Icons.description_outlined,
-                    isActive: selectedTab == 3,
-                    isCompleted: selectedTab == 3,
-                    onTap: () {
-                      setState(() => selectedTab = 3);
-                    },
-                  ),
-                ),
-              ],
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Profile image updated successfully"),
+                    ),
+                  );
+                }
+              },
             ),
-          ),
-          const SizedBox(height: 20),
 
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            switchInCurve: Curves.easeInOut,
-            switchOutCurve: Curves.easeInOut,
-            child: Container(
-              key: ValueKey(selectedTab),
-              child: _buildSelectedTab(profile),
+            // const SizedBox(height: 20),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(24),
+                  topRight: Radius.circular(24),
+                ),
+              ),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 70,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: ProfileTabCard(
+                            title: "Personal",
+                            icon: Icons.person,
+                            isActive: selectedTab == 0,
+                            onTap: () => setState(() => selectedTab = 0),
+                          ),
+                        ),
+                        Expanded(
+                          child: ProfileTabCard(
+                            title: "Educational",
+                            icon: Icons.article_outlined,
+                            isActive: selectedTab == 1,
+                            onTap: () => setState(() => selectedTab = 1),
+                          ),
+                        ),
+                        Expanded(
+                          child: ProfileTabCard(
+                            title: "Tuition",
+                            icon: Icons.school_outlined,
+                            isActive: selectedTab == 2,
+                            onTap: () => setState(() => selectedTab = 2),
+                          ),
+                        ),
+                        Expanded(
+                          child: ProfileTabCard(
+                            title: "Credential",
+                            icon: Icons.workspace_premium_outlined,
+                            isActive: selectedTab == 3,
+                            onTap: () => setState(() => selectedTab = 3),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const Divider(height: 1, thickness: 1),
+
+                  const SizedBox(height: 20),
+
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    switchInCurve: Curves.easeInOut,
+                    switchOutCurve: Curves.easeInOut,
+                    child: Container(
+                      key: ValueKey(selectedTab),
+                      child: _buildSelectedTab(profile),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

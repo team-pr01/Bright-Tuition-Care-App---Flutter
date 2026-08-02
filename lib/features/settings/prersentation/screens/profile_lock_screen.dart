@@ -1,0 +1,66 @@
+import 'package:btcclient/core/config/theme.dart';
+import 'package:btcclient/core/widgets/navbar/common_appbar.dart';
+import 'package:btcclient/features/auth/data/models/guardian_model.dart';
+import 'package:btcclient/features/auth/data/models/tutor_model.dart';
+import 'package:btcclient/features/auth/presentation/provider/profile_notifier.dart';
+import 'package:btcclient/features/settings/prersentation/widgets/lock_form.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+class ProfileLockScreen extends ConsumerStatefulWidget {
+  const ProfileLockScreen({super.key});
+
+  @override
+  ConsumerState<ProfileLockScreen> createState() =>
+      _ProfileLockScreenState();
+}
+
+class _ProfileLockScreenState
+    extends ConsumerState<ProfileLockScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.microtask(() async {
+      await ref.read(profileProvider.notifier).fetchProfile();
+    });
+  }
+
+  Future<void> _refresh() async {
+    await ref.read(profileProvider.notifier).fetchProfile();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final profile = ref.watch(profileProvider);
+
+    bool isProfileLocked = true;
+
+    if (profile is GuardianProfileModel) {
+      isProfileLocked = profile.profileStatus == "locked";
+    } else if (profile is TutorProfileModel) {
+      isProfileLocked = profile.profileStatus == "locked";
+    }
+
+    return Scaffold(
+      backgroundColor: AppColors.neutrals01,
+      appBar: const CommonAppBar(
+        title: "Profile Lock",
+      ),
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          child: lockForm(
+            context,
+            theme,
+            isProfileLocked,
+          ),
+        ),
+      ),
+    );
+  }
+}

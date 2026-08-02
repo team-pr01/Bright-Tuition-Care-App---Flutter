@@ -1,5 +1,8 @@
 import 'package:btcclient/core/config/theme.dart';
+import 'package:btcclient/core/storage/local_storage.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
+import 'package:btcclient/features/profile/presentation/screens/guardian_profile_page.dart';
+import 'package:btcclient/features/profile/presentation/screens/tutor_profile_page.dart';
 import 'package:btcclient/features/settings/prersentation/widgets/card_wrapper.dart';
 import 'package:btcclient/features/settings/prersentation/widgets/show_unlock_model.dart';
 import 'package:flutter/material.dart';
@@ -32,8 +35,28 @@ Widget lockForm( BuildContext context,ThemeData theme, bool isProfileLocked) {
               if (isProfileLocked) {
                 showUnlockModal(context);
               } else {
-                // ✏️ Navigate to edit profile screen
-              }
+  () async {
+    final role = await LocalStorage.getRole();
+
+    if (!context.mounted) return;
+
+    if (role == "tutor") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const TutorProfileScreen(),
+        ),
+      );
+    } else if (role == "guardian") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const GuardianProfilePage(),
+        ),
+      );
+    }
+  }();
+}
             },
           ),
         ],

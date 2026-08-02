@@ -147,23 +147,20 @@ class EducationItemCard extends StatelessWidget {
           ),
 
           const SizedBox(height: 18),
-          Divider(color: AppColors.primary01, height: 1),
 
-          const SizedBox(height: 14),
           Row(
             children: [
               // _StatusChip(
               //   text: education.level,
               //   color: const Color(0xff246BFD),
               // ),
-              const SizedBox(width: 10),
+              // const SizedBox(width: 10),
 
-              if (isCurrent)
-                const _StatusChip(
-                  text: "Current Institute",
-                  color: Colors.green,
-                ),
-
+              // if (isCurrent)
+              //   const _StatusChip(
+              //     text: "Current Institute",
+              //     color: Colors.green,
+              //   ),
               const Spacer(),
 
               Text(
@@ -179,6 +176,8 @@ class EducationItemCard extends StatelessWidget {
               ),
             ],
           ),
+          const SizedBox(height: 14),
+          Divider(color: AppColors.primary01, height: 1),
         ],
       ),
     );

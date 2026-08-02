@@ -32,75 +32,75 @@ class _ContactFormState extends ConsumerState<ContactForm> {
     final authState = ref.watch(authProvider);
     final isLoading = authState.loading;
     return cardWrapper(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Contact Info", style: theme.textTheme.headlineSmall),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
 
-          const SizedBox(height: AppSpacing.md),
-
-          Text(
-            widget.isProfileLocked
-                ? "Your profile is locked. Unlock it to update your contact details."
-                : "Manage your contact details.",
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: AppColors.neutrals03,
+            Text(
+              widget.isProfileLocked
+                  ? "Your profile is locked. Unlock it to update your contact details."
+                  : "Manage your contact details.",
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: AppColors.neutrals03,
+              ),
             ),
-          ),
 
-          const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
 
-          AppInputField(
-            label: "Phone Number",
-            controller: phnoController,
-            enabled: !widget.isProfileLocked,
-            required: true,
-          ),
+            AppInputField(
+              label: "Phone Number",
+              controller: phnoController,
+              enabled: !widget.isProfileLocked,
+              required: true,
+            ),
 
-          const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
 
-          AppButton(
-            loading: isLoading,
-            label: widget.isProfileLocked ? "Unlock Profile" : "Update",
-            onPressed: () async {
-              if (widget.isProfileLocked) {
-                AppSnackbar.show(
-                  context,
-                  "Your profile is locked. Please request unlock first.",
-                  SnackType.warning,
-                );
-                return;
-              }
+            AppButton(
+              loading: isLoading,
+              label: widget.isProfileLocked ? "Unlock Profile" : "Update",
+              onPressed: () async {
+                if (widget.isProfileLocked) {
+                  AppSnackbar.show(
+                    context,
+                    "Your profile is locked. Please request unlock first.",
+                    SnackType.warning,
+                  );
+                  return;
+                }
 
-              final phone = phnoController.text.trim();
+                final phone = phnoController.text.trim();
 
-              if (phone.isEmpty) {
-                AppSnackbar.show(
-                  context,
-                  "Phone number is required",
-                  SnackType.error,
-                );
-                return;
-              }
+                if (phone.isEmpty) {
+                  AppSnackbar.show(
+                    context,
+                    "Phone number is required",
+                    SnackType.error,
+                  );
+                  return;
+                }
 
-              final success = await ref
-                  .read(authProvider.notifier)
-                  .updateProfile({"phoneNumber": phone});
+                final success = await ref
+                    .read(authProvider.notifier)
+                    .updateProfile({"phoneNumber": phone});
 
-              if (success) {
-                phnoController.clear();
-                FocusScope.of(context).unfocus();
-                AppSnackbar.show(
-                  context,
-                  "Profile updated successfully",
-                  SnackType.success,
-                );
+                if (success) {
+                  phnoController.clear();
+                  FocusScope.of(context).unfocus();
+                  AppSnackbar.show(
+                    context,
+                    "Profile updated successfully",
+                    SnackType.success,
+                  );
 
-                print("✅ UPDATED PHONE: $phone");
-              }
-            },
-          ),
-        ],
+                  print("✅ UPDATED PHONE: $phone");
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

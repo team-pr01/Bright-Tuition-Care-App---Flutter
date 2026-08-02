@@ -27,6 +27,10 @@ class AppButton extends StatelessWidget {
   final bool iconOnly;
   final AppButtonIconPosition iconPosition;
   final bool showShimmer;
+  final Color? borderColor;
+  final Color? backgroundColor;
+  final double borderRadius;
+  final double borderWidth;
 
   const AppButton({
     super.key,
@@ -43,6 +47,10 @@ class AppButton extends StatelessWidget {
     this.iconOnly = false,
     this.iconPosition = AppButtonIconPosition.left,
     this.showShimmer = false,
+    this.borderColor,
+    this.backgroundColor,
+    this.borderRadius = 999,
+    this.borderWidth = 1,
   });
 
   @override
@@ -138,12 +146,10 @@ class AppButton extends StatelessWidget {
     }
 
     return SizedBox(
-  height: height,
-  width: width ?? double.infinity,
-  child: showShimmer
-      ? _ButtonShimmer(child: button)
-      : button,
-);
+      height: height,
+      width: width ?? double.infinity,
+      child: showShimmer ? _ButtonShimmer(child: button) : button,
+    );
   }
 
   ButtonStyle _style() {
@@ -177,14 +183,18 @@ class AppButton extends StatelessWidget {
       /// EXISTING OUTLINE
       case AppButtonVariant.outline:
         return OutlinedButton.styleFrom(
-          foregroundColor: AppColors.primary01,
-          side: BorderSide(color: AppColors.primary01),
+          backgroundColor: backgroundColor,
+          foregroundColor: textColor ?? AppColors.primary01,
+          side: BorderSide(
+            color: borderColor ?? AppColors.primary01,
+            width: borderWidth,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(borderRadius),
+          ),
           padding: iconOnly
               ? EdgeInsets.zero
               : const EdgeInsets.symmetric(horizontal: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(40),
-          ),
         );
 
       /// EXISTING TEXT
@@ -230,20 +240,17 @@ class AppButton extends StatelessWidget {
     }
   }
 }
+
 class _ButtonShimmer extends StatefulWidget {
   final Widget child;
 
-  const _ButtonShimmer({
-    required this.child,
-  });
+  const _ButtonShimmer({required this.child});
 
   @override
-  State<_ButtonShimmer> createState() =>
-      _ButtonShimmerState();
+  State<_ButtonShimmer> createState() => _ButtonShimmerState();
 }
 
-class _ButtonShimmerState
-    extends State<_ButtonShimmer>
+class _ButtonShimmerState extends State<_ButtonShimmer>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
 
@@ -272,20 +279,14 @@ class _ButtonShimmerState
           shaderCallback: (Rect bounds) {
             final width = bounds.width;
 
-            final dx =
-                (_controller.value * 2 - 1) * width;
+            final dx = (_controller.value * 2 - 1) * width;
 
             return LinearGradient(
               begin: Alignment.bottomRight,
               end: Alignment.topLeft,
-              colors: const [
-               Colors.white10,
-                Colors.white30,
-                Colors.white10,
-              ],
+              colors: const [Colors.white10, Colors.white30, Colors.white10],
               stops: const [0.35, 0.5, 0.65],
-              transform:
-                  _SlidingGradientTransform(dx),
+              transform: _SlidingGradientTransform(dx),
             ).createShader(bounds);
           },
           blendMode: BlendMode.srcATop,
@@ -296,23 +297,13 @@ class _ButtonShimmerState
   }
 }
 
-class _SlidingGradientTransform
-    extends GradientTransform {
+class _SlidingGradientTransform extends GradientTransform {
   final double slidePercent;
 
-  const _SlidingGradientTransform(
-    this.slidePercent,
-  );
+  const _SlidingGradientTransform(this.slidePercent);
 
   @override
-  Matrix4? transform(
-      Rect bounds, {
-        TextDirection? textDirection,
-      }) {
-    return Matrix4.translationValues(
-      slidePercent,
-      0,
-      0,
-    );
+  Matrix4? transform(Rect bounds, {TextDirection? textDirection}) {
+    return Matrix4.translationValues(slidePercent, 0, 0);
   }
 }

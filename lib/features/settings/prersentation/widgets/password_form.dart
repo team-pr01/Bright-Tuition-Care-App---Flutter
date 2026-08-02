@@ -42,9 +42,6 @@ class _PasswordFormState extends ConsumerState<PasswordForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Change Password", style: theme.textTheme.headlineSmall),
-
-            const SizedBox(height: AppSpacing.lg),
 
             /// Current Password
             AppInputField(

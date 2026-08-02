@@ -1,5 +1,7 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
+import 'package:btcclient/features/profile/presentation/widgets/profile_ring_painter.dart';
+import 'package:btcclient/features/profile/presentation/widgets/progress_dot_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -118,272 +120,146 @@ class TutorProfileCard extends StatelessWidget {
 
       padding: const EdgeInsets.all(AppSpacing.lg),
 
-      decoration: BoxDecoration(
-        color: Colors.white,
-
-        borderRadius: BorderRadius.circular(AppRadius.large),
-
-        border: Border.all(color: AppColors.neutrals04),
-      ),
-
       child: Column(
         children: [
-          /// ================= HEADER =================
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
+          const SizedBox(height: 8),
 
+          // Avatar
+          Stack(
+            alignment: Alignment.center,
+            clipBehavior: Clip.none,
             children: [
-              /// PROFILE IMAGE
-              Stack(
-                clipBehavior: Clip.none,
-
-                children: [
-                  Container(
-                    width: 92,
-                    height: 92,
-
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-
-                      border: Border.all(
-                        color: AppColors.primary01.withOpacity(0.15),
-                        width: 2,
-                      ),
-
-                      image: DecorationImage(
-                        image: provider,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-
-                  Positioned(
-                    right: 2,
-                    bottom: 2,
-                    child: GestureDetector(
-                      onTap: onEditImage,
-                      child: Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary01,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 2),
-                        ),
-                        child: const Icon(
-                          Icons.camera_alt,
-                          size: 15,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+              CustomPaint(
+                size: const Size(102, 102),
+                painter: ProfileRingPainter(progress: profileCompleted / 100),
               ),
 
-              const SizedBox(width: 16),
+              Container(
+                width: 82,
+                height: 82,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white, width: 2),
+                ),
+                child: CircleAvatar(backgroundImage: provider),
+              ),
 
-              /// RIGHT SIDE
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-
-                  children: [
-                    /// NAME
-                    Row(
-                      children: [
-                        Text(
-                          name,
-
-                          maxLines: 2,
-
-                          overflow: TextOverflow.ellipsis,
-
-                          style: AppTextStyles.titleLarge.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-
-                        const SizedBox(width: 6),
-
-                        if (isVerified == true)
-                          const Icon(
-                            Icons.verified,
-                            size: 20,
-                            color: AppColors.primary01,
-                          ),
-                      ],
+              Positioned(
+                right: 6,
+                bottom: 2,
+                child: GestureDetector(
+                  onTap: onEditImage,
+                  child: Container(
+                    width: 24,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: AppColors.primary01, width: 2),
                     ),
-
-                    const SizedBox(height: 4),
-
-                    /// TUTOR ID
-                    Text(
-                      "Tutor ID : $tutorId",
-
-                      style: AppTextStyles.bodySmall.copyWith(
-                        color: AppColors.neutrals03,
-                      ),
+                    child: const Icon(
+                      Icons.camera_alt,
+                      color: AppColors.primary01,
+                      size: 13,
                     ),
+                  ),
+                ),
+              ),
 
-                    const SizedBox(height: 10),
-
-                    /// RATING
-                    Row(
-                      children: [
-                        ...List.generate(5, (index) {
-                          IconData icon;
-
-                          if (rating >= index + 1) {
-                            icon = Icons.star_rounded;
-                          } else if (rating >= index + 0.5) {
-                            icon = Icons.star_half_rounded;
-                          } else {
-                            icon = Icons.star_border_rounded;
-                          }
-
-                          return Padding(
-                            padding: const EdgeInsets.only(right: 2),
-                            child: Icon(icon, size: 18, color: Colors.amber),
-                          );
-                        }),
-                        const SizedBox(width: 6),
-
-                        Text(
-                          "$rating",
-
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.primary01,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+              Positioned.fill(
+                child: CustomPaint(
+                  painter: ProgressDotPainter(progress: profileCompleted / 100),
                 ),
               ),
             ],
           ),
+          const SizedBox(height: 14),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                name,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+
+              const SizedBox(width: 4),
+
+              if (isVerified)
+                const Icon(Icons.verified, color: Colors.white, size: 20),
+            ],
+          ),
+
+          const SizedBox(height: 4),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ...List.generate(
+                5,
+                (index) => Icon(
+                  rating > index ? Icons.star : Icons.star_border,
+                  size: 14,
+                  color: const Color(0xffFFC928),
+                ),
+              ),
+              const SizedBox(width: 4),
+              Text(
+                "(${rating.toStringAsFixed(1)})",
+                style: AppTextStyles.bodySmall.copyWith(color: Colors.white70),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 4),
+
+          const SizedBox(height: 4),
+
+          Text(
+            "Tutor Id: $tutorId | Since 11 Aug, 2025",
+            style: const TextStyle(color: Colors.white70, fontSize: 11),
+          ),
 
           const SizedBox(height: 22),
 
-          /// ================= PROGRESS CARD =================
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: _progressCardColor(),
-              borderRadius: BorderRadius.circular(AppRadius.medium),
-              border: Border.all(color: _progressBorderColor()),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: _progressIconBackground(),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    _progressIcon(),
-                    color: _getProfileCompletionColor(),
-                    size: 24,
-                  ),
+          Row(
+            children: [
+              Expanded(
+                child: AppButton(
+                  label: "Download CV",
+                  variant: AppButtonVariant.outlineGray,
+                  icon: Icons.download,
+                  iconPosition: AppButtonIconPosition.right,
+                  height: 38,
+                  fontSize: 12,
+                  onPressed: onDownload,
                 ),
+              ),
 
-                const SizedBox(width: 14),
+              const SizedBox(width: 12),
 
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        _progressTitle(),
-                        style: AppTextStyles.titleMedium.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
+              Expanded(
+                child: AppButton(
+                  label: "View as Guardian",
+                  variant: AppButtonVariant.outline,
+                  height: 38,
+                  fontSize: 12,
+                  icon: Icons.remove_red_eye_outlined,
+                  iconPosition: AppButtonIconPosition.right,
 
-                      const SizedBox(height: 4),
+                  textColor: Colors.white,
+                  borderColor: Colors.white,
+                  backgroundColor: Colors.transparent,
+                  borderRadius: 6,
 
-                      Text(
-                        _progressSubtitle(),
-                        style: AppTextStyles.bodySmall.copyWith(
-                          color: AppColors.neutrals02,
-                        ),
-                      ),
-
-                      const SizedBox(height: 12),
-
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(100),
-                        child: LinearProgressIndicator(
-                          value: profileCompleted.clamp(0, 100) / 100,
-                          minHeight: 10,
-                          backgroundColor: AppColors.neutrals04,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            _getProfileCompletionColor(),
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      Text(
-                        "$profileCompleted% Complete",
-                        style: AppTextStyles.bodySmall.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: _getProfileCompletionColor(),
-                        ),
-                      ),
-                    ],
-                  ),
+                  onPressed: () {},
                 ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 24),
-
-          /// ================= INFO SECTION =================
-          _infoTile(icon: Icons.email_outlined, title: "Email", value: email),
-
-          const SizedBox(height: 18),
-
-          _infoTile(
-            icon: Icons.phone_outlined,
-            title: "Phone Number",
-            value: phone,
-          ),
-
-          const SizedBox(height: 18),
-
-          _infoTile(
-            icon: Icons.location_on_outlined,
-            title: "Present Address",
-            value: address,
-          ),
-
-          const SizedBox(height: 26),
-
-          /// ================= BUTTONS =================
-          AppButton(
-            label: "Download CV",
-            variant: AppButtonVariant.gradient,
-            height: 50,
-            fontWeight: FontWeight.w600,
-            icon: Icons.download_rounded,
-            onPressed: onDownload,
-          ),
-
-          const SizedBox(height: 10),
-
-          AppButton(
-            label: "View as Guardian or Student",
-            variant: AppButtonVariant.outlineGray,
-            height: 50,
-            fontWeight: FontWeight.w600,
-            icon: Icons.remove_red_eye_outlined,
-            onPressed: () {},
+              ),
+            ],
           ),
         ],
       ),

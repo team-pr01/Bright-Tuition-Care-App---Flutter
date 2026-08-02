@@ -13,11 +13,7 @@ class PersonalSectionCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade300),
-      ),
+    
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -95,18 +95,15 @@ class _GuardianProfilePageState extends ConsumerState<GuardianProfilePage> {
             },
           ),
           const SizedBox(height: 20),
-
           SizedBox(
-            height: 100,
+            height: 70,
             child: Row(
               children: [
                 Expanded(
                   child: ProfileTabCard(
                     title: "Personal",
-                    subtitle: "Information",
                     icon: Icons.person_outline,
                     isActive: selectedTab == 0,
-                    isCompleted: selectedTab == 0,
                     onTap: () {
                       setState(() {
                         selectedTab = 0;
@@ -114,26 +111,20 @@ class _GuardianProfilePageState extends ConsumerState<GuardianProfilePage> {
                     },
                   ),
                 ),
-
-                const SizedBox(width: 12),
-
-                Expanded(
-                  child: ProfileTabCard(
-                    title: "Emergency",
-                    subtitle: "Information",
-                    icon: Icons.emergency_outlined,
-                    isActive: selectedTab == 1,
-                    isCompleted: selectedTab == 1,
-                    onTap: () {
-                      setState(() {
-                        selectedTab = 1;
-                      });
-                    },
-                  ),
+                ProfileTabCard(
+                  title: "Emergency",
+                  icon: Icons.emergency_outlined,
+                  isActive: selectedTab == 1,
+                  onTap: () {
+                    setState(() {
+                      selectedTab = 1;
+                    });
+                  },
                 ),
               ],
             ),
           ),
+          const Divider(height: 1),
 
           const SizedBox(height: 20),
 
