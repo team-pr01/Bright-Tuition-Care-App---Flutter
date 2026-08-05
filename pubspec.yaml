@@ -2,7 +2,7 @@ name: btcclient
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -56,6 +56,10 @@ dependencies:
   http: ^1.5.0
   image_picker: ^1.1.2
   file_saver: ^0.2.14
+  firebase_core: ^2.24.2
+  firebase_messaging: ^14.7.9
+  flutter_local_notifications: ^17.2.2
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:
@@ -88,7 +92,6 @@ flutter:
     - assets/icons/social_media/
     - assets/icons/job_card_icons/
   fonts:
-  
     - family: Outfit
       fonts:
         - asset: assets/fonts/Outfit-Thin.ttf
@@ -96,7 +99,7 @@ flutter:
         - asset: assets/fonts/Outfit-ExtraLight.ttf
           weight: 200
         - asset: assets/fonts/Outfit-Light.ttf
-          weight: 300  
+          weight: 300
         - asset: assets/fonts/Outfit-Regular.ttf
           weight: 400
         - asset: assets/fonts/Outfit-Medium.ttf
@@ -104,14 +107,14 @@ flutter:
         - asset: assets/fonts/Outfit-SemiBold.ttf
           weight: 600
         - asset: assets/fonts/Outfit-Bold.ttf
-          weight: 700  
+          weight: 700
         - asset: assets/fonts/Outfit-ExtraBold.ttf
           weight: 800
         - asset: assets/fonts/Outfit-Black.ttf
-          weight: 900 
+          weight: 900
     - family: AlexBrush
       fonts:
-        - asset: assets/fonts/AlexBrush-Regular.ttf       
+        - asset: assets/fonts/AlexBrush-Regular.ttf
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

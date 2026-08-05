@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1049754581614",
+    "project_id": "bright-tuition-care",
+    "storage_bucket": "bright-tuition-care.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1049754581614:android:a6647b7c161abab381c47f",
+        "android_client_info": {
+          "package_name": "com.prtechsolutions.btc.btcclient"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABASOUN41EdipMtEhCfONoOJaAnhdAQAE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

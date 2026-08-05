@@ -10,12 +10,14 @@ class EducationSectionCard extends StatelessWidget {
   final void Function(Education)? onEdit;
 
   final VoidCallback? onAdd;
+  final VoidCallback? onDelete;
 
   const EducationSectionCard({
     super.key,
     required this.educations,
     this.onEdit,
     this.onAdd,
+    this.onDelete,
   });
 
   @override

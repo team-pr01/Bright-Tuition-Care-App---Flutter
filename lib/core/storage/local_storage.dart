@@ -18,6 +18,7 @@ class LocalStorage {
 
   static const String _keyWelcome = "welcome";
   static const String _keyAuthIdentifier = "authIdentifier";
+  static const String _keyFcmToken = "fcmToken";
 
   // ==========================
   // Access Token
@@ -130,6 +131,7 @@ class LocalStorage {
       clearRole(),
       clearUser(),
       clearAuthIdentifier(),
+        clearFcmToken(),
     ]);
   }
 
@@ -140,4 +142,17 @@ class LocalStorage {
   static Future<void> clearAll() async {
     await _storage.deleteAll();
   }
+
+  // fmc tokan
+  static Future<void> saveFcmToken(String token) async {
+  await _storage.write(key: _keyFcmToken, value: token);
+}
+
+static Future<String?> getFcmToken() async {
+  return _storage.read(key: _keyFcmToken);
+}
+
+static Future<void> clearFcmToken() async {
+  await _storage.delete(key: _keyFcmToken);
+}
 }

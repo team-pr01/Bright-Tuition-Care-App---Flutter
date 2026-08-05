@@ -1,3 +1,21 @@
+// android/build.gradle.kts
+
+// ✅ Add the Google Services classpath in buildscript
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        // ✅ Add this line for Firebase
+        classpath("com.google.gms:google-services:4.3.15")
+        
+        // Keep your existing dependencies if any
+        classpath("com.android.tools.build:gradle:7.3.0")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0")
+    }
+}
+
 allprojects {
     repositories {
         google()

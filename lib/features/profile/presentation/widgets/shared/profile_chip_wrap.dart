@@ -34,13 +34,13 @@ class ProfileChipWrap extends StatelessWidget {
             horizontal: 12,
             vertical: 6,
           ),
-          decoration: BoxDecoration(
-            color: Colors.blue.shade50,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: Colors.blue.shade100,
-            ),
-          ),
+          // decoration: BoxDecoration(
+          //   color: Colors.blue.shade50,
+          //   borderRadius: BorderRadius.circular(20),
+          //   border: Border.all(
+          //     color: Colors.blue.shade100,
+          //   ),
+          // ),
           child: Text(
             item,
             style: const TextStyle(

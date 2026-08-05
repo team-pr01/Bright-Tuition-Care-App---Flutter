@@ -21,7 +21,7 @@ class PersonalSectionCard extends StatelessWidget {
             children: [
               const Expanded(
                 child: Text(
-                  "Personal Information",
+                  "Overview",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                 ),
               ),
@@ -33,7 +33,7 @@ class PersonalSectionCard extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 10),
+          const SizedBox(height: 2),
 
           if ((profile.personalInfo.overview ?? "").trim().isNotEmpty) ...[
            
