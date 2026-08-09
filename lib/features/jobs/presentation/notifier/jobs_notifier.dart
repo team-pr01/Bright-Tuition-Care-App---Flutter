@@ -144,20 +144,20 @@ class JobsNotifier extends StateNotifier<JobsState> {
   }
 
   /// ================= REFRESH =================
- Future<void> refresh() async {
-  try {
-    final res = await repo.getJobs(state.filter);
+  Future<void> refresh() async {
+    try {
+      final res = await repo.getJobs(state.filter);
 
-    state = state.copyWith(
-      jobs: res.jobs,
-      meta: res.meta,
-      hasMore: res.meta.hasMore,
-      error: null,
-    );
-  } catch (e) {
-    state = state.copyWith(error: e.toString());
+      state = state.copyWith(
+        jobs: res.jobs,
+        meta: res.meta,
+        hasMore: res.meta.hasMore,
+        error: null,
+      );
+    } catch (e) {
+      state = state.copyWith(error: e.toString());
+    }
   }
-}
 
   Future<bool> applyJob({required String jobId, required String userId}) async {
     try {
@@ -185,6 +185,17 @@ class JobsNotifier extends StateNotifier<JobsState> {
         print("❌ ERROR: ${e.response?.data}");
       }
       return false;
+    }
+  }
+
+  Future<JobModel> fetchJobByCustomId(String jobId) async {
+    try {
+      final job = await repo.getSingleJobByCustomJobId(jobId);
+
+      return job;
+    } catch (e) {
+      print("❌ Failed to fetch notification job: $e");
+      rethrow;
     }
   }
 }

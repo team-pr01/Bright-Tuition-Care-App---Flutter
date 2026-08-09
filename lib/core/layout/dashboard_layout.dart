@@ -1,12 +1,16 @@
 import 'package:btcclient/core/config/theme.dart';
+import 'package:btcclient/core/services/navigation_service.dart';
 import 'package:btcclient/core/widgets/navbar/bottom_navbar.dart';
 import 'package:btcclient/core/widgets/snackbar/app_snackbar.dart';
 import 'package:btcclient/features/jobs/data/models/job_filter.dart';
+import 'package:btcclient/features/notifications/presentations/provider/notification_notifier.dart';
+import 'package:btcclient/features/notifications/presentations/screens/notification_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/services.dart';
 
-class DashboardLayout extends StatefulWidget {
+class DashboardLayout extends ConsumerStatefulWidget {
   /// 👇 IMPORTANT: updated signature (added String?)
   final List<Widget Function(Function(int, {String? status}), String?)> pages;
 
@@ -21,18 +25,60 @@ class DashboardLayout extends StatefulWidget {
   });
 
   @override
-  State<DashboardLayout> createState() => _DashboardLayoutState();
+  ConsumerState<DashboardLayout> createState() => _DashboardLayoutState();
 }
 
-class _DashboardLayoutState extends State<DashboardLayout> {
+class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
   int currentIndex = 2;
 
   /// 🔥 NEW: filter holder
   String? jobStatusFilter;
 
   DateTime? lastBackPressed;
+  @override
+  void dispose() {
+    debugPrint('🏠 DashboardLayout DISPOSE');
 
-  /// 🔥 UPDATED
+    NavigationService.unregisterJobDetailsHandler();
+
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    debugPrint('🏠 DashboardLayout INIT');
+    debugPrint('🏠 Dashboard registering notification handler');
+
+    NavigationService.registerJobDetailsHandler(_openJobFromNotification);
+
+    debugPrint('🏠 Dashboard handler registration COMPLETE');
+
+    Future.microtask(() {
+      ref.read(notificationNotifierProvider.notifier).loadNotifications();
+    });
+  }
+
+Future<void> _openJobFromNotification(String jobId) async {
+  if (!mounted) return;
+
+  debugPrint(
+    '🔔 Dashboard received notification job: $jobId',
+  );
+
+  // Store the job for Job Board.
+  NavigationService.setPendingJob(jobId);
+
+  // Go directly to Job Board.
+  debugPrint(
+    '➡️ Navigating to Job Board tab 0',
+  );
+
+  changeTab(0);
+}
+
+   /// 🔥 UPDATED
   void changeTab(int index, {String? status}) {
     setState(() {
       currentIndex = index;
@@ -40,10 +86,11 @@ class _DashboardLayoutState extends State<DashboardLayout> {
     });
   }
 
-  int notificationCount = 3;
-
   @override
   Widget build(BuildContext context) {
+    final notificationState = ref.watch(notificationNotifierProvider);
+
+    final unreadCount = notificationState.unreadCount;
     return PopScope(
       canPop: false,
       onPopInvoked: (didPop) async {
@@ -158,9 +205,16 @@ class _DashboardLayoutState extends State<DashboardLayout> {
                               ),
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const NotificationScreen(),
+                              ),
+                            );
+                          },
                         ),
-                        if (notificationCount > 0)
+                        if (unreadCount > 0)
                           Positioned(
                             right: 5,
                             top: 5,
@@ -175,7 +229,7 @@ class _DashboardLayoutState extends State<DashboardLayout> {
                                 minHeight: 16,
                               ),
                               child: Text(
-                                "$notificationCount",
+                                unreadCount > 99 ? '99+' : '$unreadCount',
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
                                   color: Colors.white,
@@ -197,10 +251,7 @@ class _DashboardLayoutState extends State<DashboardLayout> {
         /// 🔥 MAIN BODY (FILTER PASSED HERE)
         body: AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
-          child: widget.pages[currentIndex](
-            changeTab,
-            jobStatusFilter,
-          ),
+          child: widget.pages[currentIndex](changeTab, jobStatusFilter),
         ),
 
         bottomNavigationBar: AppBottomNavBar(

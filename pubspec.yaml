@@ -60,6 +60,10 @@ dependencies:
   firebase_messaging: ^14.7.9
   flutter_local_notifications: ^17.2.2
   shared_preferences: ^2.2.2
+  # OR if using Firebase (recommended)
+  firebase_dynamic_links: ^5.4.0
+  # For navigation
+  go_router: ^10.0.0
 
 dev_dependencies:
   flutter_test:

@@ -1,58 +1,73 @@
 import 'dart:async';
 
+import 'package:btcclient/app.dart';
 import 'package:btcclient/core/utils/notification_service.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'firebase_options.dart';
 
-import 'app.dart';
-
-// ✅ Background message handler (must be top-level function)
+/// Background FCM Handler
 @pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+Future<void> _firebaseMessagingBackgroundHandler(
+    RemoteMessage message) async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  
-  final notificationService = NotificationService();
-  await notificationService.init();
-  
-  print('📨 Background message received: ${message.messageId}');
+
+  debugPrint("📨 Background message received");
+  debugPrint("Message ID: ${message.messageId}");
+  debugPrint("Data: ${message.data}");
+
+  // Don't navigate here.
+  // We'll handle notification taps when the app opens.
 }
 
-void main() {
+Future<void> main() async {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
-    /// Load environment variables (.env)
+    /// Load .env
     await dotenv.load(fileName: ".env");
 
-    // ✅ Initialize Firebase
+    /// Initialize Firebase
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    print('✅ Firebase initialized successfully');
 
-    // ✅ Set background message handler
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    print('✅ Background message handler set');
+    debugPrint("✅ Firebase initialized");
 
-    // ✅ Initialize Notification Service
+    /// Register background handler
+    FirebaseMessaging.onBackgroundMessage(
+      _firebaseMessagingBackgroundHandler,
+    );
+
+    /// Initialize Notification Service
     final notificationService = NotificationService();
     await notificationService.init();
-    print('✅ Notification service initialized');
+
+    debugPrint("✅ Notification Service initialized");
+
+    /// Initialize Deep Link Service
+    // final deepLinkService = DeepLinkService();
+    // await deepLinkService.init();
+
+    debugPrint("✅ Deep Link Service initialized");
 
     runApp(
       const ProviderScope(
-        child: MyApp(), // ✅ This is your actual app from app.dart
+        child: MyApp(),
       ),
     );
+  }, (error, stackTrace) {
+    debugPrint("❌ Unhandled Error: $error");
 
-  }, (error, stack) {
-    debugPrint("GLOBAL ERROR: $error");
-    debugPrintStack(stackTrace: stack);
+    if (kDebugMode) {
+      debugPrintStack(stackTrace: stackTrace);
+    }
   });
 }

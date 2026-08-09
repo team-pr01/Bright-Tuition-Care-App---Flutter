@@ -89,6 +89,17 @@ Future<Map<String, dynamic>> fetchApplications({
 
   return response.data;
 }
+Future<Map<String, dynamic>> getSingleJobByCustomJobId(
+  String jobId,
+) async {
+  final response = await DioClient.dio.get(
+    "/job/single/$jobId",
+  );
+
+  print("📦 SINGLE JOB RESPONSE: ${response.data}");
+
+  return response.data;
+}
 
 }
   

@@ -1,240 +1,344 @@
-// lib/services/notification_service.dart
-import 'package:btcclient/core/storage/local_storage.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:btcclient/features/notifications/services/notification_router.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationService {
-  // Singleton pattern - only one instance exists
-  static final NotificationService _instance = NotificationService._internal();
+  NotificationService._();
+
+  static final NotificationService _instance =
+      NotificationService._();
+
   factory NotificationService() => _instance;
-  NotificationService._internal();
 
-  // Firebase Messaging instance
-  final FirebaseMessaging _messaging = FirebaseMessaging.instance;
-
-  // Local notifications plugin (for showing notifications in foreground)
-  final FlutterLocalNotificationsPlugin _localNotifications =
+  static final FlutterLocalNotificationsPlugin
+      _localNotifications =
       FlutterLocalNotificationsPlugin();
 
-  // API URL - Change this to your backend URL
-  final String _apiUrl =
-      'https://bright-tuition-care-server.onrender.com/api/v1';
-  // Or for local development: http://localhost:5000/api/v1
+  static const AndroidNotificationChannel channel =
+      AndroidNotificationChannel(
+    'bright_tuition_channel',
+    'Bright Tuition Care',
+    description: 'Notifications from Bright Tuition Care',
+    importance: Importance.max,
+    sound: RawResourceAndroidNotificationSound(
+      'notification',
+    ),
+  );
 
-  // This method initializes everything
+  // ============================================================
+  // INITIALIZATION
+  // ============================================================
+
   Future<void> init() async {
-    // 1. Initialize local notifications
-    await _initializeLocalNotifications();
+    const androidSettings =
+        AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
 
-    // 2. Request permission from user
-    await _requestPermissions();
+    const iosSettings =
+        DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+    );
 
-    // 3. Get and save FCM token
-    await _setupFCM();
-
-    // 4. Setup notification listeners
-    _setupListeners();
-  }
-
-  // Step 1: Initialize local notifications
-  Future<void> _initializeLocalNotifications() async {
-    // Android settings
-    const AndroidInitializationSettings androidSettings =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-
-    // iOS settings
-    const DarwinInitializationSettings iosSettings =
-        DarwinInitializationSettings();
-
-    // Combine settings
-    const InitializationSettings settings = InitializationSettings(
+    const settings = InitializationSettings(
       android: androidSettings,
       iOS: iosSettings,
     );
 
-    // Initialize
-    await _localNotifications.initialize(settings);
-    print('✅ Local notifications initialized');
-  }
-
-  // Step 2: Request permission
-  Future<void> _requestPermissions() async {
-    NotificationSettings settings = await _messaging.requestPermission(
-      alert: true, // Show alert
-      badge: true, // Show badge on app icon
-      sound: true, // Play sound
-      provisional: false, // Don't allow provisional permission
+    await _localNotifications.initialize(
+      settings,
+      onDidReceiveNotificationResponse:
+          _onNotificationTap,
+      onDidReceiveBackgroundNotificationResponse:
+          _onNotificationTapBackground,
     );
 
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('✅ Notification permission granted');
-    } else if (settings.authorizationStatus ==
-        AuthorizationStatus.provisional) {
-      print('✅ Provisional notification permission granted');
-    } else {
-      print('❌ Notification permission denied');
+    await _requestPermission();
+
+    await _localNotifications
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
+
+    // ==========================================================
+    // FCM TOKEN
+    // ==========================================================
+
+    final token =
+        await FirebaseMessaging.instance.getToken();
+
+    debugPrint('================================');
+    debugPrint('FCM TOKEN:');
+    debugPrint(token);
+    debugPrint('================================');
+
+    // ==========================================================
+    // FOREGROUND
+    // ==========================================================
+
+    FirebaseMessaging.onMessage.listen(
+      _onForegroundMessage,
+    );
+
+    // ==========================================================
+    // BACKGROUND -> USER TAPS NOTIFICATION
+    // ==========================================================
+
+    FirebaseMessaging.onMessageOpenedApp.listen(
+      _onNotificationOpened,
+    );
+
+    // ==========================================================
+    // TERMINATED -> USER TAPS NOTIFICATION
+    // ==========================================================
+
+    final initialMessage =
+        await FirebaseMessaging.instance
+            .getInitialMessage();
+
+    if (initialMessage != null) {
+      debugPrint(
+        '📨 App opened from terminated notification',
+      );
+
+      _handleNotificationData(
+        initialMessage.data,
+      );
     }
   }
 
-  // Step 3: Setup FCM and get token
-  Future<void> _setupFCM() async {
-    // Get the device token
-    String? token = await _messaging.getToken();
+  // ============================================================
+  // PERMISSION
+  // ============================================================
 
-    if (token != null) {
-      print('📱 FCM Token: $token');
+  Future<void> _requestPermission() async {
+    final settings =
+        await FirebaseMessaging.instance
+            .requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
 
-      // Save token locally
-      await _saveTokenToLocalStorage(token);
-
-      // Send token to your backend
-      await _sendTokenToBackend(token);
-    }
-
-    // Listen for token refresh (when token changes)
-    _messaging.onTokenRefresh.listen((newToken) {
-      print('🔄 FCM Token refreshed: $newToken');
-      _sendTokenToBackend(newToken);
-    });
+    debugPrint(
+      '🔔 Notification Permission: '
+      '${settings.authorizationStatus}',
+    );
   }
 
-  // Step 4: Send token to your backend
-  Future<void> _sendTokenToBackend(String token) async {
+  // ============================================================
+  // FOREGROUND FCM
+  // ============================================================
+
+  void _onForegroundMessage(
+    RemoteMessage message,
+  ) {
+    debugPrint(
+      '📨 Foreground notification received',
+    );
+
+    debugPrint(
+      'Message ID: ${message.messageId}',
+    );
+
+    debugPrint(
+      'Notification Data: ${message.data}',
+    );
+
+    // Show notification in system tray.
+    _showLocalNotification(message);
+  }
+
+  // ============================================================
+  // BACKGROUND FCM -> NOTIFICATION TAP
+  // ============================================================
+
+  void _onNotificationOpened(
+    RemoteMessage message,
+  ) {
+    debugPrint(
+      '🔔 Background notification clicked',
+    );
+
+    debugPrint(
+      'Notification Data: ${message.data}',
+    );
+
+    _handleNotificationData(
+      message.data,
+    );
+  }
+
+  // ============================================================
+  // GENERIC NOTIFICATION HANDLER
+  // ============================================================
+
+  static void handleNotification(
+    Map<String, dynamic> data,
+  ) {
+    debugPrint(
+      '🔔 Handle notification: $data',
+    );
+
+    NotificationRouter.handleNotification(
+      data,
+    );
+  }
+
+  // ============================================================
+  // HANDLE FCM DATA
+  // ============================================================
+
+  void _handleNotificationData(
+    Map<String, dynamic> data,
+  ) {
+    debugPrint(
+      '🔔 FCM notification data: $data',
+    );
+
+    handleNotification(data);
+  }
+
+  // ============================================================
+  // SHOW LOCAL NOTIFICATION
+  // ============================================================
+
+  Future<void> _showLocalNotification(
+    RemoteMessage message,
+  ) async {
+    final notification =
+        message.notification;
+
+    if (notification == null) {
+      debugPrint(
+        '⚠️ FCM message has no notification payload',
+      );
+
+      return;
+    }
+
+    final android =
+        AndroidNotificationDetails(
+      channel.id,
+      channel.name,
+      channelDescription:
+          channel.description,
+      importance: Importance.max,
+      priority: Priority.high,
+      playSound: true,
+    );
+
+    const ios =
+        DarwinNotificationDetails();
+
+    // ----------------------------------------------------------
+    // IMPORTANT:
+    //
+    // We store the ENTIRE notification data
+    // instead of only jobId/deepLink.
+    //
+    // This allows every future notification type
+    // to be routed correctly.
+    // ----------------------------------------------------------
+
+    final payload =
+        jsonEncode(message.data);
+
+    await _localNotifications.show(
+      DateTime.now()
+          .millisecondsSinceEpoch ~/
+          1000,
+      notification.title,
+      notification.body,
+      NotificationDetails(
+        android: android,
+        iOS: ios,
+      ),
+      payload: payload,
+    );
+  }
+
+  // ============================================================
+  // LOCAL NOTIFICATION TAP
+  // ============================================================
+
+  static void _onNotificationTap(
+    NotificationResponse response,
+  ) {
+    debugPrint(
+      '🔔 Local notification clicked',
+    );
+
+    _handlePayload(
+      response.payload,
+    );
+  }
+
+  // ============================================================
+  // LOCAL NOTIFICATION BACKGROUND TAP
+  // ============================================================
+
+  @pragma('vm:entry-point')
+  static void _onNotificationTapBackground(
+    NotificationResponse response,
+  ) {
+    debugPrint(
+      '🔔 Background local notification clicked',
+    );
+
+    _handlePayload(
+      response.payload,
+    );
+  }
+
+  // ============================================================
+  // HANDLE LOCAL NOTIFICATION PAYLOAD
+  // ============================================================
+
+  static void _handlePayload(
+    String? payload,
+  ) {
+    if (payload == null ||
+        payload.isEmpty) {
+      debugPrint(
+        '⚠️ Notification payload is empty',
+      );
+
+      return;
+    }
+
     try {
-      // Get the user's auth token from storage
-      final accessToken = await LocalStorage.getToken();
+      final decoded =
+          jsonDecode(payload);
 
-      if (accessToken == null || accessToken.isEmpty) {
-        print('⚠️ User not logged in, cannot send FCM token');
+      if (decoded is Map) {
+        final data =
+            Map<String, dynamic>.from(
+          decoded,
+        );
+
+        debugPrint(
+          '🔔 Local notification data: $data',
+        );
+
+        handleNotification(data);
+
         return;
       }
 
-      final response = await http.patch(
-        Uri.parse('$_apiUrl/auth/save-push-token'),
-        headers: {
-          'Authorization': accessToken,
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'pushToken': token, // This matches your backend's field name
-        }),
+      debugPrint(
+        '⚠️ Invalid notification payload',
       );
-
-      if (response.statusCode == 200) {
-        print('✅ FCM token sent to backend successfully');
-      } else {
-        print('❌ Failed to send token to backend: ${response.body}');
-      }
     } catch (e) {
-      print('❌ Error sending token to backend: $e');
+      debugPrint(
+        '❌ Failed to decode notification '
+        'payload: $e',
+      );
     }
-  }
-
-  // Save token locally
-  Future<void> _saveTokenToLocalStorage(String token) async {
-    await LocalStorage.saveFcmToken(token);
-    print('💾 FCM token saved locally');
-  }
-
-  // lib/services/notification_service.dart
-  // Add this method to your existing NotificationService class
-
-  Future<void> showTestNotification() async {
-    const AndroidNotificationDetails androidDetails =
-        AndroidNotificationDetails(
-          'test_channel',
-          'Test Notifications',
-          channelDescription: 'Channel for test notifications',
-          importance: Importance.high,
-          priority: Priority.high,
-          enableVibration: true,
-          playSound: true,
-        );
-
-    const DarwinNotificationDetails iosDetails = DarwinNotificationDetails();
-
-    const NotificationDetails details = NotificationDetails(
-      android: androidDetails,
-      iOS: iosDetails,
-    );
-
-    await _localNotifications.show(
-      DateTime.now().millisecond,
-      '🎉 Test Notification',
-      'This is a test notification from your app!',
-      details,
-    );
-  }
-
-  // Step 5: Setup notification listeners
-  void _setupListeners() {
-    // When app is in FOREGROUND (user is using the app)
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('📨 Foreground message received');
-      print('Title: ${message.notification?.title}');
-      print('Body: ${message.notification?.body}');
-
-      // Show local notification
-      _showLocalNotification(message);
-    });
-
-    // When app is opened from a notification (background or terminated)
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('📱 App opened from notification');
-      _handleNavigation(message);
-    });
-  }
-
-  // Show notification when app is in foreground
-  Future<void> _showLocalNotification(RemoteMessage message) async {
-    const AndroidNotificationDetails androidDetails =
-        AndroidNotificationDetails(
-          'main_channel', // Channel ID
-          'Main Notifications', // Channel Name
-          channelDescription: 'Notifications from the app',
-          importance: Importance.high,
-          priority: Priority.high,
-          enableVibration: true,
-          playSound: true,
-        );
-
-    const DarwinNotificationDetails iosDetails = DarwinNotificationDetails();
-
-    const NotificationDetails details = NotificationDetails(
-      android: androidDetails,
-      iOS: iosDetails,
-    );
-
-    await _localNotifications.show(
-      DateTime.now().millisecond, // Unique ID
-      message.notification?.title ?? 'New Notification',
-      message.notification?.body ?? '',
-      details,
-      payload: jsonEncode(message.data), // Pass data for navigation
-    );
-  }
-
-  // Navigate when user taps notification
-  void _handleNavigation(RemoteMessage message) {
-    // Get data from notification
-    final data = message.data;
-    final screen = data['screen']; // e.g., 'orders', 'messages', etc.
-    final id = data['id']; // e.g., order ID, message ID
-
-    print('📱 Navigate to: $screen with ID: $id');
-
-    // You can use Provider or GetX to navigate here
-    // For now, we'll just print it
-  }
-
-  // Background handler (when app is terminated)
-  @pragma('vm:entry-point')
-  static Future<void> _backgroundHandler(RemoteMessage message) async {
-    print('📨 Background message received');
-    // Firebase is already initialized in background
-    // Do any background processing here
   }
 }

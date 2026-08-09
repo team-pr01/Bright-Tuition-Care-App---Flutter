@@ -1,3 +1,4 @@
+import 'package:btcclient/core/services/navigation_service.dart';
 import 'package:btcclient/core/widgets/dev_reset_button.dart';
 import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
 import 'package:btcclient/features/guardian/presentation/guardian_dashboard_screen.dart';
@@ -48,30 +49,30 @@ class MyApp extends ConsumerWidget {
     }
 
     return MaterialApp(
-  debugShowCheckedModeBanner: false,
-  theme: AppTheme.light(),
- home: Stack(
-  children: [
-    AnimatedSwitcher(
-      duration: const Duration(milliseconds: 400),
-      transitionBuilder: (child, animation) {
-        return FadeTransition(
-          opacity: animation,
-          child: SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(0.05, 0),
-              end: Offset.zero,
-            ).animate(animation),
-            child: child,
+      navigatorKey: NavigationService.navigatorKey,
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.light(),
+      home: Stack(
+        children: [
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 400),
+            transitionBuilder: (child, animation) {
+              return FadeTransition(
+                opacity: animation,
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(0.05, 0),
+                    end: Offset.zero,
+                  ).animate(animation),
+                  child: child,
+                ),
+              );
+            },
+            child: screen,
           ),
-        );
-      },
-      child: screen,
-    ),
-    const DevResetButton(),
-  ],
-),
-);
-
+          const DevResetButton(),
+        ],
+      ),
+    );
   }
 }

@@ -1,10 +1,13 @@
 import 'dart:ui';
 
 import 'package:btcclient/core/config/theme.dart';
+import 'package:btcclient/features/notifications/presentations/provider/notification_notifier.dart';
+import 'package:btcclient/features/notifications/presentations/screens/notification_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class CommonAppBar extends StatefulWidget
+class CommonAppBar extends ConsumerWidget
     implements PreferredSizeWidget {
   final String title;
 
@@ -17,31 +20,12 @@ class CommonAppBar extends StatefulWidget
   Size get preferredSize => const Size.fromHeight(56);
 
   @override
-  State<CommonAppBar> createState() =>
-      _CommonAppBarState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notificationState =
+        ref.watch(notificationNotifierProvider);
 
-class _CommonAppBarState extends State<CommonAppBar> {
-  int notificationCount = 0;
+    final unreadCount = notificationState.unreadCount;
 
-  @override
-  void initState() {
-    super.initState();
-    fetchNotifications();
-  }
-
-  Future<void> fetchNotifications() async {
-    await Future.delayed(const Duration(seconds: 1));
-
-    if (mounted) {
-      setState(() {
-        notificationCount = 3;
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return ClipRect(
       child: BackdropFilter(
         filter: ImageFilter.blur(
@@ -71,7 +55,7 @@ class _CommonAppBarState extends State<CommonAppBar> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  /// Back Button
+                  /// BACK BUTTON
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Padding(
@@ -88,12 +72,14 @@ class _CommonAppBarState extends State<CommonAppBar> {
                             borderRadius:
                                 BorderRadius.circular(30),
                             border: Border.all(
-                              color: Colors.grey.shade300,
+                              color:
+                                  Colors.grey.shade300,
                             ),
                           ),
                           child: const Icon(
                             Icons.arrow_back,
-                            color: AppColors.primary01,
+                            color:
+                                AppColors.primary01,
                             size: 20,
                           ),
                         ),
@@ -101,60 +87,90 @@ class _CommonAppBarState extends State<CommonAppBar> {
                     ),
                   ),
 
-                  /// Title
+                  /// TITLE
                   Text(
-                    widget.title,
-                    style: AppTextStyles.titleMedium.copyWith(
+                    title,
+                    style:
+                        AppTextStyles.titleMedium.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
 
-                  /// Notification
+                  /// NOTIFICATION BUTTON
                   Align(
-                    alignment: Alignment.centerRight,
+                    alignment:
+                        Alignment.centerRight,
                     child: Padding(
                       padding:
                           const EdgeInsets.only(right: 12),
                       child: Stack(
+                        clipBehavior: Clip.none,
                         children: [
                           IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      const NotificationScreen(),
+                                ),
+                              );
+                            },
                             icon: Container(
                               padding:
                                   const EdgeInsets.all(6),
-                              decoration: BoxDecoration(
+                              decoration:
+                                  BoxDecoration(
                                 borderRadius:
-                                    BorderRadius.circular(30),
+                                    BorderRadius.circular(
+                                        30),
                                 border: Border.all(
                                   color:
                                       Colors.grey.shade300,
                                 ),
                               ),
-                              child: SvgPicture.asset(
+                              child:
+                                  SvgPicture.asset(
                                 "assets/icons/operations/notification.svg",
                                 width: 20,
                                 height: 20,
                               ),
                             ),
                           ),
-                          if (notificationCount > 0)
+
+                          /// UNREAD BADGE
+                          if (unreadCount > 0)
                             Positioned(
-                              right: 5,
-                              top: 5,
+                              right: 3,
+                              top: 2,
                               child: Container(
-                                width: 16,
-                                height: 16,
-                                alignment: Alignment.center,
+                                constraints:
+                                    const BoxConstraints(
+                                  minWidth: 16,
+                                  minHeight: 16,
+                                ),
+                                padding:
+                                    const EdgeInsets
+                                        .symmetric(
+                                  horizontal: 4,
+                                  vertical: 2,
+                                ),
+                                alignment:
+                                    Alignment.center,
                                 decoration:
                                     const BoxDecoration(
                                   color: Colors.red,
-                                  shape: BoxShape.circle,
+                                  shape:
+                                      BoxShape.circle,
                                 ),
                                 child: Text(
-                                  "$notificationCount",
+                                  unreadCount > 99
+                                      ? '99+'
+                                      : '$unreadCount',
                                   style:
                                       const TextStyle(
-                                    color: Colors.white,
+                                    color:
+                                        Colors.white,
                                     fontSize: 9,
                                     fontWeight:
                                         FontWeight.bold,

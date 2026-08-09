@@ -1,5 +1,6 @@
 import 'package:btcclient/features/jobs/data/models/job_application_meta.dart';
 import 'package:btcclient/features/jobs/data/models/job_application_modal.dart';
+import 'package:btcclient/features/jobs/data/models/job_model.dart';
 import 'package:btcclient/features/jobs/data/responses/application_response.dart';
 import 'package:btcclient/features/jobs/data/responses/jobs_response.dart';
 import 'package:btcclient/features/jobs/data/responses/posted_jobs_response.dart';
@@ -109,5 +110,19 @@ Future<(List<JobApplicationModel>, JobApplicationMeta)> getApplications({
     return (list, meta);
   }
 
+Future<JobModel> getSingleJobByCustomJobId(
+  String jobId,
+) async {
+  final response = await api.getSingleJobByCustomJobId(jobId);
 
+  if (response["success"] != true) {
+    throw Exception(
+      response["message"] ?? "Failed to fetch job",
+    );
+  }
+
+  final data = response["data"];
+
+  return JobModel.fromJson(data);
+}
 }

@@ -14,6 +14,10 @@ import 'package:btcclient/features/jobs/presentation/widgets/skeleton/job_card_s
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:btcclient/core/services/navigation_service.dart';
+import 'package:btcclient/features/jobs/presentation/enums/job_card_variant.dart';
+import 'package:btcclient/features/jobs/presentation/provider/job_provider.dart';
+import 'package:btcclient/features/jobs/presentation/widgets/job_bottom_sheet.dart';
 import 'dart:async';
 
 class JobsPage extends ConsumerStatefulWidget {
@@ -35,28 +39,162 @@ class _JobsPageState extends ConsumerState<JobsPage> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _searchController = TextEditingController();
   Timer? _debounce;
+  bool _openingNotificationJob = false;
+
   bool get isTutor => widget.role == "tutor";
+
+  void _checkNotificationJob() {
+    if (!isTutor) {
+      return;
+    }
+
+    if (_openingNotificationJob) {
+      return;
+    }
+
+    final jobId = NavigationService.pendingJobId;
+
+    if (jobId == null || jobId.isEmpty) {
+      return;
+    }
+
+    debugPrint('🔔 JobsPage detected pending notification job: $jobId');
+
+    _openPendingNotificationJob();
+  }
+
+  Future<void> _openPendingNotificationJob() async {
+    if (!isTutor) {
+      return;
+    }
+
+    if (_openingNotificationJob) {
+      return;
+    }
+
+    final jobId = NavigationService.consumePendingJob();
+
+    if (jobId == null || jobId.isEmpty) {
+      debugPrint('ℹ️ JobsPage: no pending notification job');
+      return;
+    }
+
+    debugPrint('🔔 JobsPage received notification job: $jobId');
+
+    _openingNotificationJob = true;
+
+    try {
+      final jobsState = ref.read(jobsProvider);
+
+      dynamic job;
+
+      // ========================================================
+      // 1. FIRST: CHECK WHETHER JOB IS ALREADY LOADED
+      // ========================================================
+
+      for (final item in jobsState.jobs) {
+        final loadedJobId = item.jobId?.toString();
+
+        if (loadedJobId == jobId) {
+          job = item;
+          break;
+        }
+      }
+
+      // ========================================================
+      // 2. IF ALREADY LOADED → OPEN IMMEDIATELY
+      // ========================================================
+
+      if (job != null) {
+        debugPrint('⚡ Job $jobId already loaded → opening bottom sheet');
+
+        if (!mounted) return;
+
+        await _showNotificationJobSheet(job);
+
+        return;
+      }
+
+      // ========================================================
+      // 3. NOT LOADED → FETCH IT
+      // ========================================================
+
+      debugPrint('🌐 Job $jobId not loaded → fetching from API');
+
+      final fetchedJob = await ref
+          .read(jobsProvider.notifier)
+          .fetchJobByCustomId(jobId);
+
+      if (!mounted) return;
+
+      debugPrint('✅ Notification job fetched: ${fetchedJob.jobId}');
+
+      // ========================================================
+      // 4. OPEN SAME BOTTOM SHEET
+      // ========================================================
+
+      await _showNotificationJobSheet(fetchedJob);
+    } catch (e, stackTrace) {
+      debugPrint('❌ Failed to open notification job: $e');
+
+      debugPrintStack(stackTrace: stackTrace);
+    } finally {
+      _openingNotificationJob = false;
+    }
+  }
+
+  Future<void> _showNotificationJobSheet(dynamic job) async {
+    if (!mounted) {
+      return;
+    }
+
+    debugPrint('📋 Opening JobBottomSheet for job: ${job.jobId}');
+
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) {
+        return JobBottomSheet(
+          variant: JobCardVariant.job,
+          job: job,
+          changeTab: widget.changeTab,
+        );
+      },
+    );
+  }
 
   @override
   void initState() {
     super.initState();
 
-    /// 🔥 INITIAL FETCH (ROLE BASED)
-
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!isTutor) {
-          ref
-              .read(postedJobsProvider.notifier)
-              .fetchPostedJobs(status: widget.initialStatus);
-        }
-        if (isTutor) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (isTutor) {
         final filter = ref.read(selectedJobFilterProvider);
 
         ref.read(jobsProvider.notifier).fetchJobs(newFilter: filter);
       }
-      });
+      // if (!isTutor) {
+      //   await ref
+      //       .read(postedJobsProvider.notifier)
+      //       .fetchPostedJobs(status: widget.initialStatus);
 
-    /// 🔥 PAGINATION
+      //   return;
+      // }
+
+      // final filter = ref.read(selectedJobFilterProvider);
+
+      // await ref.read(jobsProvider.notifier).fetchJobs(newFilter: filter);
+
+      // --------------------------------------------------------
+      // IMPORTANT:
+      // Check notification AFTER Job Board is initialized.
+      // --------------------------------------------------------
+
+      // if (mounted) {
+      //   await _openPendingNotificationJob();
+      // }
+    });
+
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
           _scrollController.position.maxScrollExtent - 200) {
@@ -78,15 +216,24 @@ class _JobsPageState extends ConsumerState<JobsPage> {
 
   @override
   Widget build(BuildContext context) {
-    /// 🔥 SWITCH STATE BASED ON ROLE
+    if (isTutor) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _checkNotificationJob();
+        }
+      });
+    }
+
     final jobsState = ref.watch(jobsProvider);
     final postedState = ref.watch(postedJobsProvider);
     final state = isTutor ? jobsState : postedState;
+
     ref.listen<JobFilter?>(selectedJobFilterProvider, (previous, next) {
       if (isTutor && next != null) {
         ref.read(jobsProvider.notifier).fetchJobs(newFilter: next);
       }
     });
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -101,9 +248,8 @@ class _JobsPageState extends ConsumerState<JobsPage> {
 
   /// ================= TOP BAR =================
   Widget _buildTopBar(state) {
-    
     final selectedFilter = ref.watch(selectedJobFilterProvider);
-       final hasFilters =
+    final hasFilters =
         (selectedFilter?.city?.isNotEmpty ?? false) ||
         (selectedFilter?.area?.isNotEmpty ?? false) ||
         (selectedFilter?.category?.isNotEmpty ?? false) ||
@@ -300,7 +446,6 @@ class _JobsPageState extends ConsumerState<JobsPage> {
                           width: 42,
                           height: 32,
                           onPressed: () async {
-
                             ref.read(selectedJobFilterProvider.notifier).state =
                                 JobFilter(status: "live");
 
