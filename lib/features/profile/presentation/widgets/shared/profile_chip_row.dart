@@ -22,7 +22,6 @@ class ProfileChipRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 100,
             child: Text(
               label,
               style: const TextStyle(

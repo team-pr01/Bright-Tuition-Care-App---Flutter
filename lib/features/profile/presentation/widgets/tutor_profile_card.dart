@@ -122,7 +122,7 @@ class TutorProfileCard extends StatelessWidget {
 
       child: Column(
         children: [
-          const SizedBox(height: 8),
+          const SizedBox(height: 40),
 
           // Avatar
           Stack(
@@ -130,13 +130,13 @@ class TutorProfileCard extends StatelessWidget {
             clipBehavior: Clip.none,
             children: [
               CustomPaint(
-                size: const Size(102, 102),
+                size: const Size(110, 110),
                 painter: ProfileRingPainter(progress: profileCompleted / 100),
               ),
 
               Container(
-                width: 82,
-                height: 82,
+                width: 90,
+                height: 90,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.white, width: 2),

@@ -20,7 +20,7 @@ class ProfileInfoRow extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start, 
         children: [
           SizedBox(
             child: Text(

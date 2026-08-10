@@ -181,7 +181,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
 
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
                 AppInputField(
                   label: "Level of Education",
                   type: AppInputType.dropdown,
@@ -196,7 +196,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                   },
                 ),
 
-                const SizedBox(height: 18),
+                const SizedBox(height: 2),
                 AppInputField(
                   controller: _instituteController,
                   label: "Institute Name",
@@ -217,7 +217,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                   },
                 ),
 
-                const SizedBox(height: 18),
+                const SizedBox(height: 2),
                 AppInputField(
                   label: "Exam / Degree Title",
                   type: AppInputType.dropdown,
@@ -231,10 +231,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                     });
                   },
                 ),
-                const SizedBox(height: 28),
-                Divider(color: Colors.grey.shade300),
-
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
                 Text(
                   shouldShowSchoolLevelFields ? "School Information" : "Higher Education",
                   style: const TextStyle(
@@ -243,7 +240,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                   ),
                 ),
 
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
                 if (shouldShowSchoolLevelFields) ...[
                   AppInputField(
                     label: "Group",
@@ -259,7 +256,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                     },
                   ),
 
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 2),
 
                   AppInputField(
                     label: "Board",
@@ -275,7 +272,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                     },
                   ),
 
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 2),
                 ],
                 if (shouldShowHigherEducationFields) ...[
                   AppInputField(
@@ -292,7 +289,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                     },
                   ),
 
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 2),
 
                   AppInputField(
                     controller: _semesterController,
@@ -300,7 +297,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                     hint: "e.g., 5th semester, 3rd year",
                   ),
 
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 2),
                 ],
                 AppInputField(
                   controller: _resultController,
@@ -308,7 +305,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                   hint: "e.g., 3.75 GPA/CGPA",
                 ),
 
-                const SizedBox(height: 18),
+                const SizedBox(height: 2),
                 if (!_currentInstitute) ...[
                   AppInputField(
                     controller: _passingYearController,
@@ -317,7 +314,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                     keyboardType: TextInputType.number,
                   ),
 
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 2),
                 ],
                 CheckboxListTile(
                   value: _currentInstitute,
@@ -334,11 +331,6 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                     });
                   },
                 ),
-
-                const SizedBox(height: 24),
-                Divider(color: Colors.grey.shade300),
-
-                const SizedBox(height: 24),
                 AppButton(
                   label: widget.isEdit ? "Update Education" : "Add Education",
                   loading: _saving,

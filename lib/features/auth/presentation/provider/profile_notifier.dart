@@ -62,7 +62,7 @@ class ProfileNotifier extends StateNotifier<dynamic> {
       isLoading = true;
       error = null;
       print("===== EDUCATION PAYLOAD =====");
-       print("Adding education3: ${request.toJson()}"); 
+      print("Adding education3: ${request.toJson()}");
       print("=============================");
       await repo.addEducation(request);
 
@@ -115,23 +115,50 @@ class ProfileNotifier extends StateNotifier<dynamic> {
       isLoading = false;
     }
   }
+
   Future<bool> updateProfileImage(File image) async {
-  try {
-    isLoading = true;
-    error = null;
+    try {
+      isLoading = true;
+      error = null;
 
-    await repo.updateProfileImage(image);
+      await repo.updateProfileImage(image);
 
-    await fetchProfile();
+      await fetchProfile();
 
-    return true;
-  } catch (e) {
-    error = ApiErrorHandler.getMessage(e);
-    return false;
-  } finally {
-    isLoading = false;
+      return true;
+    } catch (e) {
+      error = ApiErrorHandler.getMessage(e);
+      return false;
+    } finally {
+      isLoading = false;
+    }
   }
-}
+
+  Future<bool> updateTuitionRelatedInfo({
+    required Map<String, dynamic> tuitionPreference,
+    required String totalExperience,
+  }) async {
+    try {
+      isLoading = true;
+      error = null;
+
+      final payload = {
+        "tuitionPreference": tuitionPreference,
+        "experience": {"totalExperience": totalExperience},
+      };
+
+      await repo.updateProfile(payload);
+
+      await fetchProfile();
+
+      return true;
+    } catch (e) {
+      error = ApiErrorHandler.getMessage(e);
+      return false;
+    } finally {
+      isLoading = false;
+    }
+  }
 
   void clearProfile() {
     state = null;

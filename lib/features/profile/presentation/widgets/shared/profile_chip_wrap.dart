@@ -25,31 +25,12 @@ class ProfileChipWrap extends StatelessWidget {
       );
     }
 
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: values.map((item) {
-        return Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 6,
-          ),
-          // decoration: BoxDecoration(
-          //   color: Colors.blue.shade50,
-          //   borderRadius: BorderRadius.circular(20),
-          //   border: Border.all(
-          //     color: Colors.blue.shade100,
-          //   ),
-          // ),
-          child: Text(
-            item,
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        );
-      }).toList(),
+    return Text(
+      values.join(', '),
+      style: const TextStyle(
+        fontSize: 13,
+        fontWeight: FontWeight.w500,
+      ),
     );
   }
 }

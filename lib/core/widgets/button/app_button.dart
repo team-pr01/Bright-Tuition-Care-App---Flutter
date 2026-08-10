@@ -162,7 +162,7 @@ class AppButton extends StatelessWidget {
           elevation: 0,
           padding: iconOnly
               ? EdgeInsets.zero
-              : const EdgeInsets.symmetric(horizontal: 16),
+              : const EdgeInsets.symmetric(horizontal: 10),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         );
 
@@ -174,7 +174,7 @@ class AppButton extends StatelessWidget {
           elevation: 0,
           padding: iconOnly
               ? EdgeInsets.zero
-              : const EdgeInsets.symmetric(horizontal: 16),
+              : const EdgeInsets.symmetric(horizontal: 10),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(40),
           ),
@@ -210,7 +210,7 @@ class AppButton extends StatelessWidget {
           elevation: 0,
           padding: iconOnly
               ? EdgeInsets.zero
-              : const EdgeInsets.symmetric(horizontal: 16),
+              : const EdgeInsets.symmetric(horizontal: 10),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         );
 
@@ -224,7 +224,7 @@ class AppButton extends StatelessWidget {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           padding: iconOnly
               ? EdgeInsets.zero
-              : const EdgeInsets.symmetric(horizontal: 16),
+              : const EdgeInsets.symmetric(horizontal: 10),
         );
       case AppButtonVariant.delete:
         return ElevatedButton.styleFrom(
@@ -233,7 +233,7 @@ class AppButton extends StatelessWidget {
           elevation: 0,
           padding: iconOnly
               ? EdgeInsets.zero
-              : const EdgeInsets.symmetric(horizontal: 16),
+              : const EdgeInsets.symmetric(horizontal: 10),
           side: BorderSide(color: AppColors.neutrals04),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         );

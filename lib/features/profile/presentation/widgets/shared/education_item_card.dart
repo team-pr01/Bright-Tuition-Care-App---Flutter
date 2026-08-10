@@ -46,12 +46,12 @@ class EducationItemCard extends StatelessWidget {
                     Text(
                       education.degree.isEmpty ? "Education" : education.degree,
                       style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
 
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 4),
 
                     Text(
                       education.institute.isEmpty
@@ -63,45 +63,26 @@ class EducationItemCard extends StatelessWidget {
                 ),
               ),
 
-              if (isCurrent)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.green.withOpacity(.1),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Text(
-                    "Current",
-                    style: TextStyle(
-                      color: Colors.green,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-
-              const SizedBox(width: 12),
-
               AppButton(
                 iconOnly: true,
                 icon: Icons.edit_outlined,
-                variant: AppButtonVariant.outline,
-                width: 42,
+                variant: AppButtonVariant.outlineGray,
+                width: 32,
                 height: 32,
                 onPressed: onEdit,
+              
               ),
 
-              const SizedBox(width: 12),
+              const SizedBox(width: 8),
               AppButton(
                 iconOnly: true,
                 icon: Icons.delete_outline,
-                variant: AppButtonVariant.delete,
-                width: 42,
+                variant: AppButtonVariant.outlineGray,
+                width: 32,
                 height: 32,
                 onPressed: onDelete,
                 textColor: AppColors.error,
+                backgroundColor: AppColors.backgroundLight,
               ),
             ],
           ),
@@ -122,6 +103,10 @@ class EducationItemCard extends StatelessWidget {
                 ProfileInfoRow(label: "Group", value: education.group),
 
                 ProfileInfoRow(label: "Board", value: education.board),
+                ProfileInfoRow(
+                  label: "Is Current Institute",
+                  value: education.isCurrentInstitute == true ? "Yes" : "No",
+                ),
               ],
 
               /// DEPARTMENT & SEMESTER

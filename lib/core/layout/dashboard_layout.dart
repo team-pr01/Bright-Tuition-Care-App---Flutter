@@ -51,19 +51,17 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
 
     debugPrint('🏠 DashboardLayout INIT');
     Future.microtask(() async {
-    debugPrint('🔥 Dashboard opened → registering FCM token');
+      debugPrint('🔥 Dashboard opened → registering FCM token');
 
-    await NotificationService().registerFcmToken();
+      await NotificationService().registerFcmToken();
 
-    debugPrint('🔥 Dashboard FCM registration completed');
+      debugPrint('🔥 Dashboard FCM registration completed');
 
-    // Load notifications
-    if (mounted) {
-      ref
-          .read(notificationNotifierProvider.notifier)
-          .loadNotifications();
-    }
-  });
+      // Load notifications
+      if (mounted) {
+        ref.read(notificationNotifierProvider.notifier).loadNotifications();
+      }
+    });
     debugPrint('🏠 Dashboard registering notification handler');
 
     NavigationService.registerJobDetailsHandler(_openJobFromNotification);
@@ -75,30 +73,30 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
     // });
   }
 
-Future<void> _openJobFromNotification(String jobId) async {
-  if (!mounted) return;
+  Future<void> _openJobFromNotification(String jobId) async {
+    if (!mounted) return;
 
-  debugPrint(
-    '🔔 Dashboard received notification job: $jobId',
-  );
+    debugPrint('🔔 Dashboard received notification job: $jobId');
 
-  // Store the job for Job Board.
-  NavigationService.setPendingJob(jobId);
+    // Store the job for Job Board.
+    NavigationService.setPendingJob(jobId);
 
-  // Go directly to Job Board.
-  debugPrint(
-    '➡️ Navigating to Job Board tab 0',
-  );
+    // Go directly to Job Board.
+    debugPrint('➡️ Navigating to Job Board tab 0');
 
-  changeTab(0);
-}
+    changeTab(0);
+  }
 
-   /// 🔥 UPDATED
+  /// 🔥 UPDATED
   void changeTab(int index, {String? status}) {
     setState(() {
       currentIndex = index;
       jobStatusFilter = status;
     });
+  }
+
+  bool get _showAppBar {
+    return currentIndex != 4; // Profile
   }
 
   @override
@@ -139,129 +137,134 @@ Future<void> _openJobFromNotification(String jobId) async {
       child: Scaffold(
         drawer: widget.drawerBuilder(changeTab),
 
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(56),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            decoration: const BoxDecoration(
-              color: AppColors.neutrals01,
-              boxShadow: [
-                BoxShadow(
-                  color: Color.fromRGBO(0, 0, 0, 0.10),
-                  offset: Offset(0, 1.446),
-                  blurRadius: 1.446,
-                ),
-              ],
-            ),
-            child: SafeArea(
-              bottom: false,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Builder(
-                      builder: (context) => IconButton(
-                        icon: Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30),
-                            border: Border.all(
-                              color: AppColors.primary03,
-                              width: 1,
-                            ),
-                          ),
-                          child: SvgPicture.asset(
-                            "assets/icons/operations/menu.svg",
-                            width: 20,
-                            height: 20,
-                            colorFilter: const ColorFilter.mode(
-                              AppColors.primary01,
-                              BlendMode.srcIn,
-                            ),
-                          ),
-                        ),
-                        onPressed: () {
-                          Scaffold.of(context).openDrawer();
-                        },
+        appBar: _showAppBar
+            ? PreferredSize(
+                preferredSize: const Size.fromHeight(56),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                  ),
+                  decoration: const BoxDecoration(
+                    color: AppColors.neutrals01,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color.fromRGBO(0, 0, 0, 0.10),
+                        offset: Offset(0, 1.446),
+                        blurRadius: 1.446,
                       ),
-                    ),
+                    ],
                   ),
-
-                  Center(
-                    child: Image.asset(
-                      "assets/images/logo.png",
-                      height: 32,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-
-                  Align(
-                    alignment: Alignment.centerRight,
+                  child: SafeArea(
+                    bottom: false,
                     child: Stack(
+                      alignment: Alignment.center,
                       children: [
-                        IconButton(
-                          icon: Container(
-                            padding: const EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30),
-                              border: Border.all(
-                                color: AppColors.primary03,
-                                width: 1,
-                              ),
-                            ),
-                            child: SvgPicture.asset(
-                              "assets/icons/operations/notification.svg",
-                              width: 20,
-                              height: 20,
-                              colorFilter: const ColorFilter.mode(
-                                AppColors.primary01,
-                                BlendMode.srcIn,
-                              ),
-                            ),
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const NotificationScreen(),
-                              ),
-                            );
-                          },
-                        ),
-                        if (unreadCount > 0)
-                          Positioned(
-                            right: 5,
-                            top: 5,
-                            child: Container(
-                              padding: const EdgeInsets.all(4),
-                              decoration: const BoxDecoration(
-                                color: Colors.red,
-                                shape: BoxShape.circle,
-                              ),
-                              constraints: const BoxConstraints(
-                                minWidth: 16,
-                                minHeight: 16,
-                              ),
-                              child: Text(
-                                unreadCount > 99 ? '99+' : '$unreadCount',
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Builder(
+                            builder: (context) => IconButton(
+                              icon: Container(
+                                padding: const EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  border: Border.all(
+                                    color: AppColors.primary03,
+                                    width: 1,
+                                  ),
+                                ),
+                                child: SvgPicture.asset(
+                                  "assets/icons/operations/menu.svg",
+                                  width: 20,
+                                  height: 20,
+                                  colorFilter: const ColorFilter.mode(
+                                    AppColors.primary01,
+                                    BlendMode.srcIn,
+                                  ),
                                 ),
                               ),
+                              onPressed: () {
+                                Scaffold.of(context).openDrawer();
+                              },
                             ),
                           ),
+                        ),
+
+                        Center(
+                          child: Image.asset(
+                            "assets/images/logo.png",
+                            height: 32,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Stack(
+                            children: [
+                              IconButton(
+                                icon: Container(
+                                  padding: const EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(30),
+                                    border: Border.all(
+                                      color: AppColors.primary03,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: SvgPicture.asset(
+                                    "assets/icons/operations/notification.svg",
+                                    width: 20,
+                                    height: 20,
+                                    colorFilter: const ColorFilter.mode(
+                                      AppColors.primary01,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          const NotificationScreen(),
+                                    ),
+                                  );
+                                },
+                              ),
+                              if (unreadCount > 0)
+                                Positioned(
+                                  right: 5,
+                                  top: 5,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(4),
+                                    decoration: const BoxDecoration(
+                                      color: Colors.red,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    constraints: const BoxConstraints(
+                                      minWidth: 16,
+                                      minHeight: 16,
+                                    ),
+                                    child: Text(
+                                      unreadCount > 99 ? '99+' : '$unreadCount',
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-        ),
+                ),
+              )
+            : null,
 
         /// 🔥 MAIN BODY (FILTER PASSED HERE)
         body: AnimatedSwitcher(

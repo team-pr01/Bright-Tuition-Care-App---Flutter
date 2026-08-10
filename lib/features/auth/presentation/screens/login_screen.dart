@@ -58,8 +58,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         );
   }
 
- 
-
   void _forgotPassword() {
     Navigator.push(
       context,
@@ -169,39 +167,40 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 4),
-                        child: SizedBox(
-                          height: 16,
-                          width: 16,
-                          child: Checkbox(
-                            value: rememberMe,
-                            onChanged: (val) {
-                              setState(() {
-                                rememberMe = val ?? false;
-                              });
-                            },
-                            activeColor: AppColors.primary01,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(3),
-                            ),
-                            side: BorderSide(color: AppColors.neutrals03),
-                          ),
-                        ),
-                      ),
+                  // Row(
+                  //   children: [
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 4),
+                  //       child: SizedBox(
+                  //         height: 16,
+                  //         width: 16,
+                  //         child: Checkbox(
+                  //           value: rememberMe,
+                  //           onChanged: (val) {
+                  //             setState(() {
+                  //               rememberMe = val ?? false;
+                  //             });
+                  //           },
+                  //           activeColor: AppColors.primary01,
+                  //           shape: RoundedRectangleBorder(
+                  //             borderRadius: BorderRadius.circular(3),
+                  //           ),
+                  //           side: BorderSide(color: AppColors.neutrals03),
+                  //         ),
+                  //       ),
+                  //     ),
 
-                      const SizedBox(width: 8),
+                  //     const SizedBox(width: 8),
 
-                      Text(
-                        "Remember me",
-                        style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                          color: AppColors.neutrals03,
-                        ),
-                      ),
-                    ],
-                  ),
+                  //     Text(
+                  //       "Remember me",
+                  //       style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                  //         color: AppColors.neutrals03,
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  const Spacer(),
 
                   GestureDetector(
                     onTap: _forgotPassword,

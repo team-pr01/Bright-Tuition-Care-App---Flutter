@@ -1,3 +1,4 @@
+import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/features/profile/presentation/widgets/shared/profile_info_row.dart';
 import 'package:flutter/material.dart';
 import 'package:btcclient/features/auth/data/models/tutor_model.dart';
@@ -13,7 +14,7 @@ class PersonalSectionCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
-    
+
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -22,14 +23,17 @@ class PersonalSectionCard extends StatelessWidget {
               const Expanded(
                 child: Text(
                   "Overview",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
               ),
               if (onEdit != null)
-                IconButton(
+                AppButton(
+                  iconOnly: true,
+                  icon: Icons.edit_outlined,
+                  variant: AppButtonVariant.outlineGray,
+                  width: 32,
+                  height: 32,
                   onPressed: onEdit,
-                  icon: const Icon(Icons.edit_outlined),
-                  iconSize: 20,
                 ),
             ],
           ),
@@ -37,16 +41,15 @@ class PersonalSectionCard extends StatelessWidget {
           const SizedBox(height: 2),
 
           if ((profile.personalInfo.overview ?? "").trim().isNotEmpty) ...[
-           
-              Text(
-                profile.personalInfo.overview!,
-                style: const TextStyle(
-                  fontSize: 14,
-                  height: 1.6,
-                  color: Colors.black87,
-                ),
+            Text(
+              profile.personalInfo.overview!,
+              style: const TextStyle(
+                fontSize: 14,
+                height: 1.6,
+                color: Colors.black87,
               ),
-            
+            ),
+
             const SizedBox(height: 12),
           ],
           Divider(),

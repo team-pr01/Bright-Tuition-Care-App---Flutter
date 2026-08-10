@@ -1,3 +1,4 @@
+import 'package:btcclient/core/config/theme.dart';
 import 'package:flutter/material.dart';
 
 class EducationProgressBar extends StatelessWidget {
@@ -20,7 +21,7 @@ class EducationProgressBar extends StatelessWidget {
             label,
             style: const TextStyle(
               fontSize: 12,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w500,
             ),
           ),
 
@@ -30,11 +31,11 @@ class EducationProgressBar extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             child: LinearProgressIndicator(
               value: completed ? 1 : 0,
-              minHeight: 8,
+              minHeight: 6,
               backgroundColor: Colors.grey.shade300,
               valueColor: AlwaysStoppedAnimation(
                 completed
-                    ? const Color(0xff246BFD)
+                    ? AppColors.primary01
                     : Colors.grey,
               ),
             ),
@@ -42,17 +43,6 @@ class EducationProgressBar extends StatelessWidget {
 
           const SizedBox(height: 6),
 
-          Text(
-            completed
-                ? "Completed"
-                : "Incomplete",
-            style: TextStyle(
-              fontSize: 11,
-              color: completed
-                  ? Colors.green
-                  : Colors.grey,
-            ),
-          )
         ],
       ),
     );

@@ -3,6 +3,7 @@ import 'package:btcclient/core/widgets/input/app_input_field.dart';
 import 'package:btcclient/core/widgets/navbar/common_appbar.dart';
 import 'package:btcclient/features/auth/data/models/tutor_model.dart';
 import 'package:btcclient/features/auth/presentation/provider/profile_notifier.dart';
+import 'package:btcclient/features/jobs/data/constant/filter_data.dart';
 import 'package:btcclient/features/profile/data/requests/update_personal_info_request.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -45,8 +46,10 @@ class _EditPersonalInformationScreenState
   late final TextEditingController _facebookController;
   late final TextEditingController _overviewController;
 
-TutorProfileModel get profile =>
-    ref.read(profileProvider) as TutorProfileModel;
+  List<String> _areaOptions = [];
+
+  TutorProfileModel get profile =>
+      ref.read(profileProvider) as TutorProfileModel;
 
   @override
   void initState() {
@@ -182,12 +185,20 @@ TutorProfileModel get profile =>
     }
   }
 
+  List<String> _getAreaOptions(String city) {
+    for (final item in filterData["cityCorporationWithLocation"]) {
+      if (item["name"] == city) {
+        return List<String>.from(item["locations"]);
+      }
+    }
+
+    return [];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CommonAppBar( 
-        title: "Edit Profile",
-      ),
+      appBar: const CommonAppBar(title: "Edit Profile"),
       body: SafeArea(
         child: Form(
           key: _formKey,
@@ -197,72 +208,87 @@ TutorProfileModel get profile =>
               crossAxisAlignment: CrossAxisAlignment.start,
 
               children: [
-
-
                 const SizedBox(height: 12),
 
                 Container(
                   child: const Text(
                     "Basic Information",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
 
-                const SizedBox(height: 18),
-
-                AppInputField(
-                  controller: _nameController,
-                  label: "Full Name",
-                ),
-
                 const SizedBox(height: 16),
 
-                AppInputField(
-                  controller: _emailController,
-                  label: "Email",
-                ),
+                AppInputField(controller: _nameController, label: "Full Name"),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 2),
+
+                AppInputField(controller: _emailController, label: "Email"),
+
+                const SizedBox(height: 2),
 
                 AppInputField(
                   controller: _phoneController,
                   label: "Phone Number",
+                  type: AppInputType.phone,
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 2),
 
                 AppInputField(
                   controller: _genderController,
                   label: "Gender",
+                  type: AppInputType.dropdown,
+                  dropdownItems: List<String>.from(studentGenderOptions),
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 2),
 
                 AppInputField(
-                  controller: _cityController,
                   label: "City",
+                  type: AppInputType.dropdown,
+                  value: _cityController.text,
+                  hint: "Select City",
+                  dropdownItems: List<String>.from(
+                    filterData["cityCorporations"],
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      _cityController.text = value ?? "";
+                      _areaController.clear();
+
+                      _areaOptions = _getAreaOptions(_cityController.text);
+                    });
+                  },
+                ),
+
+                const SizedBox(height: 2),
+
+                AppInputField(
+                  label: "Area",
+                  type: AppInputType.dropdown,
+                  value: _areaController.text,
+                  hint: _cityController.text.isEmpty
+                      ? "Select city first"
+                      : "Select Area",
+                  enabled:
+                      _cityController.text.isNotEmpty &&
+                      _areaOptions.isNotEmpty,
+                  dropdownItems: _areaOptions,
+                  onChanged: (value) {
+                    setState(() {
+                      _areaController.text = value ?? "";
+                    });
+                  },
+                ),
+
+                const SizedBox(height: 30),
+                const Text(
+                  "Personal Information",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
 
                 const SizedBox(height: 16),
-
-                AppInputField(
-                  controller: _areaController,
-                  label: "Area",
-                ),
-
-                const SizedBox(height: 30),              
-                  const Text(
-                  "Personal Information",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-
-                const SizedBox(height: 18),
 
                 AppInputField(
                   controller: _additionalPhoneController,
@@ -270,7 +296,7 @@ TutorProfileModel get profile =>
                   type: AppInputType.phone,
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 2),
 
                 AppInputField(
                   controller: _dobController,
@@ -278,7 +304,7 @@ TutorProfileModel get profile =>
                   type: AppInputType.date,
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 2),
 
                 AppInputField(
                   controller: _addressController,
@@ -287,14 +313,14 @@ TutorProfileModel get profile =>
                   maxLines: 3,
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 2),
 
                 AppInputField(
                   controller: _religionController,
                   label: "Religion",
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 2),
 
                 AppInputField(
                   controller: _nationalityController,
@@ -305,20 +331,17 @@ TutorProfileModel get profile =>
 
                 const Text(
                   "Family Information",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
 
-                const SizedBox(height: 18),
+                const SizedBox(height: 16),
 
                 AppInputField(
                   controller: _fatherNameController,
                   label: "Father Name",
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 2),
 
                 AppInputField(
                   controller: _fatherPhoneController,
@@ -326,14 +349,14 @@ TutorProfileModel get profile =>
                   type: AppInputType.phone,
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 2),
 
                 AppInputField(
                   controller: _motherNameController,
                   label: "Mother Name",
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 2),
 
                 AppInputField(
                   controller: _motherPhoneController,
@@ -341,7 +364,7 @@ TutorProfileModel get profile =>
                   type: AppInputType.phone,
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 2),
 
                 AppInputField(
                   controller: _emergencyPhoneController,
@@ -353,13 +376,10 @@ TutorProfileModel get profile =>
 
                 const Text(
                   "Social Media",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
 
-                const SizedBox(height: 18),
+                const SizedBox(height: 16),
 
                 AppInputField(
                   controller: _facebookController,
@@ -370,13 +390,10 @@ TutorProfileModel get profile =>
 
                 const Text(
                   "Overview",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
 
-                const SizedBox(height: 18),
+                const SizedBox(height: 16),
 
                 AppInputField(
                   controller: _overviewController,

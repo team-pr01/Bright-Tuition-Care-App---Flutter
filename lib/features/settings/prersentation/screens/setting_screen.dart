@@ -25,7 +25,7 @@ class SettingScreen extends ConsumerWidget {
         padding: const EdgeInsets.symmetric(vertical: 12),
         children: [
           /// ================= ACCOUNT =================
-          _SectionTitle("How to use Account"),
+          _SectionTitle("Account"),
 
           _SettingsTile(
             icon: Icons.phone_outlined,
@@ -210,7 +210,7 @@ class _SettingsTile extends StatelessWidget {
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
       child: Container(
-        height: 56,
+        height: 46,
         color: Colors.white,
         child: Column(
           children: [
