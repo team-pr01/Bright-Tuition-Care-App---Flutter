@@ -1,3 +1,4 @@
+import 'package:btcclient/core/utils/notification_service.dart';
 import 'package:dio/dio.dart';
 import '../config/env.dart';
 import '../storage/local_storage.dart';
@@ -117,9 +118,8 @@ class AuthInterceptor extends Interceptor {
       if (accessToken == null) {
         return null;
       }
-
       await LocalStorage.saveToken(accessToken);
-
+      await NotificationService().registerFcmToken();
       return accessToken;
     } catch (_) {
       return null;

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:btcclient/core/network/api_exception.dart';
 import 'package:btcclient/core/storage/local_storage.dart';
+import 'package:btcclient/core/utils/notification_service.dart';
 import 'package:btcclient/features/auth/data/auth_api.dart';
 import 'package:btcclient/features/auth/data/models/guardian_model.dart';
 import 'package:btcclient/features/auth/data/models/testimonial_model.dart';
@@ -73,6 +74,8 @@ class AuthRepository {
     await LocalStorage.saveRefreshToken(refreshToken);
     await LocalStorage.saveRole(user.role);
 
+// 🔥 Register FCM after authentication
+await NotificationService().registerFcmToken();
     return AuthResult(
       token: accessToken,
       role: user.role,
@@ -143,6 +146,7 @@ class AuthRepository {
     await LocalStorage.saveRole(user.role);
 
     await LocalStorage.saveUser(user);
+    await NotificationService().registerFcmToken();
 
     /// return AuthResult (same as login)
     return AuthResult(token: accessToken, role: user.role, user: user);

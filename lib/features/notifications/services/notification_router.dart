@@ -29,10 +29,13 @@ class NotificationRouter {
       case 'new_job_alert':
         _handleNewJobAlert(data);
         break;
+      case 'job_details':
+        _handleNewJobAlert(data);
+        break;   
 
-      // ============================================================
+      // ============================================================ 
       // FUTURE NOTIFICATION TYPES
-      // ============================================================
+      // ====================================== job_details======================
       //
       // Add new backend notification types here.
       //

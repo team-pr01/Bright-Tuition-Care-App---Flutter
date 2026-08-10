@@ -4,7 +4,7 @@ import 'package:btcclient/features/notifications/data/notification_repository.da
 import 'package:btcclient/features/notifications/services/notification_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:btcclient/core/utils/notification_service.dart';
 import 'notification_state.dart';
 
 final notificationRepositoryProvider =
@@ -26,8 +26,16 @@ class NotificationNotifier
 
   final NotificationRepository _repository;
 
-  NotificationNotifier(this._repository)
-      : super(const NotificationState());
+ NotificationNotifier(this._repository)
+    : super(const NotificationState()) {
+  NotificationService().onNotificationReceived = () {
+    debugPrint(
+      '🔄 FCM received → refreshing notification list',
+    );
+
+    loadNotifications();
+  };
+}
 
   Future<void> loadNotifications() async {
     try {

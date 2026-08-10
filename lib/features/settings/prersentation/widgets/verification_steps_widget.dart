@@ -5,6 +5,7 @@ import 'package:btcclient/features/settings/prersentation/widgets/address_verifi
 import 'package:btcclient/features/settings/prersentation/widgets/pay_verification_fee_form.dart';
 import 'package:btcclient/features/settings/prersentation/widgets/verification_success.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class VerificationStepsWidget extends StatelessWidget {
   final VerificationStatus currentStep;
@@ -57,6 +58,28 @@ class VerificationStepsWidget extends StatelessWidget {
         return "Verification completed successfully";
     }
   }
+
+  String getStepIcon(VerificationStatus status) {
+  switch (status) {
+    case VerificationStatus.pending:
+      return 'assets/icons/visual/time.svg';
+
+    case VerificationStatus.accepted:
+      return 'assets/icons/navigations/user-circle.svg';
+
+    case VerificationStatus.reviewing:
+      return 'assets/icons/visual/verification-charge.svg';
+
+    case VerificationStatus.invoiceDue:
+      return 'assets/icons/visual/requirements.svg';
+
+    case VerificationStatus.addressVerification:
+      return 'assets/icons/visual/location2.svg';
+
+    case VerificationStatus.verified:
+      return 'assets/icons/visual/tick.svg';
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +146,7 @@ class VerificationStepsWidget extends StatelessWidget {
                         ? AppColors.primary01
                         : isCurrent
                         ? Colors.white
-                        : AppColors.neutrals04,
+                        : const Color.fromARGB(104, 237, 235, 235),
                     border: Border.all(color: AppColors.primary01),
                     shape: BoxShape.circle,
                   ),
@@ -166,18 +189,31 @@ class VerificationStepsWidget extends StatelessWidget {
                     ? AppColors.primary01.withOpacity(0.1)
                     : isCompleted
                     ? Colors.green.withOpacity(0.1)
-                    : AppColors.neutrals04,
+                    : const Color.fromARGB(104, 237, 235, 235),
+
                 borderRadius: BorderRadius.circular(AppRadius.medium),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    isCompleted ? Icons.check_circle : Icons.circle,
-                    color: isCompleted ? Colors.green : AppColors.primary01,
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      // color: AppColors.primary01,
+                      shape: BoxShape.circle,
+                    ),
+                    padding: const EdgeInsets.all(10),
+                    child: SvgPicture.asset(
+                      getStepIcon(step),
+                      fit: BoxFit.contain,
+                      colorFilter: const ColorFilter.mode(
+                        AppColors.primary01,
+                        BlendMode.srcIn,
+                      ),
+                    ),
                   ),
-                  const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -240,34 +276,34 @@ class VerificationStepsWidget extends StatelessWidget {
 
     switch (step) {
       /// ================= PENDING =================
-      case VerificationStatus.pending:
-        title = "Request Submitted";
+      // case VerificationStatus.pending:
+      //   title = "Request Submitted";
 
-        text =
-            "Your verification request has been submitted. Our team will review it shortly.";
+      //   text =
+      //       "Your verification request has been submitted. Our team will review it shortly.";
 
-        icon = Icons.access_time_filled;
+      //   icon = Icons.access_time_filled;
 
-        iconColor = Colors.grey.shade500;
+      //   iconColor = Colors.grey.shade500;
 
-        isLoading = false;
+      //   isLoading = false;
 
-        break;
+      //   break;
 
-      /// ================= ACCEPTED =================
-      case VerificationStatus.accepted:
-        title = "Request Accepted";
+      // /// ================= ACCEPTED =================
+      // case VerificationStatus.accepted:
+      //   title = "Request Accepted";
 
-        text =
-            "Your request has been accepted. Document review will begin shortly.";
+      //   text =
+      //       "Your request has been accepted. Document review will begin shortly.";
 
-        icon = Icons.autorenew;
+      //   icon = Icons.autorenew;
 
-        iconColor = Colors.orange;
+      //   iconColor = Colors.orange;
 
-        isLoading = true;
+      //   isLoading = true;
 
-        break;
+      //   break;
 
       /// ================= REVIEWING =================
       case VerificationStatus.reviewing:
@@ -289,76 +325,73 @@ class VerificationStepsWidget extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: AppSpacing.lg,
-        horizontal: AppSpacing.lg,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
 
       child: Column(
         children: [
           /// ================= ICON =================
-          Container(
-            width: 60,
-            height: 60,
+          // Container(
+          //   width: 60,
+          //   height: 60,
 
-            decoration: BoxDecoration(
-              color: Colors.grey.shade100,
+          //   decoration: BoxDecoration(
+          //     color: Colors.grey.shade100,
 
-              shape: BoxShape.circle,
-            ),
+          //     shape: BoxShape.circle,
+          //   ),
 
-            child: Center(
-              child: isLoading
-                  ? TweenAnimationBuilder<double>(
-                      tween: Tween(begin: 0, end: 1),
+          //   child: Center(
+          //     child: isLoading
+          //         ? TweenAnimationBuilder<double>(
+          //             tween: Tween(begin: 0, end: 1),
 
-                      duration: const Duration(seconds: 1),
+          //             duration: const Duration(seconds: 1),
 
-                      builder: (context, value, child) {
-                        return Transform.rotate(
-                          angle: value * 6.3,
+          //             builder: (context, value, child) {
+          //               return Transform.rotate(
+          //                 angle: value * 6.3,
 
-                          child: child,
-                        );
-                      },
+          //                 child: child,
+          //               );
+          //             },
 
-                      onEnd: () {},
+          //             onEnd: () {},
 
-                      child: Icon(icon, size: 26, color: iconColor),
-                    )
-                  : Icon(icon, size: 26, color: iconColor),
-            ),
-          ),
+          //             child: Icon(icon, size: 26, color: iconColor),
+          //           )
+          //         : Icon(icon, size: 26, color: iconColor),
+          //   ),
+          // ),
 
-          const SizedBox(height: AppSpacing.xl),
+          // const SizedBox(height: AppSpacing.xl),
 
           /// ================= TITLE =================
-          Text(
-            title,
+          // Text(
+          //   title,
 
-            textAlign: TextAlign.center,
+          //   textAlign: TextAlign.center,
 
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w700,
-              color: AppColors.neutrals02,
-            ),
-          ),
+          //   style: TextStyle(
+          //     fontSize: 24,
+          //     fontWeight: FontWeight.w700,
+          //     color: AppColors.neutrals02,
+          //   ),
+          // ),
 
-          const SizedBox(height: AppSpacing.xs),
+          // const SizedBox(height: AppSpacing.xs),
 
           /// ================= DESCRIPTION =================
-          Text(
-            text,
+          // Text(
+          //   text,
 
-            textAlign: TextAlign.center,
+          //   textAlign: TextAlign.center,
 
-            style: TextStyle(
-              fontSize: 16,
-              height: 1.2,
-              color: AppColors.neutrals03,
-            ),
-          ),
+          //   style: TextStyle(
+          //     fontSize: 16,
+          //     height: 1.2,
+          //     color: AppColors.neutrals03,
+          //   ),
+          // ),
         ],
       ),
     );

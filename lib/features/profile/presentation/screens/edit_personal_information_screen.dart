@@ -186,7 +186,7 @@ TutorProfileModel get profile =>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CommonAppBar( 
-        title: "Personal Information",
+        title: "Edit Profile",
       ),
       body: SafeArea(
         child: Form(
@@ -195,16 +195,19 @@ TutorProfileModel get profile =>
             padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+
               children: [
 
 
                 const SizedBox(height: 12),
 
-                const Text(
-                  "Basic Information",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                Container(
+                  child: const Text(
+                    "Basic Information",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
 
@@ -250,7 +253,8 @@ TutorProfileModel get profile =>
                   label: "Area",
                 ),
 
-                const SizedBox(height: 30),                const Text(
+                const SizedBox(height: 30),              
+                  const Text(
                   "Personal Information",
                   style: TextStyle(
                     fontSize: 18,

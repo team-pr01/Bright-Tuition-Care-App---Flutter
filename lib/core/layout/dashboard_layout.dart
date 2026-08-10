@@ -2,6 +2,7 @@ import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/services/navigation_service.dart';
 import 'package:btcclient/core/widgets/navbar/bottom_navbar.dart';
 import 'package:btcclient/core/widgets/snackbar/app_snackbar.dart';
+import 'package:btcclient/core/utils/notification_service.dart';
 import 'package:btcclient/features/jobs/data/models/job_filter.dart';
 import 'package:btcclient/features/notifications/presentations/provider/notification_notifier.dart';
 import 'package:btcclient/features/notifications/presentations/screens/notification_screen.dart';
@@ -49,15 +50,29 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
     super.initState();
 
     debugPrint('🏠 DashboardLayout INIT');
+    Future.microtask(() async {
+    debugPrint('🔥 Dashboard opened → registering FCM token');
+
+    await NotificationService().registerFcmToken();
+
+    debugPrint('🔥 Dashboard FCM registration completed');
+
+    // Load notifications
+    if (mounted) {
+      ref
+          .read(notificationNotifierProvider.notifier)
+          .loadNotifications();
+    }
+  });
     debugPrint('🏠 Dashboard registering notification handler');
 
     NavigationService.registerJobDetailsHandler(_openJobFromNotification);
 
-    debugPrint('🏠 Dashboard handler registration COMPLETE');
+    // debugPrint('🏠 Dashboard handler registration COMPLETE');
 
-    Future.microtask(() {
-      ref.read(notificationNotifierProvider.notifier).loadNotifications();
-    });
+    // Future.microtask(() {
+    //   ref.read(notificationNotifierProvider.notifier).loadNotifications();
+    // });
   }
 
 Future<void> _openJobFromNotification(String jobId) async {

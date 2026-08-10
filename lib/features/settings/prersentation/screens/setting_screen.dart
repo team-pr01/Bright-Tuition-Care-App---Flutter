@@ -234,7 +234,7 @@ class _SettingsTile extends StatelessWidget {
                         title,
                         style: AppTextStyles.bodyMedium.copyWith(
                           fontSize: 15,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w400,
                           color: isDanger
                               ? AppColors.error02
                               : AppColors.neutrals02,
