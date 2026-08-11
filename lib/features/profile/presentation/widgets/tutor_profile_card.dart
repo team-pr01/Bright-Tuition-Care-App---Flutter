@@ -1,5 +1,7 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
+import 'package:btcclient/features/auth/data/models/tutor_model.dart';
+import 'package:btcclient/features/profile/presentation/screens/tutor_profile_view_screen.dart';
 import 'package:btcclient/features/profile/presentation/widgets/profile_ring_painter.dart';
 import 'package:btcclient/features/profile/presentation/widgets/progress_dot_painter.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class TutorProfileCard extends StatelessWidget {
   final String name;
+  final TutorProfileModel profile;
   final String tutorId;
   final String email;
   final String phone;
@@ -20,6 +23,7 @@ class TutorProfileCard extends StatelessWidget {
 
   const TutorProfileCard({
     super.key,
+    required this.profile,
     required this.name,
     required this.tutorId,
     required this.email,
@@ -256,7 +260,14 @@ class TutorProfileCard extends StatelessWidget {
                   backgroundColor: Colors.transparent,
                   borderRadius: 6,
 
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => TutorResumeScreen(profile: profile),
+                      ),
+                    );
+                  },
                 ),
               ),
             ],

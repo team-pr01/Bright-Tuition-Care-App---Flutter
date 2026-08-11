@@ -1,10 +1,12 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/pdf/pdf_service.dart';
 import 'package:btcclient/core/utils/file_picker_utils.dart';
+import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/features/auth/data/models/tutor_model.dart';
 import 'package:btcclient/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:btcclient/features/profile/data/requests/update_personal_info_request.dart';
 import 'package:btcclient/features/profile/pdf/tutor_resume_pdf.dart';
+import 'package:btcclient/features/profile/presentation/screens/add_credential_screen.dart';
 import 'package:btcclient/features/profile/presentation/screens/edit_education_screen.dart';
 import 'package:btcclient/features/profile/presentation/screens/edit_personal_information_screen.dart';
 import 'package:btcclient/features/profile/presentation/screens/edit_tuition_related_information_screen.dart';
@@ -36,6 +38,166 @@ class _TutorProfileScreenState extends ConsumerState<TutorProfileScreen> {
     Future.microtask(() {
       ref.read(profileProvider.notifier).fetchProfile();
     });
+  }
+
+  Future<void> _deleteCredential(Identity identity) async {
+    final id = identity.id;
+
+    if (id == null || id.isEmpty) {
+      debugPrint('❌ Credential ID is missing');
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Credential ID is missing')));
+
+      return;
+    }
+
+    try {
+      debugPrint('🗑️ Deleting credential: $id');
+
+      final success = await ref
+          .read(profileProvider.notifier)
+          .deleteIdentityInfo(id);
+
+      if (!mounted) return;
+
+      if (!success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              ref.read(profileProvider.notifier).error ??
+                  'Failed to delete credential',
+            ),
+          ),
+        );
+
+        return;
+      }
+
+      await ref.read(profileProvider.notifier).refreshProfile();
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Credential deleted successfully')),
+      );
+    } catch (e) {
+      debugPrint('❌ Failed to delete credential: $e');
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to delete credential')),
+      );
+    }
+  }
+
+  Future<void> _confirmDeleteCredential(Identity identity) async {
+    final shouldDelete = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) {
+        return SafeArea(
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(24, 24, 24, 32),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
+                Container(
+                  width: 52,
+                  height: 52,
+                  decoration: BoxDecoration(
+                    color: Colors.red.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.delete_outline,
+                    color: Colors.red,
+                    size: 28,
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                const Text(
+                  'Delete Credential',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                ),
+
+                const SizedBox(height: 10),
+
+                const Text(
+                  'Are you sure you want to delete this credential document? '
+                  'This action cannot be undone.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                    height: 1.5,
+                    color: Colors.black54,
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: AppButton(
+                        label: 'Cancel',
+                        variant: AppButtonVariant.outlineGray,
+                        height: 46,
+                        onPressed: () {
+                          Navigator.pop(sheetContext, false);
+                        },
+                      ),
+                    ),
+
+                    const SizedBox(width: 12),
+
+                    Expanded(
+                      child: AppButton(
+                        label: 'Delete',
+                        icon: Icons.delete_outline,
+                        variant: AppButtonVariant.delete,
+                        height: 46,
+                        onPressed: () {
+                          Navigator.pop(sheetContext, true);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    if (shouldDelete != true) {
+      return;
+    }
+
+    await _deleteCredential(identity);
   }
 
   Future<void> _deleteEducation(Education education) async {
@@ -130,6 +292,7 @@ class _TutorProfileScreenState extends ConsumerState<TutorProfileScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TutorProfileCard(
+              profile: profile,
               name: profile.name,
               tutorId: profile.tutorId,
               email: profile.email,
@@ -315,11 +478,24 @@ class _TutorProfileScreenState extends ConsumerState<TutorProfileScreen> {
       case 3:
         return CredentialSectionCard(
           identities: profile.identity,
-          onEdit: (identity) {
-            // TODO
+
+          // ADD / ADD MORE
+          onAdd: () async {
+            final result = await Navigator.push<bool>(
+              context,
+              MaterialPageRoute(builder: (_) => const AddCredentialScreen()),
+            );
+
+            if (result == true && mounted) {
+              await ref.read(profileProvider.notifier).refreshProfile();
+            }
+          },
+
+          // DELETE
+          onDelete: (identity) {
+            _confirmDeleteCredential(identity);
           },
         );
-
       default:
         return const SizedBox.shrink();
     }

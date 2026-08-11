@@ -168,4 +168,28 @@ class AuthApi {
   Future<void> deleteEducation(String id) async {
     await DioClient.dio.delete("/user/education/delete/$id");
   }
+  Future<Response> updateIdentityInfo(FormData formData) async {
+  try {
+    return await DioClient.dio.patch(
+      "/tutor/update/identity-info",
+      data: formData,
+    );
+  } on DioException catch (e) {
+    throw ApiException(
+      ApiErrorHandler.getMessage(e),
+    );
+  }
+}
+
+Future<Response> deleteIdentityInfo(String id) async {
+  try {
+    return await DioClient.dio.delete(
+      "/tutor/identity-info/delete/$id",
+    );
+  } on DioException catch (e) {
+    throw ApiException(
+      ApiErrorHandler.getMessage(e),
+    );
+  }
+}
 }

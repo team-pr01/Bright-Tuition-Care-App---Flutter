@@ -22,8 +22,8 @@ import 'package:btcclient/features/auth/data/models/user_model.dart';
 import 'package:btcclient/features/auth/data/requests/verify_otp_request.dart';
 import 'package:btcclient/features/auth/data/requests/verify_reset_password_otp_request.dart';
 import 'package:btcclient/features/auth/data/results/verify_reset_password_otp_result.dart';
-import 'package:btcclient/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:btcclient/features/profile/data/requests/update_personal_info_request.dart';
+import 'package:dio/dio.dart';
 
 class AuthResult {
   final String token;
@@ -326,6 +326,39 @@ await NotificationService().registerFcmToken();
   Future<void> deleteEducation(String id) async {
     await api.deleteEducation(id);
   }
+  
+  Future<void> updateIdentityInfo({
+  required String fileType,
+  required File file,
+}) async {
+  final formData = FormData.fromMap({
+    "fileType": fileType,
+    "file": await MultipartFile.fromFile(
+      file.path,
+      filename: file.path.split('/').last,
+    ),
+  });
 
+  final response = await api.updateIdentityInfo(formData);
+
+  final responseData = response.data;
+
+  if (responseData["success"] != true) {
+    throw ApiException(
+      responseData["message"] ?? "Identity information update failed",
+    );
+  }
+}
+Future<void> deleteIdentityInfo(String id) async {
+  final response = await api.deleteIdentityInfo(id);
+
+  final responseData = response.data;
+
+  if (responseData["success"] != true) {
+    throw ApiException(
+      responseData["message"] ?? "Failed to delete identity information",
+    );
+  }
+}
   
 }

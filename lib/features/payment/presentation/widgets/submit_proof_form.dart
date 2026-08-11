@@ -58,7 +58,7 @@ class _SubmitProofFormState extends ConsumerState<SubmitProofForm> {
   }
 
   Future<void> pickFile() async {
-    final file = await FilePickerUtils.pickSingleFile(
+    final file = await FilePickerUtils.pickSingleFile( 
       allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
     );
 

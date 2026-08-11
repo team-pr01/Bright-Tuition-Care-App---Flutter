@@ -159,6 +159,46 @@ class ProfileNotifier extends StateNotifier<dynamic> {
       isLoading = false;
     }
   }
+  Future<bool> updateIdentityInfo({
+  required String fileType,
+  required File file,
+}) async {
+  try {
+    isLoading = true;
+    error = null;
+
+    await repo.updateIdentityInfo(
+      fileType: fileType,
+      file: file,
+    );
+
+    await fetchProfile();
+
+    return true;
+  } catch (e) {
+    error = ApiErrorHandler.getMessage(e);
+    return false;
+  } finally {
+    isLoading = false;
+  }
+}
+Future<bool> deleteIdentityInfo(String id) async {
+  try {
+    isLoading = true;
+    error = null;
+
+    await repo.deleteIdentityInfo(id);
+
+    await fetchProfile();
+
+    return true;
+  } catch (e) {
+    error = ApiErrorHandler.getMessage(e);
+    return false;
+  } finally {
+    isLoading = false;
+  }
+}
 
   void clearProfile() {
     state = null;

@@ -48,7 +48,6 @@ class _EditTuitionRelatedInformationScreenState
     super.initState();
 
     final tuition = profile.tuitionPreference;
-    final experience = profile.experience;
 
     // ----------------------------------------------------------
     // TEXT VALUES
@@ -63,10 +62,8 @@ class _EditTuitionRelatedInformationScreenState
     );
 
     _totalExperienceController = TextEditingController(
-      text: profile.experience.isNotEmpty
-          ? profile.experience.first.totalExperience ?? ''
-          : '',
-    );
+  text: profile.experience.totalExperience ?? '',
+);
 
     // ----------------------------------------------------------
     // MULTI SELECT VALUES

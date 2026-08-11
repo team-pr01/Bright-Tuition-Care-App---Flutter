@@ -1,7 +1,7 @@
 import 'package:btcclient/core/utils/date_formatter.dart';
 import 'package:dio/dio.dart';
 
-class TutorProfileModel {  
+class TutorProfileModel {
   final String id;
   final String tutorId;
 
@@ -30,7 +30,7 @@ class TutorProfileModel {
   final PersonalInfo personalInfo;
   final SocialMedia socialMedia; // 🔥 ADDED
   final TuitionPreference tuitionPreference;
-  final List<Experience> experience;
+  final Experience experience;
   final List<Education> education;
   final List<Identity> identity;
   final EmergencyInfo emergencyInfo;
@@ -64,12 +64,10 @@ class TutorProfileModel {
     required this.identity,
     required this.emergencyInfo,
   });
-  
-  String get totalExperience {
-  if (experience.isEmpty) return "";
 
-  return experience.first.totalExperience ?? "";
-}
+  String get totalExperience {
+    return experience.totalExperience ?? "";
+  }
 
   factory TutorProfileModel.fromJson(Map<String, dynamic> json) {
     final data = json['data'] ?? {};
@@ -110,9 +108,11 @@ class TutorProfileModel {
       tuitionPreference: TuitionPreference.fromJson(
         data['tuitionPreference'] ?? {},
       ),
-      experience: (data['experience'] as List? ?? [])
-          .map((e) => Experience.fromJson(e))
-          .toList(),
+      experience: Experience.fromJson(
+        data['experience'] is Map
+            ? Map<String, dynamic>.from(data['experience'])
+            : {},
+      ),
       education: (data['educationalInformation'] as List? ?? [])
           .map((e) => Education.fromJson(e))
           .toList(),
@@ -155,9 +155,9 @@ class PersonalInfo {
     return PersonalInfo(
       additionalPhone: json['additionalPhoneNumber'],
       address: json['address'],
-    dateOfBirth: json['dateOfBirth'] == null
-    ? null
-    : DateFormatter.formattedFormalDate(json['dateOfBirth']),
+      dateOfBirth: json['dateOfBirth'] == null
+          ? null
+          : DateFormatter.formattedFormalDate(json['dateOfBirth']),
       religion: json['religion'],
       overview: json['overview'],
       fatherPhoneNumber: json['fatherPhoneNumber'],
@@ -220,7 +220,7 @@ class TuitionPreference {
 
   factory TuitionPreference.fromJson(Map<String, dynamic> json) {
     return TuitionPreference(
-     tutoringMethod: json['tutoringMethod']?.toString(),
+      tutoringMethod: json['tutoringMethod']?.toString(),
       // availableDays: List<String>.from(json['availableDays'] ?? []),
       preferredSubjects: List<String>.from(
         (json['preferredSubjects'] ?? []).whereType<String>(),
@@ -312,16 +312,19 @@ class Education {
     );
   }
 }
+
 class Identity {
+  final String id;
   final String fileType;
   final String file;
 
-  Identity({required this.fileType, required this.file});
+  Identity({required this.id, required this.fileType, required this.file});
 
   factory Identity.fromJson(Map<String, dynamic> json) {
     return Identity(
-      fileType: json['fileType'] ?? "",
-      file: json['file'] ?? "",
+      id: json['_id']?.toString() ?? "",
+      fileType: json['fileType']?.toString() ?? "",
+      file: json['file']?.toString() ?? "",
     );
   }
 }

@@ -1,21 +1,23 @@
+import 'package:btcclient/core/config/theme.dart';
+import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:flutter/material.dart';
 
 class CredentialDocumentCard extends StatelessWidget {
   final String title;
   final String? fileUrl;
+
   final VoidCallback? onView;
-  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
 
   const CredentialDocumentCard({
     super.key,
     required this.title,
     this.fileUrl,
     this.onView,
-    this.onEdit,
+    this.onDelete,
   });
 
-  bool get hasDocument =>
-      fileUrl != null && fileUrl!.trim().isNotEmpty;
+  bool get hasDocument => fileUrl != null && fileUrl!.trim().isNotEmpty;
 
   @override
   Widget build(BuildContext context) {
@@ -25,18 +27,19 @@ class CredentialDocumentCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.grey.shade300,
-        ),
+        border: Border.all(color: Colors.grey.shade300),
       ),
       child: Row(
         children: [
+          // =====================================================
+          // ICON 
+          // =====================================================
           Container(
-            height: 54,
-            width: 54,
+            height: 32,
+            width: 32,
             decoration: BoxDecoration(
               color: const Color(0xffEDF4FF),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(4),
             ),
             child: Icon(
               hasDocument
@@ -48,49 +51,55 @@ class CredentialDocumentCard extends StatelessWidget {
 
           const SizedBox(width: 16),
 
+          // =====================================================
+          // DOCUMENT INFO
+          // =====================================================
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontWeight: FontWeight.w600,
-                    fontSize: 16,
+                    fontSize: 12,
                   ),
                 ),
 
-                const SizedBox(height: 6),
-
-                Text(
-                  hasDocument
-                      ? "Document Uploaded"
-                      : "Document Not Uploaded",
-                  style: TextStyle(
-                    color: hasDocument
-                        ? Colors.green
-                        : Colors.red,
-                    fontSize: 13,
-                  ),
-                ),
+               
               ],
             ),
           ),
 
+          // =====================================================
+          // VIEW
+          // =====================================================
           if (hasDocument)
-            OutlinedButton.icon(
+            AppButton(
+              iconOnly: true,
+              icon: Icons.visibility_outlined,
+              variant: AppButtonVariant.outlineGray,
+              width: 32,
+              height: 32,
               onPressed: onView,
-              icon: const Icon(Icons.visibility_outlined),
-              label: const Text("View"),
             ),
 
-          if (onEdit != null) ...[
-            const SizedBox(width: 8),
-            IconButton(
-              onPressed: onEdit,
-              icon: const Icon(Icons.edit_outlined),
-            ),
-          ],
+          const SizedBox(width: 8),
+
+          // =====================================================
+          // DELETE
+          // =====================================================
+          AppButton(
+            iconOnly: true,
+            icon: Icons.delete_outline,
+            variant: AppButtonVariant.outlineGray,
+            width: 32,
+            height: 32,
+            onPressed: onDelete,
+            textColor: AppColors.error,
+          ),
         ],
       ),
     );
