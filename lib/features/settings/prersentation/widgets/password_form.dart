@@ -55,7 +55,6 @@ class _PasswordFormState extends ConsumerState<PasswordForm> {
                       : null,
             ),
 
-            const SizedBox(height: AppSpacing.md),
 
             /// New Password
             AppInputField(
@@ -71,7 +70,6 @@ class _PasswordFormState extends ConsumerState<PasswordForm> {
               },
             ),
 
-            const SizedBox(height: AppSpacing.md),
 
             /// Confirm Password
             AppInputField(

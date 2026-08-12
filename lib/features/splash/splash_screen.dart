@@ -18,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (!mounted) return;
 
       // Replace with your next screen
-      Navigator.pushReplacementNamed(context, '/home');
+      // Navigator.pushReplacementNamed(context, '/home');
     });
   }
 

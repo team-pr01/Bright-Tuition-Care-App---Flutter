@@ -42,6 +42,7 @@ class _JobsPageState extends ConsumerState<JobsPage> {
   bool _openingNotificationJob = false;
 
   bool get isTutor => widget.role == "tutor";
+  bool get isGuest => widget.role == "guest";
 
   void _checkNotificationJob() {
     if (!isTutor) {
@@ -310,7 +311,7 @@ class _JobsPageState extends ConsumerState<JobsPage> {
           ],
 
           const SizedBox(height: 16),
-          if (!isTutor) ...[
+          if (!isTutor && !isGuest) ...[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [

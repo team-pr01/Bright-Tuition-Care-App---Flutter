@@ -196,7 +196,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                   },
                 ),
 
-                const SizedBox(height: 2),
+               
                 AppInputField(
                   controller: _instituteController,
                   label: "Institute Name",
@@ -217,7 +217,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                   },
                 ),
 
-                const SizedBox(height: 2),
+               
                 AppInputField(
                   label: "Exam / Degree Title",
                   type: AppInputType.dropdown,
@@ -256,7 +256,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                     },
                   ),
 
-                  const SizedBox(height: 2),
+                 
 
                   AppInputField(
                     label: "Board",
@@ -272,7 +272,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                     },
                   ),
 
-                  const SizedBox(height: 2),
+                 
                 ],
                 if (shouldShowHigherEducationFields) ...[
                   AppInputField(
@@ -289,7 +289,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                     },
                   ),
 
-                  const SizedBox(height: 2),
+                 
 
                   AppInputField(
                     controller: _semesterController,
@@ -297,7 +297,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                     hint: "e.g., 5th semester, 3rd year",
                   ),
 
-                  const SizedBox(height: 2),
+                 
                 ],
                 AppInputField(
                   controller: _resultController,
@@ -305,7 +305,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                   hint: "e.g., 3.75 GPA/CGPA",
                 ),
 
-                const SizedBox(height: 2),
+               
                 if (!_currentInstitute) ...[
                   AppInputField(
                     controller: _passingYearController,
@@ -314,7 +314,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                     keyboardType: TextInputType.number,
                   ),
 
-                  const SizedBox(height: 2),
+                 
                 ],
                 CheckboxListTile(
                   value: _currentInstitute,

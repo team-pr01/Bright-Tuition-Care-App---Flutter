@@ -136,7 +136,7 @@ class _GuardianJobApplicationState
                         ),
                       ),
 
-                      const SizedBox(width: 10),
+                      
 
                       Expanded(
                         child: AppInputField(
@@ -197,7 +197,7 @@ class _GuardianJobApplicationState
                         ),
                       ),
 
-                      const SizedBox(width: 10),
+                      
 
                       Expanded(
                         child: AppInputField(

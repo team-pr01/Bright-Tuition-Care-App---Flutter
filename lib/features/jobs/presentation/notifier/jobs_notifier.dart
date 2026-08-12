@@ -74,9 +74,9 @@ class JobsNotifier extends StateNotifier<JobsState> {
 
   /// ================= INITIAL FETCH =================
   Future<void> fetchJobs({JobFilter? newFilter}) async {
-    final token = await LocalStorage.getToken();
+    // final token = await LocalStorage.getToken();
 
-    if (token == null) return;
+    // if (token == null) return;
 
     final filter = (newFilter ?? state.filter).copyWith(
       status: "live", // 🔥 FORCE ALWAYS

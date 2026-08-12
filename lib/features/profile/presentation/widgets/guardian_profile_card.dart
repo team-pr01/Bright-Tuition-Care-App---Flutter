@@ -1,7 +1,6 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class GuardianProfileCard extends StatelessWidget {
   final String name;
@@ -12,6 +11,11 @@ class GuardianProfileCard extends StatelessWidget {
   final String profileImage;
   final double rating;
   final bool isVerified;
+
+  final bool isDownloading;
+
+  final VoidCallback? onDownload;
+  final VoidCallback? onViewAsTutor;
   final VoidCallback? onEditImage;
 
   const GuardianProfileCard({
@@ -24,12 +28,15 @@ class GuardianProfileCard extends StatelessWidget {
     required this.profileImage,
     required this.isVerified,
     required this.rating,
+    this.isDownloading = false,
+    this.onDownload,
+    this.onViewAsTutor,
     this.onEditImage,
   });
 
   @override
   Widget build(BuildContext context) {
-    ImageProvider provider;
+    final ImageProvider provider;
 
     if (profileImage.isNotEmpty &&
         profileImage.startsWith('http')) {
@@ -43,44 +50,162 @@ class GuardianProfileCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(AppRadius.large),
-        border: Border.all(
-          color: AppColors.neutrals04,
-        ),
-      ),
       child: Column(
         children: [
+          const SizedBox(height: 40),
 
+          // ============================================================
+          // PROFILE IMAGE
+          // ============================================================
 
-          _infoTile(
-            icon: Icons.email_outlined,
-            title: "Email",
-            value: email,
+          Stack(
+            alignment: Alignment.center,
+            clipBehavior: Clip.none,
+            children: [
+              Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.white,
+                    width: 3,
+                  ),
+                ),
+                child: CircleAvatar(
+                  backgroundImage: provider,
+                ),
+              ),
+
+              // ========================================================
+              // CAMERA BUTTON
+              // ========================================================
+
+              if (onEditImage != null)
+                Positioned(
+                  right: 0,
+                  bottom: 0,
+                  child: Material(
+                    color: Colors.white,
+                    elevation: 3,
+                    shape: const CircleBorder(),
+                    clipBehavior: Clip.antiAlias,
+                    child: InkWell(
+                      customBorder: const CircleBorder(),
+                      onTap: onEditImage,
+                      child: Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: AppColors.primary01,
+                            width: 2,
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.camera_alt,
+                          color: AppColors.primary01,
+                          size: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           ),
 
-          const SizedBox(height: 18),
+          const SizedBox(height: 14),
 
-          _infoTile(
-            icon: Icons.phone_outlined,
-            title: "Phone Number",
-            value: phone,
+          // ============================================================
+          // NAME + VERIFIED
+          // ============================================================
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Flexible(
+                child: Text(
+                  name.isEmpty ? "Guardian" : name,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+
+              const SizedBox(width: 4),
+
+              if (isVerified)
+                const Icon(
+                  Icons.verified,
+                  color: Colors.white,
+                  size: 20,
+                ),
+            ],
           ),
 
-          const SizedBox(height: 18),
+          const SizedBox(height: 4),
 
-          _infoTile(
-            icon: Icons.location_on_outlined,
-            title: "Present Address",
-            value: address,
+          // ============================================================
+          // RATING
+          // ============================================================
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ...List.generate(
+                5,
+                (index) => Icon(
+                  rating > index
+                      ? Icons.star
+                      : Icons.star_border,
+                  size: 14,
+                  color: const Color(0xffFFC928),
+                ),
+              ),
+
+              const SizedBox(width: 4),
+
+              Text(
+                "(${rating.toStringAsFixed(1)})",
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: Colors.white70,
+                ),
+              ),
+            ],
           ),
-          
-        ],
-    ),
-  
+
+          const SizedBox(height: 8),
+
+          // ============================================================
+          // GUARDIAN ID
+          // ============================================================
+
+          Text(
+            "Guardian Id: $guardianId",
+            style: const TextStyle(
+              color: Colors.white70,
+              fontSize: 11,
+            ),
+          ),
+
+          const SizedBox(height: 22),
+
+          // ============================================================
+          // ACTION BUTTONS
+          // ============================================================
+
+           ],
+      ),
     );
   }
+
+  // ================================================================
+  // INFORMATION TILE
+  // ================================================================
 
   Widget _infoTile({
     required IconData icon,

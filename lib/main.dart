@@ -11,63 +11,86 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'firebase_options.dart';
 
-/// Background FCM Handler
 @pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(
-    RemoteMessage message) async {
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
-  debugPrint("📨 Background message received");
-  debugPrint("Message ID: ${message.messageId}");
-  debugPrint("Data: ${message.data}");
-
-  // Don't navigate here.
-  // We'll handle notification taps when the app opens.
-}
-
-Future<void> main() async {
-  runZonedGuarded(() async {
-    WidgetsFlutterBinding.ensureInitialized();
-
-    /// Load .env
-    await dotenv.load(fileName: ".env");
-
-    /// Initialize Firebase
+Future<void> firebaseMessagingBackgroundHandler(
+  RemoteMessage message,
+) async {
+  try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
 
-    debugPrint("✅ Firebase initialized");
-
-    /// Register background handler
-    FirebaseMessaging.onBackgroundMessage(
-      _firebaseMessagingBackgroundHandler,
+    debugPrint('📨 BACKGROUND FCM RECEIVED');
+    debugPrint('📨 Message ID: ${message.messageId}');
+    debugPrint('📨 Notification: ${message.notification}');
+    debugPrint('📨 Data: ${message.data}');
+  } catch (e, stackTrace) {
+    debugPrint(
+      '❌ Background FCM handler error: $e',
     );
 
-    /// Initialize Notification Service
-    final notificationService = NotificationService();
-    await notificationService.init();
-
-    debugPrint("✅ Notification Service initialized");
-
-    /// Initialize Deep Link Service
-    // final deepLinkService = DeepLinkService();
-    // await deepLinkService.init();
-
-    debugPrint("✅ Deep Link Service initialized");
-
-    runApp(
-      const ProviderScope(
-        child: MyApp(),
-      ),
+    debugPrintStack(
+      stackTrace: stackTrace,
     );
-  }, (error, stackTrace) {
-    debugPrint("❌ Unhandled Error: $error");
+  }
+}
 
-    if (kDebugMode) {
-      debugPrintStack(stackTrace: stackTrace);
-    }
-  });
+Future<void> main() async {
+  await runZonedGuarded(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
+
+      await dotenv.load(
+        fileName: '.env',
+      );
+
+      // ========================================================
+      // FIREBASE
+      // ========================================================
+
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+
+      debugPrint('✅ Firebase initialized');
+
+      // MUST be registered before runApp.
+      FirebaseMessaging.onBackgroundMessage(
+        firebaseMessagingBackgroundHandler,
+      );
+
+      debugPrint(
+        '✅ Firebase background handler registered',
+      );
+
+      // ========================================================
+      // NOTIFICATIONS
+      // ========================================================
+
+      await NotificationService().init();
+
+      debugPrint(
+        '✅ Notification service initialized',
+      );
+
+      // ========================================================
+      // APP
+      // ========================================================
+
+      runApp(
+        const ProviderScope(
+          child: MyApp(),
+        ),
+      );
+    },
+    (error, stackTrace) {
+      debugPrint(
+        '❌ Unhandled application error: $error',
+      );
+
+      debugPrintStack(
+        stackTrace: stackTrace,
+      );
+    },
+  );
 }

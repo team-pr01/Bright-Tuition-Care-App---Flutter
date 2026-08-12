@@ -221,11 +221,11 @@ class _EditPersonalInformationScreenState
 
                 AppInputField(controller: _nameController, label: "Full Name"),
 
-                const SizedBox(height: 2),
+               
 
                 AppInputField(controller: _emailController, label: "Email"),
 
-                const SizedBox(height: 2),
+               
 
                 AppInputField(
                   controller: _phoneController,
@@ -233,7 +233,7 @@ class _EditPersonalInformationScreenState
                   type: AppInputType.phone,
                 ),
 
-                const SizedBox(height: 2),
+               
 
                 AppInputField(
                   controller: _genderController,
@@ -242,7 +242,7 @@ class _EditPersonalInformationScreenState
                   dropdownItems: List<String>.from(studentGenderOptions),
                 ),
 
-                const SizedBox(height: 2),
+               
 
                 AppInputField(
                   label: "City",
@@ -262,7 +262,7 @@ class _EditPersonalInformationScreenState
                   },
                 ),
 
-                const SizedBox(height: 2),
+               
 
                 AppInputField(
                   label: "Area",
@@ -296,7 +296,7 @@ class _EditPersonalInformationScreenState
                   type: AppInputType.phone,
                 ),
 
-                const SizedBox(height: 2),
+               
 
                 AppInputField(
                   controller: _dobController,
@@ -304,7 +304,7 @@ class _EditPersonalInformationScreenState
                   type: AppInputType.date,
                 ),
 
-                const SizedBox(height: 2),
+               
 
                 AppInputField(
                   controller: _addressController,
@@ -313,14 +313,14 @@ class _EditPersonalInformationScreenState
                   maxLines: 3,
                 ),
 
-                const SizedBox(height: 2),
+               
 
                 AppInputField(
                   controller: _religionController,
                   label: "Religion",
                 ),
 
-                const SizedBox(height: 2),
+               
 
                 AppInputField(
                   controller: _nationalityController,
@@ -341,7 +341,7 @@ class _EditPersonalInformationScreenState
                   label: "Father Name",
                 ),
 
-                const SizedBox(height: 2),
+               
 
                 AppInputField(
                   controller: _fatherPhoneController,
@@ -349,14 +349,14 @@ class _EditPersonalInformationScreenState
                   type: AppInputType.phone,
                 ),
 
-                const SizedBox(height: 2),
+               
 
                 AppInputField(
                   controller: _motherNameController,
                   label: "Mother Name",
                 ),
 
-                const SizedBox(height: 2),
+               
 
                 AppInputField(
                   controller: _motherPhoneController,
@@ -364,7 +364,7 @@ class _EditPersonalInformationScreenState
                   type: AppInputType.phone,
                 ),
 
-                const SizedBox(height: 2),
+               
 
                 AppInputField(
                   controller: _emergencyPhoneController,

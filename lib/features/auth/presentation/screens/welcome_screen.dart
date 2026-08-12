@@ -4,6 +4,7 @@ import 'package:btcclient/features/auth/presentation/provider/testimonial_notifi
 import 'package:btcclient/features/auth/presentation/screens/login_screen.dart';
 import 'package:btcclient/features/auth/presentation/screens/register_screen.dart';
 import 'package:btcclient/features/auth/presentation/widgets/welcome_nav_link.dart';
+import 'package:btcclient/features/guest/presentation/guest_dashboard_screen.dart';
 import 'package:btcclient/features/legal/presentation/terms_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -202,7 +203,15 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                 ),
                               ),
                               label: "Job Board",
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        const GuestDashboardScreen(),
+                                  ),
+                                );
+                              },
                             ),
 
                             WelcomeNavLink(

@@ -36,6 +36,7 @@ class TutorDashboardScreen extends ConsumerWidget {
     }
 
     return DashboardLayout(
+      initialIndex: 2,
       drawerBuilder: (changeTab) => AppSidebar(
         user: user,
 

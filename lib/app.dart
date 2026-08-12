@@ -31,21 +31,14 @@ class MyApp extends ConsumerWidget {
         screen = const WelcomeScreen();
         break;
 
-      // case AppStartState.login:
-      //   screen = const LoginScreen();
-      //   break;
-
-      // case AppStartState.register:
-      //   screen = const RegisterScreen();
-      //   break;
-
       case AppStartState.authenticated:
         if (authState.role == 'guardian') {
           screen = const GuardianDashboardScreen();
-        } else {
+        } else if (authState.role == 'tutor') {
           screen = const TutorDashboardScreen();
-        }
+        } 
         break;
+      
     }
 
     return MaterialApp(
