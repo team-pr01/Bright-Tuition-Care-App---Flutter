@@ -336,7 +336,6 @@ class _TutorProfileScreenState extends ConsumerState<TutorProfileScreen> {
                         : 'Failed to download resume',
                     success ? SnackType.success : SnackType.error,
                   );
-                  
                 } catch (e) {
                   debugPrint('Resume download error: $e');
 
@@ -348,23 +347,53 @@ class _TutorProfileScreenState extends ConsumerState<TutorProfileScreen> {
                 }
               },
               onEditImage: () async {
-                final image = await ImagePickerBottomSheet.show(context);
+                debugPrint("📸 CAMERA ICON CLICKED");
 
-                if (image == null) return;
+                try {
+                  final result = await ImagePickerBottomSheet.show(context);
 
-                final success = await ref
-                    .read(profileProvider.notifier)
-                    .updateProfileImage(image);
+                  debugPrint("📸 Bottom sheet returned: $result");
 
-                if (!mounted) return;
+                  if (result == null) {
+                    debugPrint("📸 No image selected");
+                    return;
+                  }
 
-                if (success) {
-                  await ref.read(profileProvider.notifier).refreshProfile();
+                  debugPrint("📸 Image selected: ${result.path}");
 
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Profile image updated successfully"),
-                    ),
+                  final success = await ref
+                      .read(profileProvider.notifier)
+                      .updateProfileImage(result);
+
+                  if (!mounted) return;
+
+                  if (success) {
+                    await ref.read(profileProvider.notifier).refreshProfile();
+
+                    if (!mounted) return;
+
+                    AppSnackbar.show(
+                      context,
+                      "Profile image updated successfully",
+                      SnackType.success,
+                    );
+                  } else {
+                    AppSnackbar.show(
+                      context,
+                      "Failed to update profile image",
+                      SnackType.error,
+                    );
+                  }
+                } catch (e, stackTrace) {
+                  debugPrint("❌ PROFILE IMAGE ERROR: $e");
+                  debugPrintStack(stackTrace: stackTrace);
+
+                  if (!mounted) return;
+
+                  AppSnackbar.show(
+                    context,
+                    "Unable to change profile image",
+                    SnackType.error,
                   );
                 }
               },
