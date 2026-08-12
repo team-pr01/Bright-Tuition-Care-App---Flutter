@@ -45,9 +45,7 @@ class _ConfirmationBottomSheetState
         child: SizedBox(
           height: 450,
           child: Center(
-            child: CircularProgressIndicator(
-              color: AppColors.primary01,
-            ),
+            child: CircularProgressIndicator(color: AppColors.primary01),
           ),
         ),
       );
@@ -124,10 +122,10 @@ class _ConfirmationBottomSheetState
               title: " Guardian Information",
               icon: Icons.person_outline_rounded,
               children: [
-                _infoRow("Name", letter.guardian.name),
+                _infoRow("Name", letter.guardian?.name ?? "-"),
                 _infoRow("Guardian ID", letter.guardianCustomId),
-                _infoRow("Email", letter.guardian.email),
-                _infoRow("Phone", letter.guardian.phoneNumber),
+                _infoRow("Email", letter.guardian?.email ?? "-"),
+                _infoRow("Phone", letter.guardian?.phoneNumber ?? "-"),
               ],
             ),
 
@@ -253,10 +251,7 @@ class _ConfirmationBottomSheetState
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            AppColors.primary01,
-            AppColors.primary01.withOpacity(0.8),
-          ],
+          colors: [AppColors.primary01, AppColors.primary01.withOpacity(0.8)],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
         ),
@@ -366,9 +361,7 @@ class _ConfirmationBottomSheetState
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.large),
-        border: Border.all(
-          color: AppColors.primary01.withOpacity(0.08),
-        ),
+        border: Border.all(color: AppColors.primary01.withOpacity(0.08)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.03),
@@ -521,9 +514,7 @@ class _ConfirmationBottomSheetState
               decoration: BoxDecoration(
                 color: AppColors.primary03.withOpacity(0.05),
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: AppColors.primary01.withOpacity(0.1),
-                ),
+                border: Border.all(color: AppColors.primary01.withOpacity(0.1)),
               ),
               child: Column(
                 children: [
@@ -571,7 +562,9 @@ class _ConfirmationBottomSheetState
               decoration: BoxDecoration(
                 color: AppColors.neutrals01,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppColors.neutrals04.withOpacity(0.5)),
+                border: Border.all(
+                  color: AppColors.neutrals04.withOpacity(0.5),
+                ),
                 // borderSide: const BorderSide(style: BorderStyle.solid),
               ),
               alignment: Alignment.center,
@@ -635,11 +628,7 @@ class _ConfirmationBottomSheetState
           ),
           title: Row(
             children: [
-              Icon(
-                Icons.draw_outlined,
-                color: AppColors.primary01,
-                size: 24,
-              ),
+              Icon(Icons.draw_outlined, color: AppColors.primary01, size: 24),
               const SizedBox(width: 10),
               Text(
                 isTutor ? "Tutor Signature" : "Guardian Signature",

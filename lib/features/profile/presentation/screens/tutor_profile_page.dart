@@ -1,7 +1,9 @@
+import 'dart:typed_data';
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/pdf/pdf_service.dart';
 import 'package:btcclient/core/utils/file_picker_utils.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
+import 'package:btcclient/core/widgets/snackbar/app_snackbar.dart';
 import 'package:btcclient/features/auth/data/models/tutor_model.dart';
 import 'package:btcclient/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:btcclient/features/profile/data/requests/update_personal_info_request.dart';
@@ -304,13 +306,46 @@ class _TutorProfileScreenState extends ConsumerState<TutorProfileScreen> {
               rating: profile.rating,
 
               onDownload: () async {
-                final pdf = await TutorResumePdf.build(profile: profile);
+                try {
+                  final bytes = await TutorResumePdf.build(profile: profile);
 
-                await PdfService.download(
-                  fileName:
-                      "Bright_Tuition_Care_${profile.name.replaceAll(' ', '_')}.pdf",
-                  child: pdf,
-                );
+                  final fileName =
+                      'Bright_Tuition_Care_'
+                      '${PdfService.sanitizeFileName(profile.name)}.pdf';
+
+                  final success = await PdfService.downloadBytes(
+                    fileName: fileName,
+                    bytes: bytes,
+                  );
+
+                  if (!mounted) return;
+
+                  // ScaffoldMessenger.of(context).showSnackBar(
+                  //   SnackBar(
+                  //     content: Text(
+                  //       success
+                  //           ? 'Resume downloaded successfully'
+                  //           : 'Failed to download resume',
+                  //     ),
+                  //   ),
+                  // );
+                  AppSnackbar.show(
+                    context,
+                    success
+                        ? 'Resume downloaded successfully'
+                        : 'Failed to download resume',
+                    success ? SnackType.success : SnackType.error,
+                  );
+                  
+                } catch (e) {
+                  debugPrint('Resume download error: $e');
+
+                  if (!mounted) return;
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Failed to generate resume')),
+                  );
+                }
               },
               onEditImage: () async {
                 final image = await ImagePickerBottomSheet.show(context);

@@ -1,103 +1,142 @@
-import 'package:file_saver/file_saver.dart';
+import 'dart:typed_data';
+
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
-import 'package:http/http.dart' as http;
 
 class PdfService {
   PdfService._();
 
-  /// Load TTF Font
+  static const MethodChannel _channel = MethodChannel(
+    'com.prtechsolutions.btc.btcclient/pdf_download',
+  );
+
+  // ============================================================
+  // LOAD TTF FONT
+  // ============================================================
+
   static Future<pw.Font> loadFont(String path) async {
-    return pw.Font.ttf(
-      await rootBundle.load(path),
-    );
+    final data = await rootBundle.load(path);
+
+    return pw.Font.ttf(data.buffer.asByteData());
   }
 
-  /// Load Image Asset
+  // ============================================================
+  // LOAD ASSET IMAGE
+  // ============================================================
+
   static Future<pw.MemoryImage> loadImage(String path) async {
-    final bytes = await rootBundle.load(path);
+    final data = await rootBundle.load(path);
 
-    return pw.MemoryImage(
-      bytes.buffer.asUint8List(),
-    );
+    return pw.MemoryImage(data.buffer.asUint8List());
   }
 
-  /// Download / Share PDF
-  static Future<void> download({
-    required String fileName,
+  // ============================================================
+  // LOAD NETWORK IMAGE
+  // ============================================================
+
+  static Future<pw.MemoryImage> loadNetworkImage(String url) async {
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to load image: ${response.statusCode}');
+    }
+
+    return pw.MemoryImage(response.bodyBytes);
+  }
+
+  // ============================================================
+  // BUILD PDF FROM WIDGET
+  // ============================================================
+
+  static Future<Uint8List> buildPdf({
     required pw.Widget child,
+    PdfPageFormat pageFormat = PdfPageFormat.a4,
+    pw.EdgeInsets margin = const pw.EdgeInsets.all(24),
   }) async {
     final pdf = pw.Document();
 
     pdf.addPage(
       pw.MultiPage(
-        pageFormat: PdfPageFormat.a4,
-        margin: const pw.EdgeInsets.all(24),
-        build: (_) => [
-          child,
-        ],
+        pageFormat: pageFormat,
+        margin: margin,
+        build: (context) => [child],
       ),
     );
 
-    await Printing.sharePdf(
-      bytes: await pdf.save(),
-      filename: fileName,
-    );
-  }
-  static Future<pw.MemoryImage> loadNetworkImage(String url) async {
-  final response = await http.get(Uri.parse(url));
-
-  if (response.statusCode != 200) {
-    throw Exception('Failed to load image');
+    return pdf.save();
   }
 
-  return pw.MemoryImage(response.bodyBytes);
-}
+  // ============================================================
+  // SAVE PDF DIRECTLY TO ANDROID DOWNLOADS
+  // ============================================================
 
-  /// Preview PDF
-  static Future<void> preview({
+  static Future<bool> downloadBytes({
+    required String fileName,
+    required Uint8List bytes,
+  }) async {
+    try {
+      final result = await _channel.invokeMethod<bool>('savePdfToDownloads', {
+        'fileName': _ensurePdfExtension(fileName),
+        'bytes': bytes,
+      });
+
+      return result ?? false;
+    } on PlatformException catch (e) {
+      throw Exception('Failed to save PDF: ${e.message ?? e.code}');
+    } catch (e) {
+      throw Exception('Failed to save PDF: $e');
+    }
+  }
+
+  // ============================================================
+  // OPTIONAL:
+  // BUILD + DOWNLOAD IN ONE CALL
+  // ============================================================
+
+  static Future<bool> download({
+    required String fileName,
     required pw.Widget child,
   }) async {
+    final bytes = await buildPdf(child: child);
+
+    return downloadBytes(fileName: fileName, bytes: bytes);
+  }
+
+  // ============================================================
+  // PDF PREVIEW
+  // ============================================================
+
+  static Future<void> preview({required pw.Widget child}) async {
     await Printing.layoutPdf(
       onLayout: (format) async {
-        final pdf = pw.Document();
-
-        pdf.addPage(
-          pw.MultiPage(
-            pageFormat: PdfPageFormat.a4,
-            margin: const pw.EdgeInsets.all(24),
-            build: (_) => [
-              child,
-            ],
-          ),
-        );
-
-        return pdf.save();
+        return buildPdf(child: child, pageFormat: format);
       },
     );
   }
-  static Future<void> downloadOnly({
-  required String fileName,
-  required pw.Widget child,
-}) async {
-  final pdf = pw.Document();
 
-  pdf.addPage(
-    pw.MultiPage(
-      pageFormat: PdfPageFormat.a4,
-      margin: const pw.EdgeInsets.all(24),
-      build: (_) => [child],
-    ),
-  );
+  // ============================================================
+  // ENSURE .PDF EXTENSION
+  // ============================================================
 
-  final Uint8List bytes = await pdf.save();
+  static String _ensurePdfExtension(String fileName) {
+    if (fileName.toLowerCase().endsWith('.pdf')) {
+      return fileName;
+    }
 
-  await FileSaver.instance.saveFile(
-    name: fileName.replaceAll(".pdf", ""),
-    bytes: bytes,
-    ext: "pdf",
-    mimeType: MimeType.pdf,
-  );
-}}
+    return '$fileName.pdf';
+  }
+
+  // ============================================================
+  // SANITIZE FILE NAME
+  // ============================================================
+
+  static String sanitizeFileName(String value) {
+    return value
+        .replaceAll(RegExp(r'[\\/:*?"<>|]'), '_')
+        .replaceAll(RegExp(r'\s+'), '_')
+        .trim();
+  }
+}

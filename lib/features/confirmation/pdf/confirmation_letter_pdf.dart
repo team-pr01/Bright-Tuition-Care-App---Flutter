@@ -166,20 +166,32 @@ class ConfirmationLetterPdf {
 
                     pw.SizedBox(height: 8),
 
-                    _row("Name", letter.guardian.name, labelStyle, valueStyle),
+                    _row(
+                      "Name",
+                      letter.guardian?.name ?? "-",
+                      labelStyle,
+                      valueStyle,
+                    ),
 
-                    _row("ID", letter.guardianCustomId, labelStyle, valueStyle),
+                    _row(
+                      "ID",
+                      letter.guardianCustomId.isEmpty
+                          ? "-"
+                          : letter.guardianCustomId,
+                      labelStyle,
+                      valueStyle,
+                    ),
 
                     _row(
                       "Email",
-                      letter.guardian.email,
+                      letter.guardian?.email ?? "-",
                       labelStyle,
                       valueStyle,
                     ),
 
                     _row(
                       "Phone",
-                      letter.guardian.phoneNumber,
+                      letter.guardian?.phoneNumber ?? "-",
                       labelStyle,
                       valueStyle,
                     ),

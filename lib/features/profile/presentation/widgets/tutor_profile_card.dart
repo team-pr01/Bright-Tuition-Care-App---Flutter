@@ -18,6 +18,9 @@ class TutorProfileCard extends StatelessWidget {
   final double rating;
   final bool isVerified;
   final int profileCompleted;
+
+  final bool isDownloading;
+
   final VoidCallback? onDownload;
   final VoidCallback? onEditImage;
 
@@ -33,6 +36,7 @@ class TutorProfileCard extends StatelessWidget {
     required this.isVerified,
     required this.profileCompleted,
     required this.rating,
+    this.isDownloading = false,
     this.onDownload,
     this.onEditImage,
   });
@@ -241,6 +245,7 @@ class TutorProfileCard extends StatelessWidget {
                   height: 38,
                   fontSize: 12,
                   onPressed: onDownload,
+                  loading: isDownloading,
                 ),
               ),
 

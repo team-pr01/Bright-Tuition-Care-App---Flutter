@@ -30,8 +30,8 @@ class ConfirmationCard extends StatelessWidget {
         color: AppColors.neutrals01,
         borderRadius: BorderRadius.circular(AppRadius.large),
         border: Border.all(
-          color: bothSigned 
-              ? AppColors.success.withOpacity(0.2) 
+          color: bothSigned
+              ? AppColors.success.withOpacity(0.2)
               : AppColors.primary01.withOpacity(0.08),
         ),
         boxShadow: [
@@ -76,23 +76,32 @@ class ConfirmationCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: bothSigned
-                          ? [AppColors.success, AppColors.success.withOpacity(0.7)]
-                          : [AppColors.primary01, AppColors.primary01.withOpacity(0.7)],
+                          ? [
+                              AppColors.success,
+                              AppColors.success.withOpacity(0.7),
+                            ]
+                          : [
+                              AppColors.primary01,
+                              AppColors.primary01.withOpacity(0.7),
+                            ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(14),
                     boxShadow: [
                       BoxShadow(
-                        color: (bothSigned ? AppColors.success : AppColors.primary01)
-                            .withOpacity(0.2),
+                        color:
+                            (bothSigned
+                                    ? AppColors.success
+                                    : AppColors.primary01)
+                                .withOpacity(0.2),
                         blurRadius: 8,
                         offset: const Offset(0, 4),
                       ),
                     ],
                   ),
                   child: Icon(
-                    bothSigned 
+                    bothSigned
                         ? Icons.verified_rounded
                         : Icons.description_outlined,
                     color: Colors.white,
@@ -145,8 +154,9 @@ class ConfirmationCard extends StatelessWidget {
                           const SizedBox(width: 8),
                           Text(
                             DateFormatter.formattedDate(
-                              letter.createdAt.toIso8601String(),
-                            ) ?? "-",
+                                  letter.createdAt.toIso8601String(),
+                                ) ??
+                                "-",
                             style: AppTextStyles.labelSmall.copyWith(
                               color: AppColors.neutrals03,
                             ),
@@ -169,7 +179,10 @@ class ConfirmationCard extends StatelessWidget {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: bothSigned
-                              ? [AppColors.success, AppColors.success.withOpacity(0.8)]
+                              ? [
+                                  AppColors.success,
+                                  AppColors.success.withOpacity(0.8),
+                                ]
                               : [Colors.orange, Colors.orange.withOpacity(0.8)],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -177,8 +190,9 @@ class ConfirmationCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(100),
                         boxShadow: [
                           BoxShadow(
-                            color: (bothSigned ? AppColors.success : Colors.orange)
-                                .withOpacity(0.2),
+                            color:
+                                (bothSigned ? AppColors.success : Colors.orange)
+                                    .withOpacity(0.2),
                             blurRadius: 4,
                           ),
                         ],
@@ -187,7 +201,9 @@ class ConfirmationCard extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
-                            bothSigned ? Icons.check_circle_rounded : Icons.pending,
+                            bothSigned
+                                ? Icons.check_circle_rounded
+                                : Icons.pending,
                             color: Colors.white,
                             size: 14,
                           ),
@@ -224,7 +240,6 @@ class ConfirmationCard extends StatelessWidget {
               children: [
                 /// Job Title
                 Container(
-                 
                   decoration: BoxDecoration(
                     color: AppColors.primary03.withOpacity(0.08),
                     // borderRadius: BorderRadius.circular(AppRadius.small),
@@ -268,7 +283,9 @@ class ConfirmationCard extends StatelessWidget {
 
                 _participantTile(
                   icon: Icons.person_outline_rounded,
-                  name: letter.guardian.name,
+                  name: letter.guardian?.name.isNotEmpty == true
+                      ? letter.guardian!.name
+                      : "Guardian",
                   role: "Guardian",
                   isSigned: guardianSigned,
                 ),
@@ -311,18 +328,15 @@ class ConfirmationCard extends StatelessWidget {
     required bool isSigned,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 10,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: isSigned 
-            ? AppColors.success.withOpacity(0.05) 
+        color: isSigned
+            ? AppColors.success.withOpacity(0.05)
             : AppColors.neutrals01,
         borderRadius: BorderRadius.circular(AppRadius.small),
         border: Border.all(
-          color: isSigned 
-              ? AppColors.success.withOpacity(0.2) 
+          color: isSigned
+              ? AppColors.success.withOpacity(0.2)
               : AppColors.neutrals04.withOpacity(0.3),
         ),
       ),
@@ -331,8 +345,8 @@ class ConfirmationCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: isSigned 
-                  ? AppColors.success.withOpacity(0.1) 
+              color: isSigned
+                  ? AppColors.success.withOpacity(0.1)
                   : AppColors.neutrals04.withOpacity(0.2),
               shape: BoxShape.circle,
             ),
@@ -364,13 +378,10 @@ class ConfirmationCard extends StatelessWidget {
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8,
-              vertical: 4,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: isSigned 
-                  ? AppColors.success.withOpacity(0.1) 
+              color: isSigned
+                  ? AppColors.success.withOpacity(0.1)
                   : Colors.orange.withOpacity(0.1),
               borderRadius: BorderRadius.circular(20),
             ),
@@ -464,9 +475,7 @@ class ConfirmationCard extends StatelessWidget {
       children: [
         Text(
           "$title : ",
-          style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.neutrals03,
-          ),
+          style: AppTextStyles.bodyMedium.copyWith(color: AppColors.neutrals03),
         ),
         const Spacer(),
         Icon(
