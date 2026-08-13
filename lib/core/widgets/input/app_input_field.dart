@@ -211,7 +211,7 @@ class _AppInputFieldState extends State<AppInputField> {
               );
             }),
           ],
-          maxLength: 10,
+          maxLength: 11,
           style: inputStyle,
           decoration: _decoration().copyWith(counterText: ""),
           validator: (value) {
@@ -221,8 +221,8 @@ class _AppInputFieldState extends State<AppInputField> {
 
             if (value != null &&
                 value.isNotEmpty &&
-                !RegExp(r'^\d{10}$').hasMatch(value)) {
-              return "Enter a valid 10 digit phone number";
+                !RegExp(r'^\d{11}$').hasMatch(value)) {
+              return "Enter a valid 11 digit phone number";
             }
 
             return null;

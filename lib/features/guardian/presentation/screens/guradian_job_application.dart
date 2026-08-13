@@ -64,7 +64,7 @@ class _GuardianJobApplicationState
     final notifier = ref.read(jobApplicationProvider.notifier);
 
     return Scaffold(
-      appBar: const CommonAppBar( title: "Job Applications",),
+      appBar: const CommonAppBar(title: "Job Applications"),
       body: RefreshIndicator(
         key: _refreshKey,
         onRefresh: () async {
@@ -97,7 +97,7 @@ class _GuardianJobApplicationState
                     },
                   ),
 
-                  const SizedBox(height: 10),
+                  const SizedBox(width: 10),
 
                   /// STATUS + LIMIT
                   Row(
@@ -136,7 +136,7 @@ class _GuardianJobApplicationState
                         ),
                       ),
 
-                      
+                      Container(width: 20, height: 50, ),
 
                       Expanded(
                         child: AppInputField(
@@ -175,7 +175,7 @@ class _GuardianJobApplicationState
                       Expanded(
                         child: AppInputField(
                           controller: demoDateController,
-                          label: "Demo Date",
+                          label: "Demo Date iuuhn",
                           type: AppInputType.date,
                           onChanged: (_) {
                             notifier.applyFilters(
@@ -196,8 +196,7 @@ class _GuardianJobApplicationState
                           },
                         ),
                       ),
-
-                      
+                      Container(width: 20, height: 50,),
 
                       Expanded(
                         child: AppInputField(

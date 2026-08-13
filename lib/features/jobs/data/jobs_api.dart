@@ -6,8 +6,10 @@ class JobsApi {
 
     print("JOBS API RAW: ${response.data}");
 
-    return response.data;
+    return Map<String, dynamic>.from(response.data);
   }
+
+  // KEEP EVERYTHING BELOW AS IT IS
 
   Future<Map<String, dynamic>> applyForJob({
     required String jobId,
@@ -23,83 +25,79 @@ class JobsApi {
 
     return response.data;
   }
+
   Future<Map<String, dynamic>> withdrawApplication({
-  required String applicationId,
-}) async {
+    required String applicationId,
+  }) async {
+    final response = await DioClient.dio.patch(
+      "/application/withdraw/$applicationId",
+    );
 
-  final response = await DioClient.dio.patch(
-    "/application/withdraw/$applicationId",
-  );
+    print("🔥 WITHDRAW RESPONSE: ${response.data}");
 
-  print("🔥 WITHDRAW RESPONSE: ${response.data}");
+    return response.data;
+  }
 
-  return response.data;
+  Future<Map<String, dynamic>> getMyApplications({
+    required Map<String, dynamic> query,
+  }) async {
+    final response = await DioClient.dio.get(
+      "/tutor/my-applications",
+      queryParameters: query,
+    );
+
+    print("📦 APPLICATIONS RAW: ${response.data}");
+
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> getMyPostedJobs({
+    required Map<String, dynamic> query,
+  }) async {
+    final response = await DioClient.dio.get(
+      "/job/my-posted-jobs",
+      queryParameters: query,
+    );
+
+    print("📦 POSTED JOBS RAW: ${response.data}");
+
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> fetchApplications({
+    required String jobId,
+    required int page,
+    required int limit,
+    String? status,
+    String? keyword,
+    String? demoDate,
+    String? appointedOn,
+  }) async {
+    final query = {
+      "page": page,
+      "limit": limit,
+      if (status != null && status.isNotEmpty) "status": status,
+      if (keyword != null && keyword.isNotEmpty) "keyword": keyword,
+      if (demoDate != null && demoDate.isNotEmpty) "demoDate": demoDate,
+      if (appointedOn != null && appointedOn.isNotEmpty)
+        "appointedOn": appointedOn,
+    };
+
+    final response = await DioClient.dio.get(
+      "/application/job/$jobId",
+      queryParameters: query,
+    );
+
+    print("📦 APPLICATIONS RAW: ${response.data}");
+
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> getSingleJobByCustomJobId(String jobId) async {
+    final response = await DioClient.dio.get("/job/single/$jobId");
+
+    print("📦 SINGLE JOB RESPONSE: ${response.data}");
+
+    return response.data;
+  }
 }
-
-Future<Map<String, dynamic>> getMyApplications({
-  required Map<String, dynamic> query,
-}) async {
-  final response = await DioClient.dio.get(
-    "/tutor/my-applications",
-    queryParameters: query,
-  );
-
-  print("📦 APPLICATIONS RAW: ${response.data}");
-
-  return response.data;
-}
-
-Future<Map<String, dynamic>> getMyPostedJobs({
-  required Map<String, dynamic> query,
-}) async {
-  final response = await DioClient.dio.get(
-    "/job/my-posted-jobs",
-    queryParameters: query,
-  );
-
-  print("📦 POSTED JOBS RAW: ${response.data}");
-
-  return response.data;
-}
-
-Future<Map<String, dynamic>> fetchApplications({
-  required String jobId,
-  required int page,
-  required int limit,
-  String? status,
-  String? keyword,
-  String? demoDate,
-  String? appointedOn,
-}) async {
-  final query = {
-    "page": page,
-    "limit": limit,
-    if (status != null && status.isNotEmpty) "status": status,
-    if (keyword != null && keyword.isNotEmpty) "keyword": keyword,
-    if (demoDate != null && demoDate.isNotEmpty) "demoDate": demoDate,
-    if (appointedOn != null && appointedOn.isNotEmpty) "appointedOn": appointedOn,
-  };
-
-  final response = await DioClient.dio.get(
-    "/application/job/$jobId",
-    queryParameters: query,
-  );
-
-  print("📦 APPLICATIONS RAW: ${response.data}");
-
-  return response.data;
-}
-Future<Map<String, dynamic>> getSingleJobByCustomJobId(
-  String jobId,
-) async {
-  final response = await DioClient.dio.get(
-    "/job/single/$jobId",
-  );
-
-  print("📦 SINGLE JOB RESPONSE: ${response.data}");
-
-  return response.data;
-}
-
-}
-  

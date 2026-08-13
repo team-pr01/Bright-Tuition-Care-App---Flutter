@@ -17,13 +17,7 @@ class GuardianEmergencySectionCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.grey.shade300,
-        ),
-      ),
+     
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -38,11 +32,11 @@ class GuardianEmergencySectionCard extends StatelessWidget {
                   ),
                 ),
               ),
-              if (onEdit != null)
-                IconButton(
-                  onPressed: onEdit,
-                  icon: const Icon(Icons.edit_outlined),
-                ),
+              // if (onEdit != null)
+              //   IconButton(
+              //     onPressed: onEdit,
+              //     icon: const Icon(Icons.edit_outlined),
+              //   ),
             ],
           ),
 

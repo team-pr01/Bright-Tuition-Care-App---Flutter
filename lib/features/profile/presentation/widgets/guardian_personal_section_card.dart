@@ -73,22 +73,7 @@ class GuardianPersonalSectionCard extends StatelessWidget {
 
           ProfileInfoRow(label: "Facebook", value: profile.facebook),
 
-          const Divider(height: 32),
-
-          const Text(
-            "Emergency Contact",
-            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
-          ),
-
-          const SizedBox(height: 16),
-
-          ProfileInfoRow(label: "Contact Person", value: profile.emergencyName),
-
-          ProfileInfoRow(label: "Phone Number", value: profile.emergencyPhone),
-
-          ProfileInfoRow(label: "Relation", value: profile.emergencyRelation),
-
-          ProfileInfoRow(label: "Address", value: profile.emergencyAddress),
+          
         ],
       ),
     );

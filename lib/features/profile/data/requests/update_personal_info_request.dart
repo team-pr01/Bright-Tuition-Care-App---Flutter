@@ -9,9 +9,9 @@ class UpdatePersonalInfoRequest {
   final String? area;
    final File? profileImage;
 
-  final PersonalInformationRequest personalInformation;
+  final PersonalInformationRequest? personalInformation;
 
-  final SocialMediaInformationRequest socialMediaInformation;
+  final SocialMediaInformationRequest? socialMediaInformation;
 
   UpdatePersonalInfoRequest({
     this.name,
@@ -20,8 +20,8 @@ class UpdatePersonalInfoRequest {
     this.gender,
     this.city,
     this.area,
-    required this.personalInformation,
-    required this.socialMediaInformation,
+    this.personalInformation,
+    this.socialMediaInformation,
     this.profileImage,
   });
 
@@ -33,8 +33,8 @@ class UpdatePersonalInfoRequest {
       "gender": gender,
       "city": city,
       "area": area,
-      "personalInformation": personalInformation.toJson(),
-      "socialMediaInformation": socialMediaInformation.toJson(),
+      "personalInformation": personalInformation?.toJson(),
+      "socialMediaInformation": socialMediaInformation?.toJson(),
     };
   }
 }

@@ -1,14 +1,12 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/layout/dashboard_layout.dart';
 import 'package:btcclient/core/screens/join_community.dart';
-import 'package:btcclient/core/screens/share_app.dart';
 import 'package:btcclient/core/widgets/navbar/sidebar_item.dart';
 import 'package:btcclient/core/widgets/navbar/side_drawer.dart';
+import 'package:btcclient/core/widgets/share_card/share_card.dart';
 import 'package:btcclient/features/auth/presentation/screens/login_screen.dart';
-import 'package:btcclient/features/auth/presentation/screens/welcome_screen.dart';
+import 'package:btcclient/features/auth/presentation/screens/register_screen.dart';
 import 'package:btcclient/features/jobs/presentation/screen/job_page.dart';
-import 'package:btcclient/features/legal/data/important_guidelines_data.dart';
-import 'package:btcclient/features/legal/presentation/important_guidelines_screen.dart';
 import 'package:btcclient/features/tutor/presentation/screens/how_it_works_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -19,6 +17,15 @@ class GuestDashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DashboardLayout(
+      appBarAction: DashboardAppBarAction.user,
+
+      onUserPressed: () {
+        // Navigate to profile
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const RegisterScreen(role :"tutor")),
+        );
+      },
       initialIndex: 0,
       // =========================================================
       // SIDEBAR
@@ -50,23 +57,6 @@ class GuestDashboardScreen extends StatelessWidget {
           // =======================================================
           menuItemsCommon: [
             SidebarItem(
-              label: "Important Guidelines",
-              icon: _icon("assets/icons/navigations/question-mark.svg"),
-              onTap: () {
-                Navigator.pop(context);
-
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => ImportantGuidelinesScreen(
-                      document: importantGuidelinesData,
-                    ),
-                  ),
-                );
-              },
-            ),
-
-            SidebarItem(
               label: "Join Community",
               icon: _icon("assets/icons/social_media/facebook.svg"),
               onTap: () {
@@ -91,14 +81,14 @@ class GuestDashboardScreen extends StatelessWidget {
             ),
 
             SidebarItem(
-              label: "Share The App",
-              icon: _icon("assets/icons/navigations/share.svg"),
+              label: "How It Works",
+              icon: _icon("assets/icons/navigations/how-it-works.svg"),
               onTap: () {
                 Navigator.pop(context);
 
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const ShareScreen()),
+                  MaterialPageRoute(builder: (_) => const HowItWorksScreen()),
                 );
               },
             ),
@@ -132,7 +122,14 @@ class GuestDashboardScreen extends StatelessWidget {
 
         // 1 - HOW IT WORKS
         (changeTab, status) {
-          return const HowItWorksScreen();
+          return const Center(
+            child: ShareCard(
+              title: "Share with your Friends and Relatives",
+              description:
+                  "Help your friends and relatives to find the right tutor for their children by sharing our platform — and earn exclusive rewards!",
+              link: "https://www.brighttuitioncare.com",
+            ),
+          );
         },
       ],
 
@@ -170,7 +167,7 @@ class GuestDashboardScreen extends StatelessWidget {
         // =========================================================
         BottomNavigationBarItem(
           icon: SvgPicture.asset(
-            "assets/icons/navigations/how-it-works.svg",
+            "assets/icons/navigations/share.svg",
             width: 22,
             height: 22,
             colorFilter: const ColorFilter.mode(
@@ -179,7 +176,7 @@ class GuestDashboardScreen extends StatelessWidget {
             ),
           ),
           activeIcon: SvgPicture.asset(
-            "assets/icons/navigations/how-it-works.svg",
+            "assets/icons/navigations/share.svg",
             width: 22,
             height: 22,
             colorFilter: const ColorFilter.mode(
@@ -187,7 +184,7 @@ class GuestDashboardScreen extends StatelessWidget {
               BlendMode.srcIn,
             ),
           ),
-          label: "How It Works",
+          label: "Share the App",
         ),
       ],
     );

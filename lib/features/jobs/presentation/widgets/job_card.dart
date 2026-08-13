@@ -106,9 +106,9 @@ class _JobCardState extends ConsumerState<JobCard> {
                         text: safe(job.title).isEmpty ? "-" : job.title,
                         style: const TextStyle(
                           fontSize: 16,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w600,
                           height: 1.4,
-                          color: Colors.black,
+                          color: AppColors.neutrals02,
                         ),
                       ),
                       if (safe(job.tuitionType).isNotEmpty)

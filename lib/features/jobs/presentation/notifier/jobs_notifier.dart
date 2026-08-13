@@ -1,4 +1,3 @@
-import 'package:btcclient/features/jobs/data/models/applied_model.dart';
 import 'package:btcclient/features/jobs/data/models/jobs_meta.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,7 +5,6 @@ import '../../data/jobs_api.dart';
 import '../../data/jobs_repository.dart';
 import '../../data/models/job_model.dart';
 import '../../data/models/job_filter.dart';
-import '../../../../core/storage/local_storage.dart';
 
 /// ================= REPOSITORY PROVIDER =================
 final jobsRepositoryProvider = Provider<JobsRepository>((ref) {

@@ -169,10 +169,10 @@ class _JobsPageState extends ConsumerState<JobsPage> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (isTutor) {
+      if (isTutor || isGuest) {
         final filter = ref.read(selectedJobFilterProvider);
 
-        ref.read(jobsProvider.notifier).fetchJobs(newFilter: filter);
+        await ref.read(jobsProvider.notifier).fetchJobs(newFilter: filter);
       }
       // if (!isTutor) {
       //   await ref
@@ -199,7 +199,7 @@ class _JobsPageState extends ConsumerState<JobsPage> {
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
           _scrollController.position.maxScrollExtent - 200) {
-        if (isTutor) {
+        if (isTutor || isGuest) {
           ref.read(jobsProvider.notifier).loadMore();
         } else {
           ref.read(postedJobsProvider.notifier).loadMore();
@@ -227,7 +227,7 @@ class _JobsPageState extends ConsumerState<JobsPage> {
 
     final jobsState = ref.watch(jobsProvider);
     final postedState = ref.watch(postedJobsProvider);
-    final state = isTutor ? jobsState : postedState;
+    final state = (isTutor || isGuest) ? jobsState : postedState;
 
     ref.listen<JobFilter?>(selectedJobFilterProvider, (previous, next) {
       if (isTutor && next != null) {
@@ -421,7 +421,7 @@ class _JobsPageState extends ConsumerState<JobsPage> {
               Expanded(
                 child: Text(
                   getCountText(
-                    isTutor
+                    (isTutor || isGuest)
                         ? (state.meta?.liveJobs ?? 0)
                         : (state.meta?.counts.liveJobs ?? 0),
                   ),
@@ -433,7 +433,7 @@ class _JobsPageState extends ConsumerState<JobsPage> {
                 ),
               ),
 
-              if (isTutor) ...[
+              if (isTutor || isGuest) ...[
                 /// Clear Filters
                 Row(
                   children: [
@@ -498,7 +498,7 @@ class _JobsPageState extends ConsumerState<JobsPage> {
 
     return RefreshIndicator(
       onRefresh: () async {
-        if (isTutor) {
+        if (isTutor || isGuest) {
           await ref.read(jobsProvider.notifier).refresh();
         } else {
           await ref.read(postedJobsProvider.notifier).refresh();
@@ -518,7 +518,9 @@ class _JobsPageState extends ConsumerState<JobsPage> {
           return JobCard(
             changeTab: widget.changeTab,
             job: job,
-            variant: isTutor ? JobCardVariant.job : JobCardVariant.postedJob,
+            variant: (isTutor || isGuest)
+                ? JobCardVariant.job
+                : JobCardVariant.postedJob,
           );
         },
       ),

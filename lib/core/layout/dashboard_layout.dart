@@ -9,6 +9,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+/// Controls what appears on the right side of the Dashboard AppBar.
+///
+/// notification -> Notification icon + unread count
+/// user         -> User/profile icon
+/// none         -> Nothing
+enum DashboardAppBarAction {
+  notification,
+  user,
+  none,
+}
+
 class DashboardLayout extends ConsumerStatefulWidget {
   /// Pages used by the dashboard.
   ///
@@ -25,11 +36,30 @@ class DashboardLayout extends ConsumerStatefulWidget {
   ) drawerBuilder;
 
   /// Index that should be opened when dashboard starts.
+  final int initialIndex;
+
+  /// Controls what appears on the right side of the AppBar.
+  ///
+  /// Default = notification.
   ///
   /// Example:
-  /// Logged-in dashboard -> 2
-  /// Guest dashboard -> 0
-  final int initialIndex;
+  ///
+  /// DashboardAppBarAction.notification
+  /// DashboardAppBarAction.user
+  /// DashboardAppBarAction.none
+  final DashboardAppBarAction appBarAction;
+
+  /// Callback when the user icon is pressed.
+  ///
+  /// If null, the user icon will still be displayed but won't do anything.
+  final VoidCallback? onUserPressed;
+
+  /// Optional custom widget for the right side of AppBar.
+  ///
+  /// If supplied, this takes priority over [appBarAction].
+  ///
+  /// Useful if later you want something other than notification/user.
+  final Widget? appBarActionWidget;
 
   const DashboardLayout({
     super.key,
@@ -37,10 +67,17 @@ class DashboardLayout extends ConsumerStatefulWidget {
     required this.navItems,
     required this.drawerBuilder,
     this.initialIndex = 0,
+
+    /// Default behaviour remains the existing notification icon.
+    this.appBarAction = DashboardAppBarAction.notification,
+
+    this.onUserPressed,
+    this.appBarActionWidget,
   });
 
   @override
-  ConsumerState<DashboardLayout> createState() => _DashboardLayoutState();
+  ConsumerState<DashboardLayout> createState() =>
+      _DashboardLayoutState();
 }
 
 class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
@@ -56,18 +93,6 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
   // SAFE INDEX HELPERS
   // =============================================================
 
-  /// Returns a valid index for navItems.
-  ///
-  /// This prevents:
-  ///
-  /// currentIndex = 2
-  /// navItems.length = 2
-  ///
-  /// from causing:
-  ///
-  /// 0 <= currentIndex < items.length
-  ///
-  /// assertion failure.
   int get safeNavIndex {
     if (widget.navItems.isEmpty) {
       return 0;
@@ -79,7 +104,6 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
     );
   }
 
-  /// Returns a valid index for pages.
   int get safePageIndex {
     if (widget.pages.isEmpty) {
       return 0;
@@ -91,8 +115,6 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
     );
   }
 
-  /// Returns the dashboard's configured initial index,
-  /// but guarantees that it is valid.
   int get safeInitialIndex {
     if (widget.navItems.isEmpty) {
       return 0;
@@ -112,7 +134,6 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
   void initState() {
     super.initState();
 
-    // NEVER assign widget.initialIndex directly without validation.
     currentIndex = safeInitialIndex;
 
     debugPrint('🏠 DashboardLayout INIT');
@@ -120,14 +141,28 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
     debugPrint('Safe current index: $currentIndex');
     debugPrint('Nav items count: ${widget.navItems.length}');
     debugPrint('Pages count: ${widget.pages.length}');
+    debugPrint('AppBar action: ${widget.appBarAction}');
 
-    Future.microtask(() async {
-      if (!mounted) return;
+    // ===========================================================
+    // LOAD NOTIFICATIONS ONLY WHEN NEEDED
+    // ===========================================================
+    //
+    // There is no reason to load notifications when the AppBar
+    // doesn't use the notification action.
+    //
+    // This also avoids unnecessary API/state work for screens
+    // using the user icon or no action.
+    // ===========================================================
 
-      ref
-          .read(notificationNotifierProvider.notifier)
-          .loadNotifications();
-    });
+    if (widget.appBarAction == DashboardAppBarAction.notification) {
+      Future.microtask(() async {
+        if (!mounted) return;
+
+        ref
+            .read(notificationNotifierProvider.notifier)
+            .loadNotifications();
+      });
+    }
 
     NavigationService.registerJobDetailsHandler(
       _openJobFromNotification,
@@ -156,7 +191,6 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
 
     NavigationService.setPendingJob(jobId);
 
-    // Job Board is index 0.
     if (widget.navItems.isEmpty) {
       return;
     }
@@ -176,8 +210,6 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
   }) {
     if (!mounted) return;
 
-    // If there are no navigation items, don't attempt
-    // to navigate anywhere.
     if (widget.navItems.isEmpty) {
       return;
     }
@@ -199,28 +231,11 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
   }
 
   // =============================================================
-  // APP BAR
+  // APP BAR VISIBILITY
   // =============================================================
 
   bool get _showAppBar {
-    // Don't hard-code Profile = 4 here.
-    //
-    // The dashboard can have different numbers of pages.
-    // For example:
-    //
-    // Guest:
-    // 0 = Jobs
-    // 1 = How It Works
-    //
-    // Logged in:
-    // 0 = Jobs
-    // 1 = ...
-    // 2 = Dashboard
-    // 4 = Profile
-    //
-    // If later you want to hide the AppBar on a particular page,
-    // make that configurable instead of hard-coding it.
-    return true;
+    return currentIndex != 4;
   }
 
   // =============================================================
@@ -229,11 +244,19 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
 
   @override
   Widget build(BuildContext context) {
-    final notificationState =
-        ref.watch(notificationNotifierProvider);
+    // ===========================================================
+    // ONLY WATCH NOTIFICATIONS WHEN NEEDED
+    // ===========================================================
 
-    final unreadCount =
-        notificationState.unreadCount;
+    int unreadCount = 0;
+
+    if (widget.appBarAction ==
+        DashboardAppBarAction.notification) {
+      final notificationState =
+          ref.watch(notificationNotifierProvider);
+
+      unreadCount = notificationState.unreadCount;
+    }
 
     final navIndex = safeNavIndex;
 
@@ -251,18 +274,6 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
 
         // =======================================================
         // BACK BEHAVIOUR
-        // =======================================================
-        //
-        // IMPORTANT:
-        // We DO NOT use:
-        //
-        // currentIndex = 2
-        //
-        // anymore.
-        //
-        // Instead we return to whatever initialIndex was provided.
-        // Guest -> 0
-        // Logged in -> whatever its initialIndex is.
         // =======================================================
 
         final defaultIndex = safeInitialIndex;
@@ -301,41 +312,36 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
       },
 
       child: Scaffold(
-        // =======================================================
+        // =========================================================
         // DRAWER
-        // =======================================================
+        // =========================================================
 
         drawer: widget.drawerBuilder(changeTab),
 
-        // =======================================================
+        // =========================================================
         // APP BAR
-        // =======================================================
+        // =========================================================
 
         appBar: _showAppBar
             ? PreferredSize(
-                preferredSize:
-                    const Size.fromHeight(56),
+                preferredSize: const Size.fromHeight(56),
 
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.md,
                   ),
 
-                  decoration:
-                      const BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: AppColors.neutrals01,
                     boxShadow: [
                       BoxShadow(
-                        color:
-                            Color.fromRGBO(
+                        color: Color.fromRGBO(
                           0,
                           0,
                           0,
                           0.10,
                         ),
-                        offset:
-                            Offset(0, 1.446),
+                        offset: Offset(0, 1.446),
                         blurRadius: 1.446,
                       ),
                     ],
@@ -345,8 +351,7 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
                     bottom: false,
 
                     child: Stack(
-                      alignment:
-                          Alignment.center,
+                      alignment: Alignment.center,
 
                       children: [
                         // =================================================
@@ -354,8 +359,7 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
                         // =================================================
 
                         Align(
-                          alignment:
-                              Alignment.centerLeft,
+                          alignment: Alignment.centerLeft,
 
                           child: Builder(
                             builder: (context) {
@@ -364,25 +368,22 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
                                   padding:
                                       const EdgeInsets.all(6),
 
-                                  decoration:
-                                      BoxDecoration(
+                                  decoration: BoxDecoration(
                                     borderRadius:
-                                        BorderRadius.circular(
-                                      30,
-                                    ),
-                                    border:
-                                        Border.all(
+                                        BorderRadius.circular(30),
+
+                                    border: Border.all(
                                       color:
                                           AppColors.primary03,
                                       width: 1,
                                     ),
                                   ),
 
-                                  child:
-                                      SvgPicture.asset(
+                                  child: SvgPicture.asset(
                                     "assets/icons/operations/menu.svg",
                                     width: 20,
                                     height: 20,
+
                                     colorFilter:
                                         const ColorFilter.mode(
                                       AppColors.primary01,
@@ -392,9 +393,8 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
                                 ),
 
                                 onPressed: () {
-                                  Scaffold.of(
-                                    context,
-                                  ).openDrawer();
+                                  Scaffold.of(context)
+                                      .openDrawer();
                                 },
                               );
                             },
@@ -414,102 +414,14 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
                         ),
 
                         // =================================================
-                        // NOTIFICATION BUTTON
+                        // RIGHT APP BAR ACTION
                         // =================================================
 
                         Align(
-                          alignment:
-                              Alignment.centerRight,
+                          alignment: Alignment.centerRight,
 
-                          child: Stack(
-                            children: [
-                              IconButton(
-                                icon: Container(
-                                  padding:
-                                      const EdgeInsets.all(6),
-
-                                  decoration:
-                                      BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.circular(
-                                      30,
-                                    ),
-                                    border:
-                                        Border.all(
-                                      color:
-                                          AppColors.primary03,
-                                      width: 1,
-                                    ),
-                                  ),
-
-                                  child:
-                                      SvgPicture.asset(
-                                    "assets/icons/operations/notification.svg",
-                                    width: 20,
-                                    height: 20,
-                                    colorFilter:
-                                        const ColorFilter.mode(
-                                      AppColors.primary01,
-                                      BlendMode.srcIn,
-                                    ),
-                                  ),
-                                ),
-
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) =>
-                                          const NotificationScreen(),
-                                    ),
-                                  );
-                                },
-                              ),
-
-                              if (unreadCount > 0)
-                                Positioned(
-                                  right: 5,
-                                  top: 5,
-
-                                  child: Container(
-                                    padding:
-                                        const EdgeInsets.all(
-                                      4,
-                                    ),
-
-                                    decoration:
-                                        const BoxDecoration(
-                                      color: Colors.red,
-                                      shape:
-                                          BoxShape.circle,
-                                    ),
-
-                                    constraints:
-                                        const BoxConstraints(
-                                      minWidth: 16,
-                                      minHeight: 16,
-                                    ),
-
-                                    child: Text(
-                                      unreadCount > 99
-                                          ? '99+'
-                                          : '$unreadCount',
-
-                                      textAlign:
-                                          TextAlign.center,
-
-                                      style:
-                                          const TextStyle(
-                                        color:
-                                            Colors.white,
-                                        fontSize: 10,
-                                        fontWeight:
-                                            FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                            ],
+                          child: _buildAppBarAction(
+                            unreadCount: unreadCount,
                           ),
                         ),
                       ],
@@ -543,16 +455,161 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
             widget.navItems.isEmpty
                 ? null
                 : AppBottomNavBar(
-                    // ALWAYS pass a valid index.
                     currentIndex: navIndex,
-
                     items: widget.navItems,
-
                     onTap: (index) {
                       changeTab(index);
                     },
                   ),
       ),
+    );
+  }
+
+  // =============================================================
+  // APP BAR ACTION BUILDER
+  // =============================================================
+
+  Widget _buildAppBarAction({
+    required int unreadCount,
+  }) {
+    // ===========================================================
+    // CUSTOM WIDGET
+    // ===========================================================
+
+    if (widget.appBarActionWidget != null) {
+      return widget.appBarActionWidget!;
+    }
+
+    // ===========================================================
+    // NONE
+    // ===========================================================
+
+    if (widget.appBarAction ==
+        DashboardAppBarAction.none) {
+      return const SizedBox.shrink();
+    }
+
+    // ===========================================================
+    // USER
+    // ===========================================================
+
+    if (widget.appBarAction ==
+        DashboardAppBarAction.user) {
+      return IconButton(
+        tooltip: "Profile",
+
+        icon: Container(
+          width: 38,
+          height: 38,
+
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+
+            border: Border.all(
+              color: AppColors.primary03,
+              width: 1,
+            ),
+          ),
+
+          child: const Icon(
+            Icons.person_outline_rounded,
+            size: 22,
+            color: AppColors.primary01,
+          ),
+        ),
+
+        onPressed: widget.onUserPressed,
+      );
+    }
+
+    // ===========================================================
+    // NOTIFICATION
+    // ===========================================================
+
+    return Stack(
+      clipBehavior: Clip.none,
+
+      children: [
+        IconButton(
+          tooltip: "Notifications",
+
+          icon: Container(
+            padding: const EdgeInsets.all(6),
+
+            decoration: BoxDecoration(
+              borderRadius:
+                  BorderRadius.circular(30),
+
+              border: Border.all(
+                color: AppColors.primary03,
+                width: 1,
+              ),
+            ),
+
+            child: SvgPicture.asset(
+              "assets/icons/operations/notification.svg",
+              width: 20,
+              height: 20,
+
+              colorFilter:
+                  const ColorFilter.mode(
+                AppColors.primary01,
+                BlendMode.srcIn,
+              ),
+            ),
+          ),
+
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) =>
+                    const NotificationScreen(),
+              ),
+            );
+          },
+        ),
+
+        // =========================================================
+        // UNREAD BADGE
+        // =========================================================
+
+        if (unreadCount > 0)
+          Positioned(
+            right: 5,
+            top: 5,
+
+            child: Container(
+              padding: const EdgeInsets.all(4),
+
+              decoration:
+                  const BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.circle,
+              ),
+
+              constraints:
+                  const BoxConstraints(
+                minWidth: 16,
+                minHeight: 16,
+              ),
+
+              child: Text(
+                unreadCount > 99
+                    ? '99+'
+                    : '$unreadCount',
+
+                textAlign: TextAlign.center,
+
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }
