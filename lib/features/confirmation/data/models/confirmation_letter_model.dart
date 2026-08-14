@@ -16,6 +16,39 @@ class ConfirmationLetterModel {
   final UserSummary tutor;
   final UserSummary? guardian;
 
+  String get guardianName {
+    if (guardian != null && guardian!.name.isNotEmpty) {
+      return guardian!.name;
+    }
+
+    if (job.guardianName.isNotEmpty) {
+      return job.guardianName;
+    }
+
+    return "";
+  }
+
+  String get guardianEmail {
+    if (guardian != null && guardian!.email.isNotEmpty) {
+      return guardian!.email;
+    }
+
+    return "";
+  }
+
+  String get guardianPhone {
+    if (guardian != null && guardian!.phoneNumber.isNotEmpty) {
+      return guardian!.phoneNumber;
+    }
+
+    // API currently provides guardian phone here
+    if (job.guardianPhoneNumber.isNotEmpty) {
+      return job.guardianPhoneNumber;
+    }
+
+    return "";
+  }
+
   ConfirmationLetterModel({
     required this.id,
     required this.guardianCustomId,
@@ -30,51 +63,36 @@ class ConfirmationLetterModel {
     required this.guardian,
   });
 
-  factory ConfirmationLetterModel.fromJson(
-    Map<String, dynamic> json,
-  ) {
+  factory ConfirmationLetterModel.fromJson(Map<String, dynamic> json) {
     return ConfirmationLetterModel(
       id: json["_id"]?.toString() ?? "",
 
-      guardianCustomId:
-          json["guardianCustomId"]?.toString() ?? "",
+      guardianCustomId: json["guardianCustomId"]?.toString() ?? "",
 
-      tutorCustomId:
-          json["tutorCustomId"]?.toString() ?? "",
+      tutorCustomId: json["tutorCustomId"]?.toString() ?? "",
 
-      guardianSignature:
-          json["guardianSignature"]?.toString(),
+      guardianSignature: json["guardianSignature"]?.toString(),
 
-      tutorSignature:
-          json["tutorSignature"]?.toString(),
+      tutorSignature: json["tutorSignature"]?.toString(),
 
-      guardianSignedDate:
-          json["guardianSinnedDate"]?.toString(),
+      guardianSignedDate: json["guardianSinnedDate"]?.toString(),
 
-      tutorSignedDate:
-          json["tutorSinnedDate"]?.toString(),
+      tutorSignedDate: json["tutorSinnedDate"]?.toString(),
 
-      createdAt: DateTime.tryParse(
-            json["createdAt"]?.toString() ?? "",
-          ) ??
+      createdAt:
+          DateTime.tryParse(json["createdAt"]?.toString() ?? "") ??
           DateTime.now(),
 
       job: json["jobId"] is Map<String, dynamic>
-          ? JobSummary.fromJson(
-              Map<String, dynamic>.from(json["jobId"]),
-            )
+          ? JobSummary.fromJson(Map<String, dynamic>.from(json["jobId"]))
           : JobSummary.empty(),
 
       tutor: json["tutorId"] is Map<String, dynamic>
-          ? UserSummary.fromJson(
-              Map<String, dynamic>.from(json["tutorId"]),
-            )
+          ? UserSummary.fromJson(Map<String, dynamic>.from(json["tutorId"]))
           : UserSummary.empty(),
 
       guardian: json["guardianId"] is Map<String, dynamic>
-          ? UserSummary.fromJson(
-              Map<String, dynamic>.from(json["guardianId"]),
-            )
+          ? UserSummary.fromJson(Map<String, dynamic>.from(json["guardianId"]))
           : null,
     );
   }
@@ -111,9 +129,7 @@ class JobSummary {
     required this.tutoringDays,
   });
 
-  factory JobSummary.fromJson(
-    Map<String, dynamic> json,
-  ) {
+  factory JobSummary.fromJson(Map<String, dynamic> json) {
     return JobSummary(
       id: json["_id"]?.toString() ?? "",
 
@@ -123,11 +139,9 @@ class JobSummary {
 
       salary: json["salary"]?.toString() ?? "",
 
-      guardianName:
-          json["guardianName"]?.toString() ?? "",
+      guardianName: json["guardianName"]?.toString() ?? "",
 
-      guardianPhoneNumber:
-          json["guardianPhoneNumber"]?.toString() ?? "",
+      guardianPhoneNumber: json["guardianPhoneNumber"]?.toString() ?? "",
 
       classes: _stringList(json["class"]),
 
@@ -137,11 +151,9 @@ class JobSummary {
 
       areas: _stringList(json["area"]),
 
-      tutoringTime:
-          json["tutoringTime"]?.toString() ?? "",
+      tutoringTime: json["tutoringTime"]?.toString() ?? "",
 
-      tutoringDays:
-          json["tutoringDays"]?.toString() ?? "",
+      tutoringDays: json["tutoringDays"]?.toString() ?? "",
     );
   }
 
@@ -187,24 +199,16 @@ class UserSummary {
     required this.phoneNumber,
   });
 
-  factory UserSummary.fromJson(
-    Map<String, dynamic> json,
-  ) {
+  factory UserSummary.fromJson(Map<String, dynamic> json) {
     return UserSummary(
       id: json["_id"]?.toString() ?? "",
       name: json["name"]?.toString() ?? "",
       email: json["email"]?.toString() ?? "",
-      phoneNumber:
-          json["phoneNumber"]?.toString() ?? "",
+      phoneNumber: json["phoneNumber"]?.toString() ?? "",
     );
   }
 
   factory UserSummary.empty() {
-    return UserSummary(
-      id: "",
-      name: "",
-      email: "",
-      phoneNumber: "",
-    );
+    return UserSummary(id: "", name: "", email: "", phoneNumber: "");
   }
 }

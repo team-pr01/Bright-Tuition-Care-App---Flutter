@@ -3,6 +3,7 @@ import 'package:btcclient/core/pdf/pdf_service.dart';
 import 'package:btcclient/core/utils/date_formatter.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/core/widgets/reusable_bottom_sheet/reusable_bottom_sheet.dart';
+import 'package:btcclient/core/widgets/snackbar/app_snackbar.dart';
 import 'package:btcclient/features/confirmation/pdf/confirmation_letter_pdf.dart';
 import 'package:btcclient/features/confirmation/presentation/provider/confirmation_provider.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,7 @@ class ConfirmationBottomSheet extends ConsumerStatefulWidget {
 
 class _ConfirmationBottomSheetState
     extends ConsumerState<ConfirmationBottomSheet> {
+  bool _isDownloadingPdf = false;
   @override
   void initState() {
     super.initState();
@@ -119,13 +121,40 @@ class _ConfirmationBottomSheetState
 
             /// ========== GUARDIAN INFORMATION ==========
             _buildSectionCard(
-              title: " Guardian Information",
+              title: "Guardian Information",
               icon: Icons.person_outline_rounded,
               children: [
-                _infoRow("Name", letter.guardian?.name ?? "-"),
-                _infoRow("Guardian ID", letter.guardianCustomId),
-                _infoRow("Email", letter.guardian?.email ?? "-"),
-                _infoRow("Phone", letter.guardian?.phoneNumber ?? "-"),
+                _infoRow(
+                  "Name",
+                  (letter.guardian?.name.isNotEmpty ?? false)
+                      ? letter.guardian!.name
+                      : (letter.job.guardianName.isNotEmpty
+                            ? letter.job.guardianName
+                            : "-"),
+                ),
+
+                _infoRow(
+                  "Guardian ID",
+                  letter.guardianCustomId.isNotEmpty
+                      ? letter.guardianCustomId
+                      : "-",
+                ),
+
+                _infoRow(
+                  "Email",
+                  (letter.guardian?.email.isNotEmpty ?? false)
+                      ? letter.guardian!.email
+                      : "-",
+                ),
+
+                _infoRow(
+                  "Phone",
+                  (letter.guardian?.phoneNumber.isNotEmpty ?? false)
+                      ? letter.guardian!.phoneNumber
+                      : (letter.job.guardianPhoneNumber.isNotEmpty
+                            ? letter.job.guardianPhoneNumber
+                            : "-"),
+                ),
               ],
             ),
 
@@ -193,21 +222,58 @@ class _ConfirmationBottomSheetState
 
             /// ========== ACTION BUTTONS ==========
             AppButton(
-              label: "Download PDF",
+              label: _isDownloadingPdf ? "Downloading..." : "Download PDF",
               variant: AppButtonVariant.gradient,
-              icon: Icons.download_outlined,
-              onPressed: () async {
-                final pdfWidget = await ConfirmationLetterPdf.build(
-                  letter: letter,
-                );
 
-                await PdfService.download(
-                  fileName: "Confirmation_Letter_${letter.job.jobId}.pdf",
-                  child: pdfWidget,
-                );
-              },
+              // Hide the download icon while loading.
+              icon: _isDownloadingPdf ? null : Icons.download_outlined,
+
+              onPressed: _isDownloadingPdf
+                  ? null
+                  : () async {
+                      setState(() {
+                        _isDownloadingPdf = true;
+                      });
+
+                      try {
+                        final pdfWidget = await ConfirmationLetterPdf.build(
+                          letter: letter,
+                        );
+
+                        await PdfService.download(
+                          fileName:
+                              "Confirmation_Letter_${letter.job.jobId}.pdf",
+                          child: pdfWidget,
+                        );
+
+                        if (!mounted) return;
+
+                        AppSnackbar.show(
+                          context,
+                          "Confirmation letter downloaded successfully",
+                          SnackType.success,
+                          showIcon: true,
+                        );
+                      } catch (e) {
+                        if (!mounted) return;
+
+                        AppSnackbar.show(
+                          context,
+                          "Failed to download confirmation letter",
+                          SnackType.error,
+                          showIcon: true,
+                        );
+
+                        debugPrint("❌ PDF download error: $e");
+                      } finally {
+                        if (mounted) {
+                          setState(() {
+                            _isDownloadingPdf = false;
+                          });
+                        }
+                      }
+                    },
             ),
-
             const SizedBox(height: 14),
 
             Container(

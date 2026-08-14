@@ -1,3 +1,4 @@
+import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/storage/local_storage.dart';
 import 'package:btcclient/core/widgets/navbar/common_appbar.dart';
 import 'package:btcclient/features/auth/data/models/user_model.dart';
@@ -70,24 +71,31 @@ class _InvoiceScreenState extends ConsumerState<InvoiceScreen> {
 
     /// EMPTY
     if (!state.isLoading && state.invoices.isEmpty) {
-      return Row(
-  mainAxisSize: MainAxisSize.min,
-  children: [
-    SvgPicture.asset(
-      'assets/icons/navigations/invoice.svg',
-      width: 20,
-      height: 20,
-    ),
-    const SizedBox(width: 8),
-    const Text(
-      'Invoice',
-      style: TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
-      ),
-    ),
-  ],
-);
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+        'assets/icons/navigations/invoice.svg',
+        width: 80,
+        height: 80,
+        colorFilter: const ColorFilter.mode(
+                  AppColors.primary01,
+                  BlendMode.srcIn,
+                ),
+            ),
+            const SizedBox(width: 8),
+            const Text(
+        'No Invoice',
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w500,
+        ),
+            ),
+          ],
+        ),
+      );
     }
 
     return RefreshIndicator(

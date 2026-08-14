@@ -493,7 +493,32 @@ class _JobsPageState extends ConsumerState<JobsPage> {
     }
 
     if (!state.isLoading && state.jobs.isEmpty) {
-      return const Center(child: Text("No jobs found"));
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+        'assets/icons/navigations/jobs.svg',
+        width: 80,
+        height: 80,
+        colorFilter: const ColorFilter.mode(
+                  AppColors.primary01,
+                  BlendMode.srcIn,
+                ),
+            ),
+            const SizedBox(width: 8),
+            const Text(
+        'No Jobs',
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w500,
+        ),
+            ),
+          ],
+        ),
+      );
+   ;
     }
 
     return RefreshIndicator(

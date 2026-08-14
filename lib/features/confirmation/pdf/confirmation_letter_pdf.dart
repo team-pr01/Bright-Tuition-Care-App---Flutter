@@ -168,33 +168,39 @@ class ConfirmationLetterPdf {
 
                     _row(
                       "Name",
-                      letter.guardian?.name ?? "-",
+                      letter.guardianName.isNotEmpty
+                          ? letter.guardianName
+                          : "Not available",
                       labelStyle,
                       valueStyle,
                     ),
 
                     _row(
                       "ID",
-                      letter.guardianCustomId.isEmpty
-                          ? "-"
-                          : letter.guardianCustomId,
+                      letter.guardianCustomId.isNotEmpty
+                          ? letter.guardianCustomId
+                          : "Not available",
                       labelStyle,
                       valueStyle,
                     ),
 
                     _row(
                       "Email",
-                      letter.guardian?.email ?? "-",
+                      letter.guardianEmail.isNotEmpty
+                          ? letter.guardianEmail
+                          : "Not available",
                       labelStyle,
                       valueStyle,
                     ),
 
                     _row(
                       "Phone",
-                      letter.guardian?.phoneNumber ?? "-",
+                      letter.guardianPhone.isNotEmpty
+                          ? letter.guardianPhone
+                          : "Not available",
                       labelStyle,
                       valueStyle,
-                    ),
+                    )
                   ],
                 ),
               ),

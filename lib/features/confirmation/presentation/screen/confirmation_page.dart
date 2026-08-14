@@ -1,3 +1,4 @@
+import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/widgets/navbar/common_appbar.dart';
 import 'package:btcclient/features/confirmation/presentation/notifier/confirmation_notifier.dart';
 import 'package:btcclient/features/confirmation/presentation/provider/confirmation_provider.dart';
@@ -7,6 +8,7 @@ import 'package:btcclient/features/confirmation/presentation/widgets/confirmatio
 import 'package:btcclient/features/invoices/presentation/widgets/skeleton/invoice_card_skeleton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ConfirmationScreen extends ConsumerStatefulWidget {
   final String role;
@@ -32,7 +34,7 @@ class _ConfirmationScreenState extends ConsumerState<ConfirmationScreen> {
     final state = ref.watch(confirmationProvider);
 
     return Scaffold(
-      appBar: const CommonAppBar(title: "Confirmation Letters",),
+      appBar: const CommonAppBar(title: "Confirmation Letters"),
 
       body: SafeArea(child: _buildBody(state)),
     );
@@ -54,7 +56,28 @@ class _ConfirmationScreenState extends ConsumerState<ConfirmationScreen> {
     }
 
     if (!state.isLoading && state.letters.isEmpty) {
-      return const Center(child: Text("No confirmation letters found"));
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/icons/navigations/.svg',
+              width: 80,
+              height: 80,
+              colorFilter: const ColorFilter.mode(
+                AppColors.primary01,
+                BlendMode.srcIn,
+              ),
+            ),
+            const SizedBox(width: 8),
+            const Text(
+              'No confirmation letters found',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+            ),
+          ],
+        ),
+      );
     }
     return RefreshIndicator(
       onRefresh: () async {
