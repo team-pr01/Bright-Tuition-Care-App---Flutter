@@ -74,8 +74,8 @@ class AuthRepository {
     await LocalStorage.saveRefreshToken(refreshToken);
     await LocalStorage.saveRole(user.role);
 
-// 🔥 Register FCM after authentication
-await NotificationService().registerFcmToken();
+    // 🔥 Register FCM after authentication
+    await NotificationService().registerFcmToken();
     return AuthResult(
       token: accessToken,
       role: user.role,
@@ -308,57 +308,81 @@ await NotificationService().registerFcmToken();
   }
 
   Future<void> updateProfileImage(File image) {
-  return api.updateProfileImage(image);
-}
+    return api.updateProfileImage(image);
+  }
 
   Future<void> addEducation(EducationRequest request) async {
-    print("Adding education2: ${request.toJson()}"); 
+    print("Adding education2: ${request.toJson()}");
     await api.addEducation(request);
   }
 
   Future<void> updateEducation({
     required String id,
     required EducationRequest request,
-  }) async { 
+  }) async {
     await api.updateEducation(id: id, request: request);
   }
 
   Future<void> deleteEducation(String id) async {
     await api.deleteEducation(id);
   }
-  
+
   Future<void> updateIdentityInfo({
-  required String fileType,
-  required File file,
-}) async {
-  final formData = FormData.fromMap({
-    "fileType": fileType,
-    "file": await MultipartFile.fromFile(
-      file.path,
-      filename: file.path.split('/').last,
-    ),
-  });
+    required String fileType,
+    required File file,
+  }) async {
+    final formData = FormData.fromMap({
+      "fileType": fileType,
+      "file": await MultipartFile.fromFile(
+        file.path,
+        filename: file.path.split('/').last,
+      ),
+    });
+    
 
-  final response = await api.updateIdentityInfo(formData);
+    final response = await api.updateIdentityInfo(formData);
 
-  final responseData = response.data;
+    final responseData = response.data;
 
-  if (responseData["success"] != true) {
-    throw ApiException(
-      responseData["message"] ?? "Identity information update failed",
-    );
+    if (responseData["success"] != true) {
+      throw ApiException(
+        responseData["message"] ?? "Identity information update failed",
+      );
+    }
   }
-}
-Future<void> deleteIdentityInfo(String id) async {
-  final response = await api.deleteIdentityInfo(id);
 
-  final responseData = response.data;
+Future<bool> requestTutor({
+      required String guardianPhoneNumber,
+      required String tutorClass,
+      String? userId,
+      String? tutorId,
+    }) async {
+      final response = await api.requestTutor(
+        guardianPhoneNumber: guardianPhoneNumber,
+        tutorClass: tutorClass,
+        userId: userId,
+        tutorId: tutorId,
+      );
 
-  if (responseData["success"] != true) {
-    throw ApiException(
-      responseData["message"] ?? "Failed to delete identity information",
-    );
+      final responseData = response.data;
+
+      if (responseData["success"] != true) {
+        throw ApiException(
+          responseData["message"] ?? "Failed to request tutor",
+        );
+      }
+
+      return true;
+    }
+  Future<void> deleteIdentityInfo(String id) async {
+    final response = await api.deleteIdentityInfo(id);
+
+    final responseData = response.data;
+
+    if (responseData["success"] != true) {
+      throw ApiException(
+        responseData["message"] ?? "Failed to delete identity information",
+      );
+    }
   }
-}
-  
 }

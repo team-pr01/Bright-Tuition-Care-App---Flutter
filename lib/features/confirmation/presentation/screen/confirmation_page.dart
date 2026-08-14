@@ -62,7 +62,7 @@ class _ConfirmationScreenState extends ConsumerState<ConfirmationScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SvgPicture.asset(
-              'assets/icons/navigations/.svg',
+              'assets/icons/navigations/jobs.svg',
               width: 80,
               height: 80,
               colorFilter: const ColorFilter.mode(

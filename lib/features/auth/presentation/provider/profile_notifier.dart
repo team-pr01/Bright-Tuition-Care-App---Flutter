@@ -159,6 +159,33 @@ class ProfileNotifier extends StateNotifier<dynamic> {
       isLoading = false;
     }
   }
+
+Future<bool> requestTutor({
+  required String guardianPhoneNumber,
+  required String tutorClass,
+  String? userId,
+  String? tutorId,
+}) async {
+  try {
+    isLoading = true;
+    error = null;
+
+    await repo.requestTutor(
+      guardianPhoneNumber: guardianPhoneNumber,
+      tutorClass: tutorClass,
+      userId: userId,
+      tutorId: tutorId,
+    );
+
+    return true;
+  } catch (e) {
+    error = ApiErrorHandler.getMessage(e);
+    return false;
+  } finally {
+    isLoading = false;
+  }
+}
+
   Future<bool> updateIdentityInfo({
   required String fileType,
   required File file,

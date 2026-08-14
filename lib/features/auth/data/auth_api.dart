@@ -165,6 +165,23 @@ class AuthApi {
     );
   }
 
+Future<Response> requestTutor({
+  required String guardianPhoneNumber,
+  required String tutorClass,
+  String? userId,
+  String? tutorId,
+}) async {
+  return await DioClient.dio.post(
+    "/lead/request-tutor",
+    data: {
+      "guardianPhoneNumber": guardianPhoneNumber,
+      "class": tutorClass,
+      "userId": userId,
+      "tutorId": tutorId,
+    },
+  );
+}
+
   Future<void> deleteEducation(String id) async {
     await DioClient.dio.delete("/user/education/delete/$id");
   }
