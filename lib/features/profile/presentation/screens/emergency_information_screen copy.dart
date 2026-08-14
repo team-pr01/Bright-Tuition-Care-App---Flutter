@@ -38,8 +38,6 @@ class _EditGuardianPersonalInformationScreenState
 
     final p = profile;
 
-    
-
     // =========================================================
     // EMERGENCY INFORMATION
     // =========================================================
@@ -63,7 +61,6 @@ class _EditGuardianPersonalInformationScreenState
 
   @override
   void dispose() {
-
     _emergencyNameController.dispose();
     _emergencyPhoneController.dispose();
     _emergencyAddressController.dispose();
@@ -101,14 +98,10 @@ class _EditGuardianPersonalInformationScreenState
 
     try {
       final request = UpdatePersonalInfoRequest(
-        
-
         // =====================================================
         // PERSONAL INFORMATION
         // =====================================================
-
         personalInformation: PersonalInformationRequest(
-         
           fatherName: "",
           fatherPhoneNumber: "",
           motherName: "",
@@ -119,14 +112,12 @@ class _EditGuardianPersonalInformationScreenState
           // IMPORTANT:
           // Guardian emergency information is handled
           // separately below if your request model supports it.
-          emergencyContactNumber:
-              _emergencyPhoneController.text.trim(),
+          emergencyContactNumber: _emergencyPhoneController.text.trim(),
         ),
 
         // =====================================================
         // SOCIAL MEDIA
         // =====================================================
-
       );
 
       final success = await ref
@@ -149,22 +140,16 @@ class _EditGuardianPersonalInformationScreenState
         _saving = false;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            "Failed to update profile: $e",
-          ),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Failed to update profile: $e")));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CommonAppBar(
-        title: "Edit Profile",
-      ),
+      appBar: const CommonAppBar(title: "Edit Profile"),
       body: SafeArea(
         child: Form(
           key: _formKey,
@@ -175,18 +160,12 @@ class _EditGuardianPersonalInformationScreenState
               children: [
                 const SizedBox(height: 12),
 
-                
-
                 // =================================================
                 // EMERGENCY INFORMATION
                 // =================================================
-
                 const Text(
                   "Emergency Information",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
 
                 const SizedBox(height: 16),
@@ -194,12 +173,14 @@ class _EditGuardianPersonalInformationScreenState
                 AppInputField(
                   controller: _emergencyNameController,
                   label: "Emergency Contact Person Name",
+                  hint: "Enter your Emergency Contact Person Name ",
                 ),
 
                 AppInputField(
                   controller: _emergencyPhoneController,
                   label: "Emergency Phone Number",
                   type: AppInputType.phone,
+                  hint: "eg: 01xxxxxxxxx",
                 ),
 
                 AppInputField(
@@ -207,11 +188,13 @@ class _EditGuardianPersonalInformationScreenState
                   label: "Emergency Address",
                   type: AppInputType.multiline,
                   maxLines: 3,
+                   hint:"Enter your Emergency Address",
                 ),
 
                 AppInputField(
                   controller: _emergencyRelationController,
                   label: "Relation",
+                  hint:" Enter your Relation with Emergency Content"
                 ),
 
                 const SizedBox(height: 32),
@@ -219,23 +202,16 @@ class _EditGuardianPersonalInformationScreenState
                 // =================================================
                 // SOCIAL MEDIA
                 // =================================================
-
                 const Text(
                   "Social Media",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-
-
 
                 const SizedBox(height: 40),
 
                 // =================================================
                 // SAVE
                 // =================================================
-
                 AppButton(
                   label: "Save Changes",
                   loading: _saving,

@@ -34,39 +34,33 @@ class CredentialSectionCard extends StatelessWidget {
           // ============================================================
           // HEADER
           // ============================================================
-
           Row(
             children: [
               const Expanded(
                 child: Text(
                   "Credential Information",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
               ),
 
               // ========================================================
               // ADD / ADD MORE
               // ========================================================
-
-              AppButton(
-                onPressed: onAdd,
-                label: identities.isEmpty
-                    ? "Add Credentials"
-                    : "Add More",
-                icon: Icons.add,
-                variant: AppButtonVariant.outlineGray,
-                height: 36,
-                width: identities.isEmpty ? 150 : 120,
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                textColor: AppColors.primary01,
-                borderRadius: 8,
-                borderWidth: 1,
-                backgroundColor: Colors.white,
-              ),
+              if (identities.isEmpty)
+                AppButton(
+                  onPressed: onAdd,
+                  label: identities.isEmpty ? "Add Credentials" : "Add More",
+                  icon: Icons.add,
+                  variant: AppButtonVariant.outlineGray,
+                  height: 36,
+                  width: identities.isEmpty ? 150 : 120,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  textColor: AppColors.primary01,
+                  borderRadius: 8,
+                  borderWidth: 1,
+                  backgroundColor: Colors.white,
+                ),
             ],
           ),
 
@@ -75,14 +69,11 @@ class CredentialSectionCard extends StatelessWidget {
           // ============================================================
           // EMPTY STATE
           // ============================================================
-
           if (identities.isEmpty)
             _buildEmptyState()
-
           // ============================================================
           // DOCUMENT LIST
           // ============================================================
-
           else
             Column(
               children: identities.map<Widget>((identity) {
@@ -96,7 +87,6 @@ class CredentialSectionCard extends StatelessWidget {
                   // ----------------------------------------------------
                   // VIEW
                   // ----------------------------------------------------
-
                   onView: () {
                     if (identity.file.isEmpty) {
                       return;
@@ -116,7 +106,6 @@ class CredentialSectionCard extends StatelessWidget {
                   // ----------------------------------------------------
                   // DELETE
                   // ----------------------------------------------------
-
                   onDelete: onDelete == null
                       ? null
                       : () {
@@ -137,23 +126,17 @@ class CredentialSectionCard extends StatelessWidget {
   Widget _buildEmptyState() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(
-        vertical: 32,
-        horizontal: 20,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 20),
       decoration: BoxDecoration(
         color: const Color(0xffF8FAFC),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Colors.grey.shade300,
-        ),
+        border: Border.all(color: Colors.grey.shade300),
       ),
       child: Column(
         children: [
           // ----------------------------------------------------------
           // ICON
           // ----------------------------------------------------------
-
           Container(
             width: 64,
             height: 64,
@@ -173,7 +156,6 @@ class CredentialSectionCard extends StatelessWidget {
           // ----------------------------------------------------------
           // TITLE
           // ----------------------------------------------------------
-
           const Text(
             "No documents uploaded yet.",
             textAlign: TextAlign.center,
@@ -189,16 +171,11 @@ class CredentialSectionCard extends StatelessWidget {
           // ----------------------------------------------------------
           // DESCRIPTION
           // ----------------------------------------------------------
-
           const Text(
             "Upload your credential document to complete "
             "your profile.",
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 13,
-              height: 1.4,
-              color: Colors.black54,
-            ),
+            style: TextStyle(fontSize: 13, height: 1.4, color: Colors.black54),
           ),
 
           const SizedBox(height: 20),
@@ -206,7 +183,6 @@ class CredentialSectionCard extends StatelessWidget {
           // ----------------------------------------------------------
           // ADD CREDENTIAL
           // ----------------------------------------------------------
-
           AppButton(
             onPressed: onAdd,
             label: "Add Credentials Info",

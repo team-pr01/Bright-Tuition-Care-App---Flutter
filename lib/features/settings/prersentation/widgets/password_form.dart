@@ -48,7 +48,7 @@ class _PasswordFormState extends ConsumerState<PasswordForm> {
               label: "Current Password",
               type: AppInputType.password,
               controller: currentPasswordController,
-              
+              hint:"********",
               validator: (value) =>
                   value == null || value.trim().isEmpty
                       ? "Current password is required"
@@ -61,7 +61,7 @@ class _PasswordFormState extends ConsumerState<PasswordForm> {
               label: "New Password",
               type: AppInputType.password,
               controller: newPasswordController,
-              
+              hint:"********",
               validator: (value) {
                 final input = value?.trim() ?? "";
                 if (input.isEmpty) return "New password is required";
@@ -76,7 +76,7 @@ class _PasswordFormState extends ConsumerState<PasswordForm> {
               label: "Confirm Password",
               type: AppInputType.password,
               controller: confirmPasswordController,
-              
+              hint:"********",
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return "Please confirm password";

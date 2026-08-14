@@ -141,7 +141,7 @@ class TutorProfileCard extends StatelessWidget {
               // PROFILE PROGRESS RING
               // ============================================================
               CustomPaint(
-                size: const Size(110, 110),
+                size: const Size(140, 140),
                 painter: ProfileRingPainter(
                   progress: (profileCompleted / 100).clamp(0.0, 1.0),
                 ),
@@ -151,8 +151,8 @@ class TutorProfileCard extends StatelessWidget {
               // PROFILE IMAGE
               // ============================================================
               Container(
-                width: 90,
-                height: 90,
+                width: 120,
+                height: 120,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.white, width: 2),
@@ -185,8 +185,8 @@ class TutorProfileCard extends StatelessWidget {
               // Keep this AFTER the full-size painter.
               // ============================================================
               Positioned(
-                right: 2,
-                bottom: 0,
+                right: 6,
+                bottom: 6,
                 child: Material(
                   color: Colors.white,
                   elevation: 3,
@@ -235,7 +235,7 @@ class TutorProfileCard extends StatelessWidget {
                 name,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 18,
+                  fontSize: 20,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -256,14 +256,14 @@ class TutorProfileCard extends StatelessWidget {
                 5,
                 (index) => Icon(
                   rating > index ? Icons.star : Icons.star_border,
-                  size: 14,
+                  size: 15,
                   color: const Color(0xffFFC928),
                 ),
               ),
               const SizedBox(width: 4),
               Text(
                 "(${rating.toStringAsFixed(1)})",
-                style: AppTextStyles.bodySmall.copyWith(color: Colors.white70),
+                style: AppTextStyles.labelLarge.copyWith(color: Colors.white70),
               ),
             ],
           ),
@@ -274,7 +274,7 @@ class TutorProfileCard extends StatelessWidget {
 
           Text(
             "Tutor Id: $tutorId | Since 11 Aug, 2025",
-            style: const TextStyle(color: Colors.white70, fontSize: 11),
+            style: const TextStyle(color: Colors.white70, fontSize: 13),
           ),
 
           const SizedBox(height: 22),

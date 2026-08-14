@@ -16,7 +16,6 @@ import 'package:btcclient/features/jobs/presentation/provider/applied_jobs_provi
 import 'package:btcclient/features/jobs/presentation/provider/job_provider.dart';
 import 'package:btcclient/features/jobs/presentation/widgets/icon_row.dart';
 import 'package:btcclient/features/tutor/presentation/screens/tutor_application_screen.dart';
-import 'package:btcclient/features/tutor/presentation/tutor_dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';

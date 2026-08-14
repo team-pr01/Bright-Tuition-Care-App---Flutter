@@ -53,6 +53,7 @@ class _ContactFormState extends ConsumerState<ContactForm> {
               label: "Phone Number",
               controller: phnoController,
               enabled: !widget.isProfileLocked,
+                hint:"eg: 01xxxxxxxxx",
               required: true,
             ),
 

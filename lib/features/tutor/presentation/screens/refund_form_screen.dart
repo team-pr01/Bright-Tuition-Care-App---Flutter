@@ -98,6 +98,7 @@ class _RefundFormScreenState extends ConsumerState<RefundFormScreen> {
               AppInputField(
                 label: "Job ID",
                 controller: jobIdController,
+                hint:"eg: 0123",
                 required: true,
               ),
 
@@ -106,6 +107,7 @@ class _RefundFormScreenState extends ConsumerState<RefundFormScreen> {
                 label: "Refund Amount",
                 controller: amountController,
                 keyboardType: TextInputType.number,
+                hint:"eg: 6000",
                 required: true,
               ),
 
@@ -129,6 +131,7 @@ class _RefundFormScreenState extends ConsumerState<RefundFormScreen> {
                   label: "Bank Name",
                   controller: bankNameController,
                   required: true,
+                  hint:"Bank Name"
                 ),
 
               /// ACCOUNT NUMBER
@@ -145,6 +148,7 @@ class _RefundFormScreenState extends ConsumerState<RefundFormScreen> {
                 type: AppInputType.multiline,
                 controller: reasonController,
                 maxLines: 4,
+                hint: "Enter your reason for refund ...",
                 required: true,
               ),
 

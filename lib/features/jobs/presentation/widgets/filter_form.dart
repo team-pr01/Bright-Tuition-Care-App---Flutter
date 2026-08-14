@@ -316,13 +316,14 @@ class _FilterSidebarState extends ConsumerState<FilterSidebar> {
                       onMultiChanged: (v) => setState(() => studentGender = v),
                     ),
 
-                    /// POSTED DATE FROM
+                 
                     /// POSTED DATE FROM
                     AppInputField(
                       controller: postedFromController,
                       label: "Posted Date From",
                       type: AppInputType.date,
                       lastDate: DateTime.now(),
+                       hint:"dd/mm/yyyy",
                     ),
 
                     /// POSTED DATE TO
@@ -334,6 +335,7 @@ class _FilterSidebarState extends ConsumerState<FilterSidebar> {
                           ? _parseDate(postedFromController.text)
                           : DateTime(1950),
                       lastDate: DateTime.now(),
+                       hint:"dd/mm/yyyy",
                     ),
                   ],
                 ),

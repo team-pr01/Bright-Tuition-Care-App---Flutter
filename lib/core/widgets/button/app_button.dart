@@ -73,7 +73,7 @@ class AppButton extends StatelessWidget {
               if (icon != null &&
                   iconPosition == AppButtonIconPosition.left) ...[
                 Icon(icon, size: 18, color: textColor),
-                const SizedBox(width: 8),
+                const SizedBox(width: 4),
               ],
               Flexible(
                 child: Text(
@@ -88,7 +88,7 @@ class AppButton extends StatelessWidget {
               ),
               if (icon != null &&
                   iconPosition == AppButtonIconPosition.right) ...[
-                const SizedBox(width: 8),
+                const SizedBox(width: 4),
                 Icon(icon, size: 18, color: textColor),
               ],
             ],

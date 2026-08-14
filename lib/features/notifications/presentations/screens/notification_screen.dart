@@ -128,7 +128,7 @@ class _EmptyNotificationView extends StatelessWidget {
             const SizedBox(height: AppSpacing.sm),
 
             Text(
-              "You'll see your notifications here.",
+              " You have no notifications at the moment. Check back later for updates and alerts.",
               textAlign: TextAlign.center,
               style: Theme.of(
                 context,

@@ -19,7 +19,7 @@ class SidebarItem extends StatelessWidget {
     return ListTile(
       dense: true,
       minLeadingWidth: 28,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 12,vertical: 5),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 30,vertical: 5),
 
       leading: icon,
 

@@ -28,8 +28,8 @@ class ProfileChipWrap extends StatelessWidget {
     return Text(
       values.join(', '),
       style: const TextStyle(
-        fontSize: 13,
-        fontWeight: FontWeight.w500,
+        fontSize: 14,
+        color: Colors.black87,
       ),
     );
   }

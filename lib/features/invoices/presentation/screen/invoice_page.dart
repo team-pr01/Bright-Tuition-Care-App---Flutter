@@ -7,6 +7,7 @@ import 'package:btcclient/features/payment/presentation/widgets/select_payment_m
 import 'package:btcclient/features/payment/presentation/widgets/selected_payment_method_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../provider/invoice_provider.dart';
 import '../widgets/invoice_bottom_sheet.dart';
@@ -69,7 +70,24 @@ class _InvoiceScreenState extends ConsumerState<InvoiceScreen> {
 
     /// EMPTY
     if (!state.isLoading && state.invoices.isEmpty) {
-      return const Center(child: Text("No invoices yet"));
+      return Row(
+  mainAxisSize: MainAxisSize.min,
+  children: [
+    SvgPicture.asset(
+      'assets/icons/navigations/invoice.svg',
+      width: 20,
+      height: 20,
+    ),
+    const SizedBox(width: 8),
+    const Text(
+      'Invoice',
+      style: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+      ),
+    ),
+  ],
+);
     }
 
     return RefreshIndicator(

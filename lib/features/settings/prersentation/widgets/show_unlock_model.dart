@@ -68,6 +68,7 @@ void showUnlockModal(BuildContext context) {
                         controller: reasonController,
                         type: AppInputType.multiline,
                         maxLines: 4,
+                        hint:"I want update .... ",
                         required: true,
                       ),
 

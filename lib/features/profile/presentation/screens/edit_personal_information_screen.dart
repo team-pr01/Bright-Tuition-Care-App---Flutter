@@ -219,11 +219,11 @@ class _EditPersonalInformationScreenState
 
                 const SizedBox(height: 16),
 
-                AppInputField(controller: _nameController, label: "Full Name"),
+                AppInputField(controller: _nameController, label: "Full Name" ,hint:"Enter your Name"),
 
                
 
-                AppInputField(controller: _emailController, label: "Email"),
+                AppInputField(controller: _emailController, label: "Email",hint:"youremail.com"),
 
                
 
@@ -231,6 +231,7 @@ class _EditPersonalInformationScreenState
                   controller: _phoneController,
                   label: "Phone Number",
                   type: AppInputType.phone,
+                    hint:"eg: 01xxxxxxxxx"
                 ),
 
                
@@ -294,6 +295,7 @@ class _EditPersonalInformationScreenState
                   controller: _additionalPhoneController,
                   label: "Additional Phone Number",
                   type: AppInputType.phone,
+                    hint:"eg: 01xxxxxxxxx"
                 ),
 
                
@@ -302,6 +304,7 @@ class _EditPersonalInformationScreenState
                   controller: _dobController,
                   label: "Date of Birth",
                   type: AppInputType.date,
+                   hint:"dd/mm/yyyy",
                 ),
 
                
@@ -311,6 +314,7 @@ class _EditPersonalInformationScreenState
                   label: "Address",
                   type: AppInputType.multiline,
                   maxLines: 3,
+                  hint:"Enter your address"
                 ),
 
                
@@ -318,6 +322,7 @@ class _EditPersonalInformationScreenState
                 AppInputField(
                   controller: _religionController,
                   label: "Religion",
+                  hint :"Enter your Religion"
                 ),
 
                
@@ -325,6 +330,7 @@ class _EditPersonalInformationScreenState
                 AppInputField(
                   controller: _nationalityController,
                   label: "Nationality",
+                  hint:"eg: Bangladesh"
                 ),
 
                 const SizedBox(height: 32),
@@ -339,6 +345,7 @@ class _EditPersonalInformationScreenState
                 AppInputField(
                   controller: _fatherNameController,
                   label: "Father Name",
+                  hint:"Enter your Father Name"
                 ),
 
                
@@ -346,7 +353,7 @@ class _EditPersonalInformationScreenState
                 AppInputField(
                   controller: _fatherPhoneController,
                   label: "Father Phone Number",
-                  type: AppInputType.phone,
+                  type: AppInputType.phone,  hint:"eg: 01xxxxxxxxx"
                 ),
 
                
@@ -354,6 +361,7 @@ class _EditPersonalInformationScreenState
                 AppInputField(
                   controller: _motherNameController,
                   label: "Mother Name",
+                  hint:"Enter your Mother Name"
                 ),
 
                
@@ -362,6 +370,7 @@ class _EditPersonalInformationScreenState
                   controller: _motherPhoneController,
                   label: "Mother Phone Number",
                   type: AppInputType.phone,
+                    hint:"eg: 01xxxxxxxxx"
                 ),
 
                
@@ -370,6 +379,7 @@ class _EditPersonalInformationScreenState
                   controller: _emergencyPhoneController,
                   label: "Emergency Contact Number",
                   type: AppInputType.phone,
+                    hint:"eg: 01xxxxxxxxx"
                 ),
 
                 const SizedBox(height: 32),
@@ -384,6 +394,7 @@ class _EditPersonalInformationScreenState
                 AppInputField(
                   controller: _facebookController,
                   label: "Facebook Profile",
+                  hint:"Enter Facebook link"
                 ),
 
                 const SizedBox(height: 32),
@@ -400,6 +411,7 @@ class _EditPersonalInformationScreenState
                   label: "Write something about yourself",
                   type: AppInputType.multiline,
                   maxLines: 6,
+                  hint:"describe why should we hire you hired"
                 ),
 
                 const SizedBox(height: 40),

@@ -5,6 +5,7 @@ import 'package:btcclient/core/widgets/navbar/side_drawer.dart';
 import 'package:btcclient/core/widgets/navbar/sidebar_item.dart';
 import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
 import 'package:btcclient/features/auth/presentation/screens/welcome_screen.dart';
+import 'package:btcclient/features/confirmation/presentation/screen/confirmation_page.dart';
 import 'package:btcclient/features/guardian/presentation/screens/guardian_dashboard.dart';
 import 'package:btcclient/features/guardian/presentation/screens/guardian_payment_screen.dart';
 import 'package:btcclient/features/guardian/presentation/screens/how_it_works_screen.dart';
@@ -84,6 +85,28 @@ class GuardianDashboardScreen extends ConsumerWidget {
             onTap: () {
               Navigator.pop(context);
               changeTab(1);
+            },
+          ),
+          SidebarItem(
+            label: "Confirmation Letter",
+            icon: SvgPicture.asset(
+              "assets/icons/navigations/confirmed.svg",
+              width: 20,
+              height: 20,
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
+              ),
+            ),
+            onTap: () {
+              Navigator.pop(context);
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const ConfirmationScreen(role: "guardian"),
+                ),
+              );
             },
           ),
           SidebarItem(

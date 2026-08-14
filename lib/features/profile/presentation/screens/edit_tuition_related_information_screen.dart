@@ -300,6 +300,7 @@ class _EditTuitionRelatedInformationScreenState
                   label: "Tutoring Method",
                   type: AppInputType.multiline,
                   maxLines: 4,
+                  hint: "Explain your Tutoring Method ",
                 ),
 
                 // --------------------------------------------------
@@ -517,11 +518,13 @@ class _EditTuitionRelatedInformationScreenState
                 AppInputField(
                   controller: _expectedSalaryController,
                   label: "Expected Salary",
+                  hint:"eg: 6000"
                 ),
 
                 AppInputField(
                   controller: _totalExperienceController,
                   label: "Total Experience",
+                  hint: "eg: 5 Years"
                 ),
 
                 const SizedBox(height: 30),

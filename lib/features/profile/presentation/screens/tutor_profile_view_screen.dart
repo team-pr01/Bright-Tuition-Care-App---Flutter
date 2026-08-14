@@ -29,7 +29,7 @@ class TutorResumeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.neutrals01,
 
-      // appBar: const CommonAppBar(title: "Tutor Profile",),
+      appBar: const CommonAppBar(title: "Tutor Profile",),
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),

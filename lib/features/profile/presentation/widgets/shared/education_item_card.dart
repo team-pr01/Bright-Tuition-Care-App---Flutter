@@ -70,7 +70,6 @@ class EducationItemCard extends StatelessWidget {
                 width: 32,
                 height: 32,
                 onPressed: onEdit,
-              
               ),
 
               const SizedBox(width: 8),
@@ -128,40 +127,12 @@ class EducationItemCard extends StatelessWidget {
                   label: "Passing Year",
                   value: education.passingYear,
                 ),
+            
+                ProfileInfoRow(label: "Result", value: "${education.result!}"),
             ],
           ),
 
           const SizedBox(height: 18),
-
-          Row(
-            children: [
-              // _StatusChip(
-              //   text: education.level,
-              //   color: const Color(0xff246BFD),
-              // ),
-              // const SizedBox(width: 10),
-
-              // if (isCurrent)
-              //   const _StatusChip(
-              //     text: "Current Institute",
-              //     color: Colors.green,
-              //   ),
-              const Spacer(),
-
-              Text(
-                education.result?.isNotEmpty == true
-                    ? "Result : ${education.result!}"
-                    : "Not Provided",
-                style: TextStyle(
-                  color: education.result?.isNotEmpty == true
-                      ? Colors.black87
-                      : Colors.red,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 14),
           Divider(color: AppColors.primary01, height: 1),
         ],
       ),

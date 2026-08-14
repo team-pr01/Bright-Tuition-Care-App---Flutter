@@ -142,10 +142,9 @@ class _LeadCardState extends State<LeadCard> {
           /// ========== EXPANDED CONTENT ==========
           AnimatedCrossFade(
             duration: const Duration(milliseconds: 350),
-            crossFadeState:
-                _isExpanded
-                    ? CrossFadeState.showFirst
-                    : CrossFadeState.showSecond,
+            crossFadeState: _isExpanded
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
             firstChild: Padding(
               padding: const EdgeInsets.fromLTRB(
                 AppSpacing.md,
@@ -326,40 +325,12 @@ class _LeadCardState extends State<LeadCard> {
                     ),
                   )
                 else
-                  InkWell(
-                    onTap: widget.onPayment,
-                    borderRadius: BorderRadius.circular(8),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary03.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: AppColors.primary01.withOpacity(0.3),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.add_circle_outline,
-                            size: 18,
-                            color: AppColors.primary01,
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            "Add Payment Method",
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              color: AppColors.primary01,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                  AppButton(
+                    onPressed: widget.onPayment,
+                    icon: Icons.add_circle_outline,
+                    label: "Add Payment Method",
+                    variant: AppButtonVariant.text,
+                    width: 206,
                   ),
               ],
             ),

@@ -13,11 +13,8 @@ import 'package:btcclient/features/jobs/data/constant/filter_data.dart';
 
 import 'package:btcclient/features/profile/data/requests/update_personal_info_request.dart';
 
-class EditGuardianPersonalInformationScreen
-    extends ConsumerStatefulWidget {
-  const EditGuardianPersonalInformationScreen({
-    super.key,
-  });
+class EditGuardianPersonalInformationScreen extends ConsumerStatefulWidget {
+  const EditGuardianPersonalInformationScreen({super.key});
 
   @override
   ConsumerState<EditGuardianPersonalInformationScreen> createState() =>
@@ -104,35 +101,21 @@ class _EditGuardianPersonalInformationScreenState
     // BASIC INFORMATION
     // ============================================================
 
-    _nameController = TextEditingController(
-      text: p.name,
-    );
+    _nameController = TextEditingController(text: p.name);
 
-    _emailController = TextEditingController(
-      text: p.email,
-    );
+    _emailController = TextEditingController(text: p.email);
 
-    _phoneController = TextEditingController(
-      text: p.phoneNumber,
-    );
+    _phoneController = TextEditingController(text: p.phoneNumber);
 
-    _genderController = TextEditingController(
-      text: p.gender,
-    );
+    _genderController = TextEditingController(text: p.gender);
 
-    _cityController = TextEditingController(
-      text: p.city,
-    );
+    _cityController = TextEditingController(text: p.city);
 
-    _areaController = TextEditingController(
-      text: p.area,
-    );
+    _areaController = TextEditingController(text: p.area);
 
     // Existing city -> load areas.
     if (_cityController.text.trim().isNotEmpty) {
-      _areaOptions = _getAreaOptions(
-        _cityController.text.trim(),
-      );
+      _areaOptions = _getAreaOptions(_cityController.text.trim());
     }
 
     // ============================================================
@@ -144,30 +127,20 @@ class _EditGuardianPersonalInformationScreenState
     );
 
     _dobController = TextEditingController(
-      text: _formatDateForInput(
-        p.dateOfBirth,
-      ),
+      text: _formatDateForInput(p.dateOfBirth),
     );
 
-    _addressController = TextEditingController(
-      text: p.address ?? "",
-    );
+    _addressController = TextEditingController(text: p.address ?? "");
 
-    _religionController = TextEditingController(
-      text: p.religion ?? "",
-    );
+    _religionController = TextEditingController(text: p.religion ?? "");
 
-    _nationalityController = TextEditingController(
-      text: p.nationality ?? "",
-    );
+    _nationalityController = TextEditingController(text: p.nationality ?? "");
 
     // ============================================================
     // SOCIAL
     // ============================================================
 
-    _facebookController = TextEditingController(
-      text: p.facebook ?? "",
-    );
+    _facebookController = TextEditingController(text: p.facebook ?? "");
 
     // ============================================================
     // EMERGENCY
@@ -202,9 +175,7 @@ class _EditGuardianPersonalInformationScreenState
     final value = date.trim();
 
     // Already DD/MM/YYYY
-    if (RegExp(
-      r'^\d{2}/\d{2}/\d{4}$',
-    ).hasMatch(value)) {
+    if (RegExp(r'^\d{2}/\d{2}/\d{4}$').hasMatch(value)) {
       return value;
     }
 
@@ -212,13 +183,9 @@ class _EditGuardianPersonalInformationScreenState
     try {
       final parsed = DateTime.parse(value);
 
-      final day = parsed.day
-          .toString()
-          .padLeft(2, "0");
+      final day = parsed.day.toString().padLeft(2, "0");
 
-      final month = parsed.month
-          .toString()
-          .padLeft(2, "0");
+      final month = parsed.month.toString().padLeft(2, "0");
 
       final year = parsed.year.toString();
 
@@ -234,16 +201,14 @@ class _EditGuardianPersonalInformationScreenState
 
   List<String> _getAreaOptions(String city) {
     try {
-      final data =
-          filterData["cityCorporationWithLocation"];
+      final data = filterData["cityCorporationWithLocation"];
 
       if (data is! List) {
         return [];
       }
 
       for (final item in data) {
-        if (item is Map &&
-            item["name"]?.toString() == city) {
+        if (item is Map && item["name"]?.toString() == city) {
           final locations = item["locations"];
 
           if (locations is List) {
@@ -255,9 +220,7 @@ class _EditGuardianPersonalInformationScreenState
         }
       }
     } catch (e) {
-      debugPrint(
-        "Error loading area options: $e",
-      );
+      debugPrint("Error loading area options: $e");
     }
 
     return [];
@@ -269,8 +232,7 @@ class _EditGuardianPersonalInformationScreenState
 
   List<String> _getCityOptions() {
     try {
-      final data =
-          filterData["cityCorporationWithLocation"];
+      final data = filterData["cityCorporationWithLocation"];
 
       if (data is! List) {
         return [];
@@ -278,18 +240,11 @@ class _EditGuardianPersonalInformationScreenState
 
       return data
           .whereType<Map>()
-          .map(
-            (item) =>
-                item["name"]?.toString() ?? "",
-          )
-          .where(
-            (name) => name.trim().isNotEmpty,
-          )
+          .map((item) => item["name"]?.toString() ?? "")
+          .where((name) => name.trim().isNotEmpty)
           .toList();
     } catch (e) {
-      debugPrint(
-        "Error loading city options: $e",
-      );
+      debugPrint("Error loading city options: $e");
 
       return [];
     }
@@ -317,7 +272,6 @@ class _EditGuardianPersonalInformationScreenState
         // ========================================================
         // BASIC INFORMATION
         // ========================================================
-
         name: _nameController.text.trim(),
 
         email: _emailController.text.trim(),
@@ -333,25 +287,16 @@ class _EditGuardianPersonalInformationScreenState
         // ========================================================
         // PERSONAL INFORMATION
         // ========================================================
+        personalInformation: PersonalInformationRequest(
+          additionalPhoneNumber: _additionalPhoneController.text.trim(),
 
-        personalInformation:
-            PersonalInformationRequest(
-          additionalPhoneNumber:
-              _additionalPhoneController
-                  .text
-                  .trim(),
+          dateOfBirth: _dobController.text.trim(),
 
-          dateOfBirth:
-              _dobController.text.trim(),
+          address: _addressController.text.trim(),
 
-          address:
-              _addressController.text.trim(),
+          religion: _religionController.text.trim(),
 
-          religion:
-              _religionController.text.trim(),
-
-          nationality:
-              _nationalityController.text.trim(),
+          nationality: _nationalityController.text.trim(),
 
           // Guardian does not use tutor family fields.
           fatherName: "",
@@ -368,76 +313,45 @@ class _EditGuardianPersonalInformationScreenState
           // ======================================================
           // EMERGENCY PHONE
           // ======================================================
-
-          emergencyContactNumber:
-              _emergencyPhoneController
-                  .text
-                  .trim(),
+          emergencyContactNumber: _emergencyPhoneController.text.trim(),
         ),
 
         // ========================================================
         // SOCIAL MEDIA
         // ========================================================
-
-        socialMediaInformation:
-            SocialMediaInformationRequest(
-          facebook:
-              _facebookController.text.trim(),
+        socialMediaInformation: SocialMediaInformationRequest(
+          facebook: _facebookController.text.trim(),
         ),
       );
 
-      debugPrint(
-        "========================================",
-      );
+      debugPrint("========================================");
 
-      debugPrint(
-        "GUARDIAN PROFILE UPDATE",
-      );
+      debugPrint("GUARDIAN PROFILE UPDATE");
 
-      debugPrint(
-        "========================================",
-      );
+      debugPrint("========================================");
 
-      debugPrint(
-        "Name: ${_nameController.text.trim()}",
-      );
+      debugPrint("Name: ${_nameController.text.trim()}");
 
-      debugPrint(
-        "Email: ${_emailController.text.trim()}",
-      );
+      debugPrint("Email: ${_emailController.text.trim()}");
 
-      debugPrint(
-        "Phone: ${_phoneController.text.trim()}",
-      );
+      debugPrint("Phone: ${_phoneController.text.trim()}");
 
-      debugPrint(
-        "Gender: ${_genderController.text.trim()}",
-      );
+      debugPrint("Gender: ${_genderController.text.trim()}");
 
-      debugPrint(
-        "City: ${_cityController.text.trim()}",
-      );
+      debugPrint("City: ${_cityController.text.trim()}");
 
-      debugPrint(
-        "Area: ${_areaController.text.trim()}",
-      );
+      debugPrint("Area: ${_areaController.text.trim()}");
 
       debugPrint(
         "Additional Phone: "
         "${_additionalPhoneController.text.trim()}",
       );
 
-      debugPrint(
-        "DOB: ${_dobController.text.trim()}",
-      );
+      debugPrint("DOB: ${_dobController.text.trim()}");
 
-      debugPrint(
-        "Address: ${_addressController.text.trim()}",
-      );
+      debugPrint("Address: ${_addressController.text.trim()}");
 
-      debugPrint(
-        "Religion: ${_religionController.text.trim()}",
-      );
+      debugPrint("Religion: ${_religionController.text.trim()}");
 
       debugPrint(
         "Nationality: "
@@ -469,13 +383,9 @@ class _EditGuardianPersonalInformationScreenState
         "${_emergencyRelationController.text.trim()}",
       );
 
-      debugPrint(
-        "REQUEST JSON: ${request.toJson()}",
-      );
+      debugPrint("REQUEST JSON: ${request.toJson()}");
 
-      debugPrint(
-        "========================================",
-      );
+      debugPrint("========================================");
 
       final success = await ref
           .read(profileProvider.notifier)
@@ -503,9 +413,7 @@ class _EditGuardianPersonalInformationScreenState
       }
 
       // Refresh profile after successful update.
-      await ref
-          .read(profileProvider.notifier)
-          .refreshProfile();
+      await ref.read(profileProvider.notifier).refreshProfile();
 
       if (!mounted) {
         return;
@@ -516,22 +424,14 @@ class _EditGuardianPersonalInformationScreenState
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            "Profile updated successfully.",
-          ),
-        ),
+        const SnackBar(content: Text("Profile updated successfully.")),
       );
 
       Navigator.pop(context, true);
     } catch (e, stackTrace) {
-      debugPrint(
-        "Guardian profile update failed: $e",
-      );
+      debugPrint("Guardian profile update failed: $e");
 
-      debugPrintStack(
-        stackTrace: stackTrace,
-      );
+      debugPrintStack(stackTrace: stackTrace);
 
       if (!mounted) {
         return;
@@ -541,13 +441,9 @@ class _EditGuardianPersonalInformationScreenState
         _saving = false;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            "Failed to update profile: $e",
-          ),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Failed to update profile: $e")));
     }
   }
 
@@ -557,15 +453,10 @@ class _EditGuardianPersonalInformationScreenState
 
   Widget _sectionTitle(String title) {
     return Padding(
-      padding: const EdgeInsets.only(
-        bottom: 16,
-      ),
+      padding: const EdgeInsets.only(bottom: 16),
       child: Text(
         title,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
-        ),
+        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
       ),
     );
   }
@@ -581,9 +472,7 @@ class _EditGuardianPersonalInformationScreenState
     return Scaffold(
       backgroundColor: AppColors.neutrals01,
 
-      appBar: const CommonAppBar(
-        title: "Edit Profile",
-      ),
+      appBar: const CommonAppBar(title: "Edit Profile"),
 
       body: SafeArea(
         child: Form(
@@ -593,68 +482,53 @@ class _EditGuardianPersonalInformationScreenState
             padding: const EdgeInsets.all(20),
 
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
 
               children: [
                 // ==================================================
                 // BASIC INFORMATION
                 // ==================================================
-
-                _sectionTitle(
-                  "Basic Information",
-                ),
+                _sectionTitle("Basic Information"),
 
                 AppInputField(
                   controller: _nameController,
                   label: "Full Name",
                   enabled: !_saving,
+                  hint: "Enter your Full Name",
                 ),
-
-               
 
                 AppInputField(
                   controller: _emailController,
                   label: "Email",
                   enabled: !_saving,
+                  hint: "youremail.com",
                 ),
-
-               
 
                 AppInputField(
                   controller: _phoneController,
                   label: "Phone Number",
                   type: AppInputType.phone,
                   enabled: !_saving,
+                  hint: "eg: 01xxxxxxxxx",
                 ),
-
-               
 
                 AppInputField(
                   controller: _genderController,
                   label: "Gender",
                   type: AppInputType.dropdown,
                   value: _genderController.text,
-                  dropdownItems: const [
-                    "male",
-                    "female",
-                    "other",
-                  ],
+                  dropdownItems: const ["male", "female", "other"],
                   enabled: !_saving,
                   onChanged: (value) {
                     setState(() {
-                      _genderController.text =
-                          value ?? "";
+                      _genderController.text = value ?? "";
                     });
                   },
                 ),
 
-               
-
                 // ==================================================
                 // CITY
                 // ==================================================
-
                 AppInputField(
                   label: "City",
                   type: AppInputType.dropdown,
@@ -663,50 +537,36 @@ class _EditGuardianPersonalInformationScreenState
                   dropdownItems: cityOptions,
                   enabled: !_saving,
                   onChanged: (value) {
-                    final city =
-                        value ?? "";
+                    final city = value ?? "";
 
                     setState(() {
-                      _cityController.text =
-                          city;
+                      _cityController.text = city;
 
                       _areaController.clear();
 
-                      _areaOptions =
-                          _getAreaOptions(
-                        city,
-                      );
+                      _areaOptions = _getAreaOptions(city);
                     });
                   },
                 ),
 
-               
-
                 // ==================================================
                 // AREA
                 // ==================================================
-
                 AppInputField(
                   label: "Area",
                   type: AppInputType.dropdown,
                   value: _areaController.text,
-                  hint: _cityController.text
-                          .trim()
-                          .isEmpty
+                  hint: _cityController.text.trim().isEmpty
                       ? "Select city first"
                       : "Select Area",
                   enabled:
                       !_saving &&
-                      _cityController.text
-                          .trim()
-                          .isNotEmpty &&
+                      _cityController.text.trim().isNotEmpty &&
                       _areaOptions.isNotEmpty,
-                  dropdownItems:
-                      _areaOptions,
+                  dropdownItems: _areaOptions,
                   onChanged: (value) {
                     setState(() {
-                      _areaController.text =
-                          value ?? "";
+                      _areaController.text = value ?? "";
                     });
                   },
                 ),
@@ -716,57 +576,44 @@ class _EditGuardianPersonalInformationScreenState
                 // ==================================================
                 // PERSONAL INFORMATION
                 // ==================================================
-
-                _sectionTitle(
-                  "Personal Information",
-                ),
+                _sectionTitle("Personal Information"),
 
                 AppInputField(
-                  controller:
-                      _additionalPhoneController,
-                  label:
-                      "Additional Phone Number",
+                  controller: _additionalPhoneController,
+                  label: "Additional Phone Number",
                   type: AppInputType.phone,
                   enabled: !_saving,
+                  hint: "eg: 01xxxxxxxxx",
                 ),
 
-               
-
                 AppInputField(
-                  controller:
-                      _dobController,
+                  controller: _dobController,
                   label: "Date of Birth",
                   type: AppInputType.date,
                   enabled: !_saving,
                 ),
 
-               
-
                 AppInputField(
-                  controller:
-                      _addressController,
+                  controller: _addressController,
                   label: "Address",
                   type: AppInputType.multiline,
                   maxLines: 3,
                   enabled: !_saving,
+                  hint:"Enter your address"
                 ),
 
-               
-
                 AppInputField(
-                  controller:
-                      _religionController,
+                  controller: _religionController,
                   label: "Religion",
                   enabled: !_saving,
+                  hint:"Enter your Religion"
                 ),
 
-               
-
                 AppInputField(
-                  controller:
-                      _nationalityController,
+                  controller: _nationalityController,
                   label: "Nationality",
                   enabled: !_saving,
+                  hint:"eg: Bangladesh"
                 ),
 
                 const SizedBox(height: 32),
@@ -774,16 +621,13 @@ class _EditGuardianPersonalInformationScreenState
                 // ==================================================
                 // SOCIAL MEDIA
                 // ==================================================
-
-                _sectionTitle(
-                  "Social Media",
-                ),
+                _sectionTitle("Social Media"),
 
                 AppInputField(
-                  controller:
-                      _facebookController,
+                  controller: _facebookController,
                   label: "Facebook Profile",
                   enabled: !_saving,
+                  hint:"facebook link"
                 ),
 
                 const SizedBox(height: 32),
@@ -791,49 +635,37 @@ class _EditGuardianPersonalInformationScreenState
                 // ==================================================
                 // EMERGENCY INFORMATION
                 // ==================================================
-
-                _sectionTitle(
-                  "Emergency Information",
-                ),
+                _sectionTitle("Emergency Information"),
 
                 AppInputField(
-                  controller:
-                      _emergencyNameController,
-                  label:
-                      "Emergency Contact Person",
+                  controller: _emergencyNameController,
+                  label: "Emergency Contact Person",
                   enabled: !_saving,
+                    hint:"Enter Emergency Contact Person"
                 ),
 
-               
-
                 AppInputField(
-                  controller:
-                      _emergencyPhoneController,
-                  label:
-                      "Emergency Phone Number",
+                  controller: _emergencyPhoneController,
+                  label: "Emergency Phone Number",
                   type: AppInputType.phone,
                   enabled: !_saving,
+                    hint:"eg: 01xxxxxxxxx"
                 ),
 
-               
-
                 AppInputField(
-                  controller:
-                      _emergencyRelationController,
+                  controller: _emergencyRelationController,
                   label: "Relation",
                   enabled: !_saving,
+                  hint:"Enter your relation with Emergency content person"
                 ),
 
-               
-
                 AppInputField(
-                  controller:
-                      _emergencyAddressController,
-                  label:
-                      "Emergency Address",
+                  controller: _emergencyAddressController,
+                  label: "Emergency Address",
                   type: AppInputType.multiline,
                   maxLines: 3,
                   enabled: !_saving,
+                  hint:"Emergency Address"
                 ),
 
                 const SizedBox(height: 32),
@@ -841,18 +673,13 @@ class _EditGuardianPersonalInformationScreenState
                 // ==================================================
                 // SAVE BUTTON
                 // ==================================================
-
                 SizedBox(
                   width: double.infinity,
                   child: AppButton(
-                    label: _saving
-                        ? "Saving..."
-                        : "Save Changes",
-                    variant:
-                        AppButtonVariant.gradient,
+                    label: _saving ? "Saving..." : "Save Changes",
+                    variant: AppButtonVariant.gradient,
                     height: 48,
-                    onPressed:
-                        _saving ? null : _save,
+                    onPressed: _saving ? null : _save,
                   ),
                 ),
 

@@ -96,13 +96,14 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
         _levelController.text == "O Level" ||
         _levelController.text == "A Level";
   }
-  bool get shouldShowHigherEducationFields { 
+
+  bool get shouldShowHigherEducationFields {
     return _levelController.text == "Secondary" &&
         _levelController.text == "Higher Secondary" &&
         _levelController.text == "O Level" &&
         _levelController.text == "A Level";
-  } 
- 
+  }
+
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -114,12 +115,20 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
       final request = EducationRequest(
         levelOfEducation: _levelController.text.trim(),
         instituteName: _instituteController.text.trim(),
-        curriculum: _curriculumController.text.trim(), 
+        curriculum: _curriculumController.text.trim(),
         degree: _degreeController.text.trim(),
-        group: shouldShowSchoolLevelFields ? _groupController.text.trim() : null,
-        board: shouldShowSchoolLevelFields ? _boardController.text.trim() : null,
-        department: !shouldShowSchoolLevelFields ? _departmentController.text.trim() : null,
-        semester: !shouldShowSchoolLevelFields ? _semesterController.text.trim() : null,
+        group: shouldShowSchoolLevelFields
+            ? _groupController.text.trim()
+            : null,
+        board: shouldShowSchoolLevelFields
+            ? _boardController.text.trim()
+            : null,
+        department: !shouldShowSchoolLevelFields
+            ? _departmentController.text.trim()
+            : null,
+        semester: !shouldShowSchoolLevelFields
+            ? _semesterController.text.trim()
+            : null,
         result: _resultController.text.trim(),
         passingYear: _currentInstitute
             ? null
@@ -144,7 +153,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
       if (success) {
         Navigator.pop(context, true);
       } else {
-         AppSnackbar.show(context, "Failed to send OTP", SnackType.error);
+        AppSnackbar.show(context, "Failed to send OTP", SnackType.error);
       }
     } catch (e) {
       if (!mounted) return;
@@ -164,9 +173,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CommonAppBar( 
-        title: "Edit Education",
-      ),
+      appBar: const CommonAppBar(title: "Edit Education"),
 
       body: SafeArea(
         child: Form(
@@ -196,7 +203,6 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                   },
                 ),
 
-               
                 AppInputField(
                   controller: _instituteController,
                   label: "Institute Name",
@@ -217,7 +223,6 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                   },
                 ),
 
-               
                 AppInputField(
                   label: "Exam / Degree Title",
                   type: AppInputType.dropdown,
@@ -233,7 +238,9 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  shouldShowSchoolLevelFields ? "School Information" : "Higher Education",
+                  shouldShowSchoolLevelFields
+                      ? "School Information"
+                      : "Higher Education",
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -256,8 +263,6 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                     },
                   ),
 
-                 
-
                   AppInputField(
                     label: "Board",
                     type: AppInputType.dropdown,
@@ -271,8 +276,6 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                       });
                     },
                   ),
-
-                 
                 ],
                 if (shouldShowHigherEducationFields) ...[
                   AppInputField(
@@ -289,15 +292,11 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                     },
                   ),
 
-                 
-
                   AppInputField(
                     controller: _semesterController,
                     label: "Year / Semester",
                     hint: "e.g., 5th semester, 3rd year",
                   ),
-
-                 
                 ],
                 AppInputField(
                   controller: _resultController,
@@ -305,7 +304,6 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                   hint: "e.g., 3.75 GPA/CGPA",
                 ),
 
-               
                 if (!_currentInstitute) ...[
                   AppInputField(
                     controller: _passingYearController,
@@ -313,28 +311,43 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                     hint: "e.g., 2023",
                     keyboardType: TextInputType.number,
                   ),
-
-                 
                 ],
-                CheckboxListTile(
-                  value: _currentInstitute,
-                  contentPadding: EdgeInsets.zero,
-                  controlAffinity: ListTileControlAffinity.leading,
-                  title: const Text("Currently studying here"),
-                  onChanged: (value) {
-                    setState(() {
-                      _currentInstitute = value ?? false;
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: Checkbox(
+                        value: _currentInstitute,
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        visualDensity: const VisualDensity(
+                          horizontal: -4,
+                          vertical: -4,
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            _currentInstitute = value ?? false;
 
-                      if (_currentInstitute) {
-                        _passingYearController.clear();
-                      }
-                    });
-                  },
+                            if (_currentInstitute) {
+                              _passingYearController.clear();
+                            }
+                          });
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    const Text(
+                      "Currently studying here",
+                      style: TextStyle(fontSize: 14),
+                    ),
+                  ],
                 ),
+               const SizedBox(height: 16),
                 AppButton(
                   label: widget.isEdit ? "Update Education" : "Add Education",
                   loading: _saving,
-                   onPressed: _save,
+                  onPressed: _save,
                 ),
               ],
             ),

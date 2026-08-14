@@ -103,14 +103,11 @@ class PersonalSectionCard extends StatelessWidget {
 
           const SizedBox(height: 16),
 
-          ProfileInfoRow(
-            label: "Contact Person",
-            value: profile.emergencyInfo.name,
-          ),
+        
 
           ProfileInfoRow(
-            label: "Phone Number",
-            value: profile.emergencyInfo.phone,
+            label: " Emergency Contact Number",
+            value: profile.personalInfo.emergencyContactNumber,
           ),
           ProfileInfoRow(
             label: "Father's Name",

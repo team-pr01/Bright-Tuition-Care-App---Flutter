@@ -72,6 +72,7 @@ void showDeleteDialog(BuildContext context) {
               children: [
                 Expanded(
                   child: AppButton(
+                    variant: AppButtonVariant.outlineGray,
                     label: "Cancel",
                     onPressed: () => Navigator.pop(context),
                   ),

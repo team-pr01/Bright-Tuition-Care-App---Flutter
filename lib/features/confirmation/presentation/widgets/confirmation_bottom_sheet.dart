@@ -593,7 +593,7 @@ class _ConfirmationBottomSheetState
                 child: AppButton(
                   label: "Sign Now",
                   onPressed: onPressed,
-                  variant: AppButtonVariant.gradient,
+                  variant: AppButtonVariant.text,
                   icon: Icons.draw_outlined,
                   height: 44,
                 ),

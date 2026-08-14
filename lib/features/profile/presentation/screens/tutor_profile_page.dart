@@ -332,7 +332,7 @@ class _TutorProfileScreenState extends ConsumerState<TutorProfileScreen> {
                   AppSnackbar.show(
                     context,
                     success
-                        ? 'Resume downloaded successfully'
+                        ? "CV is downloaded. Please check your phone's download folder."
                         : 'Failed to download resume',
                     success ? SnackType.success : SnackType.error,
                   );
