@@ -209,7 +209,7 @@ class _TestimonialCardState extends State<TestimonialCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CircleAvatar(
-              radius: 48,
+              radius: 38,
               backgroundImage: widget.testimonial.image.isNotEmpty
                   ? NetworkImage(widget.testimonial.image)
                   : const AssetImage("assets/images/user.jpg") as ImageProvider,
@@ -230,7 +230,7 @@ class _TestimonialCardState extends State<TestimonialCard> {
                   ),
 
                   Text(
-                    widget.testimonial.role,
+                    widget.testimonial.role== "tutor"?"Tutor":"Guardian",
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                       color: AppColors.neutrals03,
                       fontWeight: FontWeight.w300,
@@ -249,7 +249,7 @@ class _TestimonialCardState extends State<TestimonialCard> {
                             widget.testimonial.review,
                             maxLines: 3,
                             overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.bodyMedium!
+                            style: Theme.of(context).textTheme.labelSmall!
                                 .copyWith(color: AppColors.neutrals03),
                           ),
                         ),
@@ -259,7 +259,7 @@ class _TestimonialCardState extends State<TestimonialCard> {
                             onTap: _openFullTestimonial,
                             child: Text(
                               "Read more",
-                              style: Theme.of(context).textTheme.bodyMedium!
+                              style: Theme.of(context).textTheme.labelSmall!
                                   .copyWith(
                                     color: AppColors.primary01,
                                     fontWeight: FontWeight.w500,

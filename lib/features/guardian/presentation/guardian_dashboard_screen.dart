@@ -35,6 +35,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
 
     return DashboardLayout(
       initialIndex: 2,
+      pageTitles: const ["Job Board", "Hire a Tutor", "Dashboard", "Payment"],
       drawerBuilder: (changeTab) => AppSidebar(
         user: user,
 
@@ -199,9 +200,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
 
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => SettingScreen(),
-                ),
+                MaterialPageRoute(builder: (context) => SettingScreen()),
               );
             },
           ),

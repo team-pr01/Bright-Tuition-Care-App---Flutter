@@ -6,33 +6,49 @@ import 'package:btcclient/core/widgets/navbar/side_drawer.dart';
 import 'package:btcclient/core/widgets/share_card/share_card.dart';
 import 'package:btcclient/features/auth/presentation/screens/login_screen.dart';
 import 'package:btcclient/features/auth/presentation/screens/register_screen.dart';
+import 'package:btcclient/features/guest/presentation/screens/overview_screen.dart';
 import 'package:btcclient/features/jobs/presentation/screen/job_page.dart';
 import 'package:btcclient/features/tutor/presentation/screens/how_it_works_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class GuestDashboardScreen extends StatelessWidget {
-  const GuestDashboardScreen({super.key});
+  final int initialIndex;
+
+  const GuestDashboardScreen({
+    super.key,
+    this.initialIndex = 0,
+  });
 
   @override
   Widget build(BuildContext context) {
     return DashboardLayout(
+      // =========================================================
+      // INITIAL TAB
+      // =========================================================
+      initialIndex: initialIndex,
+      pageTitles: const ["Job Board", "Invoices", "Share the App"],
+      // =========================================================
+      // APP BAR
+      // =========================================================
       appBarAction: DashboardAppBarAction.user,
 
       onUserPressed: () {
-        // Navigate to profile
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => const RegisterScreen(role :"tutor")),
+          MaterialPageRoute(
+            builder: (_) => const RegisterScreen(
+              role: "tutor",
+            ),
+          ),
         );
       },
-      initialIndex: 0,
+
       // =========================================================
-      // SIDEBAR
+      // DRAWER
       // =========================================================
       drawerBuilder: (changeTab) {
         return AppSidebar(
-          // Guest has no authenticated user.
           user: null,
 
           // =======================================================
@@ -41,24 +57,40 @@ class GuestDashboardScreen extends StatelessWidget {
           menuItems: [
             SidebarItem(
               label: "Job Board",
-              icon: _icon("assets/icons/navigations/job-board.svg"),
+              icon: _icon(
+                "assets/icons/navigations/job-board.svg",
+              ),
               onTap: () {
                 Navigator.pop(context);
 
-                // There is only ONE guest page.
-                // Therefore its index is always 0.
+                // TAB 0 = JOBS
                 changeTab(0);
+              },
+            ),
+
+            SidebarItem(
+              label: "Overview",
+              icon: _icon(
+                "assets/icons/navigations/dashboard-square-edit.svg",
+              ),
+              onTap: () {
+                Navigator.pop(context);
+
+                // TAB 1 = GUARDIAN OVERVIEW
+                changeTab(1);
               },
             ),
           ],
 
           // =======================================================
-          // COMMON / PUBLIC MENU
+          // COMMON MENU
           // =======================================================
           menuItemsCommon: [
             SidebarItem(
               label: "Join Community",
-              icon: _icon("assets/icons/social_media/facebook.svg"),
+              icon: _icon(
+                "assets/icons/social_media/facebook.svg",
+              ),
               onTap: () {
                 Navigator.pop(context);
 
@@ -73,7 +105,8 @@ class GuestDashboardScreen extends StatelessWidget {
                           "stay informed on the latest trends and access "
                           "resources that support your professional growth.",
                       buttonText: "Join Community",
-                      link: "https://www.facebook.com/groups/252670130864095",
+                      link:
+                          "https://www.facebook.com/groups/252670130864095",
                     ),
                   ),
                 );
@@ -82,52 +115,74 @@ class GuestDashboardScreen extends StatelessWidget {
 
             SidebarItem(
               label: "How It Works",
-              icon: _icon("assets/icons/navigations/how-it-works.svg"),
+              icon: _icon(
+                "assets/icons/navigations/how-it-works.svg",
+              ),
               onTap: () {
                 Navigator.pop(context);
 
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const HowItWorksScreen()),
+                  MaterialPageRoute(
+                    builder: (_) => const HowItWorksScreen(),
+                  ),
                 );
               },
             ),
           ],
 
           // =======================================================
-          // GUEST HAS NO LOGOUT
+          // LOGIN
           // =======================================================
-          // onLogout: () {},
           onLogin: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const LoginScreen()),
+              MaterialPageRoute(
+                builder: (_) => const LoginScreen(role:"tutor"),
+              ),
             );
           },
         );
       },
 
       // ===========================================================
-      // GUEST PAGES
+      // PAGES
       //
-      // IMPORTANT:
-      // pages.length MUST MATCH navItems.length.
-      //
-      // Guest currently has ONLY:
-      // 0 -> Job Board
+      // 0 = Jobs
+      // 1 = Guardian Overview
+      // 2 = Share App
       // ===========================================================
       pages: [
-        // 0 - JOB BOARD
-        (changeTab, status) => JobsPage(role: "guest", changeTab: changeTab),
+        // =========================================================
+        // TAB 0 — JOBS
+        // =========================================================
+        (changeTab, status) {
+          return JobsPage(
+            role: "guest",
+            changeTab: changeTab,
+          );
+        },
 
-        // 1 - HOW IT WORKS
+        // =========================================================
+        // TAB 1 — GUARDIAN OVERVIEW
+        // =========================================================
+        (changeTab, status) {
+          return const OverviewScreen();
+        },
+
+        // =========================================================
+        // TAB 2 — SHARE APP
+        // =========================================================
         (changeTab, status) {
           return const Center(
             child: ShareCard(
               title: "Share with your Friends and Relatives",
               description:
-                  "Help your friends and relatives to find the right tutor for their children by sharing our platform — and earn exclusive rewards!",
-              link: "https://www.brighttuitioncare.com",
+                  "Help your friends and relatives to find the right "
+                  "tutor for their children by sharing our platform "
+                  "— and earn exclusive rewards!",
+              link:
+                  "https://www.brighttuitioncare.com",
             ),
           );
         },
@@ -138,7 +193,7 @@ class GuestDashboardScreen extends StatelessWidget {
       // ===========================================================
       navItems: [
         // =========================================================
-        // JOBS
+        // TAB 0 — JOBS
         // =========================================================
         BottomNavigationBarItem(
           icon: SvgPicture.asset(
@@ -163,11 +218,11 @@ class GuestDashboardScreen extends StatelessWidget {
         ),
 
         // =========================================================
-        // HOW IT WORKS
+        // TAB 1 — OVERVIEW
         // =========================================================
         BottomNavigationBarItem(
           icon: SvgPicture.asset(
-            "assets/icons/navigations/share.svg",
+            "assets/icons/navigations/dashboard-square-edit.svg",
             width: 22,
             height: 22,
             colorFilter: const ColorFilter.mode(
@@ -176,7 +231,7 @@ class GuestDashboardScreen extends StatelessWidget {
             ),
           ),
           activeIcon: SvgPicture.asset(
-            "assets/icons/navigations/share.svg",
+            "assets/icons/navigations/dashboard-square-edit.svg",
             width: 22,
             height: 22,
             colorFilter: const ColorFilter.mode(
@@ -184,7 +239,32 @@ class GuestDashboardScreen extends StatelessWidget {
               BlendMode.srcIn,
             ),
           ),
-          label: "Share the App",
+          label: "Overview",
+        ),
+
+        // =========================================================
+        // TAB 2 — SHARE APP
+        // =========================================================
+        BottomNavigationBarItem(
+          icon: SvgPicture.asset(
+            "assets/icons/navigations/share-outline.svg",
+            width: 22,
+            height: 22,
+            colorFilter: const ColorFilter.mode(
+              AppColors.neutrals06,
+              BlendMode.srcIn,
+            ),
+          ),
+          activeIcon: SvgPicture.asset(
+            "assets/icons/navigations/share-outline.svg",
+            width: 22,
+            height: 22,
+            colorFilter: const ColorFilter.mode(
+              AppColors.primary01,
+              BlendMode.srcIn,
+            ),
+          ),
+          label: "Share App",
         ),
       ],
     );
@@ -193,13 +273,15 @@ class GuestDashboardScreen extends StatelessWidget {
   // =============================================================
   // SIDEBAR ICON
   // =============================================================
-
   static Widget _icon(String path) {
     return SvgPicture.asset(
       path,
       width: 20,
       height: 20,
-      colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+      colorFilter: const ColorFilter.mode(
+        Colors.white,
+        BlendMode.srcIn,
+      ),
     );
   }
 }

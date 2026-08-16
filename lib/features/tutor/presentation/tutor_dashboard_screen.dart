@@ -37,6 +37,7 @@ class TutorDashboardScreen extends ConsumerWidget {
 
     return DashboardLayout(
       initialIndex: 2,
+      pageTitles: const ["Job Board", "Invoice", "Dashboard","Payments"],
       drawerBuilder: (changeTab) => AppSidebar(
         user: user,
 
@@ -188,9 +189,7 @@ class TutorDashboardScreen extends ConsumerWidget {
 
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => SettingScreen(),
-                ),
+                MaterialPageRoute(builder: (context) => SettingScreen()),
               );
             },
           ),

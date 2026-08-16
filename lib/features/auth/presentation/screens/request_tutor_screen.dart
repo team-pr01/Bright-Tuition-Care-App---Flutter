@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:btcclient/core/widgets/helpline_card/helpline_card.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -8,6 +9,7 @@ import 'package:btcclient/core/layout/auth_layout.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/core/widgets/input/app_input_field.dart';
 import 'package:btcclient/core/widgets/snackbar/app_snackbar.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RequestTutorScreen extends StatefulWidget {
   const RequestTutorScreen({super.key});
@@ -19,11 +21,9 @@ class RequestTutorScreen extends StatefulWidget {
 class _RequestTutorScreenState extends State<RequestTutorScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController guardianPhoneController =
-      TextEditingController();
+  final TextEditingController guardianPhoneController = TextEditingController();
 
-  final TextEditingController classController =
-      TextEditingController();
+  final TextEditingController classController = TextEditingController();
 
   bool _isLoading = false;
 
@@ -76,13 +76,9 @@ class _RequestTutorScreenState extends State<RequestTutorScreen> {
         body: jsonEncode(payload),
       );
 
-      debugPrint(
-        "📥 REQUEST TUTOR STATUS: ${response.statusCode}",
-      );
+      debugPrint("📥 REQUEST TUTOR STATUS: ${response.statusCode}");
 
-      debugPrint(
-        "📥 REQUEST TUTOR RESPONSE: ${response.body}",
-      );
+      debugPrint("📥 REQUEST TUTOR RESPONSE: ${response.body}");
 
       Map<String, dynamic>? data;
 
@@ -137,11 +133,7 @@ class _RequestTutorScreenState extends State<RequestTutorScreen> {
 
       if (!mounted) return;
 
-      AppSnackbar.show(
-        context,
-        message,
-        SnackType.error,
-      );
+      AppSnackbar.show(context, message, SnackType.error);
     } catch (e, stackTrace) {
       debugPrint("❌ REQUEST TUTOR ERROR: $e");
       debugPrintStack(stackTrace: stackTrace);
@@ -181,10 +173,9 @@ class _RequestTutorScreenState extends State<RequestTutorScreen> {
               // ==================================================
               // GUARDIAN PHONE
               // ==================================================
-
               AppInputField(
-                label: "Guardian Phone Number",
-                hint: "Enter guardian phone number",
+                label: "Phone Number",
+                hint: "Enter phone number",
                 controller: guardianPhoneController,
                 type: AppInputType.phone,
                 required: true,
@@ -206,7 +197,6 @@ class _RequestTutorScreenState extends State<RequestTutorScreen> {
               // ==================================================
               // CLASS
               // ==================================================
-
               AppInputField(
                 label: "Class",
                 hint: "Enter class",
@@ -223,35 +213,24 @@ class _RequestTutorScreenState extends State<RequestTutorScreen> {
                 },
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 16),
 
               // ==================================================
               // SUBMIT
               // ==================================================
-
               AppButton(
-                label: "Request Tutor",
+                label: "Submit",
                 variant: AppButtonVariant.gradient,
                 loading: _isLoading,
                 onPressed: _isLoading ? null : _submitRequest,
               ),
-
-              const SizedBox(height: 12),
-
-              // ==================================================
-              // CANCEL
-              // ==================================================
-
-              AppButton(
-                label: "Cancel",
-                variant: AppButtonVariant.outlineGray,
-                fontSize: 16,
-                textColor: AppColors.primary01,
-                onPressed: _isLoading
-                    ? null
-                    : () {
-                        Navigator.pop(context);
-                      },
+              SizedBox(height: 280),
+              HelplineCard(
+                phone: "+880 1616-012 365",
+                timing: "10:00 Am - 10:00 Pm",
+                onTap: () {
+                  launchUrl(Uri.parse("tel:+8801616012365"));
+                },
               ),
             ],
           ),

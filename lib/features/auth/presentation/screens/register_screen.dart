@@ -7,6 +7,7 @@ import 'package:btcclient/core/widgets/segmented_switch/segmented_switch.dart';
 import 'package:btcclient/core/widgets/snackbar/app_snackbar.dart';
 
 import 'package:btcclient/features/auth/data/requests/signup_request.dart';
+import 'package:btcclient/features/auth/presentation/screens/choose_role_screen.dart';
 import 'package:btcclient/features/auth/presentation/screens/login_screen.dart';
 import 'package:btcclient/features/auth/presentation/screens/otp_screen.dart';
 import 'package:btcclient/features/auth/presentation/widgets/auth_listener.dart';
@@ -167,9 +168,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     final authState = ref.watch(authProvider);
     return AuthListener(
       child: AuthLayout(
-        title: "Create Account",
-        subtitle: "Sign up as tutor or guardian/student",
+        title: selected == 0 ? "Sign up as Tutor" : "Sign up as Guardian",
 
+        subtitle: selected == 0
+            ? "Connect with students, find the right tuition jobs, and grow as a tutor."
+            : "Find the right tutor and get the best learning support for your child.",
         child: Form(
           key: _formKey,
 
@@ -177,17 +180,16 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
 
             children: [
-              /// SEGMENT SWITCH
-              SegmentedSwitch(
-                items: const ["Tutor", "Guardian/Student"],
-                selectedIndex: selected,
-                onChanged: (index) {
-                  setState(() {
-                    selected = index;
-                  });
-                },
-              ),
-
+              // / SEGMENT SWITCH
+              // SegmentedSwitch(
+              //   items: const ["Tutor", "Guardian/Student"],
+              //   selectedIndex: selected,
+              //   onChanged: (index) {
+              //     setState(() {
+              //       selected = index;
+              //     });
+              //   },
+              // ),
               const SizedBox(height: 20),
 
               /// NAME
@@ -385,7 +387,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 loading: authState.loading,
                 onPressed: authState.loading ? null : _register,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 12),
 
               RichText(
                 textAlign: TextAlign.center,
@@ -408,7 +410,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const LoginScreen(),
+                              builder: (_) => const ChooseRoleScreen( ),
                             ),
                           );
                         },
@@ -418,6 +420,32 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               ),
 
               const SizedBox(height: 16),
+
+              RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelSmall!.copyWith(color: AppColors.neutrals03),
+                  children: [
+                    TextSpan(
+                      text: selected == 0
+                          ? "Sign up as Guardian"
+                          : "Sign up as Tutor",
+                      style: const TextStyle(
+                        color: AppColors.primary01,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          setState(() {
+                            selected = selected == 0 ? 1 : 0;
+                          });
+                        },
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),

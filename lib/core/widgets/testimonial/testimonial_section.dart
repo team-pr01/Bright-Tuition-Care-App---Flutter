@@ -71,7 +71,7 @@ class _TestimonialSectionState extends State<TestimonialSection> {
             return false;
           },
           child: SizedBox(
-            height: 160,
+            height: 136,
             child: PageView.builder(
               controller: _controller,
               itemCount: widget.testimonials.length,

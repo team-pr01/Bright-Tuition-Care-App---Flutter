@@ -36,8 +36,8 @@ class WelcomeNavLink extends StatelessWidget {
             Text(
               label,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    fontWeight: FontWeight.w300,
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    fontWeight: FontWeight.w600,
                     color: AppColors.neutrals03,
                     fontSize: 11,
                   ),

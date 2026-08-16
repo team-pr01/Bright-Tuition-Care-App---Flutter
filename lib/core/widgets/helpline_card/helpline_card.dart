@@ -23,7 +23,7 @@ class HelplineCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.primary03,
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: AppColors.primary01, width: 1.5),
+          border: Border.all(color: AppColors.primaryGradientStart, width: 1.5),
         ),
         child: Row(
           children: [
@@ -44,20 +44,20 @@ class HelplineCard extends StatelessWidget {
               child: Center(
                 child: RichText(
                   text: TextSpan(
-                    style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                    style: Theme.of(context).textTheme.labelLarge!.copyWith(
                       color: AppColors.neutrals03,
                     ),
                     children: [
                       TextSpan(
                         text: "$phone ",
-                        style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                          color: AppColors.primary01,
+                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                          color: AppColors.backgroundDark,
                         ),
                       ),
                       TextSpan(
                         text: " ($timing)",
-                        style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                          color: AppColors.primary01,
+                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                          color: AppColors.backgroundDark,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
@@ -70,15 +70,15 @@ class HelplineCard extends StatelessWidget {
             const SizedBox(width: 12),
 
             /// RIGHT ICON
-            SvgPicture.asset(
-              "assets/icons/visual/send.svg",
-              width: 24,
-              height: 24,
-              colorFilter: const ColorFilter.mode(
-                AppColors.primary01,
-                BlendMode.srcIn,
-              ),
-            ),
+            // SvgPicture.asset(
+            //   "assets/icons/visual/send.svg",
+            //   width: 24,
+            //   height: 24,
+            //   colorFilter: const ColorFilter.mode(
+            //     AppColors.primary01,
+            //     BlendMode.srcIn,
+            //   ),
+            // ),
           ],
         ),
       ),

@@ -14,11 +14,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 /// notification -> Notification icon + unread count
 /// user         -> User/profile icon
 /// none         -> Nothing
-enum DashboardAppBarAction {
-  notification,
-  user,
-  none,
-}
+enum DashboardAppBarAction { notification, user, none }
 
 class DashboardLayout extends ConsumerStatefulWidget {
   /// Pages used by the dashboard.
@@ -26,14 +22,13 @@ class DashboardLayout extends ConsumerStatefulWidget {
   /// IMPORTANT:
   /// pages.length should normally match navItems.length.
   final List<Widget Function(Function(int, {String? status}), String?)> pages;
+  final List<String> pageTitles;
 
   /// Bottom navigation items.
   final List<BottomNavigationBarItem> navItems;
 
   /// Drawer builder.
-  final Widget Function(
-    Function(int, {String? status}),
-  ) drawerBuilder;
+  final Widget Function(Function(int, {String? status})) drawerBuilder;
 
   /// Index that should be opened when dashboard starts.
   final int initialIndex;
@@ -67,6 +62,7 @@ class DashboardLayout extends ConsumerStatefulWidget {
     required this.navItems,
     required this.drawerBuilder,
     this.initialIndex = 0,
+    this.pageTitles = const [],
 
     /// Default behaviour remains the existing notification icon.
     this.appBarAction = DashboardAppBarAction.notification,
@@ -76,8 +72,7 @@ class DashboardLayout extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<DashboardLayout> createState() =>
-      _DashboardLayoutState();
+  ConsumerState<DashboardLayout> createState() => _DashboardLayoutState();
 }
 
 class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
@@ -98,10 +93,7 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
       return 0;
     }
 
-    return currentIndex.clamp(
-      0,
-      widget.navItems.length - 1,
-    );
+    return currentIndex.clamp(0, widget.navItems.length - 1);
   }
 
   int get safePageIndex {
@@ -109,10 +101,7 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
       return 0;
     }
 
-    return currentIndex.clamp(
-      0,
-      widget.pages.length - 1,
-    );
+    return currentIndex.clamp(0, widget.pages.length - 1);
   }
 
   int get safeInitialIndex {
@@ -120,10 +109,7 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
       return 0;
     }
 
-    return widget.initialIndex.clamp(
-      0,
-      widget.navItems.length - 1,
-    );
+    return widget.initialIndex.clamp(0, widget.navItems.length - 1);
   }
 
   // =============================================================
@@ -158,15 +144,11 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
       Future.microtask(() async {
         if (!mounted) return;
 
-        ref
-            .read(notificationNotifierProvider.notifier)
-            .loadNotifications();
+        ref.read(notificationNotifierProvider.notifier).loadNotifications();
       });
     }
 
-    NavigationService.registerJobDetailsHandler(
-      _openJobFromNotification,
-    );
+    NavigationService.registerJobDetailsHandler(_openJobFromNotification);
   }
 
   @override
@@ -185,9 +167,7 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
   Future<void> _openJobFromNotification(String jobId) async {
     if (!mounted) return;
 
-    debugPrint(
-      '🔔 Dashboard received notification job: $jobId',
-    );
+    debugPrint('🔔 Dashboard received notification job: $jobId');
 
     NavigationService.setPendingJob(jobId);
 
@@ -204,20 +184,14 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
   // TAB CHANGE
   // =============================================================
 
-  void changeTab(
-    int index, {
-    String? status,
-  }) {
+  void changeTab(int index, {String? status}) {
     if (!mounted) return;
 
     if (widget.navItems.isEmpty) {
       return;
     }
 
-    final safeIndex = index.clamp(
-      0,
-      widget.navItems.length - 1,
-    );
+    final safeIndex = index.clamp(0, widget.navItems.length - 1);
 
     setState(() {
       currentIndex = safeIndex;
@@ -250,10 +224,8 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
 
     int unreadCount = 0;
 
-    if (widget.appBarAction ==
-        DashboardAppBarAction.notification) {
-      final notificationState =
-          ref.watch(notificationNotifierProvider);
+    if (widget.appBarAction == DashboardAppBarAction.notification) {
+      final notificationState = ref.watch(notificationNotifierProvider);
 
       unreadCount = notificationState.unreadCount;
     }
@@ -262,9 +234,7 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
 
     final hasPages = widget.pages.isNotEmpty;
 
-    final pageIndex = hasPages
-        ? safePageIndex
-        : 0;
+    final pageIndex = hasPages ? safePageIndex : 0;
 
     return PopScope(
       canPop: false,
@@ -294,8 +264,7 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
         final now = DateTime.now();
 
         if (lastBackPressed == null ||
-            now.difference(lastBackPressed!) >
-                const Duration(seconds: 2)) {
+            now.difference(lastBackPressed!) > const Duration(seconds: 2)) {
           lastBackPressed = now;
 
           AppSnackbar.show(
@@ -315,13 +284,11 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
         // =========================================================
         // DRAWER
         // =========================================================
-
         drawer: widget.drawerBuilder(changeTab),
 
         // =========================================================
         // APP BAR
         // =========================================================
-
         appBar: _showAppBar
             ? PreferredSize(
                 preferredSize: const Size.fromHeight(56),
@@ -335,12 +302,7 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
                     color: AppColors.neutrals01,
                     boxShadow: [
                       BoxShadow(
-                        color: Color.fromRGBO(
-                          0,
-                          0,
-                          0,
-                          0.10,
-                        ),
+                        color: Color.fromRGBO(0, 0, 0, 0.10),
                         offset: Offset(0, 1.446),
                         blurRadius: 1.446,
                       ),
@@ -357,7 +319,6 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
                         // =================================================
                         // MENU BUTTON
                         // =================================================
-
                         Align(
                           alignment: Alignment.centerLeft,
 
@@ -365,16 +326,13 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
                             builder: (context) {
                               return IconButton(
                                 icon: Container(
-                                  padding:
-                                      const EdgeInsets.all(6),
+                                  padding: const EdgeInsets.all(6),
 
                                   decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.circular(30),
+                                    borderRadius: BorderRadius.circular(30),
 
                                     border: Border.all(
-                                      color:
-                                          AppColors.primary03,
+                                      color: AppColors.primary03,
                                       width: 1,
                                     ),
                                   ),
@@ -384,8 +342,7 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
                                     width: 20,
                                     height: 20,
 
-                                    colorFilter:
-                                        const ColorFilter.mode(
+                                    colorFilter: const ColorFilter.mode(
                                       AppColors.primary01,
                                       BlendMode.srcIn,
                                     ),
@@ -393,8 +350,7 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
                                 ),
 
                                 onPressed: () {
-                                  Scaffold.of(context)
-                                      .openDrawer();
+                                  Scaffold.of(context).openDrawer();
                                 },
                               );
                             },
@@ -404,25 +360,25 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
                         // =================================================
                         // LOGO
                         // =================================================
-
                         Center(
-                          child: Image.asset(
-                            "assets/images/logo.png",
-                            height: 32,
-                            fit: BoxFit.contain,
+                          child: Text(
+                            widget.pageTitles.isNotEmpty &&
+                                    currentIndex < widget.pageTitles.length
+                                ? widget.pageTitles[currentIndex]
+                                : "",
+                            style: AppTextStyles.headlineSmall.copyWith(
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
 
                         // =================================================
                         // RIGHT APP BAR ACTION
                         // =================================================
-
                         Align(
                           alignment: Alignment.centerRight,
 
-                          child: _buildAppBarAction(
-                            unreadCount: unreadCount,
-                          ),
+                          child: _buildAppBarAction(unreadCount: unreadCount),
                         ),
                       ],
                     ),
@@ -434,33 +390,26 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
         // =========================================================
         // BODY
         // =========================================================
-
         body: hasPages
             ? AnimatedSwitcher(
-                duration:
-                    const Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 300),
 
-                child: widget.pages[pageIndex](
-                  changeTab,
-                  jobStatusFilter,
-                ),
+                child: widget.pages[pageIndex](changeTab, jobStatusFilter),
               )
             : const SizedBox.shrink(),
 
         // =========================================================
         // BOTTOM NAVIGATION
         // =========================================================
-
-        bottomNavigationBar:
-            widget.navItems.isEmpty
-                ? null
-                : AppBottomNavBar(
-                    currentIndex: navIndex,
-                    items: widget.navItems,
-                    onTap: (index) {
-                      changeTab(index);
-                    },
-                  ),
+        bottomNavigationBar: widget.navItems.isEmpty
+            ? null
+            : AppBottomNavBar(
+                currentIndex: navIndex,
+                items: widget.navItems,
+                onTap: (index) {
+                  changeTab(index);
+                },
+              ),
       ),
     );
   }
@@ -469,9 +418,7 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
   // APP BAR ACTION BUILDER
   // =============================================================
 
-  Widget _buildAppBarAction({
-    required int unreadCount,
-  }) {
+  Widget _buildAppBarAction({required int unreadCount}) {
     // ===========================================================
     // CUSTOM WIDGET
     // ===========================================================
@@ -484,8 +431,7 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
     // NONE
     // ===========================================================
 
-    if (widget.appBarAction ==
-        DashboardAppBarAction.none) {
+    if (widget.appBarAction == DashboardAppBarAction.none) {
       return const SizedBox.shrink();
     }
 
@@ -493,8 +439,7 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
     // USER
     // ===========================================================
 
-    if (widget.appBarAction ==
-        DashboardAppBarAction.user) {
+    if (widget.appBarAction == DashboardAppBarAction.user) {
       return IconButton(
         tooltip: "Profile",
 
@@ -505,10 +450,7 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
 
-            border: Border.all(
-              color: AppColors.primary03,
-              width: 1,
-            ),
+            border: Border.all(color: AppColors.primary03, width: 1),
           ),
 
           child: const Icon(
@@ -537,13 +479,9 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
             padding: const EdgeInsets.all(6),
 
             decoration: BoxDecoration(
-              borderRadius:
-                  BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(30),
 
-              border: Border.all(
-                color: AppColors.primary03,
-                width: 1,
-              ),
+              border: Border.all(color: AppColors.primary03, width: 1),
             ),
 
             child: SvgPicture.asset(
@@ -551,8 +489,7 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
               width: 20,
               height: 20,
 
-              colorFilter:
-                  const ColorFilter.mode(
+              colorFilter: const ColorFilter.mode(
                 AppColors.primary01,
                 BlendMode.srcIn,
               ),
@@ -562,10 +499,7 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (_) =>
-                    const NotificationScreen(),
-              ),
+              MaterialPageRoute(builder: (_) => const NotificationScreen()),
             );
           },
         ),
@@ -573,7 +507,6 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
         // =========================================================
         // UNREAD BADGE
         // =========================================================
-
         if (unreadCount > 0)
           Positioned(
             right: 5,
@@ -582,22 +515,15 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
             child: Container(
               padding: const EdgeInsets.all(4),
 
-              decoration:
-                  const BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.red,
                 shape: BoxShape.circle,
               ),
 
-              constraints:
-                  const BoxConstraints(
-                minWidth: 16,
-                minHeight: 16,
-              ),
+              constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
 
               child: Text(
-                unreadCount > 99
-                    ? '99+'
-                    : '$unreadCount',
+                unreadCount > 99 ? '99+' : '$unreadCount',
 
                 textAlign: TextAlign.center,
 

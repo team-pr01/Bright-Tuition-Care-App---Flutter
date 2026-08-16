@@ -7,7 +7,6 @@ import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
 import 'package:btcclient/features/guardian/presentation/screens/guradian_job_application.dart';
 import 'package:btcclient/features/hire_tutor/presentation/provider/post_job_provider.dart';
-import 'package:btcclient/features/hire_tutor/presentation/screen/post_job_page.dart';
 import 'package:btcclient/features/jobs/data/models/application_modal.dart';
 import 'package:btcclient/features/jobs/data/models/applied_model.dart';
 import 'package:btcclient/features/jobs/presentation/enums/job_card_variant.dart';
@@ -339,6 +338,7 @@ class _JobCardState extends ConsumerState<JobCard> {
                   ),
                 ),
                 const SizedBox(width: 10),
+                const Spacer(),
                 GestureDetector(
                   onTap: () {
                     Share.share(link);
@@ -361,107 +361,108 @@ class _JobCardState extends ConsumerState<JobCard> {
                 /// SHARE
                 SvgPicture.asset("assets/icons/job/share.svg", height: 16),
 
-                const Spacer(),
+                
 
                 /// APPLY BUTTON
-                AppButton(
-                  label: isApplied ? "Undo Apply" : "Apply",
-                  loading: _isWithdrawing,
-                   showShimmer:  !isApplied ?true:false,
-                  iconPosition:  isApplied ? AppButtonIconPosition.left:AppButtonIconPosition.right,
-                  onPressed: _isWithdrawing
-                      ? null
-                      : () async {
-                          final user = ref.read(authProvider).user;
+                // AppButton(
+                //   label: isApplied ? "Undo Apply" : "Apply",
+                //   loading: _isWithdrawing,
+                //    showShimmer:  !isApplied ?true:false,
+                //   iconPosition:  isApplied ? AppButtonIconPosition.left:AppButtonIconPosition.right,
+                //   onPressed: _isWithdrawing
+                //       ? null
+                //       : () async {
+                //           final user = ref.read(authProvider).user;
 
-                          if (user == null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  "Please login first to apply on job",
-                                ),
-                              ),
-                            );
-                            return;
-                          }
+                //           if (user == null) {
+                //             ScaffoldMessenger.of(context).showSnackBar(
+                //               const SnackBar(
+                //                 content: Text(
+                //                   "Please login first to apply on job",
+                //                 ),
+                //               ),
+                //             );
+                //             return;
+                //           }
 
-                          try {
-                            if (isApplied) {
-                              // 🔥 WITHDRAW FLOW
+                //           try {
+                //             if (isApplied) {
+                //               // 🔥 WITHDRAW FLOW
 
-                              final application = job.applications
-                                  ?.where((app) => app.userId == user?.id)
-                                  .cast<AppliedModel?>()
-                                  .firstOrNull;
-                              if (application == null) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("Application not found"),
-                                  ),
-                                );
-                                return;
-                              }
-                              setState(() => _isWithdrawing = true);
-                              final success = await ref
-                                  .read(jobsProvider.notifier)
-                                  .withdrawApplication(
-                                    applicationId: application.applicationId!,
-                                  );
+                //               final application = job.applications
+                //                   ?.where((app) => app.userId == user?.id)
+                //                   .cast<AppliedModel?>()
+                //                   .firstOrNull;
+                //               if (application == null) {
+                //                 ScaffoldMessenger.of(context).showSnackBar(
+                //                   const SnackBar(
+                //                     content: Text("Application not found"),
+                //                   ),
+                //                 );
+                //                 return;
+                //               }
+                //               setState(() => _isWithdrawing = true);
+                //               final success = await ref
+                //                   .read(jobsProvider.notifier)
+                //                   .withdrawApplication(
+                //                     applicationId: application.applicationId!,
+                //                   );
 
-                              if (success) {
-                                ref
-                                    .read(appliedJobsProvider.notifier)
-                                    .withdraw(job.id);
+                //               if (success) {
+                //                 ref
+                //                     .read(appliedJobsProvider.notifier)
+                //                     .withdraw(job.id);
 
-                                setState(() => _isWithdrawing = false);
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("Withdraw failed"),
-                                  ),
-                                );
-                              }
-                            } else {
-                              await showApplyConfirmation(
-                                context: context,
-                                onApply: (dialogContext) async {
-                                  final success = await ref
-                                      .read(jobsProvider.notifier)
-                                      .applyJob(
-                                        jobId: job.id!,
-                                        userId: user.id,
-                                      );
+                //                 setState(() => _isWithdrawing = false);
+                //               } else {
+                //                 ScaffoldMessenger.of(context).showSnackBar(
+                //                   const SnackBar(
+                //                     content: Text("Withdraw failed"),
+                //                   ),
+                //                 );
+                //               }
+                //             } else {
+                //               await showApplyConfirmation(
+                //                 context: context,
+                //                 onApply: (dialogContext) async {
+                //                   final success = await ref
+                //                       .read(jobsProvider.notifier)
+                //                       .applyJob(
+                //                         jobId: job.id!,
+                //                         userId: user.id,
+                //                       );
 
-                                  if (success) {
-                                    ref.read(appliedJobsProvider.notifier).apply(job.id);
-                                    Navigator.pop(dialogContext);
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => MyApplicationPage(
-                                          changeTab: changeTab,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                              );
-                            }
-                          } catch (e) {
-                            print("❌ ERROR: $e");
+                //                   if (success) {
+                //                     ref.read(appliedJobsProvider.notifier).apply(job.id);
+                //                     Navigator.pop(dialogContext);
+                //                     Navigator.push(
+                //                       context,
+                //                       MaterialPageRoute(
+                //                         builder: (_) => MyApplicationPage(
+                //                           changeTab: changeTab,
+                //                         ),
+                //                       ),
+                //                     );
+                //                   }
+                //                 },
+                //               );
+                //             }
+                //           } catch (e) {
+                //             print("❌ ERROR: $e");
 
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Something went wrong"),
-                              ),
-                            );
-                          }
-                        },
-                  variant: AppButtonVariant.gradient,
-                  height: 40,
-                  width: 160,
-                  icon: isApplied ? Icons.undo : Icons.arrow_forward,
-                ),
+                //             ScaffoldMessenger.of(context).showSnackBar(
+                //               const SnackBar(
+                //                 content: Text("Something went wrong"),
+                //               ),
+                //             );
+                //           }
+                //         },
+                //   variant: AppButtonVariant.gradient,
+                //   height: 40,
+                //   width: 160,
+                //   icon: isApplied ? Icons.undo : Icons.arrow_forward,
+                // ),
+             
               ],
             ),
           if (variant == JobCardVariant.application)

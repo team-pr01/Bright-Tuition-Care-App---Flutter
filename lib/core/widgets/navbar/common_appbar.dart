@@ -11,9 +11,13 @@ class CommonAppBar extends ConsumerWidget
     implements PreferredSizeWidget {
   final String title;
 
+  // Notification icon is visible by default.
+  final bool showNotification;
+
   const CommonAppBar({
     super.key,
     required this.title,
+    this.showNotification = true,
   });
 
   @override
@@ -55,31 +59,29 @@ class CommonAppBar extends ConsumerWidget
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  /// BACK BUTTON
+
+                  // =====================================================
+                  // BACK BUTTON
+                  // =====================================================
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Padding(
-                      padding:
-                          const EdgeInsets.only(left: 12),
+                      padding: const EdgeInsets.only(left: 12),
                       child: IconButton(
                         onPressed: () {
                           Navigator.pop(context);
                         },
                         icon: Container(
-                          padding:
-                              const EdgeInsets.all(6),
+                          padding: const EdgeInsets.all(6),
                           decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.circular(30),
+                            borderRadius: BorderRadius.circular(30),
                             border: Border.all(
-                              color:
-                                  Colors.grey.shade300,
+                              color: Colors.grey.shade300,
                             ),
                           ),
                           child: const Icon(
                             Icons.arrow_back,
-                            color:
-                                AppColors.primary01,
+                            color: AppColors.primary01,
                             size: 20,
                           ),
                         ),
@@ -87,101 +89,95 @@ class CommonAppBar extends ConsumerWidget
                     ),
                   ),
 
-                  /// TITLE
+                  // =====================================================
+                  // TITLE
+                  // =====================================================
                   Text(
                     title,
-                    style:
-                        AppTextStyles.titleMedium.copyWith(
-                      fontWeight: FontWeight.w600,
+                    style: AppTextStyles.titleMedium.copyWith(
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
 
-                  /// NOTIFICATION BUTTON
-                  Align(
-                    alignment:
-                        Alignment.centerRight,
-                    child: Padding(
-                      padding:
-                          const EdgeInsets.only(right: 12),
-                      child: Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      const NotificationScreen(),
+                  // =====================================================
+                  // NOTIFICATION BUTTON
+                  // Only rendered when showNotification == true
+                  // =====================================================
+                  if (showNotification)
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 12),
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+
+                            IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        const NotificationScreen(),
+                                  ),
+                                );
+                              },
+                              icon: Container(
+                                padding: const EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.circular(30),
+                                  border: Border.all(
+                                    color: Colors.grey.shade300,
+                                  ),
                                 ),
-                              );
-                            },
-                            icon: Container(
-                              padding:
-                                  const EdgeInsets.all(6),
-                              decoration:
-                                  BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.circular(
-                                        30),
-                                border: Border.all(
-                                  color:
-                                      Colors.grey.shade300,
+                                child: SvgPicture.asset(
+                                  "assets/icons/operations/notification.svg",
+                                  width: 20,
+                                  height: 20,
                                 ),
-                              ),
-                              child:
-                                  SvgPicture.asset(
-                                "assets/icons/operations/notification.svg",
-                                width: 20,
-                                height: 20,
                               ),
                             ),
-                          ),
 
-                          /// UNREAD BADGE
-                          if (unreadCount > 0)
-                            Positioned(
-                              right: 3,
-                              top: 2,
-                              child: Container(
-                                constraints:
-                                    const BoxConstraints(
-                                  minWidth: 16,
-                                  minHeight: 16,
-                                ),
-                                padding:
-                                    const EdgeInsets
-                                        .symmetric(
-                                  horizontal: 4,
-                                  vertical: 2,
-                                ),
-                                alignment:
-                                    Alignment.center,
-                                decoration:
-                                    const BoxDecoration(
-                                  color: Colors.red,
-                                  shape:
-                                      BoxShape.circle,
-                                ),
-                                child: Text(
-                                  unreadCount > 99
-                                      ? '99+'
-                                      : '$unreadCount',
-                                  style:
-                                      const TextStyle(
-                                    color:
-                                        Colors.white,
-                                    fontSize: 9,
-                                    fontWeight:
-                                        FontWeight.bold,
+                            // =================================================
+                            // UNREAD BADGE
+                            // =================================================
+                            if (unreadCount > 0)
+                              Positioned(
+                                right: 3,
+                                top: 2,
+                                child: Container(
+                                  constraints:
+                                      const BoxConstraints(
+                                    minWidth: 16,
+                                    minHeight: 16,
+                                  ),
+                                  padding:
+                                      const EdgeInsets.symmetric(
+                                    horizontal: 4,
+                                    vertical: 2,
+                                  ),
+                                  alignment: Alignment.center,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.red,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Text(
+                                    unreadCount > 99
+                                        ? '99+'
+                                        : '$unreadCount',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
                 ],
               ),
             ),

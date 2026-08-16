@@ -21,76 +21,113 @@ class AuthLayout extends StatelessWidget {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-            colors: [AppColors.primaryGradientStart, AppColors.primaryGradientEnd],
-            stops: [0.0082, 1],
-          ),
-        ),
+        color: AppColors.primary01,
+        // decoration: const BoxDecoration(
+        //   gradient: LinearGradient(
+        //     begin: Alignment.centerLeft,
+        //     end: Alignment.centerRight,
+        //     colors: [
+        //       AppColors.primaryGradientStart,
+        //       AppColors.primaryGradientEnd,
+        //     ],
+        //     stops: [0.0082, 1],
+        //   ),
+        // ),
         child: SafeArea(
           child: Column(
             children: [
-              const SizedBox(height: 30),
-
-              Image.asset(
-                'assets/images/logo-white.png',
-                width: 287,
-                height: 59,
+              // =====================================================
+              // TOP BAR
+              // =====================================================
+              SizedBox(
+                height: 48,
+                width: double.infinity,
+                child: showBack
+                    ? Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 12),
+                          child: IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: const Icon(
+                              Icons.arrow_back,
+                              color: Colors.white,
+                              size: 26,
+                            ),
+                            splashRadius: 22,
+                          ),
+                        ),
+                      )
+                    : null,
               ),
 
-              const SizedBox(height: 18),
-
+              // =====================================================
+              // TITLE
+              // =====================================================
               if (title != null)
                 ConstrainedBox(
                   constraints: const BoxConstraints(
-                    maxWidth: 250, 
+                    maxWidth: 250,
                   ),
                   child: Text(
                     title!,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headlineLarge!.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                      height: 1.4,
-                    ),
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineLarge!
+                        .copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          height: 1.4,
+                        ),
                   ),
                 ),
 
+              // =====================================================
+              // SUBTITLE
+              // =====================================================
               if (subtitle != null) ...[
                 const SizedBox(height: 6),
                 ConstrainedBox(
                   constraints: const BoxConstraints(
-                    maxWidth: 270, 
+                    maxWidth: 270,
                   ),
                   child: Text(
                     subtitle!,
-                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w300,
-                      height: 1.5,
-                    ),
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge!
+                        .copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w300,
+                          height: 1.5,
+                        ),
                   ),
                 ),
               ],
 
               const SizedBox(height: 36),
 
-              /// THIS EXPANDED IS NOW CORRECT
+              // =====================================================
+              // CONTENT
+              // =====================================================
               Expanded(
                 child: Container(
                   width: double.infinity,
-                  padding: EdgeInsets.all(AppSpacing.lg),
-                  decoration: BoxDecoration(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  decoration: const BoxDecoration(
                     color: AppColors.neutrals01,
-                    borderRadius: const BorderRadius.only(
+                    borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(28),
                       topRight: Radius.circular(28),
                     ),
                   ),
-                  child: SingleChildScrollView(child: child),
+                  child: SingleChildScrollView(
+                    child: child,
+                  ),
                 ),
               ),
             ],
