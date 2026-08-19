@@ -477,6 +477,14 @@ class _TutorProfileScreenState extends ConsumerState<TutorProfileScreen> {
         return PersonalSectionCard(
           profile: profile,
           onEdit: () async {
+            if (profile.profileStatus == "locked") {
+              AppSnackbar.show(
+                context,
+                "Your profile is locked , request to unlock and edit the profile ",
+                SnackType.error,
+              );
+              return;
+            }
             final updated = await Navigator.push<bool>(
               context,
               MaterialPageRoute(
@@ -509,6 +517,14 @@ class _TutorProfileScreenState extends ConsumerState<TutorProfileScreen> {
           },
 
           onEdit: (education) async {
+            if (profile.profileStatus == "locked") {
+              AppSnackbar.show(
+                context,
+                "Your profile is locked , request to unlock and edit the profile ",
+                SnackType.error,
+              );
+              return;
+            }
             final updated = await Navigator.push<bool>(
               context,
               MaterialPageRoute(
@@ -526,6 +542,14 @@ class _TutorProfileScreenState extends ConsumerState<TutorProfileScreen> {
         return TuitionSectionCard(
           profile: profile,
           onEdit: () async {
+            if (profile.profileStatus == "locked") {
+              AppSnackbar.show(
+                context,
+                "Your profile is locked , request to unlock and edit the profile ",
+                SnackType.error,
+              );
+              return;
+            }
             final updated = await Navigator.push<bool>(
               context,
               MaterialPageRoute(
@@ -545,6 +569,14 @@ class _TutorProfileScreenState extends ConsumerState<TutorProfileScreen> {
 
           // ADD / ADD MORE
           onAdd: () async {
+            if (profile.profileStatus == "locked") {
+              AppSnackbar.show(
+                context,
+                "Your profile is locked , request to unlock and edit the profile ",
+                SnackType.error,
+              );
+              return;
+            }
             final result = await Navigator.push<bool>(
               context,
               MaterialPageRoute(builder: (_) => const AddCredentialScreen()),
@@ -557,6 +589,14 @@ class _TutorProfileScreenState extends ConsumerState<TutorProfileScreen> {
 
           // DELETE
           onDelete: (identity) {
+            if (profile.profileStatus == "locked") {
+              AppSnackbar.show(
+                context,
+                "Your profile is locked , request to unlock and edit the profile ",
+                SnackType.error,
+              );
+              return;
+            }
             _confirmDeleteCredential(identity);
           },
         );
