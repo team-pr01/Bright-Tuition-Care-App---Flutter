@@ -30,15 +30,8 @@ class DashboardNavLinks extends StatelessWidget {
             children: [
               Container(
                 padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: [
-                      AppColors.primaryGradientStart,
-                      AppColors.primaryGradientEnd,
-                    ],
-                  ),
+                decoration: const BoxDecoration(
+                  color: AppColors.primary01,
                   shape: BoxShape.circle,
                 ),
                 child: icon,

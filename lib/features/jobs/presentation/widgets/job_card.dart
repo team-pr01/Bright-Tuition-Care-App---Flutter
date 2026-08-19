@@ -74,524 +74,613 @@ class _JobCardState extends ConsumerState<JobCard> {
     //     : job.applications?.any((app) => app.userId == user.id) ?? false;
 
     final link = "https://brighttuitioncare.com/job-board/id/${job.jobId}";
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primary01),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary02,
-            blurRadius: 0.2,
-            spreadRadius: 1,
-          ),
-        ],
-      ),
+    return GestureDetector(
+      onTap: () {
+        if (variant == JobCardVariant.job) {
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            builder: (_) => JobBottomSheet(
+              variant: JobCardVariant.job,
+              job: job,
+              changeTab: changeTab, // 🔥 pass exact clicked job
+            ),
+          );
+        }
+        if (variant == JobCardVariant.postedJob) {
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            builder: (_) => JobBottomSheet(
+              changeTab: changeTab,
+              variant: JobCardVariant.postedJob,
+              job: job, // 🔥 pass exact clicked job
+            ),
+          );
+        }
+        if (variant == JobCardVariant.application) {
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            builder: (_) => JobBottomSheet(
+              variant: variant,
+              application: application,
+              job: job,
+              changeTab: changeTab,
+            ),
+          );
+        }
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.primary01),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary02,
+              blurRadius: 0.2,
+              spreadRadius: 1,
+            ),
+          ],
+        ),
 
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          /// ================= HEADER =================
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: safe(job.title).isEmpty ? "-" : job.title,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          height: 1.4,
-                          color: AppColors.neutrals02,
-                        ),
-                      ),
-                      if (safe(job.tuitionType).isNotEmpty)
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /// ================= HEADER =================
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
                         TextSpan(
-                          text: " — ${job.tuitionType}",
+                          text: safe(job.title).isEmpty ? "-" : job.title,
                           style: const TextStyle(
-                            color: AppColors.primary01,
-                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            height: 1.4,
+                            color: AppColors.neutrals02,
                           ),
                         ),
-                    ],
-                  ),
-                ),
-              ),
-
-              /// RIGHT ILLUSTRATION (optional)
-              ///
-              Opacity(
-                opacity: 0.3,
-                child: SvgPicture.asset(iconPath, height: 60),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 6),
-          if (variant == JobCardVariant.application)
-            Row(
-              children: [
-                /// DETAILS
-                Row(
-                  children: [
-                    SvgPicture.asset(
-                      "assets/icons/visual/status.svg",
-                      height: 16,
-                    ),
-                    const SizedBox(width: 6),
-
-                    Text("Status :"),
-                    const SizedBox(width: 8),
-                    Text(
-                      StatusDataFormatter.getApplicationStatus(
-                        applicationStatus: application?.status,
-                        jobStatus: job.status,
-                      ),
-                      style: TextStyle(
-                        color: StatusDataFormatter.getApplicationStatusColor(
-                          applicationStatus: application?.status,
-                          jobStatus: job.status,
-                        ),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(width: 20),
-
-                /// APPLY BUTTON
-              ],
-            ),
-          if (variant == JobCardVariant.postedJob)
-            Row(
-              children: [
-                /// DETAILS
-                Row(
-                  children: [
-                    SvgPicture.asset(
-                      "assets/icons/visual/status.svg",
-                      height: 16,
-                    ),
-                    const SizedBox(width: 6),
-
-                    Text("Status :"),
-                    const SizedBox(width: 8),
-                    Text(
-                      job.status ?? "",
-                      style: TextStyle(
-                        color: StatusDataFormatter.getStatusColorGuardian(
-                          application?.status,
-                        ),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(width: 20),
-
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            GuardianJobApplication(jobId: job.id),
-                      ),
-                    );
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 4,
-                      vertical: 2,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SvgPicture.asset(
-                          "assets/icons/navigations/confirmed.svg",
-                          height: 16,
-                          width: 16,
-                          color: AppColors.primary01,
-                        ),
-                        const SizedBox(width: 4),
-                        const Text("Applications"),
-                        const SizedBox(width: 4),
-                        Text(
-                          "(${job.applications?.length ?? 0})",
-                          style: const TextStyle(fontWeight: FontWeight.w500),
-                        ),
+                        if (safe(job.tuitionType).isNotEmpty)
+                          TextSpan(
+                            text: " — ${job.tuitionType}",
+                            style: const TextStyle(
+                              color: AppColors.primary01,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                       ],
                     ),
                   ),
                 ),
 
-                const SizedBox(width: 10),
-
-                /// APPLY BUTTON
+                /// RIGHT ILLUSTRATION (optional)
+                ///
+                Opacity(
+                  opacity: 0.3,
+                  child: SvgPicture.asset(iconPath, height: 60),
+                ),
               ],
             ),
 
-          const SizedBox(height: 6),
-
-          /// META
-          Text(
-            "Job Id : ${safe(job.jobId)}    Posted Date : ${DateFormatter.formattedDate(job.createdAt.toString())}",
-            style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
-          ),
-
-          const SizedBox(height: 16),
-
-          /// ================= SUBJECTS =================
-          IconRow(
-            icon: "assets/icons/visual/subject.svg",
-            title: "Subjects",
-            value: safe(job.subjects?.join(", ")),
-          ),
-
-          const SizedBox(height: 12),
-
-          /// ================= DAYS + SALARY =================
-          Row(
-            children: [
-              Expanded(
-                child: IconRow(
-                  icon: "assets/icons/visual/tutoringDays.svg",
-                  title: "Tutoring Days",
-                  value: safe(job.tutoringDays),
-                ),
-              ),
-              Expanded(
-                child: IconRow(
-                  icon: "assets/icons/visual/salary.svg",
-                  title: "Salary",
-                  value: safe(job.salary),
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 12),
-
-          /// ================= GENDER =================
-          IconRow(
-            icon: job.preferredTutorGender == "male"
-                ? "assets/icons/visual/male.svg"
-                : job.preferredTutorGender == "female"
-                ? "assets/icons/visual/prefered-tutor.svg"
-                : "assets/icons/visual/gender.svg",
-            title: "Prefer Tutor",
-            value: safe(
-              job.preferredTutorGender == "male"
-                  ? "Male"
-                  : job.preferredTutorGender == "female"
-                  ? "Female"
-                  : "Other",
-            ),
-          ),
-
-          const SizedBox(height: 12),
-
-          /// ================= LOCATION =================
-          IconRow(
-            icon: "assets/icons/visual/location2.svg",
-            title: "Location",
-            value: safe(
-              "${job.address ?? ""}, ${job.area?.join(", ") ?? "-"}-${job.city?.join(", ") ?? "-"}",
-            ),
-          ),
-
-          const SizedBox(height: 16),
-
-          /// ================= FOOTER =================
-          if (variant == JobCardVariant.job)
-            Row(
-              children: [
-                /// DETAILS
-                GestureDetector(
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      builder: (_) => JobBottomSheet(
-                        variant: JobCardVariant.job,
-                        job: job,
-                        changeTab: changeTab, // 🔥 pass exact clicked job
-                      ),
-                    );
-                  },
-                  child: Row(
+            const SizedBox(height: 6),
+            if (variant == JobCardVariant.application)
+              Row(
+                children: [
+                  /// DETAILS
+                  Row(
                     children: [
                       SvgPicture.asset(
-                        "assets/icons/operations/job-details.svg",
+                        "assets/icons/visual/status.svg",
                         height: 16,
                       ),
                       const SizedBox(width: 6),
-                      const Text("Details"),
+
+                      Text("Status :"),
+                      const SizedBox(width: 8),
+                      Text(
+                        StatusDataFormatter.getApplicationStatus(
+                          applicationStatus: application?.status,
+                          jobStatus: job.status,
+                        ),
+                        style: TextStyle(
+                          color: StatusDataFormatter.getApplicationStatusColor(
+                            applicationStatus: application?.status,
+                            jobStatus: job.status,
+                          ),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ],
                   ),
-                ),
-                const SizedBox(width: 10),
-                const Spacer(),
-                GestureDetector(
-                  onTap: () {
-                    Share.share(link);
-                  },
-                  child: Row(
+
+                  const SizedBox(width: 20),
+
+                  /// APPLY BUTTON
+                ],
+              ),
+            if (variant == JobCardVariant.postedJob)
+              Row(
+                children: [
+                  /// DETAILS
+                  Row(
                     children: [
                       SvgPicture.asset(
-                        "assets/icons/operations/share.svg",
-                        height: 14,
-                        color: AppColors.neutrals02,
-                      ),
-                      const SizedBox(width: 6),
-                      const Text("Share"),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(width: 20),
-
-                /// SHARE
-                SvgPicture.asset("assets/icons/job/share.svg", height: 16),
-
-                
-
-                /// APPLY BUTTON
-                // AppButton(
-                //   label: isApplied ? "Undo Apply" : "Apply",
-                //   loading: _isWithdrawing,
-                //    showShimmer:  !isApplied ?true:false,
-                //   iconPosition:  isApplied ? AppButtonIconPosition.left:AppButtonIconPosition.right,
-                //   onPressed: _isWithdrawing
-                //       ? null
-                //       : () async {
-                //           final user = ref.read(authProvider).user;
-
-                //           if (user == null) {
-                //             ScaffoldMessenger.of(context).showSnackBar(
-                //               const SnackBar(
-                //                 content: Text(
-                //                   "Please login first to apply on job",
-                //                 ),
-                //               ),
-                //             );
-                //             return;
-                //           }
-
-                //           try {
-                //             if (isApplied) {
-                //               // 🔥 WITHDRAW FLOW
-
-                //               final application = job.applications
-                //                   ?.where((app) => app.userId == user?.id)
-                //                   .cast<AppliedModel?>()
-                //                   .firstOrNull;
-                //               if (application == null) {
-                //                 ScaffoldMessenger.of(context).showSnackBar(
-                //                   const SnackBar(
-                //                     content: Text("Application not found"),
-                //                   ),
-                //                 );
-                //                 return;
-                //               }
-                //               setState(() => _isWithdrawing = true);
-                //               final success = await ref
-                //                   .read(jobsProvider.notifier)
-                //                   .withdrawApplication(
-                //                     applicationId: application.applicationId!,
-                //                   );
-
-                //               if (success) {
-                //                 ref
-                //                     .read(appliedJobsProvider.notifier)
-                //                     .withdraw(job.id);
-
-                //                 setState(() => _isWithdrawing = false);
-                //               } else {
-                //                 ScaffoldMessenger.of(context).showSnackBar(
-                //                   const SnackBar(
-                //                     content: Text("Withdraw failed"),
-                //                   ),
-                //                 );
-                //               }
-                //             } else {
-                //               await showApplyConfirmation(
-                //                 context: context,
-                //                 onApply: (dialogContext) async {
-                //                   final success = await ref
-                //                       .read(jobsProvider.notifier)
-                //                       .applyJob(
-                //                         jobId: job.id!,
-                //                         userId: user.id,
-                //                       );
-
-                //                   if (success) {
-                //                     ref.read(appliedJobsProvider.notifier).apply(job.id);
-                //                     Navigator.pop(dialogContext);
-                //                     Navigator.push(
-                //                       context,
-                //                       MaterialPageRoute(
-                //                         builder: (_) => MyApplicationPage(
-                //                           changeTab: changeTab,
-                //                         ),
-                //                       ),
-                //                     );
-                //                   }
-                //                 },
-                //               );
-                //             }
-                //           } catch (e) {
-                //             print("❌ ERROR: $e");
-
-                //             ScaffoldMessenger.of(context).showSnackBar(
-                //               const SnackBar(
-                //                 content: Text("Something went wrong"),
-                //               ),
-                //             );
-                //           }
-                //         },
-                //   variant: AppButtonVariant.gradient,
-                //   height: 40,
-                //   width: 160,
-                //   icon: isApplied ? Icons.undo : Icons.arrow_forward,
-                // ),
-             
-              ],
-            ),
-          if (variant == JobCardVariant.application)
-            Row(
-              children: [
-                /// DETAILS
-                GestureDetector(
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      builder: (_) => JobBottomSheet(
-                        changeTab: changeTab,
-                        variant: JobCardVariant.application,
-                        application: application,
-                        job: job, // 🔥 pass exact clicked job
-                      ),
-                    );
-                  },
-                  child: Row(
-                    children: [
-                      SvgPicture.asset(
-                        "assets/icons/operations/job-details.svg",
+                        "assets/icons/visual/status.svg",
                         height: 16,
                       ),
                       const SizedBox(width: 6),
-                      const Text("Details"),
+
+                      Text("Status :"),
+                      const SizedBox(width: 8),
+                      Text(
+                        job.status ?? "",
+                        style: TextStyle(
+                          color: StatusDataFormatter.getStatusColorGuardian(
+                            application?.status,
+                          ),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ],
                   ),
-                ),
-                const SizedBox(width: 10),
-                Row(
-                  children: [
-                    const Text("Applied on :"),
-                    const SizedBox(width: 6),
-                    Text(
-                      DateFormatter.formattedDate(
-                        application?.appliedOn.toString() ?? "",
+
+                  const SizedBox(width: 20),
+
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              GuardianJobApplication(jobId: job.id),
+                        ),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 4,
+                        vertical: 2,
                       ),
-                      style: const TextStyle(
-                        color: AppColors.primary01,
-                        fontWeight: FontWeight.w500,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SvgPicture.asset(
+                            "assets/icons/navigations/confirmed.svg",
+                            height: 16,
+                            width: 16,
+                            color: AppColors.primary01,
+                          ),
+                          const SizedBox(width: 4),
+                          const Text("Applications"),
+                          const SizedBox(width: 4),
+                          Text(
+                            "(${job.applications?.length ?? 0})",
+                            style: const TextStyle(fontWeight: FontWeight.w500),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
 
-                const SizedBox(width: 20),
+                  const SizedBox(width: 10),
 
-                /// SHARE
-                SvgPicture.asset("assets/icons/job/share.svg", height: 16),
+                  /// APPLY BUTTON
+                ],
+              ),
 
-                const Spacer(),
+            const SizedBox(height: 6),
 
-                /// APPLY BUTTON
-              ],
+            /// META
+            Text(
+              "Job Id : ${safe(job.jobId)}    Posted Date : ${DateFormatter.formattedDate(job.createdAt.toString())}",
+              style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
             ),
-          if (variant == JobCardVariant.postedJob)
+
+            const SizedBox(height: 16),
+
+            /// ================= SUBJECTS =================
+            IconRow(
+              icon: "assets/icons/visual/subject.svg",
+              title: "Subjects",
+              value: safe(job.subjects?.join(", ")),
+            ),
+
+            const SizedBox(height: 12),
+
+            /// ================= DAYS + SALARY =================
             Row(
               children: [
-                /// DETAILS
-                GestureDetector(
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      builder: (_) => JobBottomSheet(
-                        changeTab: changeTab,
-                        variant: JobCardVariant.postedJob,
-                        job: job, // 🔥 pass exact clicked job
-                      ),
-                    );
-                  },
-                  child: Row(
-                    children: [
-                      SvgPicture.asset(
-                        "assets/icons/operations/job-details.svg",
-                        height: 16,
-                      ),
-                      const SizedBox(width: 6),
-                      const Text("Details"),
-                    ],
+                Expanded(
+                  child: IconRow(
+                    icon: "assets/icons/visual/tutoringDays.svg",
+                    title: "Tutoring Days",
+                    value: safe(job.tutoringDays),
                   ),
                 ),
-                const SizedBox(width: 10),
-
-                GestureDetector(
-                  onTap: () {
-                    ref.read(postJobProvider.notifier).setEditData({
-                      "_id": job.id,
-                      "tuitionType": job.tuitionType,
-                      "category": job.category,
-                      "curriculum": job.curriculum,
-                      "class": job.classes,
-                      "subjects": job.subjects,
-                      "tutoringDays": job.tutoringDays,
-                      "tutoringTime": job.tutoringTime.toString(),
-                      "salary": job.salary.toString(),
-                      "studentGender": job.studentGender,
-                      "preferredTutorGender": job.preferredTutorGender,
-                      "numberOfStudents": job.numberOfStudents.toString(),
-                      "studentsInstituteName": job.instituteName,
-                      "otherRequirements": job.otherRequirements,
-                      "city": job.city,
-                      "area": job.area,
-                      "address": job.address,
-                    });
-
-                    changeTab(1); // 🔥 GO TO POST JOB TAB
-                  },
-                  child: Row(
-                    children: [
-                      const Icon(Icons.edit, size: 16),
-                      const SizedBox(width: 4),
-                      const Text("Edit Job"),
-                    ],
+                Expanded(
+                  child: IconRow(
+                    icon: "assets/icons/visual/salary.svg",
+                    title: "Salary",
+                    value: safe(job.salary),
                   ),
                 ),
-                const SizedBox(width: 10),
-
-                /// SHARE
-                SvgPicture.asset("assets/icons/job/share.svg", height: 16),
-
-                const Spacer(),
-
-                /// APPLY BUTTON
               ],
             ),
-        ],
+
+            const SizedBox(height: 12),
+
+            /// ================= GENDER =================
+            if (variant != JobCardVariant.job)
+              IconRow(
+                icon: job.preferredTutorGender == "male"
+                    ? "assets/icons/visual/male.svg"
+                    : job.preferredTutorGender == "female"
+                    ? "assets/icons/visual/prefered-tutor.svg"
+                    : "assets/icons/visual/gender.svg",
+                title: "Prefer Tutor",
+                value: safe(
+                  job.preferredTutorGender == "male"
+                      ? "Male"
+                      : job.preferredTutorGender == "female"
+                      ? "Female"
+                      : "Other",
+                ),
+              ),
+
+            const SizedBox(height: 12),
+
+            /// ================= LOCATION =================
+            IconRow(
+              icon: "assets/icons/visual/location2.svg",
+              title: "Location",
+              value: safe(
+                "${job.address ?? ""}, ${job.area?.join(", ") ?? "-"}-${job.city?.join(", ") ?? "-"}",
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            /// ================= FOOTER =================
+            if (variant == JobCardVariant.job)
+              Row(
+                children: [
+                  /// DETAILS
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     showModalBottomSheet(
+                  //       context: context,
+                  //       isScrollControlled: true,
+                  //       builder: (_) => JobBottomSheet(
+                  //         variant: JobCardVariant.job,
+                  //         job: job,
+                  //         changeTab: changeTab, // 🔥 pass exact clicked job
+                  //       ),
+                  //     );
+                  //   },
+                  //   child: Row(
+                  //     children: [
+                  //       SvgPicture.asset(
+                  //         "assets/icons/operations/job-details.svg",
+                  //         height: 16,
+                  //       ),
+                  //       const SizedBox(width: 6),
+                  //       const Text("Details"),
+                  //     ],
+                  //   ),
+                  // ),
+                  // const SizedBox(width: 10),
+                  //     IconRow(
+                  //   icon: job.preferredTutorGender == "male"
+                  //       ? "assets/icons/visual/male.svg"
+                  //       : job.preferredTutorGender == "female"
+                  //       ? "assets/icons/visual/prefered-tutor.svg"
+                  //       : "assets/icons/visual/gender.svg",
+                  //   // title: "Prefer Tutor",
+                  //   value: safe(
+                  //     job.preferredTutorGender == "male"
+                  //         ? "Male"
+                  //         : job.preferredTutorGender == "female"
+                  //         ? "Female"
+                  //         : "Other",
+                  //   ),
+                  // ),
+                  Row(
+                    children: [
+                      SvgPicture.asset(
+                        job.preferredTutorGender == "male"
+                            ? "assets/icons/visual/male.svg"
+                            : job.preferredTutorGender == "female"
+                            ? "assets/icons/visual/prefered-tutor.svg"
+                            : "assets/icons/visual/gender.svg",
+                        height: 18,
+                        width: 18,
+                        color: AppColors.primary01,
+                      ),
+
+                      const SizedBox(width: 6),
+
+                      Text(
+                        job.preferredTutorGender == "male"
+                            ? "Male"
+                            : job.preferredTutorGender == "female"
+                            ? "Female"
+                            : "Other",
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.neutrals03,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Text(
+                        "  tutor Preferred",
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.neutrals02,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const Spacer(),
+                  GestureDetector(
+                    onTap: () {
+                      Share.share(link);
+                    },
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(
+                          "assets/icons/operations/share.svg",
+                          height: 14,
+                          color: AppColors.neutrals02,
+                        ),
+                        const SizedBox(width: 6),
+                        const Text("Share"),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(width: 20),
+
+                  /// SHARE
+                  SvgPicture.asset("assets/icons/job/share.svg", height: 16),
+
+                  /// APPLY BUTTON
+                  // AppButton(
+                  //   label: isApplied ? "Undo Apply" : "Apply",
+                  //   loading: _isWithdrawing,
+                  //    showShimmer:  !isApplied ?true:false,
+                  //   iconPosition:  isApplied ? AppButtonIconPosition.left:AppButtonIconPosition.right,
+                  //   onPressed: _isWithdrawing
+                  //       ? null
+                  //       : () async {
+                  //           final user = ref.read(authProvider).user;
+
+                  //           if (user == null) {
+                  //             ScaffoldMessenger.of(context).showSnackBar(
+                  //               const SnackBar(
+                  //                 content: Text(
+                  //                   "Please login first to apply on job",
+                  //                 ),
+                  //               ),
+                  //             );
+                  //             return;
+                  //           }
+
+                  //           try {
+                  //             if (isApplied) {
+                  //               // 🔥 WITHDRAW FLOW
+
+                  //               final application = job.applications
+                  //                   ?.where((app) => app.userId == user?.id)
+                  //                   .cast<AppliedModel?>()
+                  //                   .firstOrNull;
+                  //               if (application == null) {
+                  //                 ScaffoldMessenger.of(context).showSnackBar(
+                  //                   const SnackBar(
+                  //                     content: Text("Application not found"),
+                  //                   ),
+                  //                 );
+                  //                 return;
+                  //               }
+                  //               setState(() => _isWithdrawing = true);
+                  //               final success = await ref
+                  //                   .read(jobsProvider.notifier)
+                  //                   .withdrawApplication(
+                  //                     applicationId: application.applicationId!,
+                  //                   );
+
+                  //               if (success) {
+                  //                 ref
+                  //                     .read(appliedJobsProvider.notifier)
+                  //                     .withdraw(job.id);
+
+                  //                 setState(() => _isWithdrawing = false);
+                  //               } else {
+                  //                 ScaffoldMessenger.of(context).showSnackBar(
+                  //                   const SnackBar(
+                  //                     content: Text("Withdraw failed"),
+                  //                   ),
+                  //                 );
+                  //               }
+                  //             } else {
+                  //               await showApplyConfirmation(
+                  //                 context: context,
+                  //                 onApply: (dialogContext) async {
+                  //                   final success = await ref
+                  //                       .read(jobsProvider.notifier)
+                  //                       .applyJob(
+                  //                         jobId: job.id!,
+                  //                         userId: user.id,
+                  //                       );
+
+                  //                   if (success) {
+                  //                     ref.read(appliedJobsProvider.notifier).apply(job.id);
+                  //                     Navigator.pop(dialogContext);
+                  //                     Navigator.push(
+                  //                       context,
+                  //                       MaterialPageRoute(
+                  //                         builder: (_) => MyApplicationPage(
+                  //                           changeTab: changeTab,
+                  //                         ),
+                  //                       ),
+                  //                     );
+                  //                   }
+                  //                 },
+                  //               );
+                  //             }
+                  //           } catch (e) {
+                  //             print("❌ ERROR: $e");
+
+                  //             ScaffoldMessenger.of(context).showSnackBar(
+                  //               const SnackBar(
+                  //                 content: Text("Something went wrong"),
+                  //               ),
+                  //             );
+                  //           }
+                  //         },
+                  //   variant: AppButtonVariant.gradient,
+                  //   height: 40,
+                  //   width: 160,
+                  //   icon: isApplied ? Icons.undo : Icons.arrow_forward,
+                  // ),
+                ],
+              ),
+            if (variant == JobCardVariant.application)
+              Row(
+                children: [
+                  /// DETAILS
+                  GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (_) => JobBottomSheet(
+                          changeTab: changeTab,
+                          variant: JobCardVariant.application,
+                          application: application,
+                          job: job, // 🔥 pass exact clicked job
+                        ),
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(
+                          "assets/icons/operations/job-details.svg",
+                          height: 16,
+                        ),
+                        const SizedBox(width: 6),
+                        const Text("Details"),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Row(
+                    children: [
+                      const Text("Applied on :"),
+                      const SizedBox(width: 6),
+                      Text(
+                        DateFormatter.formattedDate(
+                          application?.appliedOn.toString() ?? "",
+                        ),
+                        style: const TextStyle(
+                          color: AppColors.primary01,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(width: 20),
+
+                  /// SHARE
+                  SvgPicture.asset("assets/icons/job/share.svg", height: 16),
+
+                  const Spacer(),
+
+                  /// APPLY BUTTON
+                ],
+              ),
+            if (variant == JobCardVariant.postedJob)
+              Row(
+                children: [
+                  /// DETAILS
+                  GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (_) => JobBottomSheet(
+                          changeTab: changeTab,
+                          variant: JobCardVariant.postedJob,
+                          job: job, // 🔥 pass exact clicked job
+                        ),
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(
+                          "assets/icons/operations/job-details.svg",
+                          height: 16,
+                        ),
+                        const SizedBox(width: 6),
+                        const Text("Details"),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+
+                  GestureDetector(
+                    onTap: () {
+                      ref.read(postJobProvider.notifier).setEditData({
+                        "_id": job.id,
+                        "tuitionType": job.tuitionType,
+                        "category": job.category,
+                        "curriculum": job.curriculum,
+                        "class": job.classes,
+                        "subjects": job.subjects,
+                        "tutoringDays": job.tutoringDays,
+                        "tutoringTime": job.tutoringTime.toString(),
+                        "salary": job.salary.toString(),
+                        "studentGender": job.studentGender,
+                        "preferredTutorGender": job.preferredTutorGender,
+                        "numberOfStudents": job.numberOfStudents.toString(),
+                        "studentsInstituteName": job.instituteName,
+                        "otherRequirements": job.otherRequirements,
+                        "city": job.city,
+                        "area": job.area,
+                        "address": job.address,
+                      });
+
+                      changeTab(1); // 🔥 GO TO POST JOB TAB
+                    },
+                    child: Row(
+                      children: [
+                        const Icon(Icons.edit, size: 16),
+                        const SizedBox(width: 4),
+                        const Text("Edit Job"),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+
+                  /// SHARE
+                  SvgPicture.asset("assets/icons/job/share.svg", height: 16),
+
+                  const Spacer(),
+
+                  /// APPLY BUTTON
+                ],
+              ),
+          ],
+        ),
       ),
     );
   }

@@ -89,6 +89,7 @@ flutter:
     - .env
     - assets/images/
     - assets/images/qr/
+    - assets/images/service_catagories/
     - assets/icons/
     - assets/icons/operations/
     - assets/icons/navigations/

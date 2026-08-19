@@ -1,6 +1,5 @@
+import 'package:btcclient/features/guest/presentation/widgets/overview_bottom_sheets.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/widgets/navbar/common_appbar.dart';
 
@@ -12,47 +11,101 @@ class OverviewScreen extends StatefulWidget {
 }
 
 class _OverviewScreenState extends State<OverviewScreen> {
-  final PageController _heroController = PageController(viewportFraction: 0.86);
+  // ============================================================
+  // CONTROLLERS
+  // ============================================================
 
-  int _currentHeroPage = 0;
+  final PageController _serviceController = PageController(
+    viewportFraction: 0.90,
+  );
+
+  final ScrollController _jobsScrollController = ScrollController();
+
+  int _currentServicePage = 0;
 
   // ============================================================
-  // HERO IMAGES
+  // SERVICE CATEGORIES
   // ============================================================
-  //
-  // Replace these with your actual Flutter asset paths.
-  //
-  final List<String> _heroImages = const [
-    'assets/images/hero_img_4.png',
-    'assets/images/hero_img_1.png',
-    'assets/images/hero_img_3.png',
-    'assets/images/hero_img_2.png',
+
+  final List<_ServiceCategory> _categories = const [
+    _ServiceCategory(
+      title: "Admission Test",
+      imagePath: "assets/images/service_catagories/admission_test.png",
+    ),
+    _ServiceCategory(
+      title: "Madrasa Medium",
+      imagePath: "assets/images/service_catagories/arbi.png",
+    ),
+    _ServiceCategory(
+      title: "Bangla Medium",
+      imagePath: "assets/images/service_catagories/bangla_medium.png",
+    ),
+    _ServiceCategory(
+      title: "Drawing & Art",
+      imagePath: "assets/images/service_catagories/drawing.png",
+    ),
+    _ServiceCategory(
+      title: "English Medium",
+      imagePath: "assets/images/service_catagories/english_medium.png",
+    ),
+    _ServiceCategory(
+      title: "English Version",
+      imagePath: "assets/images/service_catagories/english_version.png",
+    ),
+    _ServiceCategory(
+      title: "Language Learning",
+      imagePath: "assets/images/service_catagories/language_learning.png",
+    ),
+    _ServiceCategory(
+      title: "Professional Skills",
+      imagePath: "assets/images/service_catagories/professional_skills.png",
+    ),
+    _ServiceCategory(
+      title: "Special Child Education",
+      imagePath: "assets/images/service_catagories/special_child.png",
+    ),
+    _ServiceCategory(
+      title: "Special Skills",
+      imagePath: "assets/images/service_catagories/special_skills.png",
+    ),
+    _ServiceCategory(
+      title: "Test Preparation",
+      imagePath: "assets/images/service_catagories/test_prep.png",
+    ),
+    _ServiceCategory(
+      title: "University Help",
+      imagePath: "assets/images/service_catagories/uni_help.png",
+    ),
   ];
 
   // ============================================================
-  // COUNTER DATA
+  // STATS
   // ============================================================
 
   final List<_StatItem> _stats = const [
     _StatItem(
       icon: Icons.work_outline_rounded,
-      value: '5,742',
-      label: 'Live Tuition Jobs',
+      value: '184',
+      label: 'Live Jobs',
+      iconColor: Color(0xFFE91E63),
     ),
     _StatItem(
-      icon: Icons.person_outline_rounded,
-      value: '25,000+',
+      icon: Icons.people_outline_rounded,
+      value: '40007',
       label: 'Active Tutors',
+      iconColor: Color(0xFF4CAF50),
     ),
     _StatItem(
       icon: Icons.sentiment_satisfied_alt_outlined,
-      value: '12,000+',
-      label: 'Happy Guardians/Students',
+      value: '12223',
+      label: 'Happy Guardians',
+      iconColor: Color(0xFFFF9800),
     ),
     _StatItem(
       icon: Icons.emoji_events_outlined,
       value: '4.7',
       label: 'Ratings',
+      iconColor: Color(0xFF2196F3),
     ),
   ];
 
@@ -61,28 +114,61 @@ class _OverviewScreenState extends State<OverviewScreen> {
   // ============================================================
 
   final List<_JobLocation> _jobLocations = const [
+    _JobLocation(city: 'Savar', count: '1'),
+    _JobLocation(city: 'Chattogram', count: '2'),
+    _JobLocation(city: 'Khulna', count: '0'),
+    _JobLocation(city: 'Rajshahi', count: '1'),
     _JobLocation(city: 'Dhaka', count: '311'),
     _JobLocation(city: 'Gazipur', count: '141'),
-    _JobLocation(city: 'Mymensingh', count: '115'),
-    _JobLocation(city: 'Chattogram', count: '96'),
     _JobLocation(city: 'Sylhet', count: '74'),
   ];
 
   // ============================================================
-  // USEFUL INFO
+  // USEFUL ITEMS
   // ============================================================
 
   final List<_UsefulItem> _usefulItems = const [
     _UsefulItem(icon: Icons.info_outline_rounded, title: 'About Us'),
     _UsefulItem(icon: Icons.support_agent_outlined, title: 'Contact Us'),
-    _UsefulItem(icon: Icons.public_rounded, title: 'Social Links'),
+    _UsefulItem(icon: Icons.share_rounded, title: 'Social Links'),
     _UsefulItem(icon: Icons.link_rounded, title: 'Quick Links'),
   ];
 
+  // ============================================================
+  // DISPOSE
+  // ============================================================
+
   @override
   void dispose() {
-    _heroController.dispose();
+    _serviceController.dispose();
+    _jobsScrollController.dispose();
     super.dispose();
+  }
+
+  // ============================================================
+  // JOB SCROLL
+  // ============================================================
+
+  void _scrollJobs(bool forward) {
+    if (!_jobsScrollController.hasClients) {
+      return;
+    }
+
+    const double scrollAmount = 180;
+
+    final double currentOffset = _jobsScrollController.offset;
+
+    final double maxOffset = _jobsScrollController.position.maxScrollExtent;
+
+    final double targetOffset = forward
+        ? (currentOffset + scrollAmount).clamp(0.0, maxOffset)
+        : (currentOffset - scrollAmount).clamp(0.0, maxOffset);
+
+    _jobsScrollController.animateTo(
+      targetOffset,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
   }
 
   // ============================================================
@@ -92,18 +178,19 @@ class _OverviewScreenState extends State<OverviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: const CommonAppBar(title: "Overview"),
       backgroundColor: AppColors.primary03,
       body: SafeArea(
         top: false,
         child: LayoutBuilder(
           builder: (context, constraints) {
-            final width = constraints.maxWidth;
+            final double width = constraints.maxWidth;
 
-            final horizontalPadding = width >= 600
-                ? 40.0
+            final double horizontalPadding = width >= 600
+                ? 36.0
                 : width < 360
-                ? 16.0
-                : 22.0;
+                ? 12.0
+                : 16.0;
 
             return SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -114,48 +201,31 @@ class _OverviewScreenState extends State<OverviewScreen> {
                 AppSpacing.xl,
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // ==================================================
-                  // HERO
+                  // 1. TUTORING SERVICES
                   // ==================================================
-                  _buildHeroSection(context),
+                  _buildServiceCategoriesSection(),
 
                   const SizedBox(height: AppSpacing.lg),
 
                   // ==================================================
-                  // HERO INDICATOR
+                  // 2. STATS + LIVE JOBS
                   // ==================================================
-                  _buildHeroIndicator(),
+                  _buildCombinedStatsAndJobsCard(),
 
                   const SizedBox(height: AppSpacing.lg),
 
                   // ==================================================
-                  // COUNTER
+                  // 3. USEFUL INFO
                   // ==================================================
-                  _buildStatsCard(context),
+                  _buildUsefulInfoCard(),
 
                   const SizedBox(height: AppSpacing.lg),
 
                   // ==================================================
-                  // LIVE TUITION JOBS
-                  // ==================================================
-                  _buildSectionTitle('Live Tuition Jobs'),
-
-                  const SizedBox(height: AppSpacing.sm),
-
-                  _buildJobLocations(),
-
-                  const SizedBox(height: AppSpacing.lg),
-
-                  // ==================================================
-                  // USEFUL INFO
-                  // ==================================================
-                  _buildUsefulInfoCard(context),
-
-                  const SizedBox(height: AppSpacing.lg),
-
-                  // ==================================================
-                  // FEATURED / TRUST
+                  // 4. FEATURED
                   // ==================================================
                   _buildFeaturedSection(),
                 ],
@@ -168,251 +238,95 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   // ============================================================
-  // HERO SECTION
+  // SERVICE SECTION
   // ============================================================
 
-  Widget _buildHeroSection(BuildContext context) {
+  Widget _buildServiceCategoriesSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // // ----------------------------------------------------------
-        // // WHATSAPP
-        // // ----------------------------------------------------------
-        // GestureDetector(
-        //   onTap: () async {
-        //     final Uri uri = Uri.parse('https://wa.me/8801610785588');
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Our Tutoring Services',
+                style: AppTextStyles.headlineMedium.copyWith(
+                  color: AppColors.primary04,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 18,
+                ),
+              ),
 
-        //     if (await canLaunchUrl(uri)) {
-        //       await launchUrl(uri, mode: LaunchMode.externalApplication);
-        //     }
-        //   },
-        //   child: Row(
-        //     children: [
-        //       const Icon(Icons.chat, size: 21, color: Colors.green),
-        //       const SizedBox(width: AppSpacing.sm),
-        //       Text(
-        //         '+880 1610-785588',
-        //         style: AppTextStyles.titleMedium.copyWith(
-        //           color: AppColors.neutrals02,
-        //           fontWeight: FontWeight.w600,
-        //         ),
-        //       ),
-        //     ],
-        //   ),
-        // ),
+              const SizedBox(height: 2),
 
-        // const SizedBox(height: AppSpacing.md),
+              Text(
+                'Connecting students with expert tutors across all education categories.',
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: AppColors.neutrals03,
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ),
+        ),
 
-        // // ----------------------------------------------------------
-        // // HERO HEADING
-        // // ----------------------------------------------------------
-        // RichText(
-        //   text: TextSpan(
-        //     style: AppTextStyles.displaySmall.copyWith(
-        //       color: AppColors.neutrals02,
-        //       fontWeight: FontWeight.w700,
-        //       height: 1.15,
-        //     ),
-        //     children: [
-        //       const TextSpan(text: 'Find The Best '),
-        //       TextSpan(
-        //         text: 'Tutor',
-        //         style: AppTextStyles.displaySmall.copyWith(
-        //           color: AppColors.primary01,
-        //           fontWeight: FontWeight.w700,
-        //           height: 1.15,
-        //         ),
-        //       ),
-        //       const TextSpan(text: ' Today'),
-        //     ],
-        //   ),
-        // ),
+        const SizedBox(height: AppSpacing.md),
 
-        // const SizedBox(height: AppSpacing.sm),
-
-        // // ----------------------------------------------------------
-        // // DESCRIPTION
-        // // ----------------------------------------------------------
-        // Text(
-        //   'Easily connect with experienced and verified tutors '
-        //   'for any subject or class and ensuring the effective '
-        //   'learning support for your child.',
-        //   style: AppTextStyles.bodyLarge.copyWith(
-        //     color: AppColors.neutrals06,
-        //     height: 1.5,
-        //   ),
-        // ),
-
-        // const SizedBox(height: AppSpacing.lg),
-
-        // // ----------------------------------------------------------
-        // // CTA + SIGNUP
-        // // ----------------------------------------------------------
-        // LayoutBuilder(
-        //   builder: (context, constraints) {
-        //     if (constraints.maxWidth < 450) {
-        //       return Column(
-        //         crossAxisAlignment: CrossAxisAlignment.start,
-        //         children: [
-        //           _buildFindTutorButton(),
-
-        //           const SizedBox(height: AppSpacing.md),
-
-        //           _buildTutorSignupText(),
-        //         ],
-        //       );
-        //     }
-
-        //     return Row(
-        //       children: [
-        //         _buildFindTutorButton(),
-        //         const SizedBox(width: AppSpacing.md),
-        //         Expanded(child: _buildTutorSignupText()),
-        //       ],
-        //     );
-        //   },
-        // ),
-
-        // const SizedBox(height: AppSpacing.lg),
-
-        // // ----------------------------------------------------------
-        // // HERO IMAGE CAROUSEL
-        // // ----------------------------------------------------------
-         SizedBox(
-          height: 250,
+        // ========================================================
+        // SERVICE CAROUSEL
+        // ========================================================
+        SizedBox(
+          width: double.infinity,
+          height: 220,
           child: PageView.builder(
-            controller: _heroController,
-            itemCount: _heroImages.length,
+            controller: _serviceController,
+            itemCount: _categories.length,
+            physics: const BouncingScrollPhysics(),
             onPageChanged: (index) {
+              if (!mounted) return;
+
               setState(() {
-                _currentHeroPage = index;
+                _currentServicePage = index;
               });
             },
             itemBuilder: (context, index) {
+              final category = _categories[index];
+
               return Padding(
-                padding: const EdgeInsets.only(right: AppSpacing.sm),
-                child: _buildHeroImage(_heroImages[index]),
+                padding: const EdgeInsets.only(right: 8),
+                child: _buildServiceCard(category),
               );
             },
           ),
         ),
+
+        const SizedBox(height: AppSpacing.md),
+
+        _buildServiceIndicator(),
       ],
     );
   }
 
   // ============================================================
-  // HERO IMAGE
+  // SERVICE INDICATOR
   // ============================================================
 
-  Widget _buildHeroImage(String imagePath) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppRadius.large),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary04.withValues(alpha: 0.12),
-            blurRadius: 12,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Image.asset(
-        imagePath,
-        width: double.infinity,
-        height: double.infinity,
-        fit: BoxFit.cover,
-
-        // Prevent the whole screen from breaking
-        // if an asset hasn't been added yet.
-        errorBuilder: (context, error, stackTrace) {
-          return Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [AppColors.primaryGradientStart, AppColors.primary01],
-              ),
-            ),
-            child: const Center(
-              child: Icon(Icons.image_outlined, size: 55, color: Colors.white),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  // ============================================================
-  // FIND TUTOR BUTTON
-  // ============================================================
-
-  Widget _buildFindTutorButton() {
-    return SizedBox(
-      height: 48,
-      child: ElevatedButton(
-        onPressed: () {
-          // TODO:
-          // Navigate to tutor search screen.
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary01,
-          foregroundColor: Colors.white,
-          elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppRadius.medium),
-          ),
-        ),
-        child: const Text(
-          'Find a Tutor',
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-        ),
-      ),
-    );
-  }
-
-  // ============================================================
-  // TUTOR SIGNUP
-  // ============================================================
-
-  Widget _buildTutorSignupText() {
-    return RichText(
-      text: TextSpan(
-        style: AppTextStyles.bodyMedium.copyWith(color: AppColors.neutrals06),
-        children: [
-          const TextSpan(text: 'Want to become a Tutor? '),
-          TextSpan(
-            text: 'Sign Up',
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.primary01,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const TextSpan(text: ' now'),
-        ],
-      ),
-    );
-  }
-
-  // ============================================================
-  // HERO INDICATOR
-  // ============================================================
-
-  Widget _buildHeroIndicator() {
+  Widget _buildServiceIndicator() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(_heroImages.length, (index) {
-        final selected = index == _currentHeroPage;
+      children: List.generate(_categories.length, (index) {
+        final bool isSelected = _currentServicePage == index;
 
         return AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          margin: const EdgeInsets.symmetric(horizontal: 4),
-          width: selected ? 15 : 10,
-          height: 10,
+          duration: const Duration(milliseconds: 250),
+          margin: const EdgeInsets.symmetric(horizontal: 3),
+          width: isSelected ? 16 : 6,
+          height: 6,
           decoration: BoxDecoration(
-            color: selected ? AppColors.primary01 : AppColors.neutrals05,
-            borderRadius: BorderRadius.circular(9999),
+            color: isSelected ? AppColors.primary01 : Colors.grey[300],
+            borderRadius: BorderRadius.circular(10),
           ),
         );
       }),
@@ -420,53 +334,203 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   // ============================================================
-  // STATS CARD
+  // SERVICE CARD
   // ============================================================
 
-  Widget _buildStatsCard(BuildContext context) {
+  Widget _buildServiceCard(_ServiceCategory category) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.lg,
-      ),
+      height: double.infinity,
       decoration: BoxDecoration(
-        color: AppColors.neutrals01,
-        borderRadius: BorderRadius.circular(AppRadius.large),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary04.withValues(alpha: 0.07),
-            blurRadius: 18,
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 12,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
+        children: [
+          // IMAGE
+          Positioned.fill(
+            child: Image.asset(
+              category.imagePath,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Color(0xFF3B82F6), Color(0xFF1D4ED8)],
+                    ),
+                  ),
+                  child: const Center(
+                    child: Icon(
+                      Icons.school_rounded,
+                      color: Colors.white,
+                      size: 42,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+
+          // GRADIENT
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    Colors.black.withValues(alpha: 0.78),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          // TITLE
+          Positioned(
+            left: 14,
+            right: 14,
+            bottom: 14,
+            child: Text(
+              category.title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+                fontSize: 15,
+                height: 1.2,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ============================================================
+  // STATS + LIVE JOBS CARD
+  // ============================================================
+
+  Widget _buildCombinedStatsAndJobsCard() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: const Color(0xFFEBF5FF),
+        borderRadius: BorderRadius.circular(AppRadius.large),
+        border: Border.all(color: const Color(0xFFD6E9FE)),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary04.withValues(alpha: 0.04),
+            blurRadius: 16,
             offset: const Offset(0, 6),
           ),
         ],
       ),
       child: Column(
         children: [
+          // ========================================================
+          // 2 × 2 STATS
+          // ========================================================
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: _stats.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 2.35,
+            ),
+            itemBuilder: (context, index) {
+              return _buildInlineStatItem(_stats[index]);
+            },
+          ),
+
+          const SizedBox(height: 18),
+
+          // ========================================================
+          // DIVIDER
+          // ========================================================
+          Container(height: 1, color: const Color(0xFFD6E9FE)),
+
+          const SizedBox(height: 14),
+
+          // ========================================================
+          // LIVE TUITION JOBS HEADER
+          // ========================================================
           Row(
             children: [
-              Expanded(child: _buildStatItem(_stats[0])),
+              Container(
+                width: 8,
+                height: 8,
+                decoration: const BoxDecoration(
+                  color: Color(0xFF2196F3),
+                  shape: BoxShape.circle,
+                ),
+              ),
 
-              _buildVerticalDivider(),
+              const SizedBox(width: 8),
 
-              Expanded(child: _buildStatItem(_stats[1])),
+              Expanded(
+                child: Text(
+                  'Live Tuition Jobs',
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.neutrals02,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+
+              // LEFT BUTTON
+              _buildNavButton(
+                icon: Icons.chevron_left_rounded,
+                onTap: () => _scrollJobs(false),
+              ),
+
+              const SizedBox(width: 6),
+
+              // RIGHT BUTTON
+              _buildNavButton(
+                icon: Icons.chevron_right_rounded,
+                onTap: () => _scrollJobs(true),
+              ),
             ],
           ),
 
-          const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: 10),
 
-          _buildHorizontalDivider(),
-
-          const SizedBox(height: AppSpacing.md),
-
-          Row(
-            children: [
-              Expanded(child: _buildStatItem(_stats[2])),
-
-              _buildVerticalDivider(),
-
-              Expanded(child: _buildStatItem(_stats[3])),
-            ],
+          // ========================================================
+          // LIVE JOBS LIST
+          // ========================================================
+          SizedBox(
+            width: double.infinity,
+            height: 40,
+            child: ListView.separated(
+              controller: _jobsScrollController,
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.only(right: 4),
+              itemCount: _jobLocations.length,
+              separatorBuilder: (context, index) {
+                return const SizedBox(width: 8);
+              },
+              itemBuilder: (context, index) {
+                return _buildJobPill(_jobLocations[index]);
+              },
+            ),
           ),
         ],
       ),
@@ -477,130 +541,116 @@ class _OverviewScreenState extends State<OverviewScreen> {
   // STAT ITEM
   // ============================================================
 
-  Widget _buildStatItem(_StatItem item) {
-    return Row(
-      children: [
-        Container(
-          width: 60,
-          height: 60,
-          decoration: BoxDecoration(
-            color: AppColors.primary02,
-            borderRadius: BorderRadius.circular(AppRadius.medium),
-          ),
-          child: Icon(item.icon, size: 31, color: AppColors.primary01),
-        ),
-
-        const SizedBox(width: AppSpacing.sm),
-
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                item.value,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.headlineMedium.copyWith(
-                  color: AppColors.primary04,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-
-              const SizedBox(height: 3),
-
-              Text(
-                item.label,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.neutrals03,
-                  height: 1.2,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  // ============================================================
-  // DIVIDERS
-  // ============================================================
-
-  Widget _buildVerticalDivider() {
+  Widget _buildInlineStatItem(_StatItem item) {
     return Container(
-      width: 1,
-      height: 68,
-      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
-      color: AppColors.neutrals04,
-    );
-  }
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.65),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        children: [
+          Icon(item.icon, size: 30, color: item.iconColor),
 
-  Widget _buildHorizontalDivider() {
-    return Container(
-      height: 1,
-      width: double.infinity,
-      color: AppColors.neutrals04,
-    );
-  }
+          const SizedBox(width: 8),
 
-  // ============================================================
-  // SECTION TITLE
-  // ============================================================
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.value,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.headlineMedium.copyWith(
+                    color: AppColors.primary04,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 16,
+                    height: 1.1,
+                  ),
+                ),
 
-  Widget _buildSectionTitle(String title) {
-    return Text(
-      title,
-      textAlign: TextAlign.center,
-      style: AppTextStyles.headlineLarge.copyWith(
-        color: AppColors.neutrals02,
-        fontWeight: FontWeight.w500,
+                const SizedBox(height: 2),
+
+                Text(
+                  item.label,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: AppColors.neutrals03,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
 
   // ============================================================
-  // LIVE TUITION JOBS
+  // JOB PILL
   // ============================================================
 
-  Widget _buildJobLocations() {
-    return SizedBox(
-      height: 58,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
-        itemCount: _jobLocations.length,
-        separatorBuilder: (_, __) {
-          return const SizedBox(width: AppSpacing.sm);
-        },
-        itemBuilder: (context, index) {
-          final item = _jobLocations[index];
+  Widget _buildJobPill(_JobLocation item) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: const Color(0xFF2196F3), width: 1.2),
+      ),
+      alignment: Alignment.center,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            item.city,
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: const Color(0xFF1976D2),
+              fontWeight: FontWeight.w600,
+              fontSize: 12,
+            ),
+          ),
 
-          return Container(
-            constraints: const BoxConstraints(minWidth: 145),
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: AppColors.neutrals01,
-              borderRadius: BorderRadius.circular(AppRadius.medium),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.primary04.withValues(alpha: 0.05),
-                  blurRadius: 8,
-                  offset: const Offset(0, 3),
-                ),
-              ],
+          const SizedBox(width: 4),
+
+          Text(
+            '(${item.count})',
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: const Color(0xFF1976D2),
+              fontWeight: FontWeight.w700,
+              fontSize: 12,
             ),
-            child: Text(
-              '${item.city} ${item.count}',
-              style: AppTextStyles.bodyLarge.copyWith(
-                color: AppColors.neutrals06,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          );
-        },
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ============================================================
+  // NAV BUTTON
+  // ============================================================
+
+  Widget _buildNavButton({required IconData icon, VoidCallback? onTap}) {
+    return Material(
+      color: Colors.white,
+      shape: const CircleBorder(),
+      child: InkWell(
+        onTap: onTap,
+        customBorder: const CircleBorder(),
+        child: Container(
+          width: 28,
+          height: 28,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: const Color(0xFF2196F3), width: 1.2),
+          ),
+          child: Icon(icon, size: 18, color: const Color(0xFF2196F3)),
+        ),
       ),
     );
   }
@@ -609,7 +659,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
   // USEFUL INFO
   // ============================================================
 
-  Widget _buildUsefulInfoCard(BuildContext context) {
+  Widget _buildUsefulInfoCard() {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(
@@ -633,7 +683,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
             'Useful Info',
             style: AppTextStyles.headlineLarge.copyWith(
               color: AppColors.neutrals02,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
+              fontSize: 18,
             ),
           ),
 
@@ -644,27 +695,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
               return Expanded(child: _buildUsefulItem(item));
             }).toList(),
           ),
-
-          const SizedBox(height: AppSpacing.xl),
-
-          Text(
-            'We were featured on',
-            style: AppTextStyles.headlineMedium.copyWith(
-              color: AppColors.neutrals02,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-
-          const SizedBox(height: AppSpacing.lg),
-
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          //   children: [
-          //     _buildFeaturedLogo(Icons.school_outlined),
-          //     _buildFeaturedLogo(Icons.business_outlined),
-          //     _buildFeaturedLogo(Icons.public_outlined),
-          //   ],
-          // ),
         ],
       ),
     );
@@ -677,19 +707,37 @@ class _OverviewScreenState extends State<OverviewScreen> {
   Widget _buildUsefulItem(_UsefulItem item) {
     return InkWell(
       borderRadius: BorderRadius.circular(AppRadius.medium),
-      onTap: () {},
+      onTap: () {
+        switch (item.title) {
+          case 'About Us':
+            OverviewBottomSheets.showAboutUs(context);
+            break;
+
+          case 'Contact Us':
+            OverviewBottomSheets.showContactUs(context);
+            break;
+
+          case 'Social Links':
+            OverviewBottomSheets.showSocialLinks(context);
+            break;
+
+          case 'Quick Links':
+            OverviewBottomSheets.showQuickLinks(context);
+            break;
+        }
+      },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 2),
         child: Column(
           children: [
             Container(
-              width: 58,
-              height: 58,
+              width: 52,
+              height: 52,
               decoration: const BoxDecoration(
                 color: AppColors.primary02,
                 shape: BoxShape.circle,
               ),
-              child: Icon(item.icon, size: 29, color: AppColors.primary01),
+              child: Icon(item.icon, size: 26, color: AppColors.primary01),
             ),
 
             const SizedBox(height: AppSpacing.sm),
@@ -701,17 +749,16 @@ class _OverviewScreenState extends State<OverviewScreen> {
               textAlign: TextAlign.center,
               style: AppTextStyles.bodySmall.copyWith(
                 color: AppColors.primary04,
-                fontWeight: FontWeight.w400,
+                fontWeight: FontWeight.w500,
+                fontSize: 12,
               ),
             ),
           ],
         ),
       ),
     );
-  }
-
-  // ============================================================
-  // FEATURED
+  } // ============================================================
+  // FEATURED SECTION
   // ============================================================
 
   Widget _buildFeaturedSection() {
@@ -730,6 +777,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
             style: AppTextStyles.headlineMedium.copyWith(
               color: AppColors.neutrals02,
               fontWeight: FontWeight.w500,
+              fontSize: 15,
             ),
           ),
 
@@ -747,12 +795,18 @@ class _OverviewScreenState extends State<OverviewScreen> {
     );
   }
 
+  // ============================================================
+  // LOGO PLACEHOLDER
+  // ============================================================
+
   Widget _buildLogoPlaceholder(IconData icon, String label) {
     return Expanded(
       child: Column(
         children: [
-          Icon(icon, size: 36, color: AppColors.primary04),
+          Icon(icon, size: 32, color: AppColors.primary04),
+
           const SizedBox(height: 4),
+
           Text(
             label,
             textAlign: TextAlign.center,
@@ -764,48 +818,30 @@ class _OverviewScreenState extends State<OverviewScreen> {
       ),
     );
   }
-
-  Widget _buildFeaturedLogo(String imagePath) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Center(
-          child: Image.asset(
-            imagePath,
-            height: 45,
-            fit: BoxFit.contain,
-            errorBuilder: (context, error, stackTrace) {
-              return const SizedBox(
-                height: 45,
-                child: Center(
-                  child: Icon(
-                    Icons.image_not_supported_outlined,
-                    color: AppColors.neutrals03,
-                    size: 28,
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 // ================================================================
-// MODELS
+// DATA MODELS
 // ================================================================
+
+class _ServiceCategory {
+  final String title;
+  final String imagePath;
+
+  const _ServiceCategory({required this.title, required this.imagePath});
+}
 
 class _StatItem {
   final IconData icon;
   final String value;
   final String label;
+  final Color iconColor;
 
   const _StatItem({
     required this.icon,
     required this.value,
     required this.label,
+    required this.iconColor,
   });
 }
 

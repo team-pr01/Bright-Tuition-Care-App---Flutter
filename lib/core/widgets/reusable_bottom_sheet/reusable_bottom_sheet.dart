@@ -12,8 +12,12 @@ class ReusableBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      top: false,
       child: Container(
-        padding: const EdgeInsets.all(20),
+        width: double.infinity,
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.90,
+        ),
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.bottomCenter,
@@ -30,20 +34,39 @@ class ReusableBottomSheet extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // ======================================================
+            // DRAG HANDLE
+            // ======================================================
 
-            /// DRAG HANDLE
             Container(
               width: 40,
-              height: 4,
-              margin: const EdgeInsets.only(bottom: 20),
+              height: 5,
+              margin: const EdgeInsets.only(
+                top: 12,
+                bottom: 18,
+              ),
               decoration: BoxDecoration(
-                color: AppColors.primary01,
+                color: Colors.grey.shade300,
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
 
-            /// CONTENT
-            Flexible(child: child),
+            // ======================================================
+            // CONTENT
+            // ======================================================
+
+            Flexible(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(
+                  20,
+                  0,
+                  20,
+                  24,
+                ),
+                child: child,
+              ),
+            ),
           ],
         ),
       ),

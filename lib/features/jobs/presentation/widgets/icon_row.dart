@@ -4,13 +4,13 @@ import 'package:btcclient/core/config/theme.dart';
 
 class IconRow extends StatelessWidget {
   final String icon;
-  final String title;
+  final String? title;
   final String? value;
 
   const IconRow({
     super.key,
     required this.icon,
-    required this.title,
+    this.title,
     this.value,
   });
 
@@ -26,8 +26,8 @@ class IconRow extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                title,
+             if(title !="") Text(
+                title!,
                 style: TextStyle(fontSize: 12, color: AppColors.neutrals03),
               ),
               const SizedBox(height: 2),

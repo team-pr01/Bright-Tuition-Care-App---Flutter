@@ -296,8 +296,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (_) =>
-                                              const GuestDashboardScreen(
-                                                initialIndex: 1,
+                                              const OverviewScreen(
                                               ),
                                         ),
                                       );
