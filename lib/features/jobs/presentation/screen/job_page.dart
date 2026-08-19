@@ -551,6 +551,7 @@ class _JobsPageState extends ConsumerState<JobsPage> {
       ),
     );
   }
+  
 
   /// ================= PAGINATION =================
   Widget _buildPaginationLoader(state) {

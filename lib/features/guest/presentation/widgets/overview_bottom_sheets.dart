@@ -1,7 +1,11 @@
+import 'package:btcclient/core/screens/join_community.dart';
 import 'package:btcclient/core/widgets/helpline_card/helpline_card.dart';
 import 'package:btcclient/core/widgets/reusable_bottom_sheet/reusable_bottom_sheet.dart';
+import 'package:btcclient/features/auth/presentation/screens/register_screen.dart';
+import 'package:btcclient/features/legal/presentation/terms_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:btcclient/core/config/theme.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OverviewBottomSheets {
@@ -84,9 +88,11 @@ class _BottomSheetTitle extends StatelessWidget {
         textAlign: TextAlign.center,
         style: AppTextStyles.headlineMedium.copyWith(
           color: AppColors.primary01,
-          fontWeight: FontWeight.w600,
-          fontSize: 20,
+          fontWeight: FontWeight.w500,
+          fontSize: 16,
+          height: 1.2,
           decorationColor: AppColors.primary01,
+          decorationThickness: 1.5,
         ),
       ),
     );
@@ -168,7 +174,7 @@ class AboutUsContent extends StatelessWidget {
                 textAlign: TextAlign.justify,
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.neutrals03,
-                  fontSize: 14,
+                  fontSize: 13,
                   height: 1.6,
                 ),
               ),
@@ -185,8 +191,8 @@ class AboutUsContent extends StatelessWidget {
           'Company Info',
           style: AppTextStyles.headlineMedium.copyWith(
             color: AppColors.primary01,
-            fontWeight: FontWeight.w700,
-            fontSize: 20,
+            fontWeight: FontWeight.w500,
+            fontSize: 16,
             height: 1.2,
             decorationColor: AppColors.primary01,
             decorationThickness: 1.5,
@@ -233,34 +239,30 @@ class AboutUsContent extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 28),
-
         // ============================================================
         // COPYRIGHT
         // ============================================================
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          decoration: BoxDecoration(
-            color: AppColors.primary02.withOpacity(0.35),
-            borderRadius: BorderRadius.circular(14),
-          ),
+          // padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          // decoration: BoxDecoration(
+          //   color: AppColors.primary02.withOpacity(0.35),
+          //   borderRadius: BorderRadius.circular(14),
+          // ),
           child: Column(
             children: [
+              //       Text(
+              //         'Bright Tuition Care',
+              //         textAlign: TextAlign.center,
+              //         style: AppTextStyles.bodyMedium.copyWith(
+              //           color: AppColors.primary01,
+              //           fontWeight: FontWeight.w700,
+              //           fontSize: 14,
+              //         ),
+              //       ),
+              const SizedBox(height: 14),
               Text(
-                'Bright Tuition Care',
-                textAlign: TextAlign.center,
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.primary01,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14,
-                ),
-              ),
-
-              const SizedBox(height: 4),
-
-              Text(
-                'All Rights Reserved © 2026',
+                'All Rights Reserved by Bright Tuition Care © 2026',
                 textAlign: TextAlign.center,
                 style: AppTextStyles.bodySmall.copyWith(
                   color: AppColors.neutrals03,
@@ -279,12 +281,12 @@ class AboutUsContent extends StatelessWidget {
         // ============================================================
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: const Color(0xFFF8F9FA),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFFE5E7E9), width: 1),
-          ),
+          // padding: const EdgeInsets.all(16),
+          // decoration: BoxDecoration(
+          //   color: const Color(0xFFF8F9FA),
+          //   borderRadius: BorderRadius.circular(16),
+          //   border: Border.all(color: const Color(0xFFE5E7E9), width: 1),
+          // ),
           child: RichText(
             textAlign: TextAlign.justify,
             text: TextSpan(
@@ -330,27 +332,27 @@ class _CompanyInfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
           Container(
-            width: 48,
-            height: 48,
+            width: 30,
+            height: 30,
             decoration: BoxDecoration(
               color: AppColors.primary02,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(6),
             ),
-            child: Icon(icon, color: AppColors.primary01, size: 25),
+            child: Icon(icon, color: AppColors.primary01, size: 18),
           ),
 
-          const SizedBox(width: 14),
+          const SizedBox(width: 10),
 
           Expanded(
             child: Text(
               text,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.neutrals03,
-                fontSize: 14,
+                fontSize: 13,
               ),
             ),
           ),
@@ -377,17 +379,13 @@ class _CompanyInfoDivider extends StatelessWidget {
 // CONTACT US
 // ==================================================================
 
-
 class ContactUsContent extends StatelessWidget {
   const ContactUsContent({super.key});
 
   // ================================================================
   // OPEN URL SAFELY
   // ================================================================
-  Future<void> _openUrl(
-    BuildContext context,
-    String url,
-  ) async {
+  Future<void> _openUrl(BuildContext context, String url) async {
     final uri = Uri.parse(url);
 
     try {
@@ -398,17 +396,13 @@ class ContactUsContent extends StatelessWidget {
 
       if (!launched && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Unable to open this link.'),
-          ),
+          const SnackBar(content: Text('Unable to open this link.')),
         );
       }
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Unable to open this link.'),
-          ),
+          const SnackBar(content: Text('Unable to open this link.')),
         );
       }
     }
@@ -417,54 +411,33 @@ class ContactUsContent extends StatelessWidget {
   // ================================================================
   // OPEN PHONE
   // ================================================================
-  Future<void> _callNumber(
-    BuildContext context,
-    String number,
-  ) async {
-    await _openUrl(
-      context,
-      'tel:$number',
-    );
+  Future<void> _callNumber(BuildContext context, String number) async {
+    await _openUrl(context, 'tel:$number');
   }
 
   // ================================================================
   // OPEN WHATSAPP
   // ================================================================
-  Future<void> _openWhatsApp(
-    BuildContext context,
-  ) async {
-    await _openUrl(
-      context,
-      'https://wa.me/8801616012365',
-    );
+  Future<void> _openWhatsApp(BuildContext context) async {
+    await _openUrl(context, 'https://wa.me/8801616012365');
   }
 
   // ================================================================
   // OPEN EMAIL
   // ================================================================
-  Future<void> _sendEmail(
-    BuildContext context,
-  ) async {
-    await _openUrl(
-      context,
-      'mailto:brighttuitioncare@gmail.com',
-    );
+  Future<void> _sendEmail(BuildContext context) async {
+    await _openUrl(context, 'mailto:brighttuitioncare@gmail.com');
   }
 
   // ================================================================
   // OPEN GOOGLE MAPS
   // ================================================================
-  Future<void> _openLocation(
-    BuildContext context,
-  ) async {
+  Future<void> _openLocation(BuildContext context) async {
     final Uri googleMapsUri = Uri.parse(
       'https://www.google.com/maps/search/?api=1&query=Noorjahan+Road,+Mohammadpur,+Dhaka-1207',
     );
 
-    await _openUrl(
-      context,
-      googleMapsUri.toString(),
-    );
+    await _openUrl(context, googleMapsUri.toString());
   }
 
   @override
@@ -475,9 +448,7 @@ class ContactUsContent extends StatelessWidget {
         // ============================================================
         // OFFICE ADDRESS
         // ============================================================
-        const _BottomSheetTitle(
-          title: 'Office Address',
-        ),
+        const _BottomSheetTitle(title: 'Office Address'),
 
         const SizedBox(height: 14),
 
@@ -487,9 +458,7 @@ class ContactUsContent extends StatelessWidget {
           decoration: BoxDecoration(
             color: const Color(0xFFEAF5FF),
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(
-              color: AppColors.primary02,
-            ),
+            border: Border.all(color: AppColors.primary02),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -542,18 +511,11 @@ class ContactUsContent extends StatelessWidget {
                       onPressed: () {
                         _openLocation(context);
                       },
-                      icon: const Icon(
-                        Icons.directions_outlined,
-                        size: 18,
-                      ),
-                      label: const Text(
-                        'Open Location',
-                      ),
+                      icon: const Icon(Icons.directions_outlined, size: 18),
+                      label: const Text('Open Location'),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppColors.primary01,
-                        side: const BorderSide(
-                          color: AppColors.primary01,
-                        ),
+                        side: const BorderSide(color: AppColors.primary01),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 14,
                           vertical: 9,
@@ -579,8 +541,11 @@ class ContactUsContent extends StatelessWidget {
           'Contact Us',
           style: AppTextStyles.headlineMedium.copyWith(
             color: AppColors.primary01,
-            fontWeight: FontWeight.w700,
-            fontSize: 20,
+            fontWeight: FontWeight.w500,
+            fontSize: 16,
+            height: 1.2,
+            decorationColor: AppColors.primary01,
+            decorationThickness: 1.5,
           ),
         ),
 
@@ -590,7 +555,15 @@ class ContactUsContent extends StatelessWidget {
         // WHATSAPP
         // ============================================================
         _ContactActionItem(
-          icon: Icons.chat_bubble_outline_rounded,
+          icon: SvgPicture.asset(
+            "assets/icons/social_media/whatsapp.svg",
+            width: 16,
+            height: 16,
+            colorFilter: const ColorFilter.mode(
+              Color.fromARGB(255, 58, 211, 101),
+              BlendMode.srcIn,
+            ),
+          ),
           iconColor: const Color(0xFF25D366),
           title: 'WhatsApp',
           value: '+880 1616-012 365',
@@ -605,15 +578,20 @@ class ContactUsContent extends StatelessWidget {
         // PHONE 1
         // ============================================================
         _ContactActionItem(
-          icon: Icons.phone_outlined,
+          icon: SvgPicture.asset(
+            "assets/icons/navigations/mdi-light_phone.svg",
+            width: 20,
+            height: 20,
+            colorFilter: const ColorFilter.mode(
+              AppColors.primary01,
+              BlendMode.srcIn,
+            ),
+          ),
           iconColor: AppColors.primary01,
           title: 'Phone',
           value: '09617-785588',
           onTap: () {
-            _callNumber(
-              context,
-              '09617785588',
-            );
+            _callNumber(context, '09617785588');
           },
         ),
 
@@ -623,15 +601,20 @@ class ContactUsContent extends StatelessWidget {
         // PHONE 2
         // ============================================================
         _ContactActionItem(
-          icon: Icons.phone_outlined,
+          icon: SvgPicture.asset(
+            "assets/icons/navigations/mdi-light_phone.svg",
+            width: 20,
+            height: 20,
+            colorFilter: const ColorFilter.mode(
+              AppColors.primary01,
+              BlendMode.srcIn,
+            ),
+          ),
           iconColor: AppColors.primary01,
           title: 'Mobile',
           value: '+880 1610-785588',
           onTap: () {
-            _callNumber(
-              context,
-              '+8801610785588',
-            );
+            _callNumber(context, '+8801610785588');
           },
         ),
 
@@ -641,7 +624,11 @@ class ContactUsContent extends StatelessWidget {
         // EMAIL
         // ============================================================
         _ContactActionItem(
-          icon: Icons.email_outlined,
+          icon: const Icon(
+            Icons.email_outlined,
+            color: Color(0xFFE05A47),
+            size: 21,
+          ),
           iconColor: const Color(0xFFE05A47),
           title: 'Email',
           value: 'brighttuitioncare@gmail.com',
@@ -649,7 +636,6 @@ class ContactUsContent extends StatelessWidget {
             _sendEmail(context);
           },
         ),
-
         const SizedBox(height: 18),
 
         // ============================================================
@@ -659,10 +645,7 @@ class ContactUsContent extends StatelessWidget {
           phone: '+880 1616-012 365',
           timing: '10:00 AM - 10:00 PM',
           onTap: () {
-            _callNumber(
-              context,
-              '+8801616012365',
-            );
+            _callNumber(context, '+8801616012365');
           },
         ),
       ],
@@ -675,7 +658,7 @@ class ContactUsContent extends StatelessWidget {
 // ====================================================================
 
 class _ContactActionItem extends StatelessWidget {
-  final IconData icon;
+  final Widget icon;
   final Color iconColor;
   final String title;
   final String value;
@@ -699,31 +682,23 @@ class _ContactActionItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(15),
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 14,
-            vertical: 13,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            border: Border.all(
-              color: const Color(0xFFE5E8EB),
-            ),
+            border: Border.all(color: const Color(0xFFE5E8EB)),
           ),
           child: Row(
             children: [
               // ICON
               Container(
+                padding: EdgeInsets.all(8),
                 width: 42,
                 height: 42,
                 decoration: BoxDecoration(
                   color: iconColor.withOpacity(0.10),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(
-                  icon,
-                  color: iconColor,
-                  size: 21,
-                ),
+                child: icon,
               ),
 
               const SizedBox(width: 12),
@@ -768,72 +743,9 @@ class _ContactActionItem extends StatelessWidget {
       ),
     );
   }
-}// ==================================================================
+} // ==================================================================
 // CONTACT ITEM
 // ==================================================================
-
-class _ContactItem extends StatelessWidget {
-  final IconData icon;
-  final Color iconColor;
-  final String title;
-  final String value;
-
-  const _ContactItem({
-    required this.icon,
-    required this.iconColor,
-    required this.title,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 18),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            width: 64,
-            height: 64,
-            decoration: BoxDecoration(
-              color: iconColor.withValues(alpha: 0.10),
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: Icon(icon, color: iconColor, size: 30),
-          ),
-
-          const SizedBox(width: 16),
-
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.neutrals03,
-                    fontSize: 14,
-                  ),
-                ),
-
-                const SizedBox(height: 3),
-
-                Text(
-                  value,
-                  style: AppTextStyles.bodyLarge.copyWith(
-                    color: AppColors.neutrals02,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 // ==================================================================
 // SOCIAL LINKS
@@ -842,52 +754,98 @@ class _ContactItem extends StatelessWidget {
 class SocialLinksContent extends StatelessWidget {
   const SocialLinksContent({super.key});
 
+  Future<void> _openSocialLink(BuildContext context, String url) async {
+    final uri = Uri.parse(url);
+
+    try {
+      final launched = await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication,
+      );
+
+      if (!launched && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Unable to open this social media link.'),
+          ),
+        );
+      }
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Unable to open this social media link.'),
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final socials = [
       const _SocialItem(
         title: 'Facebook',
-        icon: Icons.facebook_rounded,
-        color: Color(0xFF1877F2),
-      ),
-      const _SocialItem(
-        title: 'LinkedIn',
-        icon: Icons.business_rounded,
-        color: Color(0xFF0A66C2),
-      ),
-      const _SocialItem(
-        title: 'YouTube',
-        icon: Icons.play_arrow_rounded,
-        color: Color(0xFFFF0000),
+        assetPath: 'assets/icons/social_media/facebook2.svg',
+        url: 'https://www.facebook.com/brighttuitioncare',
       ),
       const _SocialItem(
         title: 'Instagram',
-        icon: Icons.camera_alt_outlined,
-        color: Color(0xFFE1306C),
+        assetPath: 'assets/icons/social_media/instagram2.svg',
+        url: 'https://www.instagram.com/brighttuitioncare',
+      ),
+      const _SocialItem(
+        title: 'YouTube',
+        assetPath: 'assets/icons/social_media/youtube2.svg',
+        url: 'https://www.youtube.com/@brighttuitioncare',
+      ),
+      const _SocialItem(
+        title: 'LinkedIn',
+        assetPath: 'assets/icons/social_media/linkedin2.svg',
+        url: 'https://www.linkedin.com/company/bright-tuition-care',
       ),
       const _SocialItem(
         title: 'TikTok',
-        icon: Icons.music_note_rounded,
-        color: Colors.black,
+        assetPath: 'assets/icons/social_media/tiktok.svg',
+        url: 'https://www.tiktok.com/@brighttuitioncare',
       ),
       const _SocialItem(
-        title: 'X (Twitter)',
-        icon: Icons.close_rounded,
-        color: Colors.black,
+        title: 'X',
+        assetPath: 'assets/icons/social_media/twitter.svg',
+        url: 'https://x.com/brighttuitioncare',
       ),
     ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        const _BottomSheetTitle(title: 'Follow Us'),
+
+        const SizedBox(height: 8),
+
+        Text(
+          'Stay connected with Bright Tuition Care on social media.',
+          textAlign: TextAlign.center,
+          style: AppTextStyles.bodyMedium.copyWith(
+            color: AppColors.neutrals03,
+            fontSize: 13,
+            height: 1.5,
+          ),
+        ),
+
+        const SizedBox(height: 20),
+
+        // ============================================================
+        // SOCIAL MEDIA GRID
+        // ============================================================
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: socials.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
             childAspectRatio: 0.95,
           ),
           itemBuilder: (context, index) {
@@ -896,7 +854,7 @@ class SocialLinksContent extends StatelessWidget {
             return _SocialCard(
               item: item,
               onTap: () {
-                // Add URL launch here.
+                _openSocialLink(context, item.url);
               },
             );
           },
@@ -904,17 +862,20 @@ class SocialLinksContent extends StatelessWidget {
 
         const SizedBox(height: 30),
 
+        // ============================================================
+        // JOIN COMMUNITY
+        // ============================================================
         Text(
-          'Join Our Community',
+          'Join Our Community ',
           style: AppTextStyles.headlineMedium.copyWith(
             color: AppColors.primary01,
-            fontWeight: FontWeight.w600,
-            fontSize: 20,
-            decoration: TextDecoration.underline,
+            fontWeight: FontWeight.w500,
+            fontSize: 16,
+            height: 1.2,
           ),
         ),
 
-        const SizedBox(height: 14),
+        const SizedBox(height: 12),
 
         Row(
           children: [
@@ -924,6 +885,22 @@ class SocialLinksContent extends StatelessWidget {
                 title: 'Tutors',
                 subtitle: 'Community',
                 color: const Color(0xFF3BC4B6),
+                onTap: () {
+                  Navigator.pop(context);
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const CommunityPage(
+                        title: "Tutor Community",
+                        description:
+                            "Join our tutor community to exchange teaching strategies, gain valuable insights, stay informed on the latest trends and access resources that support your professional growth.",
+                        buttonText: "Join Community",
+                        link: "https://www.facebook.com/groups/252670130864095",
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
 
@@ -935,6 +912,22 @@ class SocialLinksContent extends StatelessWidget {
                 title: 'Guardians',
                 subtitle: 'Community',
                 color: const Color(0xFF1976C9),
+                onTap: () {
+                  Navigator.pop(context);
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const CommunityPage(
+                        title: "Guardian Community",
+                        description:
+                            "Join the Guardian Community to share your feedback, stay connected with our team and receive important updates and expert guidance to support your child’s learning.",
+                        buttonText: "Join Community",
+                        link: "https://www.facebook.com/groups/248374924778212",
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
           ],
@@ -950,13 +943,13 @@ class SocialLinksContent extends StatelessWidget {
 
 class _SocialItem {
   final String title;
-  final IconData icon;
-  final Color color;
+  final String assetPath;
+  final String url;
 
   const _SocialItem({
     required this.title,
-    required this.icon,
-    required this.color,
+    required this.assetPath,
+    required this.url,
   });
 }
 
@@ -972,110 +965,148 @@ class _SocialCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(18),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: const Color(0xFFE0E0E0)),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 58,
-              height: 58,
-              decoration: BoxDecoration(
-                color: item.color.withValues(alpha: 0.10),
-                shape: BoxShape.circle,
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        splashColor: AppColors.primary02.withValues(alpha: 0.35),
+        highlightColor: AppColors.primary02.withValues(alpha: 0.15),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: const Color(0xFFE4E7EA), width: 1),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // ========================================================
+              // REAL SOCIAL MEDIA ICON
+              // ========================================================
+              Container(
+                width: 54,
+                height: 54,
+                decoration: BoxDecoration(
+                  color: AppColors.primary02.withValues(alpha: 0.35),
+                  shape: BoxShape.circle,
+                ),
+                padding: const EdgeInsets.all(13),
+                child: SvgPicture.asset(
+                  item.assetPath,
+                  width: 28,
+                  height: 28,
+                  fit: BoxFit.contain,
+                ),
               ),
-              child: Icon(item.icon, color: item.color, size: 30),
-            ),
 
-            const SizedBox(height: 12),
+              const SizedBox(height: 10),
 
-            Text(
-              item.title,
-              textAlign: TextAlign.center,
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.neutrals02,
-                fontWeight: FontWeight.w500,
-                fontSize: 13,
+              // ========================================================
+              // PLATFORM NAME
+              // ========================================================
+              Text(
+                item.title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.neutrals02,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-// ==================================================================
+// ================================================================
 // COMMUNITY CARD
-// ==================================================================
+// ================================================================
 
 class _CommunityCard extends StatelessWidget {
   final IconData icon;
   final String title;
   final String subtitle;
   final Color color;
+  final VoidCallback onTap;
 
   const _CommunityCard({
     required this.icon,
     required this.title,
     required this.subtitle,
     required this.color,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFE0E0E0)),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: color, size: 36),
-
-          const SizedBox(width: 10),
-
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.neutrals02,
-                  ),
-                ),
-                Text(
-                  subtitle,
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.neutrals02,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: const Color(0xFFE0E0E0)),
           ),
-        ],
+          child: Row(
+            children: [
+              Icon(icon, color: color, size: 36),
+
+              const SizedBox(width: 10),
+
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: AppColors.neutrals02,
+                      ),
+                    ),
+                    Text(
+                      subtitle,
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: AppColors.neutrals02,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(width: 4),
+
+              Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 16,
+                color: AppColors.neutrals03,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 }
 
-// ==================================================================
-// QUICK LINKS
-// ==================================================================
-
 class QuickLinksContent extends StatelessWidget {
   const QuickLinksContent({super.key});
+
+  // void _navigateToPage(BuildContext context, Widget page) {
+  //   Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -1097,15 +1128,6 @@ class QuickLinksContent extends StatelessWidget {
         title: 'Tutorial',
       ),
       const _QuickLinkItem(icon: Icons.help_outline_rounded, title: 'FAQ'),
-      const _QuickLinkItem(icon: Icons.edit_note_rounded, title: 'Blog'),
-      const _QuickLinkItem(
-        icon: Icons.storefront_outlined,
-        title: 'Caretutors Merchant',
-      ),
-      const _QuickLinkItem(
-        icon: Icons.settings_outlined,
-        title: 'How It Works',
-      ),
     ];
 
     return Column(
@@ -1113,13 +1135,17 @@ class QuickLinksContent extends StatelessWidget {
       children: [
         const _BottomSheetTitle(title: 'Quick Links'),
 
+        const SizedBox(height: 14),
+
         Container(
           width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: const Color(0xFFE0E0E0)),
-          ),
+          // decoration: BoxDecoration(
+          //   color: Colors.white,
+          //   borderRadius: BorderRadius.circular(18),
+          //   border: Border.all(
+          //     color: const Color(0xFFE0E0E0),
+          //   ),
+          // ),
           child: Column(
             children: List.generate(links.length, (index) {
               final item = links[index];
@@ -1129,17 +1155,53 @@ class QuickLinksContent extends StatelessWidget {
                   _QuickLinkRow(
                     item: item,
                     onTap: () {
-                      // Add navigation here.
+                      // Close the bottom sheet first.
+                      Navigator.of(context).pop();
+
+                      // Navigate directly to the required page.
+                      switch (item.title) {
+                        case 'Terms and Conditions':
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const TermsScreen(),
+                            ),
+                          );
+                          break;
+
+                        case 'Become a Tutor':
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const RegisterScreen(role: "tutor"),
+                            ),
+                          );
+
+                          break;
+
+                        case 'Hire a Tutor':
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const RegisterScreen(role: "guardian"),
+                            ),
+                          );
+
+                          break;
+                        case 'Tutorial':
+                          launchUrl(
+                            Uri.parse(
+                              'https://www.brighttuitioncare.com/tutorial',
+                            ),
+                          );
+                          break;
+                        case 'FAQ':
+                          launchUrl(
+                            Uri.parse('https://www.brighttuitioncare.com/faqs'),
+                          );
+                          break;
+                      }
                     },
                   ),
-
-                  if (index != links.length - 1)
-                    const Divider(
-                      height: 1,
-                      indent: 70,
-                      endIndent: 16,
-                      color: Color(0xFFE5E5E5),
-                    ),
                 ],
               );
             }),
@@ -1149,10 +1211,9 @@ class QuickLinksContent extends StatelessWidget {
     );
   }
 }
-
-// ==================================================================
+// ============================================================================
 // QUICK LINK ITEM
-// ==================================================================
+// ============================================================================
 
 class _QuickLinkItem {
   final IconData icon;
@@ -1161,9 +1222,9 @@ class _QuickLinkItem {
   const _QuickLinkItem({required this.icon, required this.title});
 }
 
-// ==================================================================
+// ============================================================================
 // QUICK LINK ROW
-// ==================================================================
+// ============================================================================
 
 class _QuickLinkRow extends StatelessWidget {
   final _QuickLinkItem item;
@@ -1173,40 +1234,58 @@ class _QuickLinkRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        child: Row(
-          children: [
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: AppColors.primary02,
-                shape: BoxShape.circle,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18),
+        splashColor: AppColors.primary02.withValues(alpha: 0.35),
+        highlightColor: AppColors.primary02.withValues(alpha: 0.15),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 6),
+          child: Row(
+            children: [
+              // ============================================================
+              // ICON
+              // ============================================================
+              Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  color: AppColors.primary02,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(item.icon, color: AppColors.primary01, size: 18),
               ),
-              child: Icon(item.icon, color: AppColors.primary01, size: 24),
-            ),
 
-            const SizedBox(width: 16),
+              const SizedBox(width: 16),
 
-            Expanded(
-              child: Text(
-                item.title,
-                style: AppTextStyles.bodyLarge.copyWith(
-                  color: AppColors.neutrals02,
-                  fontSize: 15,
+              // ============================================================
+              // TITLE
+              // ============================================================
+              Expanded(
+                child: Text(
+                  item.title,
+                  style: AppTextStyles.bodyLarge.copyWith(
+                    color: AppColors.neutrals02,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
-            ),
 
-            const Icon(
-              Icons.chevron_right_rounded,
-              color: AppColors.neutrals03,
-              size: 25,
-            ),
-          ],
+              const SizedBox(width: 8),
+
+              // ============================================================
+              // ARROW
+              // ============================================================
+              const Icon(
+                Icons.chevron_right_rounded,
+                color: AppColors.neutrals03,
+                size: 25,
+              ),
+            ],
+          ),
         ),
       ),
     );

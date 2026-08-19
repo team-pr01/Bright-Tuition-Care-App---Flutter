@@ -109,6 +109,17 @@ Future<(List<JobApplicationModel>, JobApplicationMeta)> getApplications({
 
     return (list, meta);
   }
+  Future<Map<String, dynamic>> getCounterStats() async {
+  final res = await api.getCounterStats();
+
+  if (res["success"] != true) {
+    throw Exception(
+      res["message"] ?? "Failed to fetch counter stats",
+    );
+  }
+
+  return Map<String, dynamic>.from(res["data"] ?? {});
+}
 
 Future<JobModel> getSingleJobByCustomJobId(
   String jobId,

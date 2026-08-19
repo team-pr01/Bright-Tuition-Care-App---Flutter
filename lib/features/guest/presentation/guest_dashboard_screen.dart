@@ -4,7 +4,6 @@ import 'package:btcclient/core/screens/join_community.dart';
 import 'package:btcclient/core/widgets/navbar/sidebar_item.dart';
 import 'package:btcclient/core/widgets/navbar/side_drawer.dart';
 import 'package:btcclient/core/widgets/share_card/share_card.dart';
-import 'package:btcclient/features/auth/presentation/screens/login_screen.dart';
 import 'package:btcclient/features/auth/presentation/screens/register_screen.dart';
 import 'package:btcclient/features/auth/presentation/screens/welcome_screen.dart';
 import 'package:btcclient/features/guest/presentation/screens/overview_screen.dart';
@@ -24,11 +23,12 @@ class GuestDashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DashboardLayout(
+      role:"guest",
       // =========================================================
       // INITIAL TAB
       // =========================================================
       initialIndex: initialIndex,
-      pageTitles: const ["Job Board", "Invoices", "Share the App"],
+      pageTitles: const ["Job Board", "Share the App"],
       // =========================================================
       // APP BAR
       // =========================================================
@@ -69,18 +69,18 @@ class GuestDashboardScreen extends StatelessWidget {
               },
             ),
 
-            // SidebarItem(
-            //   label: "Overview",
-            //   icon: _icon(
-            //     "assets/icons/navigations/dashboard-square-edit.svg",
-            //   ),
-            //   onTap: () {
-            //     Navigator.pop(context);
+            SidebarItem(
+              label: "Overview",
+              icon: _icon(
+                "assets/icons/navigations/dashboard-square-edit.svg",
+              ),
+              onTap: () {
+                Navigator.pop(context);
 
-            //     // TAB 1 = GUARDIAN OVERVIEW
-            //     changeTab(1);
-            //   },
-            // ),
+                // TAB 1 = GUARDIAN OVERVIEW
+                changeTab(1);
+              },
+            ),
           ],
 
           // =======================================================
@@ -171,7 +171,7 @@ class GuestDashboardScreen extends StatelessWidget {
         // TAB 1 — GUARDIAN OVERVIEW
         // =========================================================
         // (changeTab, status) {
-        //   return const OverviewScreen();
+        //   return  OverviewScreen( changeTab: changeTab);
         // },
 
         // =========================================================
@@ -224,27 +224,27 @@ class GuestDashboardScreen extends StatelessWidget {
         // =========================================================
         // TAB 1 — OVERVIEW
         // =========================================================
-        BottomNavigationBarItem(
-          icon: SvgPicture.asset(
-            "assets/icons/navigations/dashboard-square-edit.svg",
-            width: 22,
-            height: 22,
-            colorFilter: const ColorFilter.mode(
-              AppColors.neutrals06,
-              BlendMode.srcIn,
-            ),
-          ),
-          activeIcon: SvgPicture.asset(
-            "assets/icons/navigations/dashboard-square-edit.svg",
-            width: 22,
-            height: 22,
-            colorFilter: const ColorFilter.mode(
-              AppColors.primary01,
-              BlendMode.srcIn,
-            ),
-          ),
-          label: "Overview",
-        ),
+        // BottomNavigationBarItem(
+        //   icon: SvgPicture.asset(
+        //     "assets/icons/navigations/dashboard-square-edit.svg",
+        //     width: 22,
+        //     height: 22,
+        //     colorFilter: const ColorFilter.mode(
+        //       AppColors.neutrals06,
+        //       BlendMode.srcIn,
+        //     ),
+        //   ),
+        //   activeIcon: SvgPicture.asset(
+        //     "assets/icons/navigations/dashboard-square-edit.svg",
+        //     width: 22,
+        //     height: 22,
+        //     colorFilter: const ColorFilter.mode(
+        //       AppColors.primary01,
+        //       BlendMode.srcIn,
+        //     ),
+        //   ),
+        //   label: "Overview",
+        // ),
 
         // =========================================================
         // TAB 2 — SHARE APP

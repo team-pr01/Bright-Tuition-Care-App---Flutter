@@ -12,17 +12,33 @@ final jobsRepositoryProvider = Provider<JobsRepository>((ref) {
 });
 
 /// ================= STATE =================
+
 class JobsState {
   final List<JobModel> jobs;
+
+  final List<Map<String, dynamic>> jobsByCity;
+
+  final int availableJobs;
+  final int activeTutors;
+  final int happyGuardians;
+  final double averageRating;
+
   final bool isLoading;
   final bool isLoadingMore;
   final bool hasMore;
+
   final String? error;
+
   final JobFilter filter;
   final JobsMeta? meta;
 
   JobsState({
     required this.jobs,
+    required this.jobsByCity,
+    required this.availableJobs,
+    required this.activeTutors,
+    required this.happyGuardians,
+    required this.averageRating,
     required this.isLoading,
     required this.isLoadingMore,
     required this.hasMore,
@@ -33,28 +49,57 @@ class JobsState {
 
   factory JobsState.initial() {
     return JobsState(
-      jobs: [],
+      jobs: const [],
+      jobsByCity: const [],
+
+      availableJobs: 0,
+      activeTutors: 0,
+      happyGuardians: 0,
+      averageRating: 0.0,
+
       isLoading: false,
       isLoadingMore: false,
       hasMore: true,
+
       filter: JobFilter(),
     );
   }
 
   JobsState copyWith({
     List<JobModel>? jobs,
+    List<Map<String, dynamic>>? jobsByCity,
+
+    int? availableJobs,
+    int? activeTutors,
+    int? happyGuardians,
+    double? averageRating,
+
     bool? isLoading,
     bool? isLoadingMore,
     bool? hasMore,
+
     String? error,
     JobFilter? filter,
     JobsMeta? meta,
   }) {
     return JobsState(
       jobs: jobs ?? this.jobs,
+      jobsByCity: jobsByCity ?? this.jobsByCity,
+
+      availableJobs: availableJobs ?? this.availableJobs,
+
+      activeTutors: activeTutors ?? this.activeTutors,
+
+      happyGuardians: happyGuardians ?? this.happyGuardians,
+
+      averageRating: averageRating ?? this.averageRating,
+
       isLoading: isLoading ?? this.isLoading,
+
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+
       hasMore: hasMore ?? this.hasMore,
+
       error: error,
       filter: filter ?? this.filter,
       meta: meta ?? this.meta,
@@ -132,6 +177,85 @@ class JobsNotifier extends StateNotifier<JobsState> {
 
       state = state.copyWith(isLoadingMore: false, error: e.toString());
     }
+  }
+
+  Future<void> fetchCounterStats() async {
+    try {
+      final data = await repo.getCounterStats();
+
+      final availableJobs = _toInt(data['availableJobs']);
+
+      final activeTutors = _toInt(data['activeTutors']);
+
+      final happyGuardians = _toInt(data['happyGuardians']);
+
+      final averageRating = _toDouble(data['averageRating']);
+
+      final rawCities = data['jobsByCity'];
+
+      final List<Map<String, dynamic>> cities = [];
+
+      if (rawCities is List) {
+        for (final item in rawCities) {
+          if (item is Map) {
+            final city = item['city']?.toString().trim() ?? '';
+
+            final count = _toInt(item['count']);
+
+            if (city.isNotEmpty) {
+              cities.add({'city': city, 'count': count});
+            }
+          }
+        }
+      }
+
+      print(
+        '📊 COUNTER STATS: '
+        'availableJobs=$availableJobs, '
+        'activeTutors=$activeTutors, '
+        'happyGuardians=$happyGuardians, '
+        'averageRating=$averageRating',
+      );
+
+      print('🏙️ JOBS BY CITY: $cities');
+
+      state = state.copyWith(
+        availableJobs: availableJobs,
+        activeTutors: activeTutors,
+        happyGuardians: happyGuardians,
+        averageRating: averageRating,
+        jobsByCity: cities,
+        error: null,
+      );
+    } catch (e) {
+      print('❌ COUNTER STATS ERROR: $e');
+
+      state = state.copyWith(error: e.toString());
+    }
+  }
+
+  int _toInt(dynamic value) {
+    if (value is int) {
+      return value;
+    }
+
+    if (value is num) {
+      return value.toInt();
+    }
+
+    return int.tryParse(value?.toString() ?? '') ?? 0;
+  }
+
+  double _toDouble(dynamic value) {
+    if (value is double) {
+      return value;
+    }
+
+    if (value is num) {
+      return value.toDouble();
+    }
+
+    return double.tryParse(value?.toString() ?? '') ?? 0.0;
   }
 
   /// ================= APPLY FILTER =================

@@ -2,6 +2,8 @@ import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/services/navigation_service.dart';
 import 'package:btcclient/core/widgets/navbar/bottom_navbar.dart';
 import 'package:btcclient/core/widgets/snackbar/app_snackbar.dart';
+import 'package:btcclient/features/auth/presentation/screens/welcome_screen.dart';
+import 'package:btcclient/features/auth/presentation/widgets/welcome_nav_link.dart';
 import 'package:btcclient/features/notifications/presentations/provider/notification_notifier.dart';
 import 'package:btcclient/features/notifications/presentations/screens/notification_screen.dart';
 import 'package:flutter/material.dart';
@@ -32,29 +34,10 @@ class DashboardLayout extends ConsumerStatefulWidget {
 
   /// Index that should be opened when dashboard starts.
   final int initialIndex;
-
-  /// Controls what appears on the right side of the AppBar.
-  ///
-  /// Default = notification.
-  ///
-  /// Example:
-  ///
-  /// DashboardAppBarAction.notification
-  /// DashboardAppBarAction.user
-  /// DashboardAppBarAction.none
   final DashboardAppBarAction appBarAction;
-
-  /// Callback when the user icon is pressed.
-  ///
-  /// If null, the user icon will still be displayed but won't do anything.
   final VoidCallback? onUserPressed;
-
-  /// Optional custom widget for the right side of AppBar.
-  ///
-  /// If supplied, this takes priority over [appBarAction].
-  ///
-  /// Useful if later you want something other than notification/user.
   final Widget? appBarActionWidget;
+  final String? role;
 
   const DashboardLayout({
     super.key,
@@ -63,6 +46,7 @@ class DashboardLayout extends ConsumerStatefulWidget {
     required this.drawerBuilder,
     this.initialIndex = 0,
     this.pageTitles = const [],
+    this.role = "guest",
 
     /// Default behaviour remains the existing notification icon.
     this.appBarAction = DashboardAppBarAction.notification,
@@ -77,8 +61,6 @@ class DashboardLayout extends ConsumerStatefulWidget {
 
 class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
   late int currentIndex;
-
-  /// Current job status filter.
   String? jobStatusFilter;
 
   /// Used for double-back-to-exit behaviour.
@@ -242,11 +224,41 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
       onPopInvoked: (didPop) async {
         if (didPop) return;
 
-        // =======================================================
-        // BACK BEHAVIOUR
-        // =======================================================
-
         final defaultIndex = safeInitialIndex;
+
+        // =========================================================
+        // GUEST USER
+        // =========================================================
+        // Guest should NEVER exit the app using the back button.
+        // If on another tab, first return to the default tab.
+        // If already on default tab, go to WelcomeScreen.
+        // =========================================================
+        if (widget.role == "guest") {
+          if (currentIndex != defaultIndex) {
+            setState(() {
+              currentIndex = defaultIndex;
+              jobStatusFilter = null;
+            });
+
+            return;
+          }
+          // AppSnackbar.show(
+          //   context,
+          //   "Press back again to go back",
+          //   SnackType.natural,
+          //   showIcon: false,
+          // );
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const WelcomeScreen()),
+          );
+
+          return;
+        }
+
+        // =========================================================
+        // LOGGED-IN USER
+        // =========================================================
 
         if (currentIndex != defaultIndex) {
           setState(() {
@@ -257,9 +269,9 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
           return;
         }
 
-        // =======================================================
+        // =========================================================
         // DOUBLE BACK TO EXIT
-        // =======================================================
+        // =========================================================
 
         final now = DateTime.now();
 
@@ -279,7 +291,6 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
 
         SystemNavigator.pop();
       },
-
       child: Scaffold(
         // =========================================================
         // DRAWER

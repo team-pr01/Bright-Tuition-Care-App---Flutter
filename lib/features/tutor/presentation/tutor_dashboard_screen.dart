@@ -30,12 +30,14 @@ class TutorDashboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+
     final user = ref.watch(authProvider).user;
     if (user == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return DashboardLayout(
+          role:"tutor",
       initialIndex: 2,
       pageTitles: const ["Job Board", "Invoice", "Dashboard","Payments"],
       drawerBuilder: (changeTab) => AppSidebar(

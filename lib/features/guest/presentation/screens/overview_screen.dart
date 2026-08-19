@@ -1,25 +1,38 @@
-import 'package:btcclient/features/guest/presentation/widgets/overview_bottom_sheets.dart';
+import 'package:btcclient/features/guest/presentation/guest_dashboard_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/widgets/navbar/common_appbar.dart';
+import 'package:btcclient/features/guest/presentation/widgets/overview_bottom_sheets.dart';
 
-class OverviewScreen extends StatefulWidget {
-  const OverviewScreen({super.key});
+import 'package:btcclient/features/jobs/presentation/provider/job_provider.dart';
+import 'package:btcclient/features/jobs/data/models/job_filter.dart';
+import 'dart:async';
+
+class OverviewScreen extends ConsumerStatefulWidget {
+  //  final Function(int, {String? status}) changeTab;
+
+  const OverviewScreen({
+    super.key,
+    // required this.changeTab,
+  });
 
   @override
-  State<OverviewScreen> createState() => _OverviewScreenState();
+  ConsumerState<OverviewScreen> createState() => _OverviewScreenState();
 }
 
-class _OverviewScreenState extends State<OverviewScreen> {
+class _OverviewScreenState extends ConsumerState<OverviewScreen> {
   // ============================================================
   // CONTROLLERS
   // ============================================================
 
   final PageController _serviceController = PageController(
-    viewportFraction: 0.90,
+    viewportFraction: 0.99,
   );
 
   final ScrollController _jobsScrollController = ScrollController();
+  Timer? _serviceAutoScrollTimer;
 
   int _currentServicePage = 0;
 
@@ -78,6 +91,30 @@ class _OverviewScreenState extends State<OverviewScreen> {
     ),
   ];
 
+  void _startServiceAutoScroll() {
+    _serviceAutoScrollTimer?.cancel();
+
+    _serviceAutoScrollTimer = Timer.periodic(const Duration(seconds: 3), (_) {
+      if (!mounted || !_serviceController.hasClients) {
+        return;
+      }
+
+      final int pageCount = (_categories.length / 2).ceil();
+
+      if (pageCount <= 1) {
+        return;
+      }
+
+      final int nextPage = (_currentServicePage + 1) % pageCount;
+
+      _serviceController.animateToPage(
+        nextPage,
+        duration: const Duration(milliseconds: 600),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
+
   // ============================================================
   // STATS
   // ============================================================
@@ -113,16 +150,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
   // JOB LOCATIONS
   // ============================================================
 
-  final List<_JobLocation> _jobLocations = const [
-    _JobLocation(city: 'Savar', count: '1'),
-    _JobLocation(city: 'Chattogram', count: '2'),
-    _JobLocation(city: 'Khulna', count: '0'),
-    _JobLocation(city: 'Rajshahi', count: '1'),
-    _JobLocation(city: 'Dhaka', count: '311'),
-    _JobLocation(city: 'Gazipur', count: '141'),
-    _JobLocation(city: 'Sylhet', count: '74'),
-  ];
-
   // ============================================================
   // USEFUL ITEMS
   // ============================================================
@@ -134,12 +161,23 @@ class _OverviewScreenState extends State<OverviewScreen> {
     _UsefulItem(icon: Icons.link_rounded, title: 'Quick Links'),
   ];
 
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(jobsProvider.notifier).fetchCounterStats();
+      _startServiceAutoScroll();
+    });
+  }
+
   // ============================================================
   // DISPOSE
   // ============================================================
 
   @override
   void dispose() {
+    _serviceAutoScrollTimer?.cancel();
     _serviceController.dispose();
     _jobsScrollController.dispose();
     super.dispose();
@@ -178,7 +216,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CommonAppBar(title: "Overview"),
+      appBar: const CommonAppBar(title: "Overview", showNotification: false),
       backgroundColor: AppColors.primary03,
       body: SafeArea(
         top: false,
@@ -227,7 +265,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                   // ==================================================
                   // 4. FEATURED
                   // ==================================================
-                  _buildFeaturedSection(),
+                  // _buildFeaturedSection(),
                 ],
               ),
             );
@@ -242,6 +280,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
   // ============================================================
 
   Widget _buildServiceCategoriesSection() {
+    // 2 service cards = 1 page
+    final int servicePageCount = (_categories.length / 2).ceil();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -275,15 +316,16 @@ class _OverviewScreenState extends State<OverviewScreen> {
         const SizedBox(height: AppSpacing.md),
 
         // ========================================================
-        // SERVICE CAROUSEL
+        // SERVICE CAROUSEL — 2 CARDS PER PAGE
         // ========================================================
         SizedBox(
           width: double.infinity,
           height: 220,
           child: PageView.builder(
             controller: _serviceController,
-            itemCount: _categories.length,
+            itemCount: servicePageCount,
             physics: const BouncingScrollPhysics(),
+
             onPageChanged: (index) {
               if (!mounted) return;
 
@@ -291,12 +333,39 @@ class _OverviewScreenState extends State<OverviewScreen> {
                 _currentServicePage = index;
               });
             },
-            itemBuilder: (context, index) {
-              final category = _categories[index];
 
-              return Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: _buildServiceCard(category),
+            itemBuilder: (context, pageIndex) {
+              // First card index of this page
+              final int firstIndex = pageIndex * 2;
+
+              // Second card index
+              final int secondIndex = firstIndex + 1;
+
+              return Row(
+                children: [
+                  // ==================================================
+                  // FIRST SERVICE CARD
+                  // ==================================================
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 4),
+                      child: _buildServiceCard(_categories[firstIndex]),
+                    ),
+                  ),
+
+                  // ==================================================
+                  // SECOND SERVICE CARD
+                  // ==================================================
+                  if (secondIndex < _categories.length)
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 4, right: 8),
+                        child: _buildServiceCard(_categories[secondIndex]),
+                      ),
+                    )
+                  else
+                    const Expanded(child: SizedBox()),
+                ],
               );
             },
           ),
@@ -304,7 +373,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
         const SizedBox(height: AppSpacing.md),
 
-        _buildServiceIndicator(),
+        // ========================================================
+        // PAGE INDICATOR
+        // ========================================================
+        _buildServiceIndicator(pageCount: servicePageCount),
       ],
     );
   }
@@ -313,10 +385,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
   // SERVICE INDICATOR
   // ============================================================
 
-  Widget _buildServiceIndicator() {
+  Widget _buildServiceIndicator({required int pageCount}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(_categories.length, (index) {
+      children: List.generate(pageCount, (index) {
         final bool isSelected = _currentServicePage == index;
 
         return AnimatedContainer(
@@ -332,10 +404,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
       }),
     );
   }
-
-  // ============================================================
-  // SERVICE CARD
-  // ============================================================
 
   Widget _buildServiceCard(_ServiceCategory category) {
     return Container(
@@ -423,21 +491,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
   // ============================================================
 
   Widget _buildCombinedStatsAndJobsCard() {
+    final jobsState = ref.watch(jobsProvider);
+
+    final cities = jobsState.jobsByCity;
+
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: const Color(0xFFEBF5FF),
-        borderRadius: BorderRadius.circular(AppRadius.large),
-        border: Border.all(color: const Color(0xFFD6E9FE)),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary04.withValues(alpha: 0.04),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
       child: Column(
         children: [
           // ========================================================
@@ -460,15 +519,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
           const SizedBox(height: 18),
 
-          // ========================================================
-          // DIVIDER
-          // ========================================================
           Container(height: 1, color: const Color(0xFFD6E9FE)),
 
           const SizedBox(height: 14),
 
           // ========================================================
-          // LIVE TUITION JOBS HEADER
+          // HEADER
           // ========================================================
           Row(
             children: [
@@ -486,15 +542,14 @@ class _OverviewScreenState extends State<OverviewScreen> {
               Expanded(
                 child: Text(
                   'Live Tuition Jobs',
-                  style: AppTextStyles.bodyMedium.copyWith(
+                  style: AppTextStyles.headlineMedium.copyWith(
                     color: AppColors.neutrals02,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 15,
                   ),
                 ),
               ),
 
-              // LEFT BUTTON
               _buildNavButton(
                 icon: Icons.chevron_left_rounded,
                 onTap: () => _scrollJobs(false),
@@ -502,7 +557,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
               const SizedBox(width: 6),
 
-              // RIGHT BUTTON
               _buildNavButton(
                 icon: Icons.chevron_right_rounded,
                 onTap: () => _scrollJobs(true),
@@ -513,30 +567,13 @@ class _OverviewScreenState extends State<OverviewScreen> {
           const SizedBox(height: 10),
 
           // ========================================================
-          // LIVE JOBS LIST
+          // CITIES FROM API
           // ========================================================
-          SizedBox(
-            width: double.infinity,
-            height: 40,
-            child: ListView.separated(
-              controller: _jobsScrollController,
-              scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.only(right: 4),
-              itemCount: _jobLocations.length,
-              separatorBuilder: (context, index) {
-                return const SizedBox(width: 8);
-              },
-              itemBuilder: (context, index) {
-                return _buildJobPill(_jobLocations[index]);
-              },
-            ),
-          ),
+          _buildCities(jobsState.jobsByCity),
         ],
       ),
     );
   }
-
   // ============================================================
   // STAT ITEM
   // ============================================================
@@ -595,42 +632,110 @@ class _OverviewScreenState extends State<OverviewScreen> {
   // JOB PILL
   // ============================================================
 
-  Widget _buildJobPill(_JobLocation item) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0xFF2196F3), width: 1.2),
-      ),
-      alignment: Alignment.center,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            item.city,
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: const Color(0xFF1976D2),
-              fontWeight: FontWeight.w600,
-              fontSize: 12,
-            ),
-          ),
+  Widget _buildCities(List<Map<String, dynamic>> cities) {
+    // Only show cities that actually
+    // have live jobs.
+    final activeCities = cities
+        .where((city) => _toInt(city['count']) > 0)
+        .toList();
 
-          const SizedBox(width: 4),
+    // if (activeCities.isEmpty) {
+    //   return const SizedBox(
+    //     height: 40,
+    //     child: Center(child: Text('No live jobs available')),
+    //   );
+    // }
 
-          Text(
-            '(${item.count})',
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: const Color(0xFF1976D2),
-              fontWeight: FontWeight.w700,
-              fontSize: 12,
-            ),
-          ),
-        ],
+    return SizedBox(
+      width: double.infinity,
+      height: 40,
+      child: ListView.separated(
+        controller: _jobsScrollController,
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.only(right: 4),
+        itemCount: cities.length,
+        separatorBuilder: (_, __) {
+          return const SizedBox(width: 8);
+        },
+        itemBuilder: (context, index) {
+          final cityData = cities[index];
+
+          final city = cityData['city']?.toString() ?? '';
+
+          final count = _toInt(cityData['count']);
+
+          return _buildJobPill(city, count);
+        },
       ),
     );
   }
 
+  int _toInt(dynamic value) {
+    if (value is int) {
+      return value;
+    }
+
+    if (value is num) {
+      return value.toInt();
+    }
+
+    return int.tryParse(value?.toString() ?? '') ?? 0;
+  }
+
+  Widget _buildJobPill(String city, int count) {
+    return Material(
+      color: Colors.transparent,
+      child: GestureDetector(
+        // borderRadius: BorderRadius.circular(8),
+        onTap: () async {
+          final selectedCity = city.trim();
+
+          if (selectedCity.isEmpty) {
+            return;
+          }
+
+          print(
+            '🏙️ SELECTED CITY: '
+            '$selectedCity',
+          );
+
+          final filter = JobFilter(status: 'live', city: [selectedCity]);
+
+          try {
+            // Fetch the jobs for the
+            // selected city first.
+            await ref.read(jobsProvider.notifier).applyFilter(filter);
+
+            if (!mounted) return;
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const GuestDashboardScreen(initialIndex: 0),
+              ),
+            );
+          } catch (e) {
+            print('❌ CITY JOB FILTER ERROR: $e');
+          }
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            // border: Border.all(color: AppColors.primary01),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Text(
+            '$city ($count)',
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: AppColors.primary01,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
   // ============================================================
   // NAV BUTTON
   // ============================================================
@@ -647,7 +752,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
           height: 28,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(color: const Color(0xFF2196F3), width: 1.2),
+            border: Border.all(
+              color: const Color.fromARGB(188, 33, 149, 243),
+              width: 0.6,
+            ),
           ),
           child: Icon(icon, size: 18, color: const Color(0xFF2196F3)),
         ),
@@ -664,7 +772,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
-        vertical: AppSpacing.lg,
+        vertical: AppSpacing.md,
       ),
       decoration: BoxDecoration(
         color: AppColors.neutrals01,
@@ -681,10 +789,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
         children: [
           Text(
             'Useful Info',
-            style: AppTextStyles.headlineLarge.copyWith(
+            style: AppTextStyles.headlineMedium.copyWith(
               color: AppColors.neutrals02,
-              fontWeight: FontWeight.w600,
-              fontSize: 18,
+              fontWeight: FontWeight.w500,
+              fontSize: 15,
             ),
           ),
 
@@ -758,66 +866,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
       ),
     );
   } // ============================================================
+
   // FEATURED SECTION
   // ============================================================
-
-  Widget _buildFeaturedSection() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: AppColors.neutrals01,
-        borderRadius: BorderRadius.circular(AppRadius.large),
-      ),
-      child: Column(
-        children: [
-          Text(
-            'Trusted by learners and tutors',
-            textAlign: TextAlign.center,
-            style: AppTextStyles.headlineMedium.copyWith(
-              color: AppColors.neutrals02,
-              fontWeight: FontWeight.w500,
-              fontSize: 15,
-            ),
-          ),
-
-          const SizedBox(height: AppSpacing.lg),
-
-          Row(
-            children: [
-              _buildLogoPlaceholder(Icons.school_outlined, 'Education'),
-              _buildLogoPlaceholder(Icons.business_outlined, 'Partners'),
-              _buildLogoPlaceholder(Icons.public_outlined, 'Community'),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ============================================================
-  // LOGO PLACEHOLDER
-  // ============================================================
-
-  Widget _buildLogoPlaceholder(IconData icon, String label) {
-    return Expanded(
-      child: Column(
-        children: [
-          Icon(icon, size: 32, color: AppColors.primary04),
-
-          const SizedBox(height: 4),
-
-          Text(
-            label,
-            textAlign: TextAlign.center,
-            style: AppTextStyles.bodySmall.copyWith(
-              color: AppColors.neutrals03,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 // ================================================================

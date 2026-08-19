@@ -50,6 +50,13 @@ class JobsApi {
 
     return response.data;
   }
+  Future<Map<String, dynamic>> getCounterStats() async {
+  final response = await DioClient.dio.get("/job/counter-stats");
+
+  print("📊 COUNTER STATS RAW: ${response.data}");
+
+  return Map<String, dynamic>.from(response.data);
+}
 
   Future<Map<String, dynamic>> getMyPostedJobs({
     required Map<String, dynamic> query,

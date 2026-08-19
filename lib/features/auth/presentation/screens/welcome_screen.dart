@@ -176,7 +176,8 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (_) => const ChooseRoleScreen(),
+                                            builder: (_) =>
+                                                const ChooseRoleScreen(),
                                           ),
                                         );
                                       },
@@ -296,8 +297,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (_) =>
-                                              const OverviewScreen(
-                                              ),
+                                              const OverviewScreen(),
                                         ),
                                       );
                                     },
