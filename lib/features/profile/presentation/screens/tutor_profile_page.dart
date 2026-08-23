@@ -277,17 +277,18 @@ class _TutorProfileScreenState extends ConsumerState<TutorProfileScreen> {
       padding: const EdgeInsets.only(top: 20),
       width: double.infinity,
       height: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-          colors: [
-            AppColors.primaryGradientStart,
-            AppColors.primaryGradientEnd,
-          ],
-          stops: [0.0082, 1],
-        ),
-      ),
+      color:AppColors.primary01,
+      // decoration: const BoxDecoration(
+      //   gradient: LinearGradient(
+      //     begin: Alignment.centerLeft,
+      //     end: Alignment.centerRight,
+      //     colors: [
+      //       AppColors.primaryGradientStart,
+      //       AppColors.primaryGradientEnd,
+      //     ],
+      //     stops: [0.0082, 1],
+      //   ),
+      // ),
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(

@@ -6,6 +6,7 @@ import 'package:btcclient/features/invoices/presentation/screen/invoice_page.dar
 import 'package:btcclient/features/jobs/presentation/screen/job_page.dart';
 import 'package:btcclient/features/profile/presentation/screens/tutor_profile_page.dart';
 import 'package:btcclient/features/settings/prersentation/screens/setting_screen.dart';
+import 'package:btcclient/features/settings/prersentation/widgets/show_logout_dialog%20copy.dart';
 // import 'package:btcclient/features/jobs/presentation/screens/job_page.dart';
 // import 'package:btcclient/features/jobs/presentation/widgets/job_card.dart';
 import 'package:btcclient/features/tutor/presentation/screens/how_it_works_screen.dart';
@@ -30,16 +31,15 @@ class TutorDashboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     final user = ref.watch(authProvider).user;
     if (user == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return DashboardLayout(
-          role:"tutor",
+      role: "tutor",
       initialIndex: 2,
-      pageTitles: const ["Job Board", "Invoice", "Dashboard","Payments"],
+      pageTitles: const ["Job Board", "Invoice", "Dashboard", "Payments"],
       drawerBuilder: (changeTab) => AppSidebar(
         user: user,
 
@@ -292,13 +292,14 @@ class TutorDashboardScreen extends ConsumerWidget {
         ],
 
         onLogout: () async {
-          await ref.read(authProvider.notifier).logout();
-          ref.read(invoiceProvider.notifier).clear();
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (_) => const WelcomeScreen()),
-            (route) => false,
-          );
+          // await ref.read(authProvider.notifier).logout();
+          // ref.read(invoiceProvider.notifier).clear();
+          // Navigator.pushAndRemoveUntil(
+          //   context,
+          //   MaterialPageRoute(builder: (_) => const WelcomeScreen()),
+          //   (route) => false,
+          // );
+          showLogoutDialog(context);
         },
       ),
 

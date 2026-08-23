@@ -149,6 +149,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     return AuthListener(
       child: AuthLayout(
+        imagePath: "assets/images/teacher.webp",
         title: "Get Started Now",
         subtitle: "Create an account or sign in as tutor or guardian/student",
         child: Form(

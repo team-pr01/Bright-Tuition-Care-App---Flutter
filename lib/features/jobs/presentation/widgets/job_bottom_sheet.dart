@@ -68,6 +68,8 @@ class _JobCardState extends ConsumerState<JobBottomSheet> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Center(child: SvgPicture.asset(iconPath, height: 100)),
+              const SizedBox(height: 16),
               RichText(
                 text: TextSpan(
                   children: [
@@ -198,11 +200,7 @@ class _JobCardState extends ConsumerState<JobBottomSheet> {
               ),
               const SizedBox(height: 10),
 
-              Center(child: SvgPicture.asset(iconPath, height: 100)),
-
-              const SizedBox(height: 6),
-
-              const SizedBox(height: 16),
+              
 
               /// ================= SUBJECTS =================
               IconRow(

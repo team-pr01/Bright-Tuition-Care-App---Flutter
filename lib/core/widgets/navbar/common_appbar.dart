@@ -7,8 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class CommonAppBar extends ConsumerWidget
-    implements PreferredSizeWidget {
+class CommonAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final String title;
 
   // Notification icon is visible by default.
@@ -25,30 +24,24 @@ class CommonAppBar extends ConsumerWidget
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final notificationState =
-        ref.watch(notificationNotifierProvider);
+    final notificationState = ref.watch(notificationNotifierProvider);
 
     final unreadCount = notificationState.unreadCount;
 
     return ClipRect(
       child: BackdropFilter(
-        filter: ImageFilter.blur(
-          sigmaX: 15,
-          sigmaY: 15,
-        ),
+        filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.75),
-            border: Border(
-              bottom: BorderSide(
-                color: Colors.grey.shade200,
-              ),
+            border: const Border(
+              bottom: BorderSide(color: AppColors.primary02, width: 1),
             ),
-            boxShadow: const [
+            boxShadow: [
               BoxShadow(
-                color: Color.fromRGBO(0, 0, 0, 0.08),
-                blurRadius: 10,
-                offset: Offset(0, 2),
+                color: Color.fromRGBO(0, 0, 0, 0.20),
+                offset: Offset(0, 1.666),
+                blurRadius: 1.666,
               ),
             ],
           ),
@@ -59,7 +52,6 @@ class CommonAppBar extends ConsumerWidget
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-
                   // =====================================================
                   // BACK BUTTON
                   // =====================================================
@@ -73,16 +65,14 @@ class CommonAppBar extends ConsumerWidget
                         },
                         icon: Container(
                           padding: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30),
-                            border: Border.all(
-                              color: Colors.grey.shade300,
-                            ),
-                          ),
+                          // decoration: BoxDecoration(
+                          //   borderRadius: BorderRadius.circular(30),
+                          //   border: Border.all(color: Colors.grey.shade300),
+                          // ),
                           child: const Icon(
                             Icons.arrow_back,
                             color: AppColors.primary01,
-                            size: 20,
+                            size: 24,
                           ),
                         ),
                       ),
@@ -111,22 +101,19 @@ class CommonAppBar extends ConsumerWidget
                         child: Stack(
                           clipBehavior: Clip.none,
                           children: [
-
                             IconButton(
                               onPressed: () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) =>
-                                        const NotificationScreen(),
+                                    builder: (_) => const NotificationScreen(),
                                   ),
                                 );
                               },
                               icon: Container(
                                 padding: const EdgeInsets.all(6),
                                 decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.circular(30),
+                                  borderRadius: BorderRadius.circular(30),
                                   border: Border.all(
                                     color: Colors.grey.shade300,
                                   ),
@@ -147,13 +134,11 @@ class CommonAppBar extends ConsumerWidget
                                 right: 3,
                                 top: 2,
                                 child: Container(
-                                  constraints:
-                                      const BoxConstraints(
+                                  constraints: const BoxConstraints(
                                     minWidth: 16,
                                     minHeight: 16,
                                   ),
-                                  padding:
-                                      const EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                     horizontal: 4,
                                     vertical: 2,
                                   ),
@@ -163,9 +148,7 @@ class CommonAppBar extends ConsumerWidget
                                     shape: BoxShape.circle,
                                   ),
                                   child: Text(
-                                    unreadCount > 99
-                                        ? '99+'
-                                        : '$unreadCount',
+                                    unreadCount > 99 ? '99+' : '$unreadCount',
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 9,

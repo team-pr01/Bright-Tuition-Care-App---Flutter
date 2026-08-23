@@ -96,7 +96,6 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
   Widget build(BuildContext context) {
     return AuthLayout(
       title: "Reset Password",
-
       subtitle: "Create a new secure password",
 
       child: Column(

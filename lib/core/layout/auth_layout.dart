@@ -6,12 +6,14 @@ class AuthLayout extends StatelessWidget {
   final String? title;
   final String? subtitle;
   final bool showBack;
+  final String? imagePath;
 
   const AuthLayout({
     super.key,
     required this.child,
     this.title,
     this.subtitle,
+    this.imagePath,
     this.showBack = true,
   });
 
@@ -63,25 +65,44 @@ class AuthLayout extends StatelessWidget {
                     : null,
               ),
 
+              if (imagePath != null) ...[
+                Container(
+                  width: 110,
+                  height: 110,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        AppColors.primary01,
+                        AppColors.primary02,
+                        AppColors.primary01,
+                        AppColors.primary02,
+                      ],
+                      stops: const [0.0, 0.35, 0.65, 1.0],
+                    ),
+                  ),
+                  padding: const EdgeInsets.all(8),
+                  child: Image.asset(imagePath!, fit: BoxFit.contain),
+                ),
+
+                const SizedBox(height: 12),
+              ],
               // =====================================================
               // TITLE
               // =====================================================
               if (title != null)
                 ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    maxWidth: 250,
-                  ),
+                  constraints: const BoxConstraints(maxWidth: 250),
                   child: Text(
                     title!,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headlineLarge!
-                        .copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          height: 1.4,
-                        ),
+                    style: Theme.of(context).textTheme.headlineLarge!.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      height: 1.4,
+                    ),
                   ),
                 ),
 
@@ -91,20 +112,15 @@ class AuthLayout extends StatelessWidget {
               if (subtitle != null) ...[
                 const SizedBox(height: 6),
                 ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    maxWidth: 270,
-                  ),
+                  constraints: const BoxConstraints(maxWidth: 270),
                   child: Text(
                     subtitle!,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge!
-                        .copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w300,
-                          height: 1.5,
-                        ),
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w300,
+                      height: 1.5,
+                    ),
                   ),
                 ),
               ],
@@ -125,8 +141,18 @@ class AuthLayout extends StatelessWidget {
                       topRight: Radius.circular(28),
                     ),
                   ),
-                  child: SingleChildScrollView(
-                    child: child,
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      return SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: constraints.maxHeight,
+                          ),
+                          child: IntrinsicHeight(child: child),
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),

@@ -168,6 +168,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     final authState = ref.watch(authProvider);
     return AuthListener(
       child: AuthLayout(
+        imagePath: "assets/images/teacher.webp",
         title: selected == 0 ? "Sign up as Tutor" : "Sign up as Guardian",
 
         subtitle: selected == 0

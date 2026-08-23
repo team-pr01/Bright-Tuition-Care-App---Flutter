@@ -66,15 +66,16 @@ class _GuardianProfilePageState extends ConsumerState<GuardianProfilePage> {
     return Container(
       width: double.infinity,
       decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-          colors: [
-            AppColors.primaryGradientStart,
-            AppColors.primaryGradientEnd,
-          ],
-          stops: [0.0082, 1],
-        ),
+        color: AppColors.primary01,
+        // gradient: LinearGradient(
+        //   begin: Alignment.centerLeft,
+        //   end: Alignment.centerRight,
+        //   colors: [
+        //     AppColors.primaryGradientStart,
+        //     AppColors.primaryGradientEnd,
+        //   ],
+        //   stops: [0.0082, 1],
+        // ),
       ),
       child: LayoutBuilder(
         builder: (context, constraints) {

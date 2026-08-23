@@ -106,7 +106,7 @@ class AppButton extends StatelessWidget {
               AppColors.primaryGradientEnd,
             ],
           ),
-          borderRadius: BorderRadius.all(Radius.circular(8)),
+          borderRadius: BorderRadius.all(Radius.circular(999)),
         ),
 
         child: ElevatedButton(
@@ -163,7 +163,7 @@ class AppButton extends StatelessWidget {
           padding: iconOnly
               ? EdgeInsets.zero
               : const EdgeInsets.symmetric(horizontal: 10),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
         );
 
       /// EXISTING SECONDARY
@@ -176,7 +176,7 @@ class AppButton extends StatelessWidget {
               ? EdgeInsets.zero
               : const EdgeInsets.symmetric(horizontal: 10),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(40),
+            borderRadius: BorderRadius.circular(999),
           ),
         );
 
@@ -211,7 +211,7 @@ class AppButton extends StatelessWidget {
           padding: iconOnly
               ? EdgeInsets.zero
               : const EdgeInsets.symmetric(horizontal: 10),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
         );
 
       /// NEW OUTLINE GRAY
@@ -221,7 +221,7 @@ class AppButton extends StatelessWidget {
           foregroundColor: AppColors.primary01,
           elevation: 0,
           side: BorderSide(color: AppColors.neutrals04),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
           padding: iconOnly
               ? EdgeInsets.zero
               : const EdgeInsets.symmetric(horizontal: 10),
@@ -235,7 +235,7 @@ class AppButton extends StatelessWidget {
               ? EdgeInsets.zero
               : const EdgeInsets.symmetric(horizontal: 10),
           side: BorderSide(color: AppColors.neutrals04),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
         );
     }
   }

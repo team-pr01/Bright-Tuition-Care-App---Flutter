@@ -67,7 +67,7 @@ class VerifyProfileCard extends StatelessWidget {
                 ),
                 side: const BorderSide(color: AppColors.primary01, width: 1.5),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
+                  borderRadius: BorderRadius.circular(999),
                 ),
               ),
               onPressed: () {

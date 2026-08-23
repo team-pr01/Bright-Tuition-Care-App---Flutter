@@ -18,6 +18,7 @@ import 'package:btcclient/features/legal/presentation/important_guidelines_scree
 import 'package:btcclient/core/screens/share_app.dart';
 import 'package:btcclient/features/profile/presentation/screens/guardian_profile_page.dart';
 import 'package:btcclient/features/settings/prersentation/screens/setting_screen.dart';
+import 'package:btcclient/features/settings/prersentation/widgets/show_logout_dialog%20copy.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -282,13 +283,14 @@ class GuardianDashboardScreen extends ConsumerWidget {
         ],
 
         onLogout: () async {
-          await ref.read(authProvider.notifier).logout();
-          ref.read(invoiceProvider.notifier).clear();
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (_) => const WelcomeScreen()),
-            (route) => false,
-          );
+          // await ref.read(authProvider.notifier).logout();
+          // ref.read(invoiceProvider.notifier).clear();
+          // Navigator.pushAndRemoveUntil(
+          //   context,
+          //   MaterialPageRoute(builder: (_) => const WelcomeScreen()),
+          //   (route) => false,
+          // );
+          showLogoutDialog(context);
         },
       ),
 

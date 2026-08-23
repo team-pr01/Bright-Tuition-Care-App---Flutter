@@ -101,27 +101,7 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
   @override
   void initState() {
     super.initState();
-
     currentIndex = safeInitialIndex;
-
-    debugPrint('🏠 DashboardLayout INIT');
-    debugPrint('Initial index: ${widget.initialIndex}');
-    debugPrint('Safe current index: $currentIndex');
-    debugPrint('Nav items count: ${widget.navItems.length}');
-    debugPrint('Pages count: ${widget.pages.length}');
-    debugPrint('AppBar action: ${widget.appBarAction}');
-
-    // ===========================================================
-    // LOAD NOTIFICATIONS ONLY WHEN NEEDED
-    // ===========================================================
-    //
-    // There is no reason to load notifications when the AppBar
-    // doesn't use the notification action.
-    //
-    // This also avoids unnecessary API/state work for screens
-    // using the user icon or no action.
-    // ===========================================================
-
     if (widget.appBarAction == DashboardAppBarAction.notification) {
       Future.microtask(() async {
         if (!mounted) return;
@@ -135,10 +115,7 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
 
   @override
   void dispose() {
-    debugPrint('🏠 DashboardLayout DISPOSE');
-
     NavigationService.unregisterJobDetailsHandler();
-
     super.dispose();
   }
 
@@ -292,18 +269,10 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
         SystemNavigator.pop();
       },
       child: Scaffold(
-        // =========================================================
-        // DRAWER
-        // =========================================================
         drawer: widget.drawerBuilder(changeTab),
-
-        // =========================================================
-        // APP BAR
-        // =========================================================
         appBar: _showAppBar
             ? PreferredSize(
                 preferredSize: const Size.fromHeight(56),
-
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.md,
@@ -311,11 +280,14 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
 
                   decoration: const BoxDecoration(
                     color: AppColors.neutrals01,
+                    border: const Border(
+                      bottom: BorderSide(color: AppColors.primary02, width: 1),
+                    ),
                     boxShadow: [
                       BoxShadow(
-                        color: Color.fromRGBO(0, 0, 0, 0.10),
-                        offset: Offset(0, 1.446),
-                        blurRadius: 1.446,
+                        color: Color.fromRGBO(0, 0, 0, 0.20),
+                        offset: Offset(0, 1.666),
+                        blurRadius: 1.666,
                       ),
                     ],
                   ),
@@ -398,9 +370,6 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
               )
             : null,
 
-        // =========================================================
-        // BODY
-        // =========================================================
         body: hasPages
             ? AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
@@ -408,10 +377,6 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
                 child: widget.pages[pageIndex](changeTab, jobStatusFilter),
               )
             : const SizedBox.shrink(),
-
-        // =========================================================
-        // BOTTOM NAVIGATION
-        // =========================================================
         bottomNavigationBar: widget.navItems.isEmpty
             ? null
             : AppBottomNavBar(
@@ -425,30 +390,14 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
     );
   }
 
-  // =============================================================
-  // APP BAR ACTION BUILDER
-  // =============================================================
-
   Widget _buildAppBarAction({required int unreadCount}) {
-    // ===========================================================
-    // CUSTOM WIDGET
-    // ===========================================================
 
     if (widget.appBarActionWidget != null) {
       return widget.appBarActionWidget!;
     }
-
-    // ===========================================================
-    // NONE
-    // ===========================================================
-
     if (widget.appBarAction == DashboardAppBarAction.none) {
       return const SizedBox.shrink();
     }
-
-    // ===========================================================
-    // USER
-    // ===========================================================
 
     if (widget.appBarAction == DashboardAppBarAction.user) {
       return IconButton(
@@ -474,11 +423,6 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
         onPressed: widget.onUserPressed,
       );
     }
-
-    // ===========================================================
-    // NOTIFICATION
-    // ===========================================================
-
     return Stack(
       clipBehavior: Clip.none,
 
@@ -514,10 +458,6 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
             );
           },
         ),
-
-        // =========================================================
-        // UNREAD BADGE
-        // =========================================================
         if (unreadCount > 0)
           Positioned(
             right: 5,

@@ -112,20 +112,26 @@ class _JobCardState extends ConsumerState<JobCard> {
         }
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.primary01),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary02,
-              blurRadius: 0.2,
-              spreadRadius: 1,
-            ),
-          ],
-        ),
+       margin: const EdgeInsets.symmetric(
+  horizontal: 16,
+  vertical: 10,
+),
+padding: const EdgeInsets.all(16),
+decoration: BoxDecoration(
+  color: Colors.white,
+  borderRadius: BorderRadius.circular(16),
+  border: Border.all(
+    color: AppColors.primary03,
+  ),
+  boxShadow: [
+    BoxShadow(
+      color: Colors.black.withOpacity(0.08),
+      blurRadius: 12,
+      spreadRadius: 0,
+      offset: const Offset(0, 4),
+    ),
+  ],
+),
 
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -419,7 +425,7 @@ class _JobCardState extends ConsumerState<JobCard> {
                         ),
                       ),
                       Text(
-                        "  tutor Preferred",
+                        "  Tutor Preferred",
                         style: TextStyle(
                           fontSize: 12,
                           color: AppColors.neutrals02,

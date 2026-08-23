@@ -9,6 +9,7 @@ import 'package:btcclient/features/settings/prersentation/screens/contact_info_s
 import 'package:btcclient/features/settings/prersentation/screens/delete_account_screen.dart';
 import 'package:btcclient/features/settings/prersentation/screens/profile_lock_screen.dart';
 import 'package:btcclient/features/settings/prersentation/screens/verification_screen.dart';
+import 'package:btcclient/features/settings/prersentation/widgets/show_logout_dialog%20copy.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -122,6 +123,15 @@ class SettingScreen extends ConsumerWidget {
               );
             },
           ),
+          _SettingsTile(
+            icon: Icons.contact_mail_outlined,
+            title: "Email Us",
+            onTap: () {
+              launchUrl(
+                Uri(scheme: 'mailto', path: 'support@brighttutioncare.com'),
+              );
+            },
+          ),
 
           const SizedBox(height: 12),
 
@@ -132,17 +142,18 @@ class SettingScreen extends ConsumerWidget {
             icon: Icons.logout,
             title: "Logout",
             onTap: () async {
-              await ref.read(authProvider.notifier).logout();
+              // await ref.read(authProvider.notifier).logout();
 
-              ref.read(invoiceProvider.notifier).clear();
+              // ref.read(invoiceProvider.notifier).clear();
 
-              if (!context.mounted) return;
+              // if (!context.mounted) return;
 
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (_) => const WelcomeScreen()),
-                (route) => false,
-              );
+              // Navigator.pushAndRemoveUntil(
+              //   context,
+              //   MaterialPageRoute(builder: (_) => const WelcomeScreen()),
+              //   (route) => false,
+              // );
+              showLogoutDialog(context);
             },
           ),
 

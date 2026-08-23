@@ -23,9 +23,6 @@ class OverviewScreen extends ConsumerStatefulWidget {
 }
 
 class _OverviewScreenState extends ConsumerState<OverviewScreen> {
-  // ============================================================
-  // CONTROLLERS
-  // ============================================================
 
   final PageController _serviceController = PageController(
     viewportFraction: 0.99,
@@ -33,12 +30,9 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
 
   final ScrollController _jobsScrollController = ScrollController();
   Timer? _serviceAutoScrollTimer;
+  Timer? _jobsAutoScrollTimer;
 
   int _currentServicePage = 0;
-
-  // ============================================================
-  // SERVICE CATEGORIES
-  // ============================================================
 
   final List<_ServiceCategory> _categories = const [
     _ServiceCategory(
@@ -90,7 +84,44 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
       imagePath: "assets/images/service_catagories/uni_help.png",
     ),
   ];
+  
+  void _startJobsAutoScroll() {
+  _jobsAutoScrollTimer?.cancel();
 
+  _jobsAutoScrollTimer = Timer.periodic(
+    const Duration(seconds: 2),
+    (_) {
+      if (!mounted || !_jobsScrollController.hasClients) {
+        return;
+      }
+
+      final position = _jobsScrollController.position;
+
+      // Nothing to scroll yet.
+      if (position.maxScrollExtent <= 0) {
+        return;
+      }
+
+      const double scrollAmount = 180.0;
+
+      final double currentOffset = _jobsScrollController.offset;
+      final double maxOffset = position.maxScrollExtent;
+
+      double nextOffset = currentOffset + scrollAmount;
+
+      // Go back to beginning after reaching the end.
+      if (nextOffset >= maxOffset) {
+        nextOffset = 0.0;
+      }
+
+      _jobsScrollController.animateTo(
+        nextOffset,
+        duration: const Duration(milliseconds: 600),
+        curve: Curves.easeInOut,
+      );
+    },
+  );
+}
   void _startServiceAutoScroll() {
     _serviceAutoScrollTimer?.cancel();
 
@@ -114,10 +145,6 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
       );
     });
   }
-
-  // ============================================================
-  // STATS
-  // ============================================================
 
   final List<_StatItem> _stats = const [
     _StatItem(
@@ -146,14 +173,6 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
     ),
   ];
 
-  // ============================================================
-  // JOB LOCATIONS
-  // ============================================================
-
-  // ============================================================
-  // USEFUL ITEMS
-  // ============================================================
-
   final List<_UsefulItem> _usefulItems = const [
     _UsefulItem(icon: Icons.info_outline_rounded, title: 'About Us'),
     _UsefulItem(icon: Icons.support_agent_outlined, title: 'Contact Us'),
@@ -168,24 +187,18 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(jobsProvider.notifier).fetchCounterStats();
       _startServiceAutoScroll();
+      _startJobsAutoScroll();
     });
   }
-
-  // ============================================================
-  // DISPOSE
-  // ============================================================
 
   @override
   void dispose() {
     _serviceAutoScrollTimer?.cancel();
     _serviceController.dispose();
     _jobsScrollController.dispose();
+    _jobsAutoScrollTimer?.cancel();
     super.dispose();
   }
-
-  // ============================================================
-  // JOB SCROLL
-  // ============================================================
 
   void _scrollJobs(bool forward) {
     if (!_jobsScrollController.hasClients) {
@@ -208,10 +221,6 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
       curve: Curves.easeInOut,
     );
   }
-
-  // ============================================================
-  // BUILD
-  // ============================================================
 
   @override
   Widget build(BuildContext context) {
@@ -413,19 +422,13 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: const Color(0xFFE2E8F0)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 12,
-            offset: const Offset(0, 5),
-          ),
-        ],
       ),
       clipBehavior: Clip.antiAlias,
-      child: Stack(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // IMAGE
-          Positioned.fill(
+          Expanded(
             child: Image.asset(
               category.imagePath,
               fit: BoxFit.cover,
@@ -448,35 +451,19 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
             ),
           ),
 
-          // GRADIENT
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    Colors.black.withValues(alpha: 0.78),
-                  ],
-                ),
-              ),
-            ),
-          ),
-
-          // TITLE
-          Positioned(
-            left: 14,
-            right: 14,
-            bottom: 14,
+          // WHITE BOTTOM SECTION WITH TITLE
+          Container(
+            color: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             child: Text(
               category.title,
+              textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-                fontSize: 15,
+                color: Color(0xFF111827),
+                fontWeight: FontWeight.w500,
+                fontSize: 13,
                 height: 1.2,
               ),
             ),
@@ -632,45 +619,32 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
   // JOB PILL
   // ============================================================
 
+  
+  
   Widget _buildCities(List<Map<String, dynamic>> cities) {
-    // Only show cities that actually
-    // have live jobs.
-    final activeCities = cities
-        .where((city) => _toInt(city['count']) > 0)
-        .toList();
+  return SizedBox(
+    width: double.infinity,
+    height: 40,
+    child: ListView.separated(
+      controller: _jobsScrollController,
+      scrollDirection: Axis.horizontal,
+      physics: const BouncingScrollPhysics(),
+      padding: const EdgeInsets.only(right: 4),
+      itemCount: cities.length,
+      separatorBuilder: (_, __) {
+        return const SizedBox(width: 8);
+      },
+      itemBuilder: (context, index) {
+        final cityData = cities[index];
 
-    // if (activeCities.isEmpty) {
-    //   return const SizedBox(
-    //     height: 40,
-    //     child: Center(child: Text('No live jobs available')),
-    //   );
-    // }
+        final city = cityData['city']?.toString() ?? '';
+        final count = _toInt(cityData['count']);
 
-    return SizedBox(
-      width: double.infinity,
-      height: 40,
-      child: ListView.separated(
-        controller: _jobsScrollController,
-        scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.only(right: 4),
-        itemCount: cities.length,
-        separatorBuilder: (_, __) {
-          return const SizedBox(width: 8);
-        },
-        itemBuilder: (context, index) {
-          final cityData = cities[index];
-
-          final city = cityData['city']?.toString() ?? '';
-
-          final count = _toInt(cityData['count']);
-
-          return _buildJobPill(city, count);
-        },
-      ),
-    );
-  }
-
+        return _buildJobPill(city, count);
+      },
+    ),
+  );
+}
   int _toInt(dynamic value) {
     if (value is int) {
       return value;

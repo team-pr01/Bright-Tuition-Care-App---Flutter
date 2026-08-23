@@ -1,3 +1,4 @@
+import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/widgets/navbar/common_appbar.dart';
 import 'package:btcclient/features/auth/presentation/screens/login_screen.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +41,7 @@ class ChooseRoleScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(18),
+                    border: Border.all(color: AppColors.primary02, width: 1),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.05),
@@ -123,6 +125,7 @@ class ChooseRoleScreen extends StatelessWidget {
                     vertical: 10,
                   ),
                   decoration: BoxDecoration(
+                    border: Border.all(color: AppColors.primary02, width: 1),
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(18),
                     boxShadow: [

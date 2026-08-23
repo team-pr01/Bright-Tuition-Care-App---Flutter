@@ -77,7 +77,6 @@ class _RequestTutorScreenState extends State<RequestTutorScreen> {
       );
 
       debugPrint("📥 REQUEST TUTOR STATUS: ${response.statusCode}");
-
       debugPrint("📥 REQUEST TUTOR RESPONSE: ${response.body}");
 
       Map<String, dynamic>? data;
@@ -111,7 +110,6 @@ class _RequestTutorScreenState extends State<RequestTutorScreen> {
         guardianPhoneController.clear();
         classController.clear();
 
-        // Go back after successful request.
         Future.delayed(const Duration(milliseconds: 500), () {
           if (mounted) {
             Navigator.pop(context);
@@ -162,6 +160,7 @@ class _RequestTutorScreenState extends State<RequestTutorScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: AuthLayout(
+        imagePath: "assets/images/teacher.webp",
         title: "Request a Tutor",
         subtitle:
             "Tell us what you need and we will help you find the right tutor.",
@@ -224,7 +223,15 @@ class _RequestTutorScreenState extends State<RequestTutorScreen> {
                 loading: _isLoading,
                 onPressed: _isLoading ? null : _submitRequest,
               ),
-              SizedBox(height: 280),
+
+              // ==================================================
+              // FLEXIBLE SPACE
+              // ==================================================
+              const Spacer(),
+
+              // ==================================================
+              // HELPLINE
+              // ==================================================
               HelplineCard(
                 phone: "+880 1616-012 365",
                 timing: "10:00 Am - 10:00 Pm",

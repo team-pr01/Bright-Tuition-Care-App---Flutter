@@ -26,6 +26,8 @@ class StatusDataFormatter {
         return Colors.yellow;
       case "closed":
         return Colors.grey;
+      case "ongoing":
+        return const Color(0xFF39BA3D);
       case "cancelled":
         return Colors.red;
       default:
@@ -62,6 +64,8 @@ class StatusDataFormatter {
       return Colors.orange;
     case "appointed":
     case "confirmed":
+      return Colors.green;
+    case "ongoing":
       return Colors.green;
     case "rejected":
       return Colors.red;
@@ -111,10 +115,12 @@ static String getApplicationStatus({
 
     case "appointed":
        return Colors.green;
+    case "live":
+       return Colors.green;
 
     case "applied":
     case "shortlisted":
-       return Colors.yellow;
+       return Colors.green;
 
     default:
        return Colors.grey;

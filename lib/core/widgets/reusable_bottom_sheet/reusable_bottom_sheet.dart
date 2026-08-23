@@ -31,40 +31,70 @@ class ReusableBottomSheet extends StatelessWidget {
             top: Radius.circular(24),
           ),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+        child: Stack(
           children: [
             // ======================================================
-            // DRAG HANDLE
+            // MAIN CONTENT
             // ======================================================
 
-            Container(
-              width: 40,
-              height: 5,
-              margin: const EdgeInsets.only(
-                top: 12,
-                bottom: 18,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(10),
-              ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // DRAG HANDLE
+                Container(
+                  width: 40,
+                  height: 5,
+                  margin: const EdgeInsets.only(
+                    top: 12,
+                    bottom: 18,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+
+                // CONTENT
+                Flexible(
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    padding: const EdgeInsets.fromLTRB(
+                      20,
+                      0,
+                      20,
+                      24,
+                    ),
+                    child: child,
+                  ),
+                ),
+              ],
             ),
 
             // ======================================================
-            // CONTENT
+            // CLOSE BUTTON
             // ======================================================
 
-            Flexible(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(
-                  20,
-                  0,
-                  20,
-                  24,
+            Positioned(
+              top: 10,
+              right: 12,
+              child: Material(
+                color: AppColors.error.withOpacity(0.1),
+                shape: const CircleBorder(),
+                child: InkWell(
+                  customBorder: const CircleBorder(),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const SizedBox(
+                    width: 34,
+                    height: 34,
+                    child: Icon(
+                      Icons.close,
+                      size: 20,
+                      color: AppColors.error,
+                    ),
+                  ),
                 ),
-                child: child,
               ),
             ),
           ],

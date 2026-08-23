@@ -55,9 +55,10 @@ class ReusableSearchBar extends StatelessWidget {
               cursorColor: AppColors.primary01,
               decoration: InputDecoration(
                 hintText: "Search For Tuition",
-                hintStyle: Theme.of(context).textTheme.titleSmall!.copyWith(
+                hintStyle: Theme.of(context).textTheme.labelSmall!.copyWith(
                   color: AppColors.neutrals03,
-                  
+
+                  fontWeight: FontWeight.w400,
                   height: 1.5,
                 ),
 
@@ -68,7 +69,7 @@ class ReusableSearchBar extends StatelessWidget {
                 disabledBorder: InputBorder.none,
                 errorBorder: InputBorder.none,
                 isDense: true,
-                filled : false,
+                filled: false,
                 contentPadding: EdgeInsets.zero,
               ),
             ),
