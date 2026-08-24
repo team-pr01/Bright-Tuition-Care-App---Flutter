@@ -86,13 +86,24 @@ class DashboardSmallCard extends StatelessWidget {
                     alignment: Alignment.centerRight,
                     child: GestureDetector(
                       onTap: onAction,
-                      child: Text(
-                        actionText!,
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: AppColors.primary01,
-                          fontWeight: FontWeight.w400,
-                          height: 1.5,
-                        ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            actionText!,
+                            style: Theme.of(context).textTheme.bodyMedium!
+                                .copyWith(
+                                  color: AppColors.primary01,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                          ),
+
+                          Icon(
+                            Icons.arrow_forward_rounded,
+                            size: 18,
+                            color: AppColors.primary01,
+                          ),
+                        ],
                       ),
                     ),
                   ),

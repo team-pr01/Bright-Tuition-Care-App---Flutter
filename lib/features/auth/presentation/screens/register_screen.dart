@@ -1,6 +1,7 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/layout/auth_layout.dart';
 import 'package:btcclient/core/routing/app_router.dart';
+import 'package:btcclient/core/widgets/app_radio_group/app_radio_group.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/core/widgets/input/app_input_field.dart';
 import 'package:btcclient/core/widgets/segmented_switch/segmented_switch.dart';
@@ -247,17 +248,42 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 required: true,
               ),
 
-              AppInputField(
-                label: "Gender",
-                type: AppInputType.dropdown,
-                required: true,
-                value: selectedGender,
-                dropdownItems: const ["Male", "Female", "Other"],
-                onChanged: (value) {
-                  setState(() {
-                    selectedGender = value;
-                  });
-                },
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  RichText(
+                    text: TextSpan(
+                      text: "Gender",
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                        color: AppColors.neutrals02,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      children: const [
+                        TextSpan(
+                          text: " *",
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 6),
+
+                  AppRadioGroup<String>(
+                    selectedValue: selectedGender,
+                    options: const [
+                      AppRadioOption<String>(value: "Male", label: "Male"),
+                      AppRadioOption<String>(value: "Female", label: "Female"),
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        selectedGender = value;
+                      });
+                    },
+                  ),
+
+                  const SizedBox(height: 8),
+                ],
               ),
 
               /// PASSWORD
@@ -411,7 +437,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const ChooseRoleScreen( ),
+                              builder: (_) => const ChooseRoleScreen(),
                             ),
                           );
                         },

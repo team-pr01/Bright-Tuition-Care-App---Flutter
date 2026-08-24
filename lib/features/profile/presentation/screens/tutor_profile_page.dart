@@ -1,12 +1,9 @@
-import 'dart:typed_data';
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/pdf/pdf_service.dart';
-import 'package:btcclient/core/utils/file_picker_utils.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/core/widgets/snackbar/app_snackbar.dart';
 import 'package:btcclient/features/auth/data/models/tutor_model.dart';
 import 'package:btcclient/features/auth/presentation/provider/profile_notifier.dart';
-import 'package:btcclient/features/profile/data/requests/update_personal_info_request.dart';
 import 'package:btcclient/features/profile/pdf/tutor_resume_pdf.dart';
 import 'package:btcclient/features/profile/presentation/screens/add_credential_screen.dart';
 import 'package:btcclient/features/profile/presentation/screens/edit_education_screen.dart';
@@ -277,23 +274,19 @@ class _TutorProfileScreenState extends ConsumerState<TutorProfileScreen> {
       padding: const EdgeInsets.only(top: 20),
       width: double.infinity,
       height: double.infinity,
-      color:AppColors.primary01,
-      // decoration: const BoxDecoration(
-      //   gradient: LinearGradient(
-      //     begin: Alignment.centerLeft,
-      //     end: Alignment.centerRight,
-      //     colors: [
-      //       AppColors.primaryGradientStart,
-      //       AppColors.primaryGradientEnd,
-      //     ],
-      //     stops: [0.0082, 1],
-      //   ),
-      // ),
+      color: AppColors.primary01,
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // ============================================================
+            // BACK BUTTON
+            // ============================================================
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              child: _buildBackButton(),
+            ),
             TutorProfileCard(
               profile: profile,
               name: profile.name,
@@ -467,6 +460,30 @@ class _TutorProfileScreenState extends ConsumerState<TutorProfileScreen> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBackButton() {
+    return Material(
+      color: Colors.white.withValues(alpha: 0.95),
+      shape: const CircleBorder(),
+      child: InkWell(
+        onTap: () {
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          }
+        },
+        customBorder: const CircleBorder(),
+        child: const SizedBox(
+          width: 42,
+          height: 42,
+          child: Icon(
+            Icons.arrow_back_rounded,
+            color: Colors.black87,
+            size: 22,
+          ),
         ),
       ),
     );

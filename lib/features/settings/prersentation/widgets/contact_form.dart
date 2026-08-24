@@ -57,7 +57,7 @@ class _ContactFormState extends ConsumerState<ContactForm> {
               required: true,
             ),
 
-            const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.md),
 
             AppButton(
               loading: isLoading,

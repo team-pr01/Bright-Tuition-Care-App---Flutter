@@ -23,81 +23,94 @@ class DashboardLargeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child:Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: AppColors.primary03,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        children: [
-          /// LEFT CONTENT
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: title!,
-                        style: Theme.of(context).textTheme.headlineMedium!
-                            .copyWith(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w400,
-                              height: 1.2,
-                            ),
-                      ),
-                     TextSpan(text:(" ")),
-                      if(subtitle != null)TextSpan(
-                        text: subtitle!,
-                        style: Theme.of(context).textTheme.headlineMedium!
-                            .copyWith(
-                              color: AppColors.primary01,
-                              fontWeight: FontWeight.w400,
-                              height: 1.2,
-                            ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 8),
-
-                //  if(subtitle != null)Text(
-                //     subtitle!,
-                //     style: Theme.of(
-                //       context,
-                //     ).textTheme.titleSmall!.copyWith(color: Colors.black),
-                //   ),
-                Text(
-                  description,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium!.copyWith(color: AppColors.neutrals03),
-                ),
-
-                const SizedBox(height: 14),
-
-                GestureDetector(
-                  onTap: onTap,
-                  child: Text(
-                    actionText,
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: AppColors.primary01,
-                      fontWeight: FontWeight.w400,
+      child: Container(
+        padding: const EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          color: AppColors.primary03,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            /// LEFT CONTENT
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: title!,
+                          style: Theme.of(context).textTheme.headlineMedium!
+                              .copyWith(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w400,
+                                height: 1.2,
+                              ),
+                        ),
+                        TextSpan(text: (" ")),
+                        if (subtitle != null)
+                          TextSpan(
+                            text: subtitle!,
+                            style: Theme.of(context).textTheme.headlineMedium!
+                                .copyWith(
+                                  color: AppColors.primary01,
+                                  fontWeight: FontWeight.w400,
+                                  height: 1.2,
+                                ),
+                          ),
+                      ],
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 25),
 
-          /// RIGHT ICON
-          icon!,
-        ],
+                  const SizedBox(height: 8),
+
+                  //  if(subtitle != null)Text(
+                  //     subtitle!,
+                  //     style: Theme.of(
+                  //       context,
+                  //     ).textTheme.titleSmall!.copyWith(color: Colors.black),
+                  //   ),
+                  Text(
+                    description,
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: AppColors.neutrals03,
+                    ),
+                  ),
+
+                  const SizedBox(height: 14),
+
+                  GestureDetector(
+                    onTap: onTap,
+                    child: Row(
+                      children: [
+                        Text(
+                          actionText,
+                          style: Theme.of(context).textTheme.bodyMedium!
+                              .copyWith(
+                                color: AppColors.primary01,
+                                fontWeight: FontWeight.w500,
+                              ),
+                        ),
+                        SizedBox(width: 12),
+                        Icon(
+                          Icons.arrow_forward_rounded,
+                          size: 18,
+                          color: AppColors.primary01,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 25),
+
+            /// RIGHT ICON
+            icon!,
+          ],
+        ),
       ),
-    ));
+    );
   }
 }

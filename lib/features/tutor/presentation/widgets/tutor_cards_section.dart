@@ -98,7 +98,7 @@ class TutorCardsSection extends ConsumerWidget {
           description: confirmationLettersCount > 0
               ? "$confirmationLettersCount confirmation letter(s) available."
               : "You have not confirmed any tuition jobs yet.",
-          actionText: confirmationLettersCount > 0 ? "View All" : "",
+          actionText: "View All",
           onTap: () => {
             Navigator.push(
               context,
@@ -121,10 +121,11 @@ class TutorCardsSection extends ConsumerWidget {
           title: "Invoices",
           onTap: () => changeTab(1),
           subtitle: formatNumber(invoicesCount),
+
           description: invoicesCount > 0
               ? "$invoicesCount invoice(s) available."
               : "No invoice is available because you have not confirmed any tuition jobs yet.",
-          actionText: invoicesCount > 0 ? "View All" : "",
+          actionText: "View All",
           icon: SvgPicture.asset("assets/icons/visual/invoice.svg", width: 80),
         ),
       ],

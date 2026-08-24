@@ -619,32 +619,45 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
   // JOB PILL
   // ============================================================
 
-  
-  
   Widget _buildCities(List<Map<String, dynamic>> cities) {
-  return SizedBox(
-    width: double.infinity,
-    height: 40,
-    child: ListView.separated(
-      controller: _jobsScrollController,
-      scrollDirection: Axis.horizontal,
-      physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.only(right: 4),
-      itemCount: cities.length,
-      separatorBuilder: (_, __) {
-        return const SizedBox(width: 8);
-      },
-      itemBuilder: (context, index) {
-        final cityData = cities[index];
+    // Only show cities that actually
+    // have live jobs.
+    final activeCities = cities
+        .where((city) => _toInt(city['count']) > 0)
+        .toList();
 
-        final city = cityData['city']?.toString() ?? '';
-        final count = _toInt(cityData['count']);
+    // if (activeCities.isEmpty) {
+    //   return const SizedBox(
+    //     height: 40,
+    //     child: Center(child: Text('No live jobs available')),
+    //   );
+    // }
 
-        return _buildJobPill(city, count);
-      },
-    ),
-  );
-}
+    return SizedBox(
+      width: double.infinity,
+      height: 40,
+      child: ListView.separated(
+        controller: _jobsScrollController,
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.only(right: 4),
+        itemCount: cities.length,
+        separatorBuilder: (_, __) {
+          return const SizedBox(width: 8);
+        },
+        itemBuilder: (context, index) {
+          final cityData = cities[index];
+
+          final city = cityData['city']?.toString() ?? '';
+
+          final count = _toInt(cityData['count']);
+
+          return _buildJobPill(city, count);
+        },
+      ),
+    );
+  }
+
   int _toInt(dynamic value) {
     if (value is int) {
       return value;

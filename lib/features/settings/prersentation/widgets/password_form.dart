@@ -88,7 +88,7 @@ class _PasswordFormState extends ConsumerState<PasswordForm> {
               },
             ),
 
-            const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.md),
 
             /// BUTTON
             AppButton(

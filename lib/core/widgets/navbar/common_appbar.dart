@@ -39,7 +39,7 @@ class CommonAppBar extends ConsumerWidget implements PreferredSizeWidget {
             ),
             boxShadow: [
               BoxShadow(
-                color: Color.fromRGBO(0, 0, 0, 0.20),
+                color: Color.fromRGBO(0, 0, 0, 0.14),
                 offset: Offset(0, 1.666),
                 blurRadius: 1.666,
               ),

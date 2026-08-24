@@ -1,7 +1,8 @@
-import 'package:btcclient/features/settings/prersentation/screens/verification_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:btcclient/core/config/theme.dart';
+import 'package:btcclient/features/settings/prersentation/screens/verification_screen.dart';
 
 class VerifyProfileCard extends StatelessWidget {
   final bool isVerified;
@@ -12,78 +13,124 @@ class VerifyProfileCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 13),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
+        color: AppColors.primary03,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.neutrals05, width: 2),
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         children: [
-          /// ICON
-          SvgPicture.asset(
-            "assets/icons/visual/verify-shield.svg",
-            width: 70,
-            height: 70,
-          ),
-
-          const SizedBox(height: 16),
-
-          /// TITLE
-          Text(
-            isVerified ? "Verified" : "Verify Your Profile",
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.w500,
-              color: Colors.black,
-              height: 1.5,
-            ),
-          ),
-
-          const SizedBox(height: 6),
-
-          /// DESCRIPTION
-          Text(
-            isVerified
-                ? "You are verified member of Bright Tuition Care community "
-                : "Verify your profile to build trust and ensure a safe learning environment. "
-                      "Verified accounts get higher visibility and faster matches. "
-                      "Complete verification to start connecting confidently.",
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppColors.neutrals03,
-              height: 1.5,
-            ),
-          ),
-
-          const SizedBox(height: 14),
-
-          /// BUTTON (text only changed, UI same)
-          if (!isVerified)
-            OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 6,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Flexible(
+                child: Text(
+                  "Verify Your Profile",
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                    height: 1.2,
+                  ),
                 ),
-                side: const BorderSide(color: AppColors.primary01, width: 1.5),
-                shape: RoundedRectangleBorder(
+              ),
+
+              const SizedBox(width: 8),
+
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: AppColors.primary01.withValues(alpha: 0.10),
                   borderRadius: BorderRadius.circular(999),
                 ),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const VerificationScreen()),
-                );
-              },
-              child: Text(
-                "Verify Now",
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  color: AppColors.primary01,
-                  height: 1.5,
+                child: Text(
+                  "Recommended",
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AppColors.primary01,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 10,
+                  ),
                 ),
               ),
-            ),
+            ],
+          ),
+
+          const SizedBox(height: 8),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // ============================================================
+              // LEFT CONTENT
+              // ============================================================
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      isVerified
+                          ? "You are a verified member of Bright Tuition Care community."
+                          : "Verify your profile to build trust, increase visibility, and get faster matches.",
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AppColors.neutrals03,
+                        height: 1.5,
+                      ),
+                    ),
+
+                    const SizedBox(height: 14),
+
+                    // ========================================================
+                    // VIEW / VERIFY BUTTON
+                    // ========================================================
+                    OutlinedButton(
+                      onPressed: isVerified
+                          ? null
+                          : () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const VerificationScreen(),
+                                ),
+                              );
+                            },
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 7,
+                        ),
+                        minimumSize: Size.zero,
+                        side: BorderSide(
+                          color: AppColors.primary01,
+                          width: 1.5,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      child: Text(
+                        isVerified ? "Verified" : "Verify Now",
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: AppColors.primary01,
+                          fontWeight: FontWeight.w400,
+                          height: 1.4,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(width: 25),
+
+              // ============================================================
+              // RIGHT ICON
+              // ============================================================
+              SvgPicture.asset(
+                "assets/icons/visual/verify-shield.svg",
+                width: 70,
+                height: 70,
+              ),
+            ],
+          ),
         ],
       ),
     );
