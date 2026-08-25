@@ -1,20 +1,16 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/layout/dashboard_layout.dart';
 import 'package:btcclient/features/confirmation/presentation/screen/confirmation_page.dart';
-import 'package:btcclient/features/invoices/presentation/provider/invoice_provider.dart';
 import 'package:btcclient/features/invoices/presentation/screen/invoice_page.dart';
 import 'package:btcclient/features/jobs/presentation/screen/job_page.dart';
 import 'package:btcclient/features/profile/presentation/screens/tutor_profile_page.dart';
 import 'package:btcclient/features/settings/prersentation/screens/setting_screen.dart';
 import 'package:btcclient/features/settings/prersentation/widgets/show_logout_dialog%20copy.dart';
-// import 'package:btcclient/features/jobs/presentation/screens/job_page.dart';
-// import 'package:btcclient/features/jobs/presentation/widgets/job_card.dart';
 import 'package:btcclient/features/tutor/presentation/screens/how_it_works_screen.dart';
 import 'package:btcclient/core/screens/join_community.dart';
 import 'package:btcclient/core/widgets/navbar/side_drawer.dart';
 import 'package:btcclient/core/widgets/navbar/sidebar_item.dart';
 import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
-import 'package:btcclient/features/auth/presentation/screens/welcome_screen.dart';
 import 'package:btcclient/features/legal/data/important_guidelines_data.dart';
 import 'package:btcclient/features/legal/presentation/important_guidelines_screen.dart';
 import 'package:btcclient/features/refer/presentation/screens/referral_screen.dart';
@@ -39,7 +35,7 @@ class TutorDashboardScreen extends ConsumerWidget {
     return DashboardLayout(
       role: "tutor",
       initialIndex: 2,
-      pageTitles: const ["Job Board", "Invoice", "Dashboard", "Payments"],
+      pageTitles: const ["Settings", "Payments", "Dashboard","Job Board"],
       drawerBuilder: (changeTab) => AppSidebar(
         user: user,
 
@@ -73,7 +69,7 @@ class TutorDashboardScreen extends ConsumerWidget {
             ),
             onTap: () {
               Navigator.pop(context);
-              changeTab(0);
+              changeTab(3);
             },
           ),
           SidebarItem(
@@ -95,6 +91,29 @@ class TutorDashboardScreen extends ConsumerWidget {
                 MaterialPageRoute(
                   builder: (context) => MyApplicationPage(
                     changeTab: changeTab, // ✅ correct
+                  ),
+                ),
+              );
+            },
+          ),
+          SidebarItem(
+            label: "Invoices",
+            icon: SvgPicture.asset(
+             "assets/icons/navigations/invoice.svg",
+              width: 20,
+              height: 20,
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
+              ),
+            ),
+            onTap: () {
+              Navigator.pop(context);
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => InvoiceScreen( role: "tutor",
                   ),
                 ),
               );
@@ -150,7 +169,7 @@ class TutorDashboardScreen extends ConsumerWidget {
             ),
             onTap: () {
               Navigator.pop(context);
-              changeTab(3);
+              changeTab(1);
             },
           ),
           SidebarItem(
@@ -191,7 +210,9 @@ class TutorDashboardScreen extends ConsumerWidget {
 
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SettingScreen()),
+                MaterialPageRoute(
+                  builder: (context) => SettingScreen(changeTab: changeTab),
+                ),
               );
             },
           ),
@@ -304,19 +325,19 @@ class TutorDashboardScreen extends ConsumerWidget {
       ),
 
       pages: [
-        (changeTab, status) => JobsPage(role: "tutor", changeTab: changeTab),
-        (changeTab, status) => const InvoiceScreen(role: "tutor"),
+        (changeTab, status) => SettingScreen(changeTab: changeTab),
+        (changeTab, status) => TutorPaymentScreen(changeTab: changeTab),
         (changeTab, status) => TutorHomeScreen(
           changeTab: changeTab, // 🔥 KEEP THIS
         ),
 
-        (changeTab, status) => TutorPaymentScreen(changeTab: changeTab),
-        (changeTab, status) => TutorProfileScreen(),
+        (changeTab, status) => JobsPage(role: "tutor", changeTab: changeTab),
+        (changeTab, status) => TutorProfileScreen(changeTab: changeTab),
       ],
       navItems: [
         BottomNavigationBarItem(
           icon: SvgPicture.asset(
-            "assets/icons/navigations/job-search.svg",
+           "assets/icons/navigations/settings.svg",
             width: 22,
             height: 22,
             colorFilter: const ColorFilter.mode(
@@ -325,17 +346,17 @@ class TutorDashboardScreen extends ConsumerWidget {
             ),
           ),
           activeIcon: SvgPicture.asset(
-            "assets/icons/navigations/job-search.svg",
+           "assets/icons/navigations/settings.svg",
             width: 22,
             height: 22,
             colorFilter: ColorFilter.mode(AppColors.primary01, BlendMode.srcIn),
           ),
-          label: "Job Board",
+          label: "Settings",
         ),
 
         BottomNavigationBarItem(
           icon: SvgPicture.asset(
-            "assets/icons/navigations/invoice.svg",
+            "assets/icons/navigations/payment.svg",
             width: 22,
             height: 22,
             colorFilter: const ColorFilter.mode(
@@ -344,12 +365,12 @@ class TutorDashboardScreen extends ConsumerWidget {
             ),
           ),
           activeIcon: SvgPicture.asset(
-            "assets/icons/navigations/invoice.svg",
+            "assets/icons/navigations/payment.svg",
             width: 22,
             height: 22,
             colorFilter: ColorFilter.mode(AppColors.primary01, BlendMode.srcIn),
           ),
-          label: "Invoice",
+          label: "Payments",
         ),
 
         /// CENTER HOME
@@ -374,7 +395,7 @@ class TutorDashboardScreen extends ConsumerWidget {
 
         BottomNavigationBarItem(
           icon: SvgPicture.asset(
-            "assets/icons/navigations/payment.svg",
+            "assets/icons/navigations/job-search.svg",
             width: 22,
             height: 22,
             colorFilter: const ColorFilter.mode(
@@ -383,12 +404,12 @@ class TutorDashboardScreen extends ConsumerWidget {
             ),
           ),
           activeIcon: SvgPicture.asset(
-            "assets/icons/navigations/payment.svg",
+            "assets/icons/navigations/job-search.svg",
             width: 22,
             height: 22,
             colorFilter: ColorFilter.mode(AppColors.primary01, BlendMode.srcIn),
           ),
-          label: "Payments",
+          label: "Job Board",
         ),
 
         BottomNavigationBarItem(

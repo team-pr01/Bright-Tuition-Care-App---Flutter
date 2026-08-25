@@ -1,3 +1,4 @@
+import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/features/jobs/data/constant/filter_data.dart';
 import 'package:btcclient/features/jobs/presentation/provider/selected_job_filter_provider.dart';
 import 'package:flutter/material.dart';
@@ -193,18 +194,31 @@ class _FilterSidebarState extends ConsumerState<FilterSidebar> {
         child: Column(
           children: [
             /// HEADER
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "Filters",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.only(top: 20.0,bottom: AppSpacing.lg),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Filters",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  ),
+                  Container(
+                    height: 34,
+                    width: 34,
+                    decoration: const BoxDecoration(
+                      color: AppColors.primary02,
+                      shape: BoxShape.circle,
+                      
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.close, color: Colors.black),
+                      iconSize: 16,
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ),
+                ],
+              ),
             ),
 
             Expanded(
@@ -316,14 +330,13 @@ class _FilterSidebarState extends ConsumerState<FilterSidebar> {
                       onMultiChanged: (v) => setState(() => studentGender = v),
                     ),
 
-                 
                     /// POSTED DATE FROM
                     AppInputField(
                       controller: postedFromController,
                       label: "Posted Date From",
                       type: AppInputType.date,
                       lastDate: DateTime.now(),
-                       hint:"dd/mm/yyyy",
+                      hint: "dd/mm/yyyy",
                     ),
 
                     /// POSTED DATE TO
@@ -335,7 +348,7 @@ class _FilterSidebarState extends ConsumerState<FilterSidebar> {
                           ? _parseDate(postedFromController.text)
                           : DateTime(1950),
                       lastDate: DateTime.now(),
-                       hint:"dd/mm/yyyy",
+                      hint: "dd/mm/yyyy",
                     ),
                   ],
                 ),

@@ -4,16 +4,16 @@ import 'package:btcclient/core/widgets/navbar/common_appbar.dart';
 import 'package:flutter/material.dart';
 
 class HowItWorksScreen extends StatelessWidget {
-
   const HowItWorksScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final steps = tutorSteps ;
+    final steps = tutorSteps;
 
     return Scaffold(
-      appBar: const CommonAppBar( title: "How It Works",),
-
+      appBar: const CommonAppBar(
+        title: "How It Works",
+      ),
       body: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: steps.length,
@@ -21,6 +21,7 @@ class HowItWorksScreen extends StatelessWidget {
           return TimelineItem(
             step: steps[index],
             isLast: index == steps.length - 1,
+            index: index,
           );
         },
       ),

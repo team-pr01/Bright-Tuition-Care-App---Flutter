@@ -23,7 +23,6 @@ class OverviewScreen extends ConsumerStatefulWidget {
 }
 
 class _OverviewScreenState extends ConsumerState<OverviewScreen> {
-
   final PageController _serviceController = PageController(
     viewportFraction: 0.99,
   );
@@ -84,13 +83,11 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
       imagePath: "assets/images/service_catagories/uni_help.png",
     ),
   ];
-  
-  void _startJobsAutoScroll() {
-  _jobsAutoScrollTimer?.cancel();
 
-  _jobsAutoScrollTimer = Timer.periodic(
-    const Duration(seconds: 2),
-    (_) {
+  void _startJobsAutoScroll() {
+    _jobsAutoScrollTimer?.cancel();
+
+    _jobsAutoScrollTimer = Timer.periodic(const Duration(seconds: 2), (_) {
       if (!mounted || !_jobsScrollController.hasClients) {
         return;
       }
@@ -119,9 +116,9 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
         duration: const Duration(milliseconds: 600),
         curve: Curves.easeInOut,
       );
-    },
-  );
-}
+    });
+  }
+
   void _startServiceAutoScroll() {
     _serviceAutoScrollTimer?.cancel();
 
@@ -267,9 +264,30 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                   // ==================================================
                   // 3. USEFUL INFO
                   // ==================================================
-                  _buildUsefulInfoCard(),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              const GuestDashboardScreen(initialIndex: 0),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      "Useful links",
+                      textAlign: TextAlign.center,
+                      style: AppTextStyles.headlineMedium.copyWith(
+                        color: AppColors.primary04,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
 
-                  const SizedBox(height: AppSpacing.lg),
+                  // _buildUsefulInfoCard(),
+
+                  // const SizedBox(height: AppSpacing.lg),
 
                   // ==================================================
                   // 4. FEATURED

@@ -202,7 +202,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
 
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SettingScreen()),
+                MaterialPageRoute(builder: (context) => SettingScreen(changeTab: changeTab,)),
               );
             },
           ),

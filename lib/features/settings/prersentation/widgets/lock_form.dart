@@ -7,7 +7,7 @@ import 'package:btcclient/features/settings/prersentation/widgets/card_wrapper.d
 import 'package:btcclient/features/settings/prersentation/widgets/show_unlock_model.dart';
 import 'package:flutter/material.dart';
 
-Widget lockForm( BuildContext context,ThemeData theme, bool isProfileLocked) {
+Widget lockForm( BuildContext context,ThemeData theme, bool isProfileLocked, Function(int, {String? status}) changeTab,) {
     return cardWrapper(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,7 +44,7 @@ Widget lockForm( BuildContext context,ThemeData theme, bool isProfileLocked) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => const TutorProfileScreen(),
+          builder: (_) => TutorProfileScreen(changeTab: changeTab),
         ),
       );
     } else if (role == "guardian") {

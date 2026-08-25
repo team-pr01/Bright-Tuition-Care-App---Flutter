@@ -8,16 +8,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ProfileLockScreen extends ConsumerStatefulWidget {
-  const ProfileLockScreen({super.key});
+  final Function(int, {String? status}) changeTab;
+
+  const ProfileLockScreen({
+    super.key,
+    required this.changeTab,
+  });
 
   @override
   ConsumerState<ProfileLockScreen> createState() =>
       _ProfileLockScreenState();
 }
 
-class _ProfileLockScreenState
-    extends ConsumerState<ProfileLockScreen> {
-
+class _ProfileLockScreenState extends ConsumerState<ProfileLockScreen> {
   @override
   void initState() {
     super.initState();
@@ -46,18 +49,23 @@ class _ProfileLockScreenState
 
     return Scaffold(
       backgroundColor: AppColors.neutrals01,
+
       appBar: const CommonAppBar(
         title: "Profile Lock",
       ),
+
       body: RefreshIndicator(
         onRefresh: _refresh,
+
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.all(AppSpacing.lg),
+
           child: lockForm(
             context,
             theme,
             isProfileLocked,
+            widget.changeTab,
           ),
         ),
       ),

@@ -15,13 +15,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingScreen extends ConsumerWidget {
-  const SettingScreen({super.key});
+  final Function(int, {String? status}) changeTab;
+
+  const SettingScreen({super.key, required this.changeTab});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: AppColors.neutrals01,
-      appBar: const CommonAppBar(title: "Settings & Activity"),
+   
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 12),
         children: [
@@ -74,7 +76,7 @@ class SettingScreen extends ConsumerWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const ProfileLockScreen(),
+                  builder: (context) => ProfileLockScreen(changeTab: changeTab),
                 ),
               );
             },

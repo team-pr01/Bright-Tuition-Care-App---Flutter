@@ -130,8 +130,6 @@ class TutorProfileCard extends StatelessWidget {
 
       child: Column(
         children: [
-          const SizedBox(height: 40),
-
           // Avatar
           Stack(
             alignment: Alignment.center,
@@ -281,17 +279,16 @@ class TutorProfileCard extends StatelessWidget {
 
           Row(
             children: [
-              Expanded(
-                child: AppButton(
-                  label: "Download CV",
-                  variant: AppButtonVariant.outlineGray,
-                  icon: Icons.download,
-                  iconPosition: AppButtonIconPosition.right,
-                  height: 38,
-                  fontSize: 12,
-                  onPressed: onDownload,
-                  loading: isDownloading,
-                ),
+              AppButton(
+                label: "Download CV",
+                variant: AppButtonVariant.outlineGray,
+                icon: Icons.download,
+                iconPosition: AppButtonIconPosition.right,
+                height: 38,
+                fontSize: 12,
+                width: 150,
+                onPressed: onDownload,
+                loading: isDownloading,
               ),
 
               const SizedBox(width: 12),
@@ -308,7 +305,6 @@ class TutorProfileCard extends StatelessWidget {
                   textColor: Colors.white,
                   borderColor: Colors.white,
                   backgroundColor: Colors.transparent,
-                  borderRadius: 6,
 
                   onPressed: () {
                     Navigator.push(

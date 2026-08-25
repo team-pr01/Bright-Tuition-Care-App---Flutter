@@ -21,7 +21,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:btcclient/core/utils/image_picker_bottom_sheet.dart';
 
 class TutorProfileScreen extends ConsumerStatefulWidget {
-  const TutorProfileScreen({super.key});
+  final Function(int, {String? status}) changeTab;
+
+  const TutorProfileScreen({super.key, required this.changeTab});
 
   @override
   ConsumerState<TutorProfileScreen> createState() => _TutorProfileScreenState();
@@ -284,7 +286,7 @@ class _TutorProfileScreenState extends ConsumerState<TutorProfileScreen> {
             // BACK BUTTON
             // ============================================================
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
               child: _buildBackButton(),
             ),
             TutorProfileCard(
@@ -467,13 +469,11 @@ class _TutorProfileScreenState extends ConsumerState<TutorProfileScreen> {
 
   Widget _buildBackButton() {
     return Material(
-      color: Colors.white.withValues(alpha: 0.95),
+      color: Colors.transparent,
       shape: const CircleBorder(),
       child: InkWell(
         onTap: () {
-          if (Navigator.canPop(context)) {
-            Navigator.pop(context);
-          }
+          widget.changeTab(2);
         },
         customBorder: const CircleBorder(),
         child: const SizedBox(
@@ -481,7 +481,7 @@ class _TutorProfileScreenState extends ConsumerState<TutorProfileScreen> {
           height: 42,
           child: Icon(
             Icons.arrow_back_rounded,
-            color: Colors.black87,
+            color: Colors.white,
             size: 22,
           ),
         ),

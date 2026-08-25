@@ -68,8 +68,7 @@ class TutorCardsSection extends ConsumerWidget {
                       area: preferredLocations,
                     );
 
-                    changeTab(0);
-                    changeTab(0);
+                    changeTab(3);
                   },
                   subtitle: "Nearby Jobs",
                   title: formatNumber(nearbyJobsCount).toString(),
