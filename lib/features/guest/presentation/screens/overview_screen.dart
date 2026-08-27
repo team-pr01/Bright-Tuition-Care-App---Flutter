@@ -1,4 +1,5 @@
 import 'package:btcclient/features/guest/presentation/guest_dashboard_screen.dart';
+import 'package:btcclient/features/guest/presentation/screens/useful_links_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -270,7 +271,7 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (_) =>
-                              const GuestDashboardScreen(initialIndex: 0),
+                              const UsefulLinksPage(),
                         ),
                       );
                     },

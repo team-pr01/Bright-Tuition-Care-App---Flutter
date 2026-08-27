@@ -91,7 +91,7 @@ class _BottomSheetTitle extends StatelessWidget {
           fontWeight: FontWeight.w500,
           fontSize: 16,
           height: 1.2,
-          decorationColor: AppColors.primary01,
+          decorationColor: AppColors.primary03,
           decorationThickness: 1.5,
         ),
       ),
@@ -135,29 +135,28 @@ class AboutUsContent extends StatelessWidget {
               // LOGO
               // --------------------------------------------------------
               Container(
-                width: 78,
-                height: 78,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.primary02, width: 1),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary01.withOpacity(0.12),
-                      blurRadius: 18,
-                      spreadRadius: 2,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
+                width: 242,
+                // decoration: BoxDecoration(
+                //   color: Colors.white,
+                //   shape: BoxShape.circle,
+                //   border: Border.all(color: AppColors.primary04, width: 1),
+                //   boxShadow: [
+                //     BoxShadow(
+                //       color: AppColors.primary01.withOpacity(0.12),
+                //       blurRadius: 18,
+                //       spreadRadius: 2,
+                //       offset: const Offset(0, 5),
+                //     ),
+                //   ],
+                // ),
                 padding: const EdgeInsets.all(12),
                 child: Image.asset(
-                  'assets/images/logo-1.png',
+                  'assets/images/logo.png',
                   fit: BoxFit.contain,
                   errorBuilder: (context, error, stackTrace) {
                     return const Icon(
                       Icons.school_rounded,
-                      size: 42,
+                      size: 242,
                       color: AppColors.primary01,
                     );
                   },
@@ -165,7 +164,7 @@ class AboutUsContent extends StatelessWidget {
               ),
 
               const SizedBox(height: 14),
-              const _BottomSheetTitle(title: 'About Bright Tuition Care'),
+              // const _BottomSheetTitle(title: 'About Bright Tuition Care'),
               // --------------------------------------------------------
               // DESCRIPTION
               // --------------------------------------------------------
@@ -173,7 +172,7 @@ class AboutUsContent extends StatelessWidget {
                 '''Bright Tuition Care is Bangladesh's first and most trusted platform for "guardians, students and tutors" to connect with verified tutors and find tuition jobs across the country. We are dedicated to bridging the educational gap between students and tutors. Our mission is to provide a trusted platform where guardians, students and tutors can connect easily.''',
                 textAlign: TextAlign.justify,
                 style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.neutrals03,
+                  color: AppColors.neutrals04,
                   fontSize: 13,
                   height: 1.6,
                 ),
@@ -182,13 +181,14 @@ class AboutUsContent extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 28),
-
+        const SizedBox(height: 14),
+        QuickLinksContent(),
+        const SizedBox(height: 14),
         // ============================================================
         // COMPANY INFORMATION
         // ============================================================
         Text(
-          'Company Info',
+          'Company Details',
           style: AppTextStyles.headlineMedium.copyWith(
             color: AppColors.primary01,
             fontWeight: FontWeight.w500,
@@ -219,21 +219,17 @@ class AboutUsContent extends StatelessWidget {
             children: [
               const _CompanyInfoRow(
                 icon: Icons.description_outlined,
-                text: 'Trade License No: TRAD/DNCC/017918/2023',
+                text: 'Trade License No: TRAD/DNCC/017918/2043',
               ),
-
-              const _CompanyInfoDivider(),
 
               const _CompanyInfoRow(
                 icon: Icons.verified_outlined,
-                text: 'E-TIN Number: 435024284395',
+                text: 'E-TIN Number: 435044284395',
               ),
-
-              const _CompanyInfoDivider(),
 
               const _CompanyInfoRow(
                 icon: Icons.barcode_reader,
-                text: 'BIN Number: 003669024-010',
+                text: 'BIN Number: 003669044-010',
               ),
             ],
           ),
@@ -246,7 +242,7 @@ class AboutUsContent extends StatelessWidget {
           width: double.infinity,
           // padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           // decoration: BoxDecoration(
-          //   color: AppColors.primary02.withOpacity(0.35),
+          //   color: AppColors.primary04.withOpacity(0.35),
           //   borderRadius: BorderRadius.circular(14),
           // ),
           child: Column(
@@ -260,58 +256,49 @@ class AboutUsContent extends StatelessWidget {
               //           fontSize: 14,
               //         ),
               //       ),
-              const SizedBox(height: 14),
-              Text(
-                'All Rights Reserved by Bright Tuition Care © 2026',
-                textAlign: TextAlign.center,
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.neutrals03,
-                  fontSize: 12,
-                  height: 1.4,
-                ),
-              ),
+              
             ],
           ),
         ),
 
-        const SizedBox(height: 22),
+        // const SizedBox(height: 22),
 
         // ============================================================
         // DISCLAIMER
         // ============================================================
-        Container(
-          width: double.infinity,
-          // padding: const EdgeInsets.all(16),
-          // decoration: BoxDecoration(
-          //   color: const Color(0xFFF8F9FA),
-          //   borderRadius: BorderRadius.circular(16),
-          //   border: Border.all(color: const Color(0xFFE5E7E9), width: 1),
-          // ),
-          child: RichText(
-            textAlign: TextAlign.justify,
-            text: TextSpan(
-              style: AppTextStyles.bodySmall.copyWith(
-                color: AppColors.neutrals03,
-                fontSize: 12,
-                height: 1.6,
-              ),
-              children: const [
-                TextSpan(
-                  text: 'Disclaimer\n',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.primary01,
-                    fontSize: 13,
-                  ),
-                ),
-                TextSpan(
-                  text:
-                      'Bright Tuition Care is an online platform that connects learners with tutors. Bright Tuition Care does not provide tuition services directly, nor does it assign or recommend specific tutors to learners. Instead, Bright Tuition Care facilitates the process by leveraging technology and security measures to help learners connect with verified and skilled tutors.',
-                ),
-              ],
-            ),
-          ),
-        ),
+        // Container(
+        //   width: double.infinity,
+        //   // padding: const EdgeInsets.all(16),
+        //   // decoration: BoxDecoration(
+        //   //   color: const Color(0xFFF8F9FA),
+        //   //   borderRadius: BorderRadius.circular(16),
+        //   //   border: Border.all(color: const Color(0xFFE5E7E9), width: 1),
+        //   // ),
+        //   child: RichText(
+        //     textAlign: TextAlign.justify,
+        //     text: TextSpan(
+        //       style: AppTextStyles.bodySmall.copyWith(
+        //         color: AppColors.neutrals03,
+        //         fontSize: 12,
+        //         height: 1.6,
+        //       ),
+        //       children: const [
+        //         TextSpan(
+        //           text: 'Disclaimer\n',
+        //           style: TextStyle(
+        //             fontWeight: FontWeight.w700,
+        //             color: AppColors.primary01,
+        //             fontSize: 13,
+        //           ),
+        //         ),
+        //         TextSpan(
+        //           text:
+        //               'Bright Tuition Care is an online platform that connects learners with tutors. Bright Tuition Care does not provide tuition services directly, nor does it assign or recommend specific tutors to learners. Instead, Bright Tuition Care facilitates the process by leveraging technology and security measures to help learners connect with verified and skilled tutors.',
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // ),
 
         const SizedBox(height: 8),
       ],
@@ -339,7 +326,7 @@ class _CompanyInfoRow extends StatelessWidget {
             width: 30,
             height: 30,
             decoration: BoxDecoration(
-              color: AppColors.primary02,
+              color: AppColors.primary04,
               borderRadius: BorderRadius.circular(6),
             ),
             child: Icon(icon, color: AppColors.primary01, size: 18),
@@ -351,7 +338,7 @@ class _CompanyInfoRow extends StatelessWidget {
             child: Text(
               text,
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.neutrals03,
+                color: AppColors.neutrals04,
                 fontSize: 13,
               ),
             ),
@@ -362,22 +349,6 @@ class _CompanyInfoRow extends StatelessWidget {
   }
 }
 
-// ==================================================================
-// COMPANY INFO DIVIDER
-// ==================================================================
-
-class _CompanyInfoDivider extends StatelessWidget {
-  const _CompanyInfoDivider();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Divider(height: 1, color: Color(0xFFE5E5E5));
-  }
-}
-
-// ==================================================================
-// CONTACT US
-// ==================================================================
 
 class ContactUsContent extends StatelessWidget {
   const ContactUsContent({super.key});
@@ -458,7 +429,7 @@ class ContactUsContent extends StatelessWidget {
           decoration: BoxDecoration(
             color: const Color(0xFFEAF5FF),
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: AppColors.primary02),
+            border: Border.all(color: AppColors.primary04),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -641,13 +612,13 @@ class ContactUsContent extends StatelessWidget {
         // ============================================================
         // HELPLINE
         // ============================================================
-        HelplineCard(
-          phone: '+880 1616-012 365',
-          timing: '10:00 AM - 10:00 PM',
-          onTap: () {
-            _callNumber(context, '+8801616012365');
-          },
-        ),
+        // HelplineCard(
+        //   phone: '+880 1616-012 365',
+        //   timing: '10:00 AM - 10:00 PM',
+        //   onTap: () {
+        //     _callNumber(context, '+8801616012365');
+        //   },
+        // ),
       ],
     );
   }
@@ -827,7 +798,7 @@ class SocialLinksContent extends StatelessWidget {
           'Stay connected with Bright Tuition Care on social media.',
           textAlign: TextAlign.center,
           style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.neutrals03,
+            color: AppColors.neutrals04,
             fontSize: 13,
             height: 1.5,
           ),
@@ -838,28 +809,22 @@ class SocialLinksContent extends StatelessWidget {
         // ============================================================
         // SOCIAL MEDIA GRID
         // ============================================================
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: socials.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-            childAspectRatio: 0.95,
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: socials.map((item) {
+              return Padding(
+                padding: const EdgeInsets.only(right: 2),
+                child: _SocialCard(
+                  item: item,
+                  onTap: () {
+                    _openSocialLink(context, item.url);
+                  },
+                ),
+              );
+            }).toList(),
           ),
-          itemBuilder: (context, index) {
-            final item = socials[index];
-
-            return _SocialCard(
-              item: item,
-              onTap: () {
-                _openSocialLink(context, item.url);
-              },
-            );
-          },
         ),
-
         const SizedBox(height: 30),
 
         // ============================================================
@@ -932,6 +897,20 @@ class SocialLinksContent extends StatelessWidget {
             ),
           ],
         ),
+        const SizedBox(height: 14),
+        const Divider(),
+          const SizedBox(height: 14),
+              Text(
+                'All Rights Reserved by Bright Tuition Care © 2046',
+                textAlign: TextAlign.center,
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: AppColors.neutrals04,
+                  fontSize: 12,
+                  height: 1.4,
+                ),
+              ),
+               SizedBox(height: 14,),
+              
       ],
     );
   }
@@ -970,16 +949,8 @@ class _SocialCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(16),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        splashColor: AppColors.primary02.withValues(alpha: 0.35),
-        highlightColor: AppColors.primary02.withValues(alpha: 0.15),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFFE4E7EA), width: 1),
-          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -990,34 +961,32 @@ class _SocialCard extends StatelessWidget {
                 width: 54,
                 height: 54,
                 decoration: BoxDecoration(
-                  color: AppColors.primary02.withValues(alpha: 0.35),
+                  color: AppColors.primary02,
                   shape: BoxShape.circle,
                 ),
                 padding: const EdgeInsets.all(13),
                 child: SvgPicture.asset(
                   item.assetPath,
-                  width: 28,
-                  height: 28,
+                  width: 34,
+                  height: 34,
                   fit: BoxFit.contain,
                 ),
               ),
 
-              const SizedBox(height: 10),
-
               // ========================================================
               // PLATFORM NAME
               // ========================================================
-              Text(
-                item.title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.neutrals02,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+              // Text(
+              //   item.title,
+              //   maxLines: 1,
+              //   overflow: TextOverflow.ellipsis,
+              //   textAlign: TextAlign.center,
+              //   style: AppTextStyles.bodyMedium.copyWith(
+              //     color: AppColors.neutrals04,
+              //     fontSize: 13,
+              //     fontWeight: FontWeight.w600,
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -1239,8 +1208,8 @@ class _QuickLinkRow extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(18),
-        splashColor: AppColors.primary02.withValues(alpha: 0.35),
-        highlightColor: AppColors.primary02.withValues(alpha: 0.15),
+        splashColor: AppColors.primary04.withValues(alpha: 0.35),
+        highlightColor: AppColors.primary04.withValues(alpha: 0.15),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 6),
           child: Row(
@@ -1252,7 +1221,7 @@ class _QuickLinkRow extends StatelessWidget {
                 width: 38,
                 height: 38,
                 decoration: BoxDecoration(
-                  color: AppColors.primary02,
+                  color: AppColors.primary04,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(item.icon, color: AppColors.primary01, size: 18),
@@ -1267,7 +1236,7 @@ class _QuickLinkRow extends StatelessWidget {
                 child: Text(
                   item.title,
                   style: AppTextStyles.bodyLarge.copyWith(
-                    color: AppColors.neutrals02,
+                    color: AppColors.neutrals04,
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
                   ),

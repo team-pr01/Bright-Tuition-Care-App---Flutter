@@ -3,6 +3,122 @@ import 'package:flutter/material.dart';
 /// ===============================
 /// DESIGN TOKENS
 /// ===============================
+/// 
+import 'package:flutter/material.dart';
+
+@immutable
+class FooterThemeData
+    extends ThemeExtension<FooterThemeData> {
+  final Color backgroundColor;
+  final Color headerTopColor;
+  final Color headerBottomColor;
+  final Color dashboardColor;
+  final Color textColor;
+  final Color secondaryTextColor;
+  final Color dividerColor;
+  final Color whatsappColor;
+
+  const FooterThemeData({
+    required this.backgroundColor,
+    required this.headerTopColor,
+    required this.headerBottomColor,
+    required this.dashboardColor,
+    required this.textColor,
+    required this.secondaryTextColor,
+    required this.dividerColor,
+    required this.whatsappColor,
+  });
+
+  @override
+  FooterThemeData copyWith({
+    Color? backgroundColor,
+    Color? headerTopColor,
+    Color? headerBottomColor,
+    Color? dashboardColor,
+    Color? textColor,
+    Color? secondaryTextColor,
+    Color? dividerColor,
+    Color? whatsappColor,
+  }) {
+    return FooterThemeData(
+      backgroundColor:
+          backgroundColor ?? this.backgroundColor,
+      headerTopColor:
+          headerTopColor ?? this.headerTopColor,
+      headerBottomColor:
+          headerBottomColor ?? this.headerBottomColor,
+      dashboardColor:
+          dashboardColor ?? this.dashboardColor,
+      textColor:
+          textColor ?? this.textColor,
+      secondaryTextColor:
+          secondaryTextColor ?? this.secondaryTextColor,
+      dividerColor:
+          dividerColor ?? this.dividerColor,
+      whatsappColor:
+          whatsappColor ?? this.whatsappColor,
+    );
+  }
+
+  @override
+  FooterThemeData lerp(
+    covariant FooterThemeData? other,
+    double t,
+  ) {
+    if (other == null) return this;
+
+    return FooterThemeData(
+      backgroundColor:
+          Color.lerp(
+            backgroundColor,
+            other.backgroundColor,
+            t,
+          )!,
+      headerTopColor:
+          Color.lerp(
+            headerTopColor,
+            other.headerTopColor,
+            t,
+          )!,
+      headerBottomColor:
+          Color.lerp(
+            headerBottomColor,
+            other.headerBottomColor,
+            t,
+          )!,
+      dashboardColor:
+          Color.lerp(
+            dashboardColor,
+            other.dashboardColor,
+            t,
+          )!,
+      textColor:
+          Color.lerp(
+            textColor,
+            other.textColor,
+            t,
+          )!,
+      secondaryTextColor:
+          Color.lerp(
+            secondaryTextColor,
+            other.secondaryTextColor,
+            t,
+          )!,
+      dividerColor:
+          Color.lerp(
+            dividerColor,
+            other.dividerColor,
+            t,
+          )!,
+      whatsappColor:
+          Color.lerp(
+            whatsappColor,
+            other.whatsappColor,
+            t,
+          )!,
+    );
+  }
+}
 
 class AppColors {
   static const primary01 = Color(0xFF0D99FF);
