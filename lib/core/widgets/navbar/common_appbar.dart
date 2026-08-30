@@ -112,12 +112,7 @@ class CommonAppBar extends ConsumerWidget implements PreferredSizeWidget {
                               },
                               icon: Container(
                                 padding: const EdgeInsets.all(6),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30),
-                                  border: Border.all(
-                                    color: Colors.grey.shade300,
-                                  ),
-                                ),
+                                
                                 child: SvgPicture.asset(
                                   "assets/icons/operations/notification.svg",
                                   width: 20,

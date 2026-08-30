@@ -28,7 +28,7 @@ class GuardianCardsSection extends StatelessWidget {
               "Submit your requirements to find expert and verified tutors.",
           actionText: "Hire Tutor",
           icon: SvgPicture.asset(
-            "assets/icons/visual/location.svg",
+            "assets/icons/visual/hire-tutor.svg",
             width: 80,
             colorFilter: const ColorFilter.mode(
               AppColors.primary01,
@@ -68,7 +68,7 @@ class GuardianCardsSection extends StatelessWidget {
                   description: confirmationLettersCount > 0
                       ? "$confirmationLettersCount letter(s) available."
                       : "No confirmed tuition yet.",
-                  actionText: confirmationLettersCount > 0 ? "View All" : "",
+                  actionText:  "View All" ,
                   icon: SvgPicture.asset(
                     "assets/icons/visual/letter.svg",
                     width: 40,

@@ -2,6 +2,7 @@ import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/utils/number_formatter.dart';
 import 'package:btcclient/core/widgets/dashboard/dashboard_cards/profile_progress_icon.dart';
 import 'package:btcclient/features/confirmation/presentation/screen/confirmation_page.dart';
+import 'package:btcclient/features/invoices/presentation/screen/invoice_page.dart';
 import 'package:btcclient/features/jobs/data/models/job_filter.dart';
 import 'package:btcclient/features/jobs/presentation/provider/selected_job_filter_provider.dart';
 import 'package:flutter/material.dart';
@@ -118,7 +119,14 @@ class TutorCardsSection extends ConsumerWidget {
         const SizedBox(height: 14),
         DashboardLargeCard(
           title: "Invoices",
-          onTap: () => changeTab(1),
+          onTap: () =>{
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const InvoiceScreen(role: "tutor"),
+              ),
+            ),
+          } ,
           subtitle: formatNumber(invoicesCount),
 
           description: invoicesCount > 0

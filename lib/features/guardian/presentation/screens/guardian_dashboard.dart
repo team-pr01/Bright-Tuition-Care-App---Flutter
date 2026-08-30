@@ -156,7 +156,7 @@ class _GuardianHomeScreenState extends ConsumerState<GuardianHomeScreen> {
                       BlendMode.srcIn,
                     ),
                   ),
-                  label: "Closed",
+                  label: "Confirmed",
                   count: dashboardData?["data"]?["jobs"]["closed"] ?? 0,
                   onTap: () {
                     widget.changeTab(0, status: "closed");

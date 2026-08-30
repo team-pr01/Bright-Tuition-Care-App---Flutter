@@ -43,26 +43,7 @@ class _PostJobPageState extends ConsumerState<PostJobPage> {
 
     return Scaffold(
       body: Column(
-        children: [
-          
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(
-              "Hire a Tutor",
-              textAlign: TextAlign.left, 
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    color: AppColors.neutrals06,
-                    fontWeight: FontWeight.w600,
-                      ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              "Find expert tutors easily for personalized learning and academic success.",
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ),  
+        children: [  
           !state.isEdit ? StepIndicator(currentStep: state.step) : SizedBox.shrink(),
           Expanded(
             child: IndexedStack(

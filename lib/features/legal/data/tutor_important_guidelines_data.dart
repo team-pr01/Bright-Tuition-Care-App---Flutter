@@ -2,7 +2,7 @@
 
 import 'package:btcclient/features/legal/data/models/imprtant_guideline.dart';
 
-const ImportantGuidelinesData importantGuidelinesData =
+const ImportantGuidelinesData tutorImportantGuidelinesData =
     ImportantGuidelinesData(
   title: "Important Notes for Tutors",
   sections: [

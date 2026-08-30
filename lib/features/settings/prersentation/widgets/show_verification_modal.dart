@@ -43,7 +43,7 @@ void showVerificationModal(BuildContext context, WidgetRef ref) {
 
                 /// TITLE
                 Text(
-                  isSuccess ? "Request Received" : "Verification",
+                  isSuccess ? "Request Received" : "Verify Your Profile",
                   style: theme.textTheme.headlineSmall,
                 ),
 
@@ -68,6 +68,7 @@ void showVerificationModal(BuildContext context, WidgetRef ref) {
                     children: [
                       Expanded(
                         child: AppButton(
+                          variant: AppButtonVariant.outline,
                           label: "No",
                           onPressed: () => Navigator.pop(context),
                         ),
@@ -77,7 +78,7 @@ void showVerificationModal(BuildContext context, WidgetRef ref) {
                         child: AppButton(
                           label: "Yes",
                           loading: isLoading,
-                          variant: AppButtonVariant.gradient,
+                          variant: AppButtonVariant.primary,
                           onPressed: isLoading
                               ? null
                               : () async {

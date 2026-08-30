@@ -311,14 +311,14 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
                                 icon: Container(
                                   padding: const EdgeInsets.all(6),
 
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(30),
+                                  // decoration: BoxDecoration(
+                                  //   borderRadius: BorderRadius.circular(30),
 
-                                    border: Border.all(
-                                      color: AppColors.primary03,
-                                      width: 1,
-                                    ),
-                                  ),
+                                  //   border: Border.all(
+                                  //     color: AppColors.primary03,
+                                  //     width: 1,
+                                  //   ),
+                                  // ),
 
                                   child: SvgPicture.asset(
                                     "assets/icons/operations/menu.svg",

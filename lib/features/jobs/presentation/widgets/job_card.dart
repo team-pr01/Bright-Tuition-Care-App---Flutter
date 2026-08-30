@@ -314,7 +314,7 @@ decoration: BoxDecoration(
                   child: IconRow(
                     icon: "assets/icons/visual/salary.svg",
                     title: "Salary",
-                    value: safe(job.salary),
+                    value: '${safe(job.salary)} BTC',
                   ),
                 ),
               ],

@@ -1,3 +1,4 @@
+
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/models/how_it_works_model.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,6 @@ class TimelineItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-
         /// 🔵 ICON
         Container(
           padding: const EdgeInsets.all(16),
@@ -57,17 +57,7 @@ class TimelineItem extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 20),
-
-        // /// 🧵 CONNECTOR LINE
-        // if (!isLast)
-        //   Container(
-        //     width: 2,
-        //     height: 40,
-        //     color: Colors.grey[300],
-        //   ),
-
-        // const SizedBox(height: 20),
+        const SizedBox(height: 40),
       ],
     );
   }

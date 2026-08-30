@@ -134,7 +134,7 @@ class ProfileSection extends StatelessWidget {
               ),
 
               Text(
-                "Since ${DateFormatter.formatSince(createdAt)}",
+                "Since ${DateFormatter.formatSinceFullDate(createdAt)}",
                 style: const TextStyle(
                   color: AppColors.neutrals01,
                   fontSize: 13,

@@ -10,6 +10,14 @@ class DateFormatter {
       return date;
     }
   }
+  static String formatSinceFullDate(String date) {
+  try {
+    final parsed = DateTime.parse(date);
+    return DateFormat('MMMM d, yyyy').format(parsed);
+  } catch (e) {
+    return date;
+  }
+}
   static String formattedDate(String date) {
     try {
       final parsed = DateTime.parse(date);

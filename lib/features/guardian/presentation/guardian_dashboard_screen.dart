@@ -4,16 +4,14 @@ import 'package:btcclient/core/screens/join_community.dart';
 import 'package:btcclient/core/widgets/navbar/side_drawer.dart';
 import 'package:btcclient/core/widgets/navbar/sidebar_item.dart';
 import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
-import 'package:btcclient/features/auth/presentation/screens/welcome_screen.dart';
 import 'package:btcclient/features/confirmation/presentation/screen/confirmation_page.dart';
 import 'package:btcclient/features/guardian/presentation/screens/guardian_dashboard.dart';
 import 'package:btcclient/features/guardian/presentation/screens/guardian_payment_screen.dart';
 import 'package:btcclient/features/guardian/presentation/screens/how_it_works_screen.dart';
 import 'package:btcclient/features/hire_tutor/presentation/screen/post_job_page.dart';
-import 'package:btcclient/features/invoices/presentation/provider/invoice_provider.dart';
 import 'package:btcclient/features/invoices/presentation/screen/invoice_page.dart';
 import 'package:btcclient/features/jobs/presentation/screen/job_page.dart';
-import 'package:btcclient/features/legal/data/important_guidelines_data.dart';
+import 'package:btcclient/features/legal/data/guardian_important_guidelines_data.dart';
 import 'package:btcclient/features/legal/presentation/important_guidelines_screen.dart';
 import 'package:btcclient/core/screens/share_app.dart';
 import 'package:btcclient/features/profile/presentation/screens/guardian_profile_page.dart';
@@ -43,7 +41,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
 
         menuItems: [
           SidebarItem(
-            label: "Home",
+            label: "Dashboard",
             icon: SvgPicture.asset(
               "assets/icons/navigations/dashboard-square.svg",
               width: 20,
@@ -145,7 +143,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
             ),
             onTap: () {
               Navigator.pop(context);
-              changeTab(3);
+              changeTab(4);
             },
           ),
 
@@ -161,8 +159,14 @@ class GuardianDashboardScreen extends ConsumerWidget {
               ),
             ),
             onTap: () {
-              Navigator.pop(context);
-              changeTab(3);
+              Navigator.pop(context); // closes drawer
+              
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => GuardianPaymentScreen(),
+                ),
+              );
             },
           ),
           SidebarItem(
@@ -197,14 +201,11 @@ class GuardianDashboardScreen extends ConsumerWidget {
                 BlendMode.srcIn,
               ),
             ),
-            onTap: () {
-              Navigator.pop(context); // closes drawer
-
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SettingScreen(changeTab: changeTab,)),
-              );
+             onTap: () {
+              Navigator.pop(context);
+              changeTab(3);
             },
+            
           ),
         ],
 
@@ -274,7 +275,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
                 context,
                 MaterialPageRoute(
                   builder: (_) => ImportantGuidelinesScreen(
-                    document: importantGuidelinesData,
+                    document: guardianImportantGuidelinesData,
                   ),
                 ),
               );
@@ -283,13 +284,6 @@ class GuardianDashboardScreen extends ConsumerWidget {
         ],
 
         onLogout: () async {
-          // await ref.read(authProvider.notifier).logout();
-          // ref.read(invoiceProvider.notifier).clear();
-          // Navigator.pushAndRemoveUntil(
-          //   context,
-          //   MaterialPageRoute(builder: (_) => const WelcomeScreen()),
-          //   (route) => false,
-          // );
           showLogoutDialog(context);
         },
       ),
@@ -307,7 +301,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
           changeTab: changeTab, // 🔥 PASS IT
         ),
 
-        (changeTab, status) => const GuardianPaymentScreen(),
+        (changeTab, status) => SettingScreen(changeTab: changeTab),
         (changeTab, status) => const GuardianProfilePage(),
       ],
 
@@ -328,7 +322,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
             height: 22,
             colorFilter: ColorFilter.mode(AppColors.primary01, BlendMode.srcIn),
           ),
-          label: "Posted Job",
+          label: "My Jobs",
         ),
 
         BottomNavigationBarItem(
@@ -347,7 +341,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
             height: 22,
             colorFilter: ColorFilter.mode(AppColors.primary01, BlendMode.srcIn),
           ),
-          label: "Post Job",
+          label: "Hire Tutor",
         ),
 
         /// CENTER HOME
@@ -372,7 +366,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
 
         BottomNavigationBarItem(
           icon: SvgPicture.asset(
-            "assets/icons/navigations/payment.svg",
+            "assets/icons/navigations/settings.svg",
             width: 22,
             height: 22,
             colorFilter: const ColorFilter.mode(
@@ -381,12 +375,12 @@ class GuardianDashboardScreen extends ConsumerWidget {
             ),
           ),
           activeIcon: SvgPicture.asset(
-            "assets/icons/navigations/payment.svg",
+            "assets/icons/navigations/settings.svg",
             width: 22,
             height: 22,
             colorFilter: ColorFilter.mode(AppColors.primary01, BlendMode.srcIn),
           ),
-          label: "Payments",
+          label: "Settings",
         ),
 
         BottomNavigationBarItem(

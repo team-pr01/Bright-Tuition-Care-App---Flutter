@@ -11,7 +11,7 @@ import 'package:btcclient/core/screens/join_community.dart';
 import 'package:btcclient/core/widgets/navbar/side_drawer.dart';
 import 'package:btcclient/core/widgets/navbar/sidebar_item.dart';
 import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
-import 'package:btcclient/features/legal/data/important_guidelines_data.dart';
+import 'package:btcclient/features/legal/data/tutor_important_guidelines_data.dart';
 import 'package:btcclient/features/legal/presentation/important_guidelines_screen.dart';
 import 'package:btcclient/features/refer/presentation/screens/referral_screen.dart';
 import 'package:btcclient/features/tutor/presentation/screens/tutor_application_screen.dart';
@@ -304,7 +304,7 @@ class TutorDashboardScreen extends ConsumerWidget {
                 context,
                 MaterialPageRoute(
                   builder: (_) => ImportantGuidelinesScreen(
-                    document: importantGuidelinesData,
+                    document: tutorImportantGuidelinesData,
                   ),
                 ),
               );

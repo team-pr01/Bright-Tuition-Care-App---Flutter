@@ -29,7 +29,7 @@ class AppSidebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      width: 264,
+      width: 300,
       backgroundColor: AppColors.primary01,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
