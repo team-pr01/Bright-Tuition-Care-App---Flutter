@@ -163,7 +163,7 @@ class AppButton extends StatelessWidget {
           padding: iconOnly
               ? EdgeInsets.zero
               : const EdgeInsets.symmetric(horizontal: 10),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius),),
         );
 
       /// EXISTING SECONDARY
@@ -176,7 +176,7 @@ class AppButton extends StatelessWidget {
               ? EdgeInsets.zero
               : const EdgeInsets.symmetric(horizontal: 10),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(999),
+           borderRadius: BorderRadius.circular(borderRadius),
           ),
         );
 
@@ -211,7 +211,7 @@ class AppButton extends StatelessWidget {
           padding: iconOnly
               ? EdgeInsets.zero
               : const EdgeInsets.symmetric(horizontal: 10),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius),),
         );
 
       /// NEW OUTLINE GRAY
@@ -221,7 +221,7 @@ class AppButton extends StatelessWidget {
           foregroundColor: AppColors.primary01,
           elevation: 0,
           side: BorderSide(color: AppColors.neutrals04),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius),),
           padding: iconOnly
               ? EdgeInsets.zero
               : const EdgeInsets.symmetric(horizontal: 10),
@@ -235,7 +235,7 @@ class AppButton extends StatelessWidget {
               ? EdgeInsets.zero
               : const EdgeInsets.symmetric(horizontal: 10),
           side: BorderSide(color: AppColors.neutrals04),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius),),
         );
     }
   }

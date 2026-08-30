@@ -382,7 +382,7 @@ class _JobsPageState extends ConsumerState<JobsPage> {
                       BlendMode.srcIn,
                     ),
                   ),
-                  label: "Closed",
+                  label: "Confirmed",
                   count: state.meta?.counts.closedJobs ?? 0,
                   onTap: () {
                     ref
@@ -418,20 +418,20 @@ class _JobsPageState extends ConsumerState<JobsPage> {
           /// 📊 COUNT + FILTER
           Row(
             children: [
-              Expanded(
-                child: Text(
-                  getCountText(
-                    (isTutor || isGuest)
-                        ? (state.meta?.liveJobs ?? 0)
-                        : (state.meta?.counts.liveJobs ?? 0),
-                  ),
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    color: AppColors.neutrals02,
-                    fontWeight: FontWeight.w400,
-                    height: 1.5,
-                  ),
-                ),
-              ),
+              // Expanded(
+              //   child: Text(
+              //     getCountText(
+              //       (isTutor || isGuest)
+              //           ? (state.meta?.liveJobs ?? 0)
+              //           : (state.meta?.counts.liveJobs ?? 0),
+              //     ),
+              //     style: Theme.of(context).textTheme.titleLarge!.copyWith(
+              //       color: AppColors.neutrals02,
+              //       fontWeight: FontWeight.w400,
+              //       height: 1.5,
+              //     ),
+              //   ),
+              // ),
 
               if (isTutor || isGuest) ...[
                 /// Clear Filters
@@ -509,7 +509,7 @@ class _JobsPageState extends ConsumerState<JobsPage> {
             ),
             const SizedBox(width: 8),
             const Text(
-        'No Jobs',
+        'No Jobs found',
         style: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.w500,
@@ -539,7 +539,6 @@ class _JobsPageState extends ConsumerState<JobsPage> {
           }
 
           final job = state.jobs[index];
-          print(job);
           return JobCard(
             changeTab: widget.changeTab,
             job: job,
@@ -564,12 +563,12 @@ class _JobsPageState extends ConsumerState<JobsPage> {
       );
     }
 
-    if (!state.hasMore) {
-      return const Padding(
-        padding: EdgeInsets.all(16),
-        child: Center(child: Text("No more jobs")),
-      );
-    }
+    // if (!state.hasMore) {
+    //   return const Padding(
+    //     padding: EdgeInsets.all(16),
+    //     child: Center(child: Text("No more jobs")),
+    //   );
+    // }
 
     return const SizedBox();
   }

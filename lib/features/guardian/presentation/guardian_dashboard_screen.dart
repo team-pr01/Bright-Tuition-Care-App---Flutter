@@ -35,7 +35,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
     return DashboardLayout(
       role: "guardian",
       initialIndex: 2,
-      pageTitles: const ["Job Board", "Hire a Tutor", "Dashboard", "Payment"],
+      pageTitles: const ["My Jobs", "Hire a Tutor", "Dashboard", "Payment"],
       drawerBuilder: (changeTab) => AppSidebar(
         user: user,
 

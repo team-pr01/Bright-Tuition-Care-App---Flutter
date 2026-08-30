@@ -87,6 +87,7 @@ class _PostJobPageState extends ConsumerState<PostJobPage> {
                   child: AppButton(
                     variant: AppButtonVariant.gradient,
                     loading: state.isLoading,
+                    borderRadius: 12,
                     onPressed: state.isLoading
                         ? null
                         : () {

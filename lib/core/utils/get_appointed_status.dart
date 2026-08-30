@@ -96,7 +96,7 @@ static String getApplicationStatus({
       return "Ongoing";
 
     default:
-      return jobStatus == "live" ? "Ongoing" : "Closed";
+      return jobStatus == "Live" ? "Ongoing" : "Closed";
   }
 }
  static Color getApplicationStatusColor({
