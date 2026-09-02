@@ -3,6 +3,7 @@ import 'package:btcclient/core/utils/category_icon_helper.dart';
 import 'package:btcclient/core/utils/date_formatter.dart';
 import 'package:btcclient/core/utils/get_appointed_status.dart';
 import 'package:btcclient/core/utils/safe.dart';
+import 'package:btcclient/core/utils/text_formatter.dart';
 import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
 import 'package:btcclient/features/guardian/presentation/screens/guradian_job_application.dart';
 import 'package:btcclient/features/jobs/data/models/application_modal.dart';
@@ -227,7 +228,7 @@ class _JobCardState extends ConsumerState<JobCard> {
                       Text("Status :"),
                       const SizedBox(width: 8),
                       Text(
-                        job.status ?? "",
+                        TextFormatter.capitalize(job.status ?? ""),
                         style: TextStyle(
                           color: StatusDataFormatter.getStatusColorGuardian(
                             application?.status,

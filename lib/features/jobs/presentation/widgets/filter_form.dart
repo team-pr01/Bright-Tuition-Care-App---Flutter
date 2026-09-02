@@ -228,7 +228,7 @@ class _FilterSidebarState extends ConsumerState<FilterSidebar> {
                     /// CITY (MULTI)
                     AppInputField(
                       label: "City",
-                      type: AppInputType.dropdown,
+                      type: AppInputType.dropdown2,
                       multiSelect: true,
                       dropdownItems: List<String>.from(
                         filterData["cityCorporations"],
@@ -240,7 +240,7 @@ class _FilterSidebarState extends ConsumerState<FilterSidebar> {
                     /// AREA (MULTI)
                     AppInputField(
                       label: "Area",
-                      type: AppInputType.dropdown,
+                      type: AppInputType.dropdown2,
                       multiSelect: true,
                       dropdownItems: areaOptions,
                       selectedValues: areas,
@@ -250,7 +250,7 @@ class _FilterSidebarState extends ConsumerState<FilterSidebar> {
                     /// CATEGORY (MULTI)
                     AppInputField(
                       label: "Category",
-                      type: AppInputType.dropdown,
+                      type: AppInputType.dropdown2,
                       multiSelect: true,
                       dropdownItems: List<String>.from(filterData["category"]),
                       selectedValues: categories,
@@ -260,7 +260,7 @@ class _FilterSidebarState extends ConsumerState<FilterSidebar> {
                     /// CLASS (MULTI)
                     AppInputField(
                       label: "Class",
-                      type: AppInputType.dropdown,
+                      type: AppInputType.dropdown2,
                       multiSelect: true,
                       dropdownItems: classOptions,
                       selectedValues: classes,
@@ -270,7 +270,7 @@ class _FilterSidebarState extends ConsumerState<FilterSidebar> {
                     /// SUBJECT (MULTI)
                     AppInputField(
                       label: "Subjects",
-                      type: AppInputType.dropdown,
+                      type: AppInputType.dropdown2,
                       multiSelect: true,
                       dropdownItems: subjectOptions,
                       selectedValues: subjects,
@@ -280,7 +280,7 @@ class _FilterSidebarState extends ConsumerState<FilterSidebar> {
                     /// DAYS (MULTI)
                     AppInputField(
                       label: "Days Per Week",
-                      type: AppInputType.dropdown,
+                      type: AppInputType.dropdown2,
                       multiSelect: true,
                       dropdownItems: List<String>.from(
                         filterData["daysPerWeek"],
@@ -292,7 +292,7 @@ class _FilterSidebarState extends ConsumerState<FilterSidebar> {
                     /// TUITION TYPE (MULTI)
                     AppInputField(
                       label: "Tuition Type",
-                      type: AppInputType.dropdown,
+                      type: AppInputType.dropdown2,
                       multiSelect: true,
                       dropdownItems: List<String>.from(
                         filterData["tuitionType"],
@@ -304,7 +304,7 @@ class _FilterSidebarState extends ConsumerState<FilterSidebar> {
                     /// TUTOR GENDER
                     AppInputField(
                       label: "Tutor Gender",
-                      type: AppInputType.dropdown,
+                      type: AppInputType.dropdown2,
                       multiSelect: true,
                       dropdownItems: tutorGenderOptions,
                       selectedValues: tutorGender,
@@ -323,7 +323,7 @@ class _FilterSidebarState extends ConsumerState<FilterSidebar> {
                     /// STUDENT GENDER
                     AppInputField(
                       label: "Student Gender",
-                      type: AppInputType.dropdown,
+                      type: AppInputType.dropdown2,
                       multiSelect: true,
                       dropdownItems: studentGenderOptions,
                       selectedValues: studentGender,

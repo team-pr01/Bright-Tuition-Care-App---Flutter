@@ -87,7 +87,8 @@ void initState() {
           /// 🔥 TUITION TYPE
           AppInputField(
             label: "Tuition Type",
-            type: AppInputType.dropdown,
+            required: true,
+            type: AppInputType.dropdown2,
             dropdownItems: List<String>.from(filterData["tuitionType"] ?? []),
             value: data.tuitionType,
             onChanged: (v) {
@@ -100,7 +101,8 @@ void initState() {
           /// 🔥 CATEGORY
           AppInputField(
             label: "Category",
-            type: AppInputType.dropdown,
+             required: true,
+            type: AppInputType.dropdown2,
             dropdownItems: List<String>.from(filterData["category"] ?? []),
             value: data.category,
             onChanged: (v) {
@@ -118,8 +120,9 @@ void initState() {
           /// 🔥 CURRICULUM (ONLY FOR ENGLISH MEDIUM)
           if ((data.category ?? "").toLowerCase() == "english medium")
             AppInputField(
+              //  required: true,
               label: "Curriculum",
-              type: AppInputType.dropdown,
+              type: AppInputType.dropdown2,
               dropdownItems: curriculumTypes,
               value: data.curriculum,
               onChanged: (v) {
@@ -132,7 +135,8 @@ void initState() {
           /// 🔥 CLASS
           AppInputField(
             label: "Class",
-            type: AppInputType.dropdown,
+            required: true,
+            type: AppInputType.dropdown2,
             multiSelect: true,
             dropdownItems:
                 getClasses().map((e) => e["name"] as String).toList(),
@@ -150,7 +154,8 @@ void initState() {
           /// 🔥 SUBJECTS
           AppInputField(
             label: "Subjects",
-            type: AppInputType.dropdown,
+            required: true,
+            type: AppInputType.dropdown2,
             multiSelect: true,
             dropdownItems: getSubjects(),
             selectedValues: data.subjects,
@@ -164,7 +169,8 @@ void initState() {
           /// 🔥 TUTORING DAYS
           AppInputField(
             label: "Tutoring Days",
-            type: AppInputType.dropdown,
+            required: true,
+            type: AppInputType.dropdown2,
             dropdownItems:
                 List<String>.from(filterData["daysPerWeek"] ?? []),
             value: data.tutoringDays,

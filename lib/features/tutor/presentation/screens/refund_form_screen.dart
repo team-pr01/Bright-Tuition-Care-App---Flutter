@@ -114,7 +114,7 @@ class _RefundFormScreenState extends ConsumerState<RefundFormScreen> {
               /// PAYMENT METHOD
               AppInputField(
                 label: "Payment Method",
-                type: AppInputType.dropdown,
+                type: AppInputType.dropdown2,
                 required: true,
                 dropdownItems: paymentMethods,
                 value: paymentMethod,

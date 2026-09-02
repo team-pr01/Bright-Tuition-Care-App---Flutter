@@ -33,18 +33,22 @@ class CommonAppBar extends ConsumerWidget implements PreferredSizeWidget {
         filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.75),
-            border: const Border(
-              bottom: BorderSide(color: AppColors.primary02, width: 1),
+            color: AppColors.neutrals01,
+            border: Border(
+              bottom: BorderSide(
+                color: AppColors.neutrals03.withOpacity(0.15),
+                width: 1,
+              ),
             ),
             boxShadow: [
               BoxShadow(
-                color: Color.fromRGBO(0, 0, 0, 0.14),
+                color: Color.fromRGBO(0, 0, 0, 0.20),
                 offset: Offset(0, 1.666),
                 blurRadius: 1.666,
               ),
             ],
           ),
+
           child: SafeArea(
             bottom: false,
             child: SizedBox(
@@ -84,7 +88,7 @@ class CommonAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   // =====================================================
                   Text(
                     title,
-                    style: AppTextStyles.titleMedium.copyWith(
+                    style: AppTextStyles.headlineSmall.copyWith(
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -112,7 +116,7 @@ class CommonAppBar extends ConsumerWidget implements PreferredSizeWidget {
                               },
                               icon: Container(
                                 padding: const EdgeInsets.all(6),
-                                
+
                                 child: SvgPicture.asset(
                                   "assets/icons/operations/notification.svg",
                                   width: 20,

@@ -71,17 +71,18 @@ class AuthLayout extends StatelessWidget {
                   height: 110,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        AppColors.primary01,
-                        AppColors.primary02,
-                        AppColors.primary01,
-                        AppColors.primary02,
-                      ],
-                      stops: const [0.0, 0.35, 0.65, 1.0],
-                    ),
+                    color: Colors.white,
+                    // gradient: LinearGradient(
+                    //   begin: Alignment.topLeft,
+                    //   end: Alignment.bottomRight,
+                    //   colors: [
+                    //     AppColors.primary01,
+                    //     AppColors.primary02,
+                    //     AppColors.primary01,
+                    //     AppColors.primary02,
+                    //   ],
+                    //   stops: const [0.0, 0.35, 0.65, 1.0],
+                    // ),
                   ),
                   padding: const EdgeInsets.all(8),
                   child: Image.asset(imagePath!, fit: BoxFit.contain),

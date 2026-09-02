@@ -122,7 +122,7 @@ class _AddPaymentMethodScreenState
                 AppInputField(
                   label: "Payment Method",
                   hint: "Select Payment Method",
-                  type: AppInputType.dropdown,
+                  type: AppInputType.dropdown2,
                   required: true,
                   dropdownItems: paymentMethods,
                   value: paymentMethod,

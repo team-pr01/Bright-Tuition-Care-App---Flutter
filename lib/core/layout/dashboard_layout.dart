@@ -3,13 +3,13 @@ import 'package:btcclient/core/services/navigation_service.dart';
 import 'package:btcclient/core/widgets/navbar/bottom_navbar.dart';
 import 'package:btcclient/core/widgets/snackbar/app_snackbar.dart';
 import 'package:btcclient/features/auth/presentation/screens/welcome_screen.dart';
-import 'package:btcclient/features/auth/presentation/widgets/welcome_nav_link.dart';
 import 'package:btcclient/features/notifications/presentations/provider/notification_notifier.dart';
 import 'package:btcclient/features/notifications/presentations/screens/notification_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'dart:ui';
 
 /// Controls what appears on the right side of the Dashboard AppBar.
 ///
@@ -273,97 +273,98 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
         appBar: _showAppBar
             ? PreferredSize(
                 preferredSize: const Size.fromHeight(56),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.md,
-                  ),
-
-                  decoration: const BoxDecoration(
-                    color: AppColors.neutrals01,
-                    border: const Border(
-                      bottom: BorderSide(color: AppColors.primary02, width: 1),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Color.fromRGBO(0, 0, 0, 0.20),
-                        offset: Offset(0, 1.666),
-                        blurRadius: 1.666,
+                child: ClipRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.neutrals01,
+                        border: Border(
+                          bottom: BorderSide(
+                            color: AppColors.neutrals03.withOpacity(0.15),
+                            width: 1,
+                          ),
+                        ),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color.fromRGBO(0, 0, 0, 0.20),
+                            offset: Offset(0, 1.666),
+                            blurRadius: 1.666,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                      child: SafeArea(
+                        bottom: false,
+                        child: SizedBox(
+                          // height: 56,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              // =================================================
+                              // MENU BUTTON
+                              // =================================================
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 12),
+                                  child: Builder(
+                                    builder: (context) {
+                                      return IconButton(
+                                        icon: Container(
+                                          padding: const EdgeInsets.all(6),
 
-                  child: SafeArea(
-                    bottom: false,
-
-                    child: Stack(
-                      alignment: Alignment.center,
-
-                      children: [
-                        // =================================================
-                        // MENU BUTTON
-                        // =================================================
-                        Align(
-                          alignment: Alignment.centerLeft,
-
-                          child: Builder(
-                            builder: (context) {
-                              return IconButton(
-                                icon: Container(
-                                  padding: const EdgeInsets.all(6),
-
-                                  // decoration: BoxDecoration(
-                                  //   borderRadius: BorderRadius.circular(30),
-
-                                  //   border: Border.all(
-                                  //     color: AppColors.primary03,
-                                  //     width: 1,
-                                  //   ),
-                                  // ),
-
-                                  child: SvgPicture.asset(
-                                    "assets/icons/operations/menu.svg",
-                                    width: 20,
-                                    height: 20,
-
-                                    colorFilter: const ColorFilter.mode(
-                                      AppColors.primary01,
-                                      BlendMode.srcIn,
-                                    ),
+                                          // decoration: BoxDecoration(
+                                          //   borderRadius: BorderRadius.circular(30),
+                                          //   border: Border.all(
+                                          //     color: AppColors.primary03,
+                                          //     width: 1,
+                                          //   ),
+                                          // ),
+                                          child: SvgPicture.asset(
+                                            "assets/icons/operations/menu.svg",
+                                            width: 20,
+                                            height: 20,
+                                            colorFilter: const ColorFilter.mode(
+                                              AppColors.primary01,
+                                              BlendMode.srcIn,
+                                            ),
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          Scaffold.of(context).openDrawer();
+                                        },
+                                      );
+                                    },
                                   ),
                                 ),
+                              ),
 
-                                onPressed: () {
-                                  Scaffold.of(context).openDrawer();
-                                },
-                              );
-                            },
+                              // =================================================
+                              // TITLE
+                              // =================================================
+                              Text(
+                                widget.pageTitles.isNotEmpty &&
+                                        currentIndex < widget.pageTitles.length
+                                    ? widget.pageTitles[currentIndex]
+                                    : "",
+                                style: AppTextStyles.headlineSmall.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+
+                              // =================================================
+                              // RIGHT APP BAR ACTION
+                              // =================================================
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: _buildAppBarAction(
+                                  unreadCount: unreadCount,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-
-                        // =================================================
-                        // LOGO
-                        // =================================================
-                        Center(
-                          child: Text(
-                            widget.pageTitles.isNotEmpty &&
-                                    currentIndex < widget.pageTitles.length
-                                ? widget.pageTitles[currentIndex]
-                                : "",
-                            style: AppTextStyles.headlineSmall.copyWith(
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-
-                        // =================================================
-                        // RIGHT APP BAR ACTION
-                        // =================================================
-                        Align(
-                          alignment: Alignment.centerRight,
-
-                          child: _buildAppBarAction(unreadCount: unreadCount),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
@@ -391,7 +392,6 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
   }
 
   Widget _buildAppBarAction({required int unreadCount}) {
-
     if (widget.appBarActionWidget != null) {
       return widget.appBarActionWidget!;
     }
@@ -407,12 +407,11 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
           width: 38,
           height: 38,
 
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
+          // decoration: BoxDecoration(
+          //   shape: BoxShape.circle,
 
-            border: Border.all(color: AppColors.primary03, width: 1),
-          ),
-
+          //   border: Border.all(color: AppColors.primary03, width: 1),
+          // ),
           child: const Icon(
             Icons.person_outline_rounded,
             size: 22,

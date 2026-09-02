@@ -71,10 +71,10 @@ class PostJobNotifier extends StateNotifier<PostJobState> {
       "class": data.classes,
       "subjects": data.subjects,
       "tutoringDays": data.tutoringDays,
-      "tutoringTime": data.tutoringTime,
+      "tutoringTime": data.tutoringTime ,
       "curriculum": data.curriculum,
-      "salary": data.salary.toString(),
-      "numberOfStudents": data.numberOfStudents,
+      "salary": data.salary?.toString() ?? "Negotiable",
+      "numberOfStudents": data.numberOfStudents ,
 
       "studentGender": data.studentGender?.toLowerCase(),
       "preferredTutorGender": data.preferredTutorGender?.toLowerCase(),
@@ -154,9 +154,12 @@ class PostJobNotifier extends StateNotifier<PostJobState> {
           d.category == null ||
           d.classes.isEmpty ||
           d.subjects.isEmpty ||
-          d.tutoringDays == null ||
-          (d.tutoringTime == null || d.tutoringTime!.isEmpty) ||
-          (d.salary == null || d.salary!.isEmpty)) {
+          d.tutoringDays == null 
+          // ||
+          // (d.tutoringTime == null || d.tutoringTime!.isEmpty) ||
+          // (d.salary == null || d.salary!.isEmpty)
+          )
+           {
         print("❌ STEP 1 INVALID");
         return;
       }

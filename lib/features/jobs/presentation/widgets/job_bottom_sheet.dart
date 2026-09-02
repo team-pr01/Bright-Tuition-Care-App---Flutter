@@ -3,6 +3,7 @@ import 'package:btcclient/core/utils/category_icon_helper.dart';
 import 'package:btcclient/core/utils/date_formatter.dart';
 import 'package:btcclient/core/utils/get_appointed_status.dart';
 import 'package:btcclient/core/utils/safe.dart';
+import 'package:btcclient/core/utils/text_formatter.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/core/widgets/reusable_bottom_sheet/reusable_bottom_sheet.dart';
 import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
@@ -63,37 +64,53 @@ class _JobCardState extends ConsumerState<JobBottomSheet> {
         : serverApplied;
     return ReusableBottomSheet(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(0),
         child: SingleChildScrollView(
-          child: Column(
+          child: Column(  
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(child: SvgPicture.asset(iconPath, height: 100)),
-              const SizedBox(height: 16),
-              RichText(
-                text: TextSpan(
+              Container(
+                margin: const EdgeInsets.only(top: 16),
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    TextSpan(
-                      text: safe(job.title).isEmpty ? "-" : job.title,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        height: 1.4,
-                        color: Colors.black,
+                    Center(child: SvgPicture.asset(iconPath, height: 100)),
+
+                    const SizedBox(height: 16),
+
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: safe(job.title).isEmpty ? "-" : job.title,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              height: 1.4,
+                              color: Colors.black,
+                            ),
+                          ),
+
+                          if (safe(job.tuitionType).isNotEmpty)
+                            TextSpan(
+                              text: " — ${job.tuitionType}",
+                              style: const TextStyle(
+                                color: AppColors.primary01,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                        ],
                       ),
                     ),
-                    if (safe(job.tuitionType).isNotEmpty)
-                      TextSpan(
-                        text: " — ${job.tuitionType}",
-                        style: const TextStyle(
-                          color: AppColors.primary01,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
                   ],
                 ),
               ),
-
               const SizedBox(height: 10),
               if (variant == JobCardVariant.application && application != null)
                 Row(
@@ -139,7 +156,7 @@ class _JobCardState extends ConsumerState<JobBottomSheet> {
                         Text("Status :"),
                         const SizedBox(width: 8),
                         Text(
-                          job.status ?? "",
+                          TextFormatter.capitalize(job.status ?? ""),
                           style: TextStyle(
                             color: StatusDataFormatter.getStatusColorGuardian(
                               application?.status,
@@ -199,8 +216,6 @@ class _JobCardState extends ConsumerState<JobBottomSheet> {
                 style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
               ),
               const SizedBox(height: 10),
-
-              
 
               /// ================= SUBJECTS =================
               IconRow(

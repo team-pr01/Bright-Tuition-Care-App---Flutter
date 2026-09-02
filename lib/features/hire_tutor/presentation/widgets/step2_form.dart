@@ -22,7 +22,7 @@ class Step2Form extends ConsumerWidget {
             AppInputField(
               label: "Student Gender",
               required: true,
-              type: AppInputType.dropdown,
+              type: AppInputType.dropdown2,
               dropdownItems: List<String>.from(studentGenderOptions),
               value: data.studentGender,
               onChanged: (v) {
@@ -35,7 +35,7 @@ class Step2Form extends ConsumerWidget {
             AppInputField(
               label: "Preferred Tutor",
               required: true,
-              type: AppInputType.dropdown,
+              type: AppInputType.dropdown2,
               dropdownItems: List<String>.from(tutorGenderOptions),
               value: data.preferredTutorGender,
               onChanged: (v) {

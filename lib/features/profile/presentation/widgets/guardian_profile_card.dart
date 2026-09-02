@@ -52,7 +52,6 @@ class GuardianProfileCard extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         children: [
-          const SizedBox(height: 40),
 
           // ============================================================
           // PROFILE IMAGE

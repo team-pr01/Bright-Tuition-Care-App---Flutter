@@ -1,3 +1,4 @@
+
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/utils/get_cout.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
@@ -24,6 +25,7 @@ class JobsPage extends ConsumerStatefulWidget {
   final String role;
   final String? initialStatus;
   final Function(int, {String? status}) changeTab;
+
   const JobsPage({
     super.key,
     required this.role,
@@ -173,27 +175,11 @@ class _JobsPageState extends ConsumerState<JobsPage> {
         final filter = ref.read(selectedJobFilterProvider);
 
         await ref.read(jobsProvider.notifier).fetchJobs(newFilter: filter);
+      } else {
+        await ref
+            .read(postedJobsProvider.notifier)
+            .fetchPostedJobs(status: widget.initialStatus);
       }
-      // if (!isTutor) {
-      //   await ref
-      //       .read(postedJobsProvider.notifier)
-      //       .fetchPostedJobs(status: widget.initialStatus);
-
-      //   return;
-      // }
-
-      // final filter = ref.read(selectedJobFilterProvider);
-
-      // await ref.read(jobsProvider.notifier).fetchJobs(newFilter: filter);
-
-      // --------------------------------------------------------
-      // IMPORTANT:
-      // Check notification AFTER Job Board is initialized.
-      // --------------------------------------------------------
-
-      // if (mounted) {
-      //   await _openPendingNotificationJob();
-      // }
     });
 
     _scrollController.addListener(() {
@@ -262,6 +248,7 @@ class _JobsPageState extends ConsumerState<JobsPage> {
         (selectedFilter?.tuitionType?.isNotEmpty ?? false) ||
         (selectedFilter?.subjects?.isNotEmpty ?? false) ||
         ((selectedFilter?.keyword?.isNotEmpty ?? false));
+
     void openFilter(BuildContext context) {
       showGeneralDialog(
         context: context,
@@ -447,8 +434,9 @@ class _JobsPageState extends ConsumerState<JobsPage> {
                           width: 42,
                           height: 32,
                           onPressed: () async {
-                            ref.read(selectedJobFilterProvider.notifier).state =
-                                JobFilter(status: "live");
+                            ref
+                                .read(selectedJobFilterProvider.notifier)
+                                .state = JobFilter(status: "live");
 
                             await ref
                                 .read(jobsProvider.notifier)
@@ -499,26 +487,25 @@ class _JobsPageState extends ConsumerState<JobsPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SvgPicture.asset(
-        'assets/icons/navigations/jobs.svg',
-        width: 80,
-        height: 80,
-        colorFilter: const ColorFilter.mode(
-                  AppColors.primary01,
-                  BlendMode.srcIn,
-                ),
+              'assets/icons/navigations/jobs.svg',
+              width: 80,
+              height: 80,
+              colorFilter: const ColorFilter.mode(
+                AppColors.primary01,
+                BlendMode.srcIn,
+              ),
             ),
             const SizedBox(width: 8),
             const Text(
-        'No Jobs found',
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w500,
-        ),
+              'No Jobs found',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ],
         ),
       );
-   ;
     }
 
     return RefreshIndicator(
@@ -550,7 +537,6 @@ class _JobsPageState extends ConsumerState<JobsPage> {
       ),
     );
   }
-  
 
   /// ================= PAGINATION =================
   Widget _buildPaginationLoader(state) {

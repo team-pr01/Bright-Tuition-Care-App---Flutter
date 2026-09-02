@@ -239,7 +239,7 @@ class _EditPersonalInformationScreenState
                 AppInputField(
                   controller: _genderController,
                   label: "Gender",
-                  type: AppInputType.dropdown,
+                  type: AppInputType.dropdown2,
                   dropdownItems: List<String>.from(studentGenderOptions),
                 ),
 
@@ -247,7 +247,7 @@ class _EditPersonalInformationScreenState
 
                 AppInputField(
                   label: "City",
-                  type: AppInputType.dropdown,
+                  type: AppInputType.dropdown2,
                   value: _cityController.text,
                   hint: "Select City",
                   dropdownItems: List<String>.from(
@@ -267,7 +267,7 @@ class _EditPersonalInformationScreenState
 
                 AppInputField(
                   label: "Area",
-                  type: AppInputType.dropdown,
+                  type: AppInputType.dropdown2,
                   value: _areaController.text,
                   hint: _cityController.text.isEmpty
                       ? "Select city first"

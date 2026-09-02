@@ -51,7 +51,7 @@ Widget lockForm( BuildContext context,ThemeData theme, bool isProfileLocked, Fun
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => const GuardianProfilePage(),
+          builder: (_) => GuardianProfilePage(changeTab: changeTab),
         ),
       );
     }

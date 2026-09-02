@@ -308,7 +308,7 @@ class _EditTuitionRelatedInformationScreenState
                 // --------------------------------------------------
                 AppInputField(
                   label: "Tutoring Styles",
-                  type: AppInputType.dropdown,
+                  type: AppInputType.dropdown2,
 
                   dropdownItems: List<String>.from(
                     filterData["tutoringStyles"] ?? [],
@@ -342,7 +342,7 @@ class _EditTuitionRelatedInformationScreenState
                 // --------------------------------------------------
                 AppInputField(
                   label: "Preferred Categories",
-                  type: AppInputType.dropdown,
+                  type: AppInputType.dropdown2,
 
                   dropdownItems: List<String>.from(
                     filterData["category"] ?? [],
@@ -370,7 +370,7 @@ class _EditTuitionRelatedInformationScreenState
                 // --------------------------------------------------
                 AppInputField(
                   label: "Preferred Classes",
-                  type: AppInputType.dropdown,
+                  type: AppInputType.dropdown2,
 
                   hint: _selectedCategories.isEmpty
                       ? "Select category first"
@@ -398,7 +398,7 @@ class _EditTuitionRelatedInformationScreenState
                 // --------------------------------------------------
                 AppInputField(
                   label: "Preferred Subjects",
-                  type: AppInputType.dropdown,
+                  type: AppInputType.dropdown2,
 
                   hint: _selectedClasses.isEmpty
                       ? "Select class first"
@@ -424,7 +424,7 @@ class _EditTuitionRelatedInformationScreenState
                 // --------------------------------------------------
                 AppInputField(
                   label: "Place of Tuition",
-                  type: AppInputType.dropdown,
+                  type: AppInputType.dropdown2,
 
                   dropdownItems: List<String>.from(
                     filterData["placeOfTuition"] ?? [],
@@ -458,7 +458,7 @@ class _EditTuitionRelatedInformationScreenState
                 // --------------------------------------------------
                 AppInputField(
                   label: "Preferred Cities",
-                  type: AppInputType.dropdown,
+                  type: AppInputType.dropdown2,
 
                   dropdownItems: List<String>.from(
                     filterData["cityCorporations"] ?? [],
@@ -482,7 +482,7 @@ class _EditTuitionRelatedInformationScreenState
                 // --------------------------------------------------
                 AppInputField(
                   label: "Preferred Locations",
-                  type: AppInputType.dropdown,
+                  type: AppInputType.dropdown2,
 
                   hint: _selectedCities.isEmpty
                       ? "Select city first"

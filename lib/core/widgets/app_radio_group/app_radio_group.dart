@@ -81,7 +81,7 @@ class AppRadioGroup<T> extends StatelessWidget {
                     ?.copyWith(
                       color: isSelected
                           ? AppColors.primary01
-                          : AppColors.neutrals02,
+                          : AppColors.neutrals02.withOpacity(0.8),
                       fontWeight: FontWeight.w400,
                     ),
               ),

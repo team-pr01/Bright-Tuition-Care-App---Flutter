@@ -305,7 +305,7 @@ class _GuardianJobApplicationState
                       Expanded(
                         child: AppInputField(
                           label: "Status",
-                          type: AppInputType.dropdown,
+                          type: AppInputType.dropdown2,
 
                           dropdownItems: const [
                             "All",
@@ -334,7 +334,7 @@ class _GuardianJobApplicationState
                       Expanded(
                         child: AppInputField(
                           label: "Limit",
-                          type: AppInputType.dropdown,
+                          type: AppInputType.dropdown2,
 
                           dropdownItems: const [
                             "5",

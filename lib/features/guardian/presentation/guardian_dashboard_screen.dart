@@ -302,7 +302,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
         ),
 
         (changeTab, status) => SettingScreen(changeTab: changeTab),
-        (changeTab, status) => const GuardianProfilePage(),
+        (changeTab, status) => GuardianProfilePage(changeTab: changeTab),
       ],
 
       navItems: [

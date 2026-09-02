@@ -32,7 +32,7 @@ class ChooseRoleScreen extends StatelessWidget {
                   );
                 },
                 child: Container(
-                  height: 110,
+                  // height: 110,
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 14,
@@ -41,7 +41,7 @@ class ChooseRoleScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(18),
-                    border: Border.all(color: AppColors.primary02, width: 1),
+                    border: Border.all(color: AppColors.primary01.withOpacity(0.3), width: 1),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.05),
@@ -118,14 +118,14 @@ class ChooseRoleScreen extends StatelessWidget {
                   );
                 },
                 child: Container(
-                  height: 110,
+                  // height: 110,
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 14,
                     vertical: 10,
                   ),
                   decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.primary02, width: 1),
+                    border: Border.all(color: AppColors.primary01.withOpacity(0.3), width: 1),
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(18),
                     boxShadow: [

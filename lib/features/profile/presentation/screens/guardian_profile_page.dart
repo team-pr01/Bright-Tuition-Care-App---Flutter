@@ -1,6 +1,5 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/utils/image_picker_bottom_sheet.dart';
-import 'package:btcclient/core/utils/notification_service.dart';
 import 'package:btcclient/core/widgets/snackbar/app_snackbar.dart';
 import 'package:btcclient/features/auth/data/models/guardian_model.dart';
 import 'package:btcclient/features/auth/presentation/provider/profile_notifier.dart';
@@ -12,10 +11,9 @@ import 'package:btcclient/features/profile/presentation/widgets/profile_tab_card
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'edit_personal_information_screen.dart';
-
 class GuardianProfilePage extends ConsumerStatefulWidget {
-  const GuardianProfilePage({super.key});
+  final Function(int, {String? status}) changeTab;
+  const GuardianProfilePage({super.key, required this.changeTab});
 
   @override
   ConsumerState<GuardianProfilePage> createState() =>
@@ -89,6 +87,10 @@ class _GuardianProfilePageState extends ConsumerState<GuardianProfilePage> {
                   // =====================================================
                   // GUARDIAN PROFILE HEADER
                   // =====================================================
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 36, 16, 0),
+                    child: _buildBackButton(),
+                  ),
                   GuardianProfileCard(
                     name: profile.name,
                     guardianId: profile.guardianId,
@@ -245,6 +247,24 @@ class _GuardianProfilePageState extends ConsumerState<GuardianProfilePage> {
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildBackButton() {
+    return Material(
+      color: Colors.transparent,
+      shape: const CircleBorder(),
+      child: InkWell(
+        onTap: () {
+          widget.changeTab(2);
+        },
+        customBorder: const CircleBorder(),
+        child: const SizedBox(
+          width: 42,
+          height: 42,
+          child: Icon(Icons.arrow_back_rounded, color: Colors.white, size: 22),
+        ),
       ),
     );
   }

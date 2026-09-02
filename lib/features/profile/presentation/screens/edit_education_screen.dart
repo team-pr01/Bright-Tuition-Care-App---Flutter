@@ -191,7 +191,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                 const SizedBox(height: 16),
                 AppInputField(
                   label: "Level of Education",
-                  type: AppInputType.dropdown,
+                  type: AppInputType.dropdown2,
                   value: _levelController.text.isEmpty
                       ? null
                       : _levelController.text,
@@ -211,7 +211,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
 
                 AppInputField(
                   label: "Curriculum",
-                  type: AppInputType.dropdown,
+                  type: AppInputType.dropdown2,
                   value: _curriculumController.text.isEmpty
                       ? null
                       : _curriculumController.text,
@@ -225,7 +225,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
 
                 AppInputField(
                   label: "Exam / Degree Title",
-                  type: AppInputType.dropdown,
+                  type: AppInputType.dropdown2,
                   value: _degreeController.text.isEmpty
                       ? null
                       : _degreeController.text,
@@ -251,7 +251,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                 if (shouldShowSchoolLevelFields) ...[
                   AppInputField(
                     label: "Group",
-                    type: AppInputType.dropdown,
+                    type: AppInputType.dropdown2,
                     value: _groupController.text.isEmpty
                         ? null
                         : _groupController.text,
@@ -265,7 +265,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
 
                   AppInputField(
                     label: "Board",
-                    type: AppInputType.dropdown,
+                    type: AppInputType.dropdown2,
                     value: _boardController.text.isEmpty
                         ? null
                         : _boardController.text,
@@ -280,7 +280,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                 if (shouldShowHigherEducationFields) ...[
                   AppInputField(
                     label: "Department / Subject",
-                    type: AppInputType.dropdown,
+                    type: AppInputType.dropdown2,
                     value: _departmentController.text.isEmpty
                         ? null
                         : _departmentController.text,

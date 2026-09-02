@@ -169,7 +169,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     final authState = ref.watch(authProvider);
     return AuthListener(
       child: AuthLayout(
-        imagePath: "assets/images/teacher.webp",
+        // imagePath: "assets/images/teacher.webp",
         title: selected == 0 ? "Sign up as Tutor" : "Sign up as Guardian",
 
         subtitle: selected == 0
@@ -363,13 +363,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       ),
 
                       children: [
-                        const TextSpan(text: "I agree to the "),
+                        const TextSpan(text: "By signing up, you agree to our "),
 
                         TextSpan(
-                          text: "Terms of Use",
+                          text: "Terms and Conditions",
                           style: const TextStyle(
                             color: AppColors.primary01,
                             fontWeight: FontWeight.w600,
+                            decoration: TextDecoration.underline,
+                             decorationColor: Colors.blue,
                           ),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {

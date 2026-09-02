@@ -38,7 +38,7 @@ class Step3Form extends ConsumerWidget {
               label: "City",
               required: true,
               hint: "Select Option",
-              type: AppInputType.dropdown,
+              type: AppInputType.dropdown2,
               dropdownItems: List<String>.from(
                 filterData["cityCorporations"] ?? [],
               ),
@@ -62,7 +62,7 @@ class Step3Form extends ConsumerWidget {
               label: "Area",
               required: true,
               hint: "Select Option",
-              type: AppInputType.dropdown,
+              type: AppInputType.dropdown2,
               dropdownItems: getAreas(),
               value: data.area,
               onChanged: (v) {

@@ -215,7 +215,7 @@ class _AddCredentialScreenState
               AppInputField(
                 label: "Credential Type",
                 hint: "Select credential type",
-                type: AppInputType.dropdown,
+                type: AppInputType.dropdown2,
                 required: true,
                 value: _selectedFileType,
                 dropdownItems: _credentialTypes,

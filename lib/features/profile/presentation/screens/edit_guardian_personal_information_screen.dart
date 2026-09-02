@@ -515,7 +515,7 @@ class _EditGuardianPersonalInformationScreenState
                 AppInputField(
                   controller: _genderController,
                   label: "Gender",
-                  type: AppInputType.dropdown,
+                  type: AppInputType.dropdown2,
                   value: _genderController.text,
                   dropdownItems: const ["male", "female", "other"],
                   enabled: !_saving,
@@ -531,7 +531,7 @@ class _EditGuardianPersonalInformationScreenState
                 // ==================================================
                 AppInputField(
                   label: "City",
-                  type: AppInputType.dropdown,
+                  type: AppInputType.dropdown2,
                   value: _cityController.text,
                   hint: "Select City",
                   dropdownItems: cityOptions,
@@ -554,7 +554,7 @@ class _EditGuardianPersonalInformationScreenState
                 // ==================================================
                 AppInputField(
                   label: "Area",
-                  type: AppInputType.dropdown,
+                  type: AppInputType.dropdown2,
                   value: _areaController.text,
                   hint: _cityController.text.trim().isEmpty
                       ? "Select city first"
