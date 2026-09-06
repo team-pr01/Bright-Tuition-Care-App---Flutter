@@ -40,7 +40,7 @@ class TutorSearchBar extends StatelessWidget {
             ),
             const SizedBox(width: 10),
             Text(
-              "Search For Tuition",
+              "Search by job title or id",
                 style: Theme.of(context).textTheme.labelSmall!.copyWith(
                       color: AppColors.neutrals03,
                       height: 1.5,

@@ -98,6 +98,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return AuthLayout(
+      imagePath: "assets/images/teacher.webp",
       title: "Forgot Password",
       subtitle: "Enter your phone to receive OTP",
 

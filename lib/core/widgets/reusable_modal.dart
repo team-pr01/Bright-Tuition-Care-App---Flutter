@@ -11,7 +11,7 @@ class ReusableModal extends StatelessWidget {
   final double horizontalPadding;
 
   /// Bottom padding inside the modal.
-  final double bottomPadding;
+  final double verticalPadding;
 
   /// Whether tapping outside the modal should close it.
   final bool barrierDismissible;
@@ -21,7 +21,7 @@ class ReusableModal extends StatelessWidget {
     required this.child,
     this.maxHeightFactor = 0.90,
     this.horizontalPadding = 20,
-    this.bottomPadding = 24,
+    this.verticalPadding = 24,
     this.barrierDismissible = true,
   });
 
@@ -31,7 +31,7 @@ class ReusableModal extends StatelessWidget {
     required Widget child,
     double maxHeightFactor = 0.90,
     double horizontalPadding = 20,
-    double bottomPadding = 24,
+    double verticalPadding = 24,
     bool barrierDismissible = true,
   }) {
     return showDialog<T>(
@@ -42,7 +42,7 @@ class ReusableModal extends StatelessWidget {
         return ReusableModal(
           maxHeightFactor: maxHeightFactor,
           horizontalPadding: horizontalPadding,
-          bottomPadding: bottomPadding,
+          verticalPadding: verticalPadding,
           barrierDismissible: barrierDismissible,
           child: child,
         );
@@ -89,8 +89,6 @@ class ReusableModal extends StatelessWidget {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // TOP SPACING
-                  const SizedBox(height: 20),
 
                   // CONTENT
                   Flexible(
@@ -98,9 +96,9 @@ class ReusableModal extends StatelessWidget {
                       physics: const BouncingScrollPhysics(),
                       padding: EdgeInsets.fromLTRB(
                         horizontalPadding,
-                        0,
+                        verticalPadding,
                         horizontalPadding,
-                        bottomPadding,
+                        verticalPadding,
                       ),
                       child: child,
                     ),
