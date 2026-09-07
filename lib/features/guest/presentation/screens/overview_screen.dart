@@ -265,23 +265,27 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                   // ==================================================
                   // 3. USEFUL INFO
                   // ==================================================
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              const UsefulLinksPage(),
+                  SizedBox(
+                    width: double.infinity,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const UsefulLinksPage(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        "Useful links",
+                        textAlign: TextAlign.center,
+                        style: AppTextStyles.headlineMedium.copyWith(
+                          color: AppColors.primary04,
+                           fontWeight: FontWeight.w500,
+                    fontSize: 15,
+                          decoration: TextDecoration.underline,
+                          decorationThickness: 1.5,
                         ),
-                      );
-                    },
-                    child: Text(
-                      "Useful links",
-                      textAlign: TextAlign.center,
-                      style: AppTextStyles.headlineMedium.copyWith(
-                        color: AppColors.primary04,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 18,
                       ),
                     ),
                   ),
@@ -317,24 +321,21 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                'Our Tutoring Services',
-                style: AppTextStyles.headlineMedium.copyWith(
-                  color: AppColors.primary04,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 18,
-                ),
-              ),
-
-              const SizedBox(height: 2),
-
-              Text(
-                'Connecting students with expert tutors across all education categories.',
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.neutrals03,
-                  fontSize: 12,
+              SizedBox(
+                width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: Text(
+                    'Our Tutoring Services',
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.headlineMedium.copyWith(
+                      color: AppColors.primary04,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 18,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -735,7 +736,7 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
             '$city ($count)',
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.primary01,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ),

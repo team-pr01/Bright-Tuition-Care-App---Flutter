@@ -151,7 +151,7 @@ class AboutUsContent extends StatelessWidget {
                 // ),
                 padding: const EdgeInsets.all(12),
                 child: Image.asset(
-                  'assets/images/logo.png',
+                  'assets/images/logo-white.png',
                   fit: BoxFit.contain,
                   errorBuilder: (context, error, stackTrace) {
                     return const Icon(
@@ -181,9 +181,9 @@ class AboutUsContent extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 14),
+        const SizedBox(height: 18),
         QuickLinksContent(),
-        const SizedBox(height: 14),
+        const SizedBox(height: 8),
         // ============================================================
         // COMPANY INFORMATION
         // ============================================================
@@ -780,11 +780,11 @@ class SocialLinksContent extends StatelessWidget {
         assetPath: 'assets/icons/social_media/tiktok.svg',
         url: 'https://www.tiktok.com/@brighttuitioncare',
       ),
-      const _SocialItem(
-        title: 'X',
-        assetPath: 'assets/icons/social_media/twitter.svg',
-        url: 'https://x.com/brighttuitioncare',
-      ),
+      // const _SocialItem(
+      //   title: 'X',
+      //   assetPath: 'assets/icons/social_media/twitter.svg',
+      //   url: 'https://x.com/brighttuitioncare',
+      // ),
     ];
 
     return Column(
@@ -792,7 +792,7 @@ class SocialLinksContent extends StatelessWidget {
       children: [
         const _BottomSheetTitle(title: 'Follow Us'),
 
-        const SizedBox(height: 8),
+        // const SizedBox(height: 8),
 
         Text(
           'Stay connected with Bright Tuition Care on social media.',
@@ -804,14 +804,16 @@ class SocialLinksContent extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 20),
+        // const SizedBox(height:16),
 
         // ============================================================
         // SOCIAL MEDIA GRID
         // ============================================================
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
+        // SingleChildScrollView(
+        //   scrollDirection: Axis.horizontal,
+          // child: 
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: socials.map((item) {
               return Padding(
                 padding: const EdgeInsets.only(right: 2),
@@ -824,7 +826,7 @@ class SocialLinksContent extends StatelessWidget {
               );
             }).toList(),
           ),
-        ),
+        // ),
         const SizedBox(height: 30),
 
         // ============================================================
@@ -900,13 +902,15 @@ class SocialLinksContent extends StatelessWidget {
         const SizedBox(height: 14),
         const Divider(),
           const SizedBox(height: 14),
-              Text(
-                'All Rights Reserved by Bright Tuition Care © 2046',
-                textAlign: TextAlign.center,
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.neutrals04,
-                  fontSize: 12,
-                  height: 1.4,
+              Center(
+                child: Text(
+                  'All Rights Reserved by Bright Tuition Care © 2026',
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: AppColors.neutrals04,
+                    fontSize: 12,
+                    height: 1.4,
+                  ),
                 ),
               ),
                SizedBox(height: 14,),
@@ -958,8 +962,8 @@ class _SocialCard extends StatelessWidget {
               // REAL SOCIAL MEDIA ICON
               // ========================================================
               Container(
-                width: 54,
-                height: 54,
+                width: 44,
+                height: 44,
                 decoration: BoxDecoration(
                   color: AppColors.primary02,
                   shape: BoxShape.circle,
@@ -967,8 +971,8 @@ class _SocialCard extends StatelessWidget {
                 padding: const EdgeInsets.all(13),
                 child: SvgPicture.asset(
                   item.assetPath,
-                  width: 34,
-                  height: 34,
+                  width: 24,
+                  height: 24,
                   fit: BoxFit.contain,
                 ),
               ),
@@ -1030,7 +1034,7 @@ class _CommunityCard extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(icon, color: color, size: 36),
+              Icon(icon, color: color, size: 26),
 
               const SizedBox(width: 10),
 
@@ -1040,7 +1044,7 @@ class _CommunityCard extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: AppTextStyles.bodyMedium.copyWith(
+                      style: AppTextStyles.labelSmall.copyWith(
                         color: AppColors.neutrals02,
                       ),
                     ),
@@ -1104,7 +1108,7 @@ class QuickLinksContent extends StatelessWidget {
       children: [
         const _BottomSheetTitle(title: 'Quick Links'),
 
-        const SizedBox(height: 14),
+        // const SizedBox(height: 8),
 
         Container(
           width: double.infinity,
@@ -1227,7 +1231,7 @@ class _QuickLinkRow extends StatelessWidget {
                 child: Icon(item.icon, color: AppColors.primary01, size: 18),
               ),
 
-              const SizedBox(width: 16),
+              const SizedBox(width: 8),
 
               // ============================================================
               // TITLE

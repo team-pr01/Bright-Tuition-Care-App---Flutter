@@ -24,6 +24,7 @@ class _FilterSidebarState extends ConsumerState<FilterSidebar> {
   List<String> days = [];
   List<String> tuitionTypes = [];
   List<String> tutorGender = [];
+  List<String> curriculum = [];
   List<String> studentGender = [];
   final TextEditingController postedFromController = TextEditingController();
 
@@ -50,6 +51,22 @@ class _FilterSidebarState extends ConsumerState<FilterSidebar> {
       areas = [];
     });
   }
+
+  // void _onCurriculumChanged(List<String> selectedCurriculum) {
+  //   setState(() {
+  //     curriculum = selectedCurriculum;
+
+  //     areaOptions = [];
+
+  //     for (var c in filterData["cityCorporationWithLocation"]) {
+  //       if (cities.contains(c["name"])) {
+  //         areaOptions.addAll(List<String>.from(c["locations"]));
+  //       }
+  //     }
+
+  //     areas = [];
+  //   });
+  // }
 
   /// ================= CATEGORY → CLASS =================
   void _onCategoryChanged(List<String> selectedCategories) {
@@ -102,6 +119,7 @@ class _FilterSidebarState extends ConsumerState<FilterSidebar> {
       city: cities,
       area: areas,
       category: categories,
+      curriculum: curriculum,
       className: classes,
       tutoringDays: days,
       tuitionType: tuitionTypes,
@@ -138,7 +156,7 @@ class _FilterSidebarState extends ConsumerState<FilterSidebar> {
       areaOptions = [];
       classOptions = [];
       subjectOptions = [];
-
+      curriculum = [];
       postedFromController.clear();
       postedToController.clear();
     });
@@ -161,6 +179,7 @@ class _FilterSidebarState extends ConsumerState<FilterSidebar> {
     cities = List.from(filter.city ?? []);
     areas = List.from(filter.area ?? []);
     categories = List.from(filter.category ?? []);
+    curriculum = List.from(filter.curriculum ?? []);
     classes = List.from(filter.className ?? []);
     subjects = List.from(filter.subjects ?? []);
     days = List.from(filter.tutoringDays ?? []);
@@ -173,6 +192,7 @@ class _FilterSidebarState extends ConsumerState<FilterSidebar> {
 
     _onCityChanged(cities);
     _onCategoryChanged(categories);
+    // _onCurriculumChanged(curriculum);
     _onClassChanged(classes);
   }
 
@@ -195,7 +215,7 @@ class _FilterSidebarState extends ConsumerState<FilterSidebar> {
           children: [
             /// HEADER
             Padding(
-              padding: const EdgeInsets.only(top: 20.0,bottom: AppSpacing.lg),
+              padding: const EdgeInsets.only(top: 20.0, bottom: AppSpacing.lg),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -209,7 +229,6 @@ class _FilterSidebarState extends ConsumerState<FilterSidebar> {
                     decoration: const BoxDecoration(
                       color: AppColors.primary02,
                       shape: BoxShape.circle,
-                      
                     ),
                     child: IconButton(
                       icon: const Icon(Icons.close, color: Colors.black),
@@ -256,6 +275,24 @@ class _FilterSidebarState extends ConsumerState<FilterSidebar> {
                       selectedValues: categories,
                       onMultiChanged: _onCategoryChanged,
                     ),
+
+                    if (categories.any(
+                      (category) => category.toLowerCase() == "english medium",
+                    ))
+                      AppInputField(
+                        label: "Curriculum",
+                        type: AppInputType.dropdown2,
+                        multiSelect: true,
+                        dropdownItems: curriculumTypes,
+                        selectedValues: curriculum,
+                        onMultiChanged: (v) {
+                          print("SELECTED CURRICULUM: $v");
+
+                          setState(() {
+                            curriculum = v;
+                          });
+                        },
+                      ),
 
                     /// CLASS (MULTI)
                     AppInputField(

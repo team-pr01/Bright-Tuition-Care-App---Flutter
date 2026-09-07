@@ -54,7 +54,7 @@ class ReusableSearchBar extends StatelessWidget {
 
               cursorColor: AppColors.primary01,
               decoration: InputDecoration(
-                hintText: "Search For Tuition",
+                hintText: "Search by job title or job id",
                 hintStyle: Theme.of(context).textTheme.labelSmall!.copyWith(
                   color: AppColors.neutrals03,
 

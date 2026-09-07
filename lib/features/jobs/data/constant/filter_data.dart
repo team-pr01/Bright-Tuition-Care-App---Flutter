@@ -3322,8 +3322,6 @@ const  List<String> levelOfEducationOptions = [
 ];
 
 const  List<String> curriculumTypes = [
-  "Bangla Medium",
-  "English Version",
   "Cambridge",
   "Ed-Excel",
   "IB",

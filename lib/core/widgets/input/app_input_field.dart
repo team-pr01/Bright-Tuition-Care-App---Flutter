@@ -960,21 +960,6 @@ class _SelectedChip extends StatelessWidget {
           // ==========================================================
           // REMOVE ICON
           // ==========================================================
-          if (onRemove != null)
-            GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: onRemove,
-              child: Container(
-                width: 18,
-                height: 18,
-                margin: const EdgeInsets.only(right: 8),
-                decoration: BoxDecoration(
-                  color: AppColors.primary01,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.close, size: 12, color: Colors.white),
-              ),
-            ),
 
           // ==========================================================
           // LABEL
@@ -985,6 +970,21 @@ class _SelectedChip extends StatelessWidget {
               style: const TextStyle(fontSize: 14, color: AppColors.neutrals02),
             ),
           ),
+          if (onRemove != null)
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: onRemove,
+              child: Container(
+                width: 18,
+                height: 18,
+                margin: const EdgeInsets.only(left: 8),
+                decoration: BoxDecoration(
+                  color: AppColors.primary01,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.close, size: 12, color: Colors.white),
+              ),
+            ),
         ],
       ),
     );

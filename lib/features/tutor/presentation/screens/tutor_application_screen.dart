@@ -60,7 +60,7 @@ class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
     final state = ref.watch(applicationsProvider);
     print("application meta ${state.meta?.counts?.applied}");
     return Scaffold(
-      appBar: const CommonAppBar(title: "My Applications",),
+      appBar: const CommonAppBar(title: "My Applications"),
       body: SafeArea(
         child: Column(
           children: [
@@ -83,15 +83,7 @@ class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               DashboardNavLinks(
-                icon: SvgPicture.asset(
-                  "assets/icons/navigations/applied.svg",
-                  width: 24,
-                  height: 24,
-                  colorFilter: const ColorFilter.mode(
-                    Colors.white,
-                    BlendMode.srcIn,
-                  ),
-                ),
+                icon: Icon(Icons.send_outlined, size: 24, color: Colors.white),
                 onTap: () {
                   ref
                       .read(applicationsProvider.notifier)
@@ -101,14 +93,10 @@ class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
                 count: state.meta?.counts?.applied ?? 0,
               ),
               DashboardNavLinks(
-                icon: SvgPicture.asset(
-                  "assets/icons/navigations/shortlisted.svg",
-                  width: 24,
-                  height: 24,
-                  colorFilter: const ColorFilter.mode(
-                    Colors.white,
-                    BlendMode.srcIn,
-                  ),
+                icon: const Icon(
+                  Icons.star_outline,
+                  size: 24,
+                  color: Colors.white,
                 ),
                 onTap: () {
                   ref
@@ -119,14 +107,10 @@ class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
                 count: state.meta?.counts?.shortlisted ?? 0,
               ),
               DashboardNavLinks(
-                icon: SvgPicture.asset(
-                  "assets/icons/navigations/appointed.svg",
-                  width: 24,
-                  height: 24,
-                  colorFilter: const ColorFilter.mode(
-                    Colors.white,
-                    BlendMode.srcIn,
-                  ),
+                icon: const Icon(
+                  Icons.person_add_alt_1_outlined,
+                  size: 24,
+                  color: Colors.white,
                 ),
                 onTap: () {
                   ref
@@ -137,14 +121,10 @@ class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
                 count: state.meta?.counts?.appointed ?? 0,
               ),
               DashboardNavLinks(
-                icon: SvgPicture.asset(
-                  "assets/icons/navigations/confirmed.svg",
-                  width: 24,
-                  height: 24,
-                  colorFilter: const ColorFilter.mode(
-                    Colors.white,
-                    BlendMode.srcIn,
-                  ),
+                icon: Icon(
+                  Icons.check_circle_outline,
+                  size: 24,
+                  color: Colors.white,
                 ),
                 onTap: () {
                   ref
@@ -155,14 +135,10 @@ class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
                 count: state.meta?.counts?.confirmed ?? 0,
               ),
               DashboardNavLinks(
-                icon: SvgPicture.asset(
-                  "assets/icons/navigations/cancelled.svg",
-                  width: 24,
-                  height: 24,
-                  colorFilter: const ColorFilter.mode(
-                    Colors.white,
-                    BlendMode.srcIn,
-                  ),
+                icon: Icon(
+                  Icons.cancel_outlined,
+                  size: 24,
+                  color: Colors.white,
                 ),
                 onTap: () {
                   ref
@@ -181,7 +157,17 @@ class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
             children: [
               Expanded(
                 child: Text(
-                  "${state.applications.length} ${_selectedStatus == "appointed" ? "Appointed" :_selectedStatus == "shortlisted" ? "Shortlisted":_selectedStatus == "applied" ? "Applied": _selectedStatus == "confirmed" ? "Confirmed": _selectedStatus == "cancelled" ? "Cancelled" : "Rejected"} Applications",
+                  "${state.applications.length} ${_selectedStatus == "appointed"
+                      ? "Appointed"
+                      : _selectedStatus == "shortlisted"
+                      ? "Shortlisted"
+                      : _selectedStatus == "applied"
+                      ? "Applied"
+                      : _selectedStatus == "confirmed"
+                      ? "Confirmed"
+                      : _selectedStatus == "cancelled"
+                      ? "Cancelled"
+                      : "Rejected"} Applications",
                   style: Theme.of(context).textTheme.titleLarge!.copyWith(
                     color: AppColors.neutrals02,
                     fontWeight: FontWeight.w400,

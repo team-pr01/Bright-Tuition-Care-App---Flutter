@@ -147,7 +147,7 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
                         // ========================================
                         TutorSearchBar(
                           onTap: () {
-                            widget.changeTab(0);
+                            widget.changeTab(3);
                           },
                         ),
 

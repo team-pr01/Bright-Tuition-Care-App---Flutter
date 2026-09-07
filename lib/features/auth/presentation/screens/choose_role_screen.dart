@@ -40,7 +40,7 @@ class ChooseRoleScreen extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(18),
+                    borderRadius: BorderRadius.circular(999),
                     border: Border.all(color: AppColors.primary01.withOpacity(0.3), width: 1),
                     boxShadow: [
                       BoxShadow(
@@ -80,7 +80,7 @@ class ChooseRoleScreen extends StatelessWidget {
                             Text(
                               "Tutor",
                               style: TextStyle(
-                                fontSize: 20,
+                                fontSize: 16,
                                 fontWeight: FontWeight.w500,
                                 color: Color(0xFF333333),
                               ),
@@ -89,7 +89,7 @@ class ChooseRoleScreen extends StatelessWidget {
                             Text(
                               "Join as tutor and find tuition jobs",
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 14,
                                 height: 1.35,
                                 fontWeight: FontWeight.w400,
                                 color: Color(0xFF929292),
@@ -127,7 +127,7 @@ class ChooseRoleScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     border: Border.all(color: AppColors.primary01.withOpacity(0.3), width: 1),
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(18),
+                    borderRadius: BorderRadius.circular(999),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.05),
@@ -149,7 +149,7 @@ class ChooseRoleScreen extends StatelessWidget {
                               Text(
                                 "Guardian or Student",
                                 style: TextStyle(
-                                  fontSize: 20,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.w500,
                                   color: Color(0xFF333333),
                                 ),
@@ -158,7 +158,7 @@ class ChooseRoleScreen extends StatelessWidget {
                               Text(
                                 "Get started as a Guardian/Student",
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 14,
                                   height: 1.35,
                                   fontWeight: FontWeight.w400,
                                   color: Color(0xFF929292),

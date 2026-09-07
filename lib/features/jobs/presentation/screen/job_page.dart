@@ -405,20 +405,20 @@ class _JobsPageState extends ConsumerState<JobsPage> {
           /// 📊 COUNT + FILTER
           Row(
             children: [
-              // Expanded(
-              //   child: Text(
-              //     getCountText(
-              //       (isTutor || isGuest)
-              //           ? (state.meta?.liveJobs ?? 0)
-              //           : (state.meta?.counts.liveJobs ?? 0),
-              //     ),
-              //     style: Theme.of(context).textTheme.titleLarge!.copyWith(
-              //       color: AppColors.neutrals02,
-              //       fontWeight: FontWeight.w400,
-              //       height: 1.5,
-              //     ),
-              //   ),
-              // ),
+              Expanded(
+                child: Text(
+                  getCountText(
+                    (isTutor || isGuest)
+                        ? (state.meta?.liveJobs ?? 0)
+                        : (state.meta?.counts.liveJobs ?? 0),
+                  ),
+                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                    color: AppColors.neutrals02,
+                    fontWeight: FontWeight.w600,
+                    height: 1.5,
+                  ),
+                ),
+              ),
 
               if (isTutor || isGuest) ...[
                 /// Clear Filters
@@ -452,7 +452,7 @@ class _JobsPageState extends ConsumerState<JobsPage> {
                       onPressed: () => openFilter(context),
                       variant: AppButtonVariant.outline,
                       height: 32,
-                      width: 130,
+                      width: 100,
                       icon: Icons.tune,
                     ),
                   ],

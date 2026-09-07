@@ -4,9 +4,10 @@ import 'package:btcclient/core/screens/join_community.dart';
 import 'package:btcclient/core/widgets/navbar/sidebar_item.dart';
 import 'package:btcclient/core/widgets/navbar/side_drawer.dart';
 import 'package:btcclient/core/widgets/share_card/share_card.dart';
+import 'package:btcclient/features/auth/presentation/screens/choose_role_screen.dart';
+import 'package:btcclient/features/auth/presentation/screens/login_screen.dart';
 import 'package:btcclient/features/auth/presentation/screens/register_screen.dart';
 import 'package:btcclient/features/auth/presentation/screens/welcome_screen.dart';
-import 'package:btcclient/features/guest/presentation/screens/overview_screen.dart';
 import 'package:btcclient/features/jobs/presentation/screen/job_page.dart';
 import 'package:btcclient/features/tutor/presentation/screens/how_it_works_screen.dart';
 import 'package:flutter/material.dart';
@@ -69,18 +70,18 @@ class GuestDashboardScreen extends StatelessWidget {
               },
             ),
 
-            SidebarItem(
-              label: "Overview",
-              icon: _icon(
-                "assets/icons/navigations/dashboard-square-edit.svg",
-              ),
-              onTap: () {
-                Navigator.pop(context);
+            // SidebarItem(
+            //   label: "Overview",
+            //   icon: _icon(
+            //     "assets/icons/navigations/dashboard-square-edit.svg",
+            //   ),
+            //   onTap: () {
+            //     Navigator.pop(context);
 
-                // TAB 1 = GUARDIAN OVERVIEW
-                changeTab(1);
-              },
-            ),
+            //     // TAB 1 = GUARDIAN OVERVIEW
+            //     changeTab(1);
+            //   },
+            // ),
           ],
 
           // =======================================================
@@ -139,7 +140,7 @@ class GuestDashboardScreen extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => const WelcomeScreen(),
+                builder: (_) => const ChooseRoleScreen(),
               ),
               // MaterialPageRoute(
               //   builder: (_) => const LoginScreen(role:"tutor"),

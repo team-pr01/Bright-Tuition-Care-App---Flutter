@@ -182,10 +182,10 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   Widget build(BuildContext context) {
     return AuthLayout(
-      imagePath: "assets/images/teacher.webp",
+      
       title: widget.title,
 
-      subtitle: "${widget.subtitle}\n${widget.phoneNumber}",
+      subtitle: "${widget.subtitle} ${widget.phoneNumber}",
 
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

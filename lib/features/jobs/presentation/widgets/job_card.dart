@@ -137,7 +137,7 @@ class _JobCardState extends ConsumerState<JobCard> {
                         TextSpan(
                           text: safe(job.title).isEmpty ? "-" : job.title,
                           style: const TextStyle(
-                            fontSize: 14,
+                            fontSize: 15,
                             fontWeight: FontWeight.w500,
                             height: 1.4,
                             color: AppColors.neutrals02,
@@ -148,7 +148,7 @@ class _JobCardState extends ConsumerState<JobCard> {
                               ? "-"
                               : " - ${job.tutoringDays}/Week",
                           style: const TextStyle(
-                            fontSize: 14,
+                            fontSize: 12,
                             fontWeight: FontWeight.w500,
                             height: 1.4,
                             color: AppColors.neutrals02,
@@ -421,8 +421,8 @@ class _JobCardState extends ConsumerState<JobCard> {
                             : "Other",
                         style: TextStyle(
                           fontSize: 12,
-                          color: AppColors.neutrals03,
-                          fontWeight: FontWeight.w500,
+                          color: AppColors.neutrals02,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                       Text(
@@ -430,7 +430,7 @@ class _JobCardState extends ConsumerState<JobCard> {
                         style: TextStyle(
                           fontSize: 12,
                           color: AppColors.neutrals02,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
                     ],
@@ -454,7 +454,7 @@ class _JobCardState extends ConsumerState<JobCard> {
                     ),
                   ),
 
-                  const SizedBox(width: 20),
+                  // const SizedBox(width: 20),
 
                   /// SHARE
                   SvgPicture.asset("assets/icons/job/share.svg", height: 16),
