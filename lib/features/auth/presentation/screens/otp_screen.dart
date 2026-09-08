@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 import '../../../../core/layout/auth_layout.dart';
 import '../../../../core/widgets/button/app_button.dart';
@@ -48,22 +49,32 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   void initState() {
     super.initState();
+
     startTimer();
+
     SmsAutoFill().listenForCode();
 
-  SmsAutoFill().code.listen((code) {
-    if (code != null && code.length == 4) {
-      autoFillOtp(code);
-    }
-  });
+    SmsAutoFill().code.listen((code) {
+      if (code != null && code.length == 4) {
+        autoFillOtp(code);
+      }
+    });
   }
 
   @override
   void dispose() {
     SmsAutoFill().unregisterListener();
+
     timer?.cancel();
-    for (var c in controllers) c.dispose();
-    for (var f in focusNodes) f.dispose();
+
+    for (var c in controllers) {
+      c.dispose();
+    }
+
+    for (var f in focusNodes) {
+      f.dispose();
+    }
+
     super.dispose();
   }
 
@@ -109,6 +120,9 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   Future<void> verify() async {
+    // Prevent duplicate verification requests
+    if (loading) return;
+
     if (otp.length != 4) {
       setState(() => error = "Enter valid 4-digit OTP");
       return;
@@ -121,6 +135,8 @@ class _OtpScreenState extends State<OtpScreen> {
 
     final success = await widget.onVerify(otp);
 
+    if (!mounted) return;
+
     setState(() => loading = false);
 
     if (success) {
@@ -131,50 +147,124 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   void onChanged(String value, int index) {
+    // ============================================================
+    // MOVE TO NEXT INPUT
+    // ============================================================
+
     if (value.length == 1 && index < 3) {
       focusNodes[index + 1].requestFocus();
     }
 
+    // ============================================================
+    // MOVE TO PREVIOUS INPUT WHEN DELETING
+    // ============================================================
+
     if (value.isEmpty && index > 0) {
       focusNodes[index - 1].requestFocus();
+    }
+
+    // ============================================================
+    // AUTO SUBMIT WHEN 4TH OTP DIGIT IS ENTERED
+    // ============================================================
+
+    if (index == 3 && value.length == 1) {
+      focusNodes[index].unfocus();
+
+      verify();
     }
   }
 
   Widget otpBox(int index) {
     return SizedBox(
       width: 50,
-      child: TextField(
-        controller: controllers[index],
-        focusNode: focusNodes[index],
-        keyboardType: TextInputType.number,
-        autofillHints: const [AutofillHints.oneTimeCode],
-        textAlign: TextAlign.center,
-        maxLength: 1,
-        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        decoration: InputDecoration(
-          counterText: "", // ← ADD THIS LINE
+      child: Focus(
+        onKeyEvent: (node, event) {
+          // ========================================================
+          // BACKSPACE HANDLING
+          // ========================================================
 
-          hintStyle: const TextStyle(fontSize: 14, color: AppColors.neutrals03),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 10,
-          ),
-          filled: true,
-          fillColor: AppColors.neutrals01,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-            borderSide: BorderSide(color: AppColors.primary01.withOpacity(0.3)),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-            borderSide: const BorderSide(
-              color: AppColors.primary01,
-              width: 1.5,
+          if (event is KeyDownEvent &&
+              event.logicalKey == LogicalKeyboardKey.backspace) {
+            // ------------------------------------------------------
+            // If current box contains a digit:
+            //
+            // Let TextField delete the digit normally.
+            // ------------------------------------------------------
+
+            if (controllers[index].text.isNotEmpty) {
+              return KeyEventResult.ignored;
+            }
+
+            // ------------------------------------------------------
+            // If current box is already empty:
+            //
+            // Move to previous box and clear it.
+            // ------------------------------------------------------
+
+            if (index > 0) {
+              controllers[index - 1].clear();
+
+              focusNodes[index - 1].requestFocus();
+
+              return KeyEventResult.handled;
+            }
+          }
+
+          return KeyEventResult.ignored;
+        },
+
+        child: TextField(
+          controller: controllers[index],
+          focusNode: focusNodes[index],
+          keyboardType: TextInputType.number,
+
+          autofillHints: const [AutofillHints.oneTimeCode],
+
+          textAlign: TextAlign.center,
+
+          maxLength: 1,
+
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+
+          decoration: InputDecoration(
+            counterText: "",
+
+            hintStyle: const TextStyle(
+              fontSize: 14,
+              color: AppColors.neutrals03,
+            ),
+
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 10,
+            ),
+
+            filled: true,
+
+            fillColor: AppColors.neutrals01,
+
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
+
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5),
+              borderSide: BorderSide(
+                color: AppColors.primary01.withOpacity(0.3),
+              ),
+            ),
+
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5),
+              borderSide: const BorderSide(
+                color: AppColors.primary01,
+                width: 1.5,
+              ),
             ),
           ),
+
+          onChanged: (value) {
+            onChanged(value, index);
+          },
         ),
-        onChanged: (value) => onChanged(value, index),
       ),
     );
   }
@@ -182,41 +272,60 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   Widget build(BuildContext context) {
     return AuthLayout(
-      
       title: widget.title,
 
       subtitle: "${widget.subtitle} ${widget.phoneNumber}",
 
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
+
         children: [
           AutofillGroup(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
+
               children: List.generate(
                 4,
                 (index) => Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 5),
+
                   child: otpBox(index),
                 ),
               ),
             ),
           ),
 
-          const SizedBox(height: 24),
+          // const SizedBox(height: 24),
 
-          AppButton(
-            label: "Verify OTP",
-            loading: loading,
-            variant: AppButtonVariant.gradient,
-            onPressed: verify,
-          ),
-
+          // AppButton(
+          //   label: "Verify OTP",
+          //   loading: loading,
+          //   variant: AppButtonVariant.gradient,
+          //   onPressed: verify,
+          // ),
+          if (loading)
+          const SizedBox(height: 10),
+          if (loading)
+            SizedBox(
+              height: 18,
+              child: Center(
+                child: SizedBox(
+                  height: 18,
+                  width: 18,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: AppColors.primary01.withOpacity(0.8),
+                  ),
+                ),
+              ),
+            ),
           if (error != null) ...[
             const SizedBox(height: 10),
+
             Text(
               error!,
               textAlign: TextAlign.center,
+
               style: const TextStyle(color: Colors.red),
             ),
           ],
@@ -231,6 +340,7 @@ class _OtpScreenState extends State<OtpScreen> {
                   )
                 : Text(
                     "Resend in $secondsRemaining sec",
+
                     style: TextStyle(color: AppColors.neutrals03),
                   ),
           ),

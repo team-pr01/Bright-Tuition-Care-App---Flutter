@@ -325,6 +325,7 @@ class _JobCardState extends ConsumerState<JobBottomSheet> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   spacing: AppSpacing.md,
                   children: [
+                    if (variant != JobCardVariant.postedJob )
                     Expanded(
                       child: AppButton(
                         label: "Direction",
@@ -362,6 +363,7 @@ class _JobCardState extends ConsumerState<JobBottomSheet> {
                         application?.status != "appointed") ...[
                       Expanded(
                         child: AppButton(
+                          showShimmer: !isApplied ? true : false,
                           label: isApplied ? "Undo Apply" : "Apply",
                           loading: _isWithdrawing,
                           iconPosition: isApplied

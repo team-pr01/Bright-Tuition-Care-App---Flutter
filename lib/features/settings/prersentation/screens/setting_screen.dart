@@ -1,8 +1,4 @@
 import 'package:btcclient/core/config/theme.dart';
-import 'package:btcclient/core/widgets/navbar/common_appbar.dart';
-import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
-import 'package:btcclient/features/auth/presentation/screens/welcome_screen.dart';
-import 'package:btcclient/features/invoices/presentation/provider/invoice_provider.dart';
 import 'package:btcclient/features/legal/presentation/terms_screen.dart';
 import 'package:btcclient/features/settings/prersentation/screens/change_password_screen.dart';
 import 'package:btcclient/features/settings/prersentation/screens/contact_info_screen.dart';
@@ -126,7 +122,7 @@ class SettingScreen extends ConsumerWidget {
             },
           ),
           _SettingsTile(
-            icon: Icons.contact_mail_outlined,
+            icon: Icons.email_outlined,
             title: "Email Us",
             onTap: () {
               launchUrl(

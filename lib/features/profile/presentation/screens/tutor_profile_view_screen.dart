@@ -29,7 +29,7 @@ class TutorResumeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.neutrals01,
 
-      appBar: const CommonAppBar(title: "Tutor Profile",),
+      appBar: const CommonAppBar(title: "Tutor Profile"),
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
@@ -39,12 +39,11 @@ class TutorResumeScreen extends StatelessWidget {
             children: [
               _buildHeader(),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
 
               _buildEducationSection(),
 
-              const SizedBox(height: 20),
-
+              // const SizedBox(height: 20),
               _buildTuitionSection(),
 
               const SizedBox(height: 20),
@@ -245,16 +244,13 @@ class TutorResumeScreen extends StatelessWidget {
           // ==========================================================
           // PERSONAL / CONTACT DETAILS
           // ==========================================================
-          const Text(
-            "Personal Details",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-          ),
+          // const Text(
+          //   "Personal Details",
+          //   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+          // ),
+          // const SizedBox(height: 12),
 
-          const SizedBox(height: 12),
-
-          Divider(height: 1, color: AppColors.neutrals04),
-
-          const SizedBox(height: 16),
+          // const SizedBox(height: 16),
 
           // ----------------------------------------------------------
           // PHONE
@@ -265,7 +261,8 @@ class TutorResumeScreen extends StatelessWidget {
           // ----------------------------------------------------------
           // ADDRESS
           // ----------------------------------------------------------
-          if (address.isNotEmpty) _InfoRow(label: "Address", value: address),
+          if (!hideContactDetails && address.isNotEmpty)
+            _InfoRow(label: "Address", value: address),
 
           // ----------------------------------------------------------
           // FACEBOOK
@@ -281,10 +278,11 @@ class TutorResumeScreen extends StatelessWidget {
 
             const Text(
               "Overview",
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
-
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
+            Divider(height: 1, color: AppColors.neutrals04),
+            const SizedBox(height: 16),
 
             Text(
               overview,

@@ -56,7 +56,7 @@ class HelplineCard extends StatelessWidget {
                       ),
                       TextSpan(
                         text: " ($timing)",
-                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                        style: Theme.of(context).textTheme.labelSmall!.copyWith(
                           color: AppColors.backgroundDark,
                           fontWeight: FontWeight.w400,
                         ),

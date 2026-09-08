@@ -85,7 +85,7 @@ class GuardianDashboardScreen extends ConsumerWidget {
             ),
             onTap: () {
               Navigator.pop(context);
-              changeTab(1);
+              changeTab(3);
             },
           ),
           SidebarItem(

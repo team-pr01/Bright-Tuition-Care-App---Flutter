@@ -8,14 +8,12 @@ import 'package:btcclient/features/hire_tutor/presentation/widgets/step3_form.da
 import 'package:btcclient/features/hire_tutor/presentation/widgets/step_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:btcclient/core/config/theme.dart';
 
 class PostJobPage extends ConsumerStatefulWidget {
   final Function(int, {String? status}) changeTab;
 
-  const PostJobPage({
-    super.key,
-    required this.changeTab,
-  });
+  const PostJobPage({super.key, required this.changeTab});
 
   @override
   ConsumerState<PostJobPage> createState() => _PostJobPageState();
@@ -40,20 +38,25 @@ class _PostJobPageState extends ConsumerState<PostJobPage> {
   Widget build(BuildContext context) {
     final state = ref.watch(postJobProvider);
     final notifier = ref.read(postJobProvider.notifier);
-
+    final theme = Theme.of(context);
     return Scaffold(
       body: Column(
-        children: [  
-          !state.isEdit ? StepIndicator(currentStep: state.step) : SizedBox.shrink(),
+        children: [
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            "Fill the details to find the expert tutor",
+            style: theme.textTheme.headlineSmall,
+          ),
+
+          const SizedBox(height: AppSpacing.md),
+
+          !state.isEdit
+              ? StepIndicator(currentStep: state.step)
+              : SizedBox.shrink(),
           Expanded(
             child: IndexedStack(
               index: state.step,
-              children: [
-                Step1Form(),
-                Step2Form(),
-                Step3Form(),
-                PreviewStep(),
-              ],
+              children: [Step1Form(), Step2Form(), Step3Form(), PreviewStep()],
             ),
           ),
 

@@ -2,6 +2,11 @@ import 'package:btcclient/core/models/notice_model.dart';
 import 'package:btcclient/core/widgets/dashboard/dashboard_nav_links.dart';
 import 'package:btcclient/core/widgets/dashboard/skeletons/home_skeleton.dart';
 import 'package:btcclient/core/widgets/dashboard/verify_profile_card.dart';
+import 'package:btcclient/core/widgets/reusable_modal.dart';
+import 'package:btcclient/features/promotions/data/models/promotion_model.dart';
+import 'package:btcclient/features/promotions/presentation/notifier/promotion_notifier.dart';
+import 'package:btcclient/features/promotions/presentation/provider/promotion_provider.dart';
+import 'package:btcclient/features/promotions/presentation/widgets/promotion_modal.dart';
 import 'package:btcclient/features/tutor/presentation/provider/tutor_dashboard_provider.dart';
 import 'package:btcclient/features/tutor/presentation/screens/tutor_application_screen.dart';
 import 'package:btcclient/features/tutor/presentation/widgets/tutor_cards_section.dart';
@@ -13,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:async';
 
 class TutorHomeScreen extends ConsumerStatefulWidget {
   final Function(int, {String? status}) changeTab;
@@ -24,9 +30,31 @@ class TutorHomeScreen extends ConsumerStatefulWidget {
 }
 
 class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
+
+Timer? _promotionDelayTimer;
+bool _promotionModalShown = false;
+bool _threeSecondDelayFinished = false;
+
   @override
   void initState() {
     super.initState();
+
+    ref
+    .read(promotionProvider.notifier)
+    .fetchPromotions();
+
+_promotionDelayTimer = Timer(
+  const Duration(seconds: 7),
+  () {
+    if (!mounted) return;
+
+    _threeSecondDelayFinished = true;
+
+    _tryShowPromotionModal();
+  },
+);
+
+ 
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final state = ref.read(tutorDashboardProvider);
@@ -36,25 +64,102 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
       }
     });
   }
+   // ==============================================================
+  // PROMOTION MODAL
+  // ==============================================================
+
+  void _tryShowPromotionModal() {
+    if (!mounted) return;
+
+    if (_promotionModalShown) return;
+
+    if (!_threeSecondDelayFinished) return;
+
+    final promotionState =
+        ref.read(promotionProvider);
+
+    // API is still loading.
+    //
+    // The ref.listen below will call this again
+    // automatically when the API finishes.
+    if (promotionState.isLoading) {
+      return;
+    }
+
+    // API finished but there are no promotions.
+    if (promotionState.promotions.isEmpty) {
+      return;
+    }
+
+    _openPromotionModal(
+      promotionState.promotions,
+    );
+  }
+
+  void _openPromotionModal(
+    List<PromotionModel> promotions,
+  ) {
+    if (!mounted) return;
+
+    if (_promotionModalShown) return;
+
+    if (promotions.isEmpty) return;
+
+    _promotionModalShown = true;
+
+    ReusableModal.show(
+      context: context,
+      barrierDismissible: true,
+      maxHeightFactor: 0.90,
+      verticalPadding: 6,
+      horizontalPadding: 6,
+
+      // IMPORTANT:
+      // Promotion is an image-based modal.
+      // Therefore don't add the normal modal padding.
+      // edgeToEdge: true,
+
+      child: PromotionModal(
+        promotions: promotions,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _promotionDelayTimer?.cancel();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+
+
+    ref.listen<PromotionState>(
+      promotionProvider,
+      (previous, next) {
+        if (!mounted) return;
+
+        if (_promotionModalShown) return;
+
+        if (!_threeSecondDelayFinished) return;
+
+        if (next.isLoading) return;
+
+        if (next.promotions.isEmpty) return;
+
+        _openPromotionModal(
+          next.promotions,
+        );
+      },
+    );
     final dashboardState = ref.watch(tutorDashboardProvider);
 
     final dashboardData = dashboardState.data;
-
-    // ============================================================
-    // LOADING
-    // ============================================================
-
     if (dashboardState.loading && dashboardState.data == null) {
       return const Scaffold(body: SafeArea(child: HomeSkeleton()));
     }
-
-    // ============================================================
-    // ERROR
-    // ============================================================
-
     if (dashboardState.error != null) {
       return Scaffold(
         body: Center(
@@ -77,10 +182,6 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
         ),
       );
     }
-
-    // ============================================================
-    // DATA
-    // ============================================================
 
     final data = dashboardData?["data"] ?? {};
 
@@ -108,10 +209,6 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
 
     final invoices = data["invoiceCount"] ?? 0;
 
-    // ============================================================
-    // SCREEN
-    // ============================================================
-
     return Scaffold(
       body: SafeArea(
         child: RefreshIndicator(
@@ -125,7 +222,7 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
             physics: const AlwaysScrollableScrollPhysics(),
 
             slivers: [
-              // ===============P===================================
+              // ==================================================
               // STICKY HEADER
               // SEARCH + APPLICATION STATUS
               // ==================================================
@@ -346,7 +443,7 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
                     HelplineCard(
                       phone: "+880 1616-012 365",
 
-                      timing: "10:00 Am - 10:00 Pm",
+                      timing: "10:00 AM - 10:00 PM",
 
                       onTap: () {
                         launchUrl(Uri.parse("tel:+8801616012365"));

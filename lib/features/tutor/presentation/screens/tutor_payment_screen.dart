@@ -1,6 +1,7 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/widgets/dashboard/action_card.dart';
 import 'package:btcclient/core/widgets/helpline_card/helpline_card.dart';
+import 'package:btcclient/features/invoices/presentation/screen/invoice_page.dart';
 import 'package:btcclient/features/tutor/presentation/screens/refund_form_screen.dart';
 import 'package:btcclient/features/tutor/presentation/widgets/refund_policy_sheet.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +36,12 @@ class TutorPaymentScreen extends StatelessWidget {
                               "A one-time platform fee is applicable after a tutor successfully confirms a tuition job. This fee is charged separately for each tuition job processed through the platform.",
                           buttonText: "Click Here",
                           onPressed: () {
-                            changeTab(1);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const InvoiceScreen( role:"tutor"),
+                              ),
+                            );
                           },
                         ),
 
@@ -47,7 +53,12 @@ class TutorPaymentScreen extends StatelessWidget {
                               "A one-time fee of BDT 500 is required to complete the profile verification process, ensuring authenticity and trustworthiness on our platform.",
                           buttonText: "Click Here",
                           onPressed: () {
-                            changeTab(1);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const InvoiceScreen( role:"tutor"),
+                              ),
+                            );
                           },
                         ),
 
@@ -83,7 +94,7 @@ class TutorPaymentScreen extends StatelessWidget {
                         SizedBox(height: 16),
                         HelplineCard(
                           phone: "+880 1616-012 365",
-                          timing: "10:00 Am - 10:00 Pm",
+                          timing: "10:00 AM - 10:00 PM",
                           onTap: () {
                             launchUrl(Uri.parse("tel:+8801616012365"));
                           },

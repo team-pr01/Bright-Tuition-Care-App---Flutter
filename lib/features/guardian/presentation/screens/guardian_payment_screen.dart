@@ -49,7 +49,7 @@ class GuardianPaymentScreen extends StatelessWidget {
                         SizedBox(height: 16),
                         HelplineCard(
                           phone: "+880 1616-012 365",
-                          timing: "10:00 Am - 10:00 Pm",
+                          timing: "10:00 AM - 10:00 PM",
                           onTap: () {
                             launchUrl(Uri.parse("tel:+8801616012365"));
                           },

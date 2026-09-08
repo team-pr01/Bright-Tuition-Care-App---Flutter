@@ -196,8 +196,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
               /// NAME
               AppInputField(
-                label: "Full Name",
-                hint: "Enter your name",
+                label: "Name",
+                hint: "Enter your full name",
                 controller: nameController,
                 required: true,
               ),
@@ -228,8 +228,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
               /// PHONE
               AppInputField(
-                label: "Phone",
-                hint: "Enter your phone",
+                label: "Phone Number (WhatsApp Preferred)",
+                hint: "Enter your phone number",
                 controller: phoneController,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {

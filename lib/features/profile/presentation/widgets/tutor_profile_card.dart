@@ -310,7 +310,7 @@ class TutorProfileCard extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => TutorResumeScreen(profile: profile),
+                        builder: (_) => TutorResumeScreen(profile: profile,hideContactDetails: true,),
                       ),
                     );
                   },

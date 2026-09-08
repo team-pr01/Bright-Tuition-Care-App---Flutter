@@ -35,7 +35,7 @@ class TutorDashboardScreen extends ConsumerWidget {
     return DashboardLayout(
       role: "tutor",
       initialIndex: 2,
-      pageTitles: const ["Settings", "Payments", "Dashboard","Job Board"],
+      pageTitles: const ["Settings", "Payments", "Dashboard", "Job Board"],
       drawerBuilder: (changeTab) => AppSidebar(
         user: user,
 
@@ -69,7 +69,7 @@ class TutorDashboardScreen extends ConsumerWidget {
             ),
             onTap: () {
               Navigator.pop(context);
-              changeTab(3);
+              changeTab(0);
             },
           ),
           SidebarItem(
@@ -99,7 +99,7 @@ class TutorDashboardScreen extends ConsumerWidget {
           SidebarItem(
             label: "Invoices",
             icon: SvgPicture.asset(
-             "assets/icons/navigations/invoice.svg",
+              "assets/icons/navigations/invoice.svg",
               width: 20,
               height: 20,
               colorFilter: const ColorFilter.mode(
@@ -113,8 +113,7 @@ class TutorDashboardScreen extends ConsumerWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => InvoiceScreen( role: "tutor",
-                  ),
+                  builder: (context) => InvoiceScreen(role: "tutor"),
                 ),
               );
             },
@@ -208,12 +207,7 @@ class TutorDashboardScreen extends ConsumerWidget {
             onTap: () {
               Navigator.pop(context); // closes drawer
 
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SettingScreen(changeTab: changeTab),
-                ),
-              );
+              changeTab(3);
             },
           ),
         ],
@@ -325,19 +319,19 @@ class TutorDashboardScreen extends ConsumerWidget {
       ),
 
       pages: [
-        (changeTab, status) => SettingScreen(changeTab: changeTab),
+        (changeTab, status) => JobsPage(role: "tutor", changeTab: changeTab),
         (changeTab, status) => TutorPaymentScreen(changeTab: changeTab),
         (changeTab, status) => TutorHomeScreen(
           changeTab: changeTab, // 🔥 KEEP THIS
         ),
+        (changeTab, status) => SettingScreen(changeTab: changeTab),
 
-        (changeTab, status) => JobsPage(role: "tutor", changeTab: changeTab),
         (changeTab, status) => TutorProfileScreen(changeTab: changeTab),
       ],
       navItems: [
         BottomNavigationBarItem(
           icon: SvgPicture.asset(
-           "assets/icons/navigations/settings.svg",
+            "assets/icons/navigations/job-search.svg",
             width: 22,
             height: 22,
             colorFilter: const ColorFilter.mode(
@@ -346,12 +340,12 @@ class TutorDashboardScreen extends ConsumerWidget {
             ),
           ),
           activeIcon: SvgPicture.asset(
-           "assets/icons/navigations/settings.svg",
+            "assets/icons/navigations/job-search.svg",
             width: 22,
             height: 22,
             colorFilter: ColorFilter.mode(AppColors.primary01, BlendMode.srcIn),
           ),
-          label: "Settings",
+          label: "Job Board",
         ),
 
         BottomNavigationBarItem(
@@ -392,10 +386,9 @@ class TutorDashboardScreen extends ConsumerWidget {
           ),
           label: "Dashboard",
         ),
-
         BottomNavigationBarItem(
           icon: SvgPicture.asset(
-            "assets/icons/navigations/job-search.svg",
+            "assets/icons/navigations/settings.svg",
             width: 22,
             height: 22,
             colorFilter: const ColorFilter.mode(
@@ -404,12 +397,12 @@ class TutorDashboardScreen extends ConsumerWidget {
             ),
           ),
           activeIcon: SvgPicture.asset(
-            "assets/icons/navigations/job-search.svg",
+            "assets/icons/navigations/settings.svg",
             width: 22,
             height: 22,
             colorFilter: ColorFilter.mode(AppColors.primary01, BlendMode.srcIn),
           ),
-          label: "Job Board",
+          label: "Settings",
         ),
 
         BottomNavigationBarItem(

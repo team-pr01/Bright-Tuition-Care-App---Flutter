@@ -3,19 +3,25 @@ import 'package:btcclient/core/utils/number_formatter.dart';
 import 'package:btcclient/core/widgets/dashboard/dashboard_cards/dashboard_large_card.dart';
 import 'package:btcclient/core/widgets/dashboard/dashboard_cards/dashboard_small_card.dart';
 import 'package:btcclient/core/widgets/dashboard/dashboard_cards/profile_progress_icon.dart';
+import 'package:btcclient/features/profile/presentation/screens/guardian_profile_page.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class GuardianCardsSection extends StatelessWidget {
   final int profileCompletion;
   final int confirmationLettersCount;
- final VoidCallback onHireTutorTap;
+  final VoidCallback onHireTutorTap;
+  final VoidCallback onProfileTap;
+  final VoidCallback onConfirmationLettersTap;
 
   const GuardianCardsSection({
     super.key,
     required this.profileCompletion,
     required this.confirmationLettersCount,
-      required this.onHireTutorTap,
+    required this.onHireTutorTap,
+    required this.onProfileTap,
+    required this.onConfirmationLettersTap,
   });
 
   @override
@@ -53,6 +59,7 @@ class GuardianCardsSection extends StatelessWidget {
                   icon: ProfileProgressIcon(
                     progress: (profileCompletion / 100).clamp(0.0, 1.0),
                   ),
+                  onAction: onProfileTap,
                 ),
               ),
 
@@ -68,7 +75,7 @@ class GuardianCardsSection extends StatelessWidget {
                   description: confirmationLettersCount > 0
                       ? "$confirmationLettersCount letter(s) available."
                       : "No confirmed tuition yet.",
-                  actionText:  "View All" ,
+                  actionText: "View All",
                   icon: SvgPicture.asset(
                     "assets/icons/visual/letter.svg",
                     width: 40,
@@ -77,6 +84,7 @@ class GuardianCardsSection extends StatelessWidget {
                       BlendMode.srcIn,
                     ),
                   ),
+                  onAction: onConfirmationLettersTap,
                 ),
               ),
             ],

@@ -5,6 +5,7 @@ import 'package:btcclient/core/widgets/dashboard/skeletons/home_skeleton.dart';
 import 'package:btcclient/core/widgets/dashboard/verify_profile_card.dart';
 import 'package:btcclient/core/widgets/recognition_card.dart';
 import 'package:btcclient/core/widgets/reusable_modal.dart';
+import 'package:btcclient/features/confirmation/presentation/screen/confirmation_page.dart';
 import 'package:btcclient/features/guardian/presentation/provider/guardain_dashboard_provider.dart';
 import 'package:btcclient/features/guardian/presentation/widgets/guardian_cards_section.dart';
 import 'package:btcclient/features/guardian/presentation/widgets/hire_tutor_bar.dart';
@@ -48,25 +49,13 @@ class _GuardianHomeScreenState
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // ==========================================================
-      // EXISTING DASHBOARD API
-      // ==========================================================
-
       ref
           .read(guardianDashboardProvider.notifier)
           .fetchStats();
 
-      // ==========================================================
-      // PROMOTION API
-      // ==========================================================
-
       ref
           .read(promotionProvider.notifier)
           .fetchPromotions();
-
-      // ==========================================================
-      // WAIT 3 SECONDS
-      // ==========================================================
 
       _promotionDelayTimer = Timer(
         const Duration(seconds: 7),
@@ -81,9 +70,9 @@ class _GuardianHomeScreenState
     });
   }
 
-  // ==============================================================
+  // ============================================================
   // PROMOTION MODAL
-  // ==============================================================
+  // ============================================================
 
   void _tryShowPromotionModal() {
     if (!mounted) return;
@@ -142,10 +131,6 @@ class _GuardianHomeScreenState
     );
   }
 
-  // ==============================================================
-  // DISPOSE
-  // ==============================================================
-
   @override
   void dispose() {
     _promotionDelayTimer?.cancel();
@@ -153,18 +138,8 @@ class _GuardianHomeScreenState
     super.dispose();
   }
 
-  // ==============================================================
-  // BUILD
-  // ==============================================================
-
   @override
   Widget build(BuildContext context) {
-    // ============================================================
-    // LISTEN FOR PROMOTION API
-    //
-    // This solves the API > 3 second race condition.
-    // ============================================================
-
     ref.listen<PromotionState>(
       promotionProvider,
       (previous, next) {
@@ -183,10 +158,6 @@ class _GuardianHomeScreenState
         );
       },
     );
-
-    // ============================================================
-    // DASHBOARD STATE
-    // ============================================================
 
     final dashboardState =
         ref.watch(guardianDashboardProvider);
@@ -221,7 +192,9 @@ class _GuardianHomeScreenState
               dashboardState.error!,
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(
+              height: 16,
+            ),
 
             ElevatedButton(
               onPressed: () {
@@ -294,301 +267,480 @@ class _GuardianHomeScreenState
     // DASHBOARD
     // ============================================================
 
-    return RefreshIndicator(
-      onRefresh: () {
-        return ref
-            .read(
-              guardianDashboardProvider
-                  .notifier,
-            )
-            .fetchStats(
-              refresh: true,
-            );
-      },
+    return Scaffold(
+      body: SafeArea(
+        child: RefreshIndicator(
+          onRefresh: () {
+            return ref
+                .read(
+                  guardianDashboardProvider
+                      .notifier,
+                )
+                .fetchStats(
+                  refresh: true,
+                );
+          },
 
-      child: SingleChildScrollView(
-        physics:
-            const AlwaysScrollableScrollPhysics(),
+          child: CustomScrollView(
+            physics:
+                const AlwaysScrollableScrollPhysics(),
 
-        padding:
-            const EdgeInsets.all(16),
+            slivers: [
+              // ==================================================
+              // STICKY HEADER
+              // HIRE TUTOR + JOB STATUS
+              // ==================================================
 
-        child: Column(
-          children: [
-            // ======================================================
-            // HIRE TUTOR
-            // ======================================================
+              SliverPersistentHeader(
+                pinned: true,
 
-            HireTutorBar(
-              onTap: () {
-                widget.changeTab(1);
-              },
-            ),
+                delegate:
+                    _TutorStickyHeaderDelegate(
+                  height: 180,
 
-            const SizedBox(
-              height: 16,
-            ),
+                  child: Container(
+                    color: Theme.of(context)
+                        .scaffoldBackgroundColor,
 
-            // ======================================================
-            // JOB NAVIGATION
-            // ======================================================
+                    padding:
+                        const EdgeInsets.fromLTRB(
+                      16,
+                      12,
+                      16,
+                      8,
+                    ),
 
-            Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.spaceAround,
-              children: [
-                DashboardNavLinks(
-                  icon: SvgPicture.asset(
-                    "assets/icons/navigations/appointed.svg",
-                    width: 24,
-                    height: 24,
-                    colorFilter:
-                        const ColorFilter.mode(
-                      Colors.white,
-                      BlendMode.srcIn,
+                    child: Column(
+                      children: [
+                        // ========================================
+                        // HIRE TUTOR
+                        // ========================================
+
+                        HireTutorBar(
+                          onTap: () {
+                            widget.changeTab(1);
+                          },
+                        ),
+
+                        const SizedBox(
+                          height: 16,
+                        ),
+
+                        // ========================================
+                        // JOB NAVIGATION
+                        // ========================================
+
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment:
+                                MainAxisAlignment
+                                    .spaceAround,
+
+                            children: [
+                              // ==================================
+                              // ALL JOBS
+                              // ==================================
+
+                              Expanded(
+                                child:
+                                    DashboardNavLinks(
+                                  icon:
+                                      SvgPicture.asset(
+                                    "assets/icons/navigations/appointed.svg",
+                                    width: 24,
+                                    height: 24,
+                                    colorFilter:
+                                        const ColorFilter
+                                            .mode(
+                                      Colors.white,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+
+                                  label: "All Jobs",
+
+                                  count:
+                                      dashboardData?[
+                                                  "data"]
+                                              ?["jobs"]
+                                          ?["total"] ??
+                                          0,
+
+                                  onTap: () {
+                                    widget.changeTab(
+                                      0,
+                                      status: null,
+                                    );
+                                  },
+                                ),
+                              ),
+
+                              // ==================================
+                              // PENDING
+                              // ==================================
+
+                              Expanded(
+                                child:
+                                    DashboardNavLinks(
+                                  icon:
+                                      SvgPicture.asset(
+                                    "assets/icons/navigations/pending-jobs.svg",
+                                    width: 24,
+                                    height: 24,
+                                    colorFilter:
+                                        const ColorFilter
+                                            .mode(
+                                      Colors.white,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+
+                                  label: "Pending",
+
+                                  count:
+                                      dashboardData?[
+                                                  "data"]
+                                              ?["jobs"]
+                                          ?["pending"] ??
+                                          0,
+
+                                  onTap: () {
+                                    widget.changeTab(
+                                      0,
+                                      status: "pending",
+                                    );
+                                  },
+                                ),
+                              ),
+
+                              // ==================================
+                              // LIVE
+                              // ==================================
+
+                              Expanded(
+                                child:
+                                    DashboardNavLinks(
+                                  icon:
+                                      SvgPicture.asset(
+                                    "assets/icons/navigations/jobs-search.svg",
+                                    width: 24,
+                                    height: 24,
+                                    colorFilter:
+                                        const ColorFilter
+                                            .mode(
+                                      Colors.white,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+
+                                  label: "Live",
+
+                                  count:
+                                      dashboardData?[
+                                                  "data"]
+                                              ?["jobs"]
+                                          ?["live"] ??
+                                          0,
+
+                                  onTap: () {
+                                    widget.changeTab(
+                                      0,
+                                      status: "live",
+                                    );
+                                  },
+                                ),
+                              ),
+
+                              // ==================================
+                              // CONFIRMED
+                              // ==================================
+
+                              Expanded(
+                                child:
+                                    DashboardNavLinks(
+                                  icon:
+                                      SvgPicture.asset(
+                                    "assets/icons/navigations/confirmed.svg",
+                                    width: 24,
+                                    height: 24,
+                                    colorFilter:
+                                        const ColorFilter
+                                            .mode(
+                                      Colors.white,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+
+                                  label: "Confirmed",
+
+                                  count:
+                                      dashboardData?[
+                                                  "data"]
+                                              ?["jobs"]
+                                          ?["closed"] ??
+                                          0,
+
+                                  onTap: () {
+                                    widget.changeTab(
+                                      0,
+                                      status: "closed",
+                                    );
+                                  },
+                                ),
+                              ),
+
+                              // ==================================
+                              // CANCELLED
+                              // ==================================
+
+                              Expanded(
+                                child:
+                                    DashboardNavLinks(
+                                  icon:
+                                      SvgPicture.asset(
+                                    "assets/icons/navigations/cancelled.svg",
+                                    width: 24,
+                                    height: 24,
+                                    colorFilter:
+                                        const ColorFilter
+                                            .mode(
+                                      Colors.white,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+
+                                  label: "Cancelled",
+
+                                  count:
+                                      dashboardData?[
+                                                  "data"]
+                                              ?["jobs"]
+                                          ?["cancelled"] ??
+                                          0,
+
+                                  onTap: () {
+                                    widget.changeTab(
+                                      0,
+                                      status: "cancelled",
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  label: "All Jobs",
-                  count:
-                      dashboardData?["data"]
-                                  ?["jobs"]
-                              ?["total"] ??
-                          0,
-                  onTap: () {
-                    widget.changeTab(
-                      0,
-                      status: null,
-                    );
-                  },
                 ),
-
-                DashboardNavLinks(
-                  icon: SvgPicture.asset(
-                    "assets/icons/navigations/pending-jobs.svg",
-                    width: 24,
-                    height: 24,
-                    colorFilter:
-                        const ColorFilter.mode(
-                      Colors.white,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                  label: "Pending",
-                  count:
-                      dashboardData?["data"]
-                                  ?["jobs"]
-                              ?["pending"] ??
-                          0,
-                  onTap: () {
-                    widget.changeTab(
-                      0,
-                      status: "pending",
-                    );
-                  },
-                ),
-
-                DashboardNavLinks(
-                  icon: SvgPicture.asset(
-                    "assets/icons/navigations/jobs-search.svg",
-                    width: 24,
-                    height: 24,
-                    colorFilter:
-                        const ColorFilter.mode(
-                      Colors.white,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                  label: "Live",
-                  count:
-                      dashboardData?["data"]
-                                  ?["jobs"]
-                              ?["live"] ??
-                          0,
-                  onTap: () {
-                    widget.changeTab(
-                      0,
-                      status: "live",
-                    );
-                  },
-                ),
-
-                DashboardNavLinks(
-                  icon: SvgPicture.asset(
-                    "assets/icons/navigations/confirmed.svg",
-                    width: 24,
-                    height: 24,
-                    colorFilter:
-                        const ColorFilter.mode(
-                      Colors.white,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                  label: "Confirmed",
-                  count:
-                      dashboardData?["data"]
-                                  ?["jobs"]
-                              ?["closed"] ??
-                          0,
-                  onTap: () {
-                    widget.changeTab(
-                      0,
-                      status: "closed",
-                    );
-                  },
-                ),
-
-                DashboardNavLinks(
-                  icon: SvgPicture.asset(
-                    "assets/icons/navigations/cancelled.svg",
-                    width: 24,
-                    height: 24,
-                    colorFilter:
-                        const ColorFilter.mode(
-                      Colors.white,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                  label: "Cancelled",
-                  count:
-                      dashboardData?["data"]
-                                  ?["jobs"]
-                              ?["cancelled"] ??
-                          0,
-                  onTap: () {
-                    widget.changeTab(
-                      0,
-                      status: "cancelled",
-                    );
-                  },
-                ),
-              ],
-            ),
-
-            const SizedBox(
-              height: 20,
-            ),
-
-            // ======================================================
-            // NOTICES
-            // ======================================================
-
-            NoticeSection(
-              notices: notices,
-            ),
-
-            const SizedBox(
-              height: 20,
-            ),
-
-            // ======================================================
-            // GUARDIAN OF THE MONTH
-            // ======================================================
-
-            if (dashboardData != null)
-              RecognitionCard(
-                image:
-                    dashboardData["data"]
-                                ?[
-                                    "guardianOfTheMonth"
-                                  ]
-                            ?["imageUrl"] ??
-                        "assets/images/dummy-avatar.jpg",
-
-                title:
-                    "Guardian of the Month",
-
-                tutorId:
-                    dashboardData["data"]
-                                ?[
-                                    "guardianOfTheMonth"
-                                  ]
-                            ?["guardianId"] ??
-                        "",
-
-                rating:
-                    dashboardData["data"]
-                                ?[
-                                    "guardianOfTheMonth"
-                                  ]
-                            ?["rating"]
-                            ?.toString() ??
-                        "0",
-
-                name:
-                    dashboardData["data"]
-                                ?[
-                                    "guardianOfTheMonth"
-                                  ]
-                            ?["userId"]
-                            ?["name"] ??
-                        "",
-
-                date:
-                    "This Month",
               ),
 
-            const SizedBox(
-              height: 20,
-            ),
+              // ==================================================
+              // SCROLLABLE CONTENT
+              // ==================================================
 
-            // ======================================================
-            // GUARDIAN CARDS
-            // ======================================================
+              SliverPadding(
+                padding:
+                    const EdgeInsets.fromLTRB(
+                  16,
+                  20,
+                  16,
+                  20,
+                ),
 
-            GuardianCardsSection(
-              profileCompletion:
-                  profileCompleted,
+                sliver: SliverList(
+                  delegate:
+                      SliverChildListDelegate([
+                    // ==========================================
+                    // NOTICE BOARD
+                    // ==========================================
 
-              confirmationLettersCount:
-                  confirmationLetters,
+                    NoticeSection(
+                      notices: notices,
+                    ),
 
-              onHireTutorTap: () {
-                widget.changeTab(1);
-              },
-            ),
+                    const SizedBox(
+                      height: 20,
+                    ),
 
-            const SizedBox(
-              height: 20,
-            ),
+                    // ==========================================
+                    // GUARDIAN OF THE MONTH
+                    // ==========================================
 
-            // ======================================================
-            // VERIFY PROFILE
-            // ======================================================
+                    if (dashboardData != null)
+                      RecognitionCard(
+                        image:
+                            dashboardData["data"]
+                                        ?[
+                                            "guardianOfTheMonth"
+                                          ]
+                                    ?["imageUrl"] ??
+                                "assets/images/dummy-avatar.jpg",
 
-            VerifyProfileCard(
-              isVerified: isVerified,
-            ),
+                        title:
+                            "Guardian of the Month",
 
-            const SizedBox(
-              height: 20,
-            ),
+                        tutorId:
+                            dashboardData["data"]
+                                        ?[
+                                            "guardianOfTheMonth"
+                                          ]
+                                    ?["guardianId"] ??
+                                "",
 
-            // ======================================================
-            // HELPLINE
-            // ======================================================
+                        rating:
+                            dashboardData["data"]
+                                        ?[
+                                            "guardianOfTheMonth"
+                                          ]
+                                    ?["rating"]
+                                    ?.toString() ??
+                                "0",
 
-            HelplineCard(
-              phone:
-                  "+880 1616-012 365",
+                        name:
+                            dashboardData["data"]
+                                        ?[
+                                            "guardianOfTheMonth"
+                                          ]
+                                    ?["userId"]
+                                    ?["name"] ??
+                                "",
 
-              timing:
-                  "10:00 Am - 10:00 Pm",
+                        date: "This Month",
+                      ),
 
-              onTap: () {
-                launchUrl(
-                  Uri.parse(
-                    "tel:+8801616012365",
-                  ),
-                );
-              },
-            ),
+                    const SizedBox(
+                      height: 20,
+                    ),
 
-            const SizedBox(
-              height: 20,
-            ),
-          ],
+                    // ==========================================
+                    // GUARDIAN CARDS
+                    // ==========================================
+
+                    GuardianCardsSection(
+                      profileCompletion:
+                          profileCompleted,
+
+                      confirmationLettersCount:
+                          confirmationLetters,
+
+                      onHireTutorTap: () {
+                        widget.changeTab(1);
+                      },
+
+                      onProfileTap: () {
+                        widget.changeTab(4);
+                      },
+
+                      onConfirmationLettersTap:
+                          () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) =>
+                                    const ConfirmationScreen(
+                              role: "guardian",
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+
+                    const SizedBox(
+                      height: 20,
+                    ),
+
+                    // ==========================================
+                    // VERIFY PROFILE
+                    // ==========================================
+
+                    VerifyProfileCard(
+                      isVerified: isVerified,
+                    ),
+
+                    const SizedBox(
+                      height: 20,
+                    ),
+
+                    // ==========================================
+                    // HELPLINE
+                    // ==========================================
+
+                    HelplineCard(
+                      phone:
+                          "+880 1616-012 365",
+
+                      timing:
+                          "10:00 AM - 10:00 PM",
+
+                      onTap: () {
+                        launchUrl(
+                          Uri.parse(
+                            "tel:+8801616012365",
+                          ),
+                        );
+                      },
+                    ),
+
+                    const SizedBox(
+                      height: 20,
+                    ),
+                  ]),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
+  }
+}
+
+// ==================================================================
+// STICKY HEADER DELEGATE
+// ==================================================================
+
+class _TutorStickyHeaderDelegate
+    extends SliverPersistentHeaderDelegate {
+  final Widget child;
+  final double height;
+
+  _TutorStickyHeaderDelegate({
+    required this.child,
+    required this.height,
+  });
+
+  @override
+  double get minExtent => height;
+
+  @override
+  double get maxExtent => height;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return Material(
+      color:
+          Theme.of(context)
+              .scaffoldBackgroundColor,
+
+      elevation:
+          overlapsContent ? 3 : 0,
+
+      child: child,
+    );
+  }
+
+  @override
+  bool shouldRebuild(
+    covariant _TutorStickyHeaderDelegate
+        oldDelegate,
+  ) {
+    return oldDelegate.height != height ||
+        oldDelegate.child != child;
   }
 }
