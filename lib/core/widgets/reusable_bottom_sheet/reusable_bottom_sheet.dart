@@ -3,10 +3,19 @@ import 'package:btcclient/core/config/theme.dart';
 
 class ReusableBottomSheet extends StatelessWidget {
   final Widget child;
+  final double topPadding;
+  final double bottomPadding;
 
+  /// Bottom padding inside the modal.
+  final double rightPadding;
+  final double leftPadding;
   const ReusableBottomSheet({
     super.key,
     required this.child,
+    this.topPadding = 0,
+    this.bottomPadding = 24,
+    this.rightPadding = 20,
+    this.leftPadding = 20,
   });
 
   @override
@@ -22,47 +31,29 @@ class ReusableBottomSheet extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.bottomCenter,
             end: Alignment.topCenter,
-            colors: [
-              Colors.white,
-              AppColors.primary02,
-            ],
+            colors: [Colors.white, AppColors.primary02],
           ),
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(24),
-          ),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
         child: Stack(
           children: [
             // ======================================================
             // MAIN CONTENT
             // ======================================================
-
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 // DRAG HANDLE
-                Container(
-                  width: 40,
-                  height: 5,
-                  margin: const EdgeInsets.only(
-                    top: 12,
-                    bottom: 18,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
 
                 // CONTENT
                 Flexible(
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.fromLTRB(
-                      20,
-                      0,
-                      20,
-                      24,
+                    padding: EdgeInsets.fromLTRB(
+                      leftPadding,
+                      topPadding,
+                      rightPadding,
+                      bottomPadding,
                     ),
                     child: child,
                   ),
@@ -73,7 +64,6 @@ class ReusableBottomSheet extends StatelessWidget {
             // ======================================================
             // CLOSE BUTTON
             // ======================================================
-
             Positioned(
               top: 10,
               right: 12,
@@ -88,11 +78,22 @@ class ReusableBottomSheet extends StatelessWidget {
                   child: const SizedBox(
                     width: 34,
                     height: 34,
-                    child: Icon(
-                      Icons.close,
-                      size: 20,
-                      color: AppColors.error,
-                    ),
+                    child: Icon(Icons.close, size: 20, color: AppColors.error),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 10,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(219, 223, 223, 223),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
               ),

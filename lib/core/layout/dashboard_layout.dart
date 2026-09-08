@@ -357,8 +357,11 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
                               // =================================================
                               Align(
                                 alignment: Alignment.centerRight,
-                                child: _buildAppBarAction(
-                                  unreadCount: unreadCount,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 12),
+                                  child: _buildAppBarAction(
+                                    unreadCount: unreadCount,
+                                  ),
                                 ),
                               ),
                             ],
