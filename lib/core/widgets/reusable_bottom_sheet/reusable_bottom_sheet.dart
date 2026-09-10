@@ -5,17 +5,18 @@ class ReusableBottomSheet extends StatelessWidget {
   final Widget child;
   final double topPadding;
   final double bottomPadding;
-
-  /// Bottom padding inside the modal.
   final double rightPadding;
   final double leftPadding;
+  final Widget? bottomChild;
+
   const ReusableBottomSheet({
     super.key,
     required this.child,
-    this.topPadding = 0,
+    this.topPadding = 24,
     this.bottomPadding = 24,
     this.rightPadding = 20,
     this.leftPadding = 20,
+    this.bottomChild,
   });
 
   @override
@@ -31,21 +32,20 @@ class ReusableBottomSheet extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.bottomCenter,
             end: Alignment.topCenter,
-            colors: [Colors.white, AppColors.primary02],
+            colors: [
+              Colors.white,
+              AppColors.primary02,
+            ],
           ),
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(24),
+          ),
         ),
         child: Stack(
           children: [
-            // ======================================================
-            // MAIN CONTENT
-            // ======================================================
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // DRAG HANDLE
-
-                // CONTENT
                 Flexible(
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
@@ -53,17 +53,14 @@ class ReusableBottomSheet extends StatelessWidget {
                       leftPadding,
                       topPadding,
                       rightPadding,
-                      bottomPadding,
+                      bottomChild == null ? bottomPadding : 16,
                     ),
                     child: child,
                   ),
                 ),
+                if (bottomChild != null) bottomChild!,
               ],
             ),
-
-            // ======================================================
-            // CLOSE BUTTON
-            // ======================================================
             Positioned(
               top: 10,
               right: 12,
@@ -78,7 +75,11 @@ class ReusableBottomSheet extends StatelessWidget {
                   child: const SizedBox(
                     width: 34,
                     height: 34,
-                    child: Icon(Icons.close, size: 20, color: AppColors.error),
+                    child: Icon(
+                      Icons.close,
+                      size: 20,
+                      color: AppColors.error,
+                    ),
                   ),
                 ),
               ),
