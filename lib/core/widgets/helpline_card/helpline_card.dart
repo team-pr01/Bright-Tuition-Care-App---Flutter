@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
 import '../../config/theme.dart';
+import '../../responsive/responsive.dart';
 
 class HelplineCard extends StatelessWidget {
   final String phone;
@@ -16,10 +18,23 @@ class HelplineCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // -------------------------------------------------------------------------
+    // RESPONSIVE VALUES
+    // -------------------------------------------------------------------------
+
+    final horizontalPadding = context.responsiveValue<double>(
+      extraSmall: 4,
+      small: 5,
+      medium: 6,
+      large: 8,
+    );
+
+    
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 8),
         decoration: BoxDecoration(
           color: AppColors.primary03,
           borderRadius: BorderRadius.circular(8),
@@ -27,26 +42,35 @@ class HelplineCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            /// LEFT ICON
-            SvgPicture.asset(
-              "assets/icons/visual/connection.svg",
+            // -----------------------------------------------------------------
+            // LEFT ICON
+            // -----------------------------------------------------------------
+
+            SizedBox(
               width: 24,
               height: 24,
-              colorFilter: const ColorFilter.mode(
-                AppColors.primary01,
-                BlendMode.srcIn,
+              child: SvgPicture.asset(
+                "assets/icons/visual/connection.svg",
+                colorFilter: const ColorFilter.mode(
+                  AppColors.primary01,
+                  BlendMode.srcIn,
+                ),
               ),
             ),
 
-            const SizedBox(width: 12),
+            SizedBox(width: 12),
+
+            // -----------------------------------------------------------------
+            // PHONE + TIMING
+            // -----------------------------------------------------------------
 
             Expanded(
               child: Center(
                 child: RichText(
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   text: TextSpan(
-                    style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                      color: AppColors.neutrals03,
-                    ),
                     children: [
                       TextSpan(
                         text: "$phone ",
@@ -67,18 +91,7 @@ class HelplineCard extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(width: 12),
-
-            /// RIGHT ICON
-            // SvgPicture.asset(
-            //   "assets/icons/visual/send.svg",
-            //   width: 24,
-            //   height: 24,
-            //   colorFilter: const ColorFilter.mode(
-            //     AppColors.primary01,
-            //     BlendMode.srcIn,
-            //   ),
-            // ),
+            SizedBox(width: 12),
           ],
         ),
       ),

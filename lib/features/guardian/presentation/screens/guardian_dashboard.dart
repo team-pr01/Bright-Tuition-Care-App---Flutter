@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:btcclient/core/models/notice_model.dart';
+import 'package:btcclient/core/responsive/responsive.dart';
 import 'package:btcclient/core/widgets/dashboard/skeletons/home_skeleton.dart';
 import 'package:btcclient/core/widgets/dashboard/verify_profile_card.dart';
 import 'package:btcclient/core/widgets/recognition_card.dart';
@@ -296,19 +297,18 @@ class _GuardianHomeScreenState
 
                 delegate:
                     _TutorStickyHeaderDelegate(
-                  height: 180,
+                  height: context.responsiveValue<double>(
+                    extraSmall: 145,
+                    small: 160,
+                    medium: 175,
+                    large: 180,
+                  ),
 
                   child: Container(
                     color: Theme.of(context)
                         .scaffoldBackgroundColor,
 
-                    padding:
-                        const EdgeInsets.fromLTRB(
-                      16,
-                      12,
-                      16,
-                      8,
-                    ),
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
 
                     child: Column(
                       children: [
@@ -543,7 +543,7 @@ class _GuardianHomeScreenState
                 padding:
                     const EdgeInsets.fromLTRB(
                   16,
-                  20,
+                  0,
                   16,
                   20,
                 ),

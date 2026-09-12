@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:btcclient/core/config/theme.dart';
+import 'package:btcclient/core/responsive/responsive.dart';
 import 'package:btcclient/features/notifications/presentations/provider/notification_notifier.dart';
 import 'package:btcclient/features/notifications/presentations/screens/notification_screen.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +53,12 @@ class CommonAppBar extends ConsumerWidget implements PreferredSizeWidget {
           child: SafeArea(
             bottom: false,
             child: SizedBox(
-              height: 56,
+               height: context.responsiveValue<double>(
+                    extraSmall:40,
+                    small: 46,
+                    medium: 50,
+                    large: 56,
+                  ),
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -90,6 +96,12 @@ class CommonAppBar extends ConsumerWidget implements PreferredSizeWidget {
                     title,
                     style: AppTextStyles.headlineSmall.copyWith(
                       fontWeight: FontWeight.w500,
+                      fontSize:  context.responsiveValue<double>(
+                    extraSmall: 12,
+                    small: 14,
+                    medium: 16,
+                    large: 18,
+                  ),
                     ),
                   ),
 

@@ -1,3 +1,4 @@
+import 'package:btcclient/core/responsive/responsive.dart';
 import 'package:flutter/material.dart';
 import '../../../config/theme.dart';
 
@@ -21,7 +22,14 @@ class DashboardSmallCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+      final titleFontSize = context.responsiveFontSize(
+      extraSmall: 16,
+      small: 18,
+      medium: 22,
+      large: 24,
+    );
+    
+    return GestureDetector( 
       onTap: onAction,
       child: SizedBox(
         height: double.infinity,
@@ -46,6 +54,7 @@ class DashboardSmallCard extends StatelessWidget {
                           .copyWith(
                             color: Colors.black,
                             fontWeight: FontWeight.w500,
+                            fontSize: titleFontSize,
                           ),
                     ),
 

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:btcclient/core/network/api_error_handler.dart';
 
@@ -36,18 +37,11 @@ class InvoiceNotifier extends StateNotifier<InvoiceState> {
 
   Future<void> fetchInvoices() async {
     try {
-      state = state.copyWith(
-        isLoading: true,
-        error: null,
-      );
+      state = state.copyWith(isLoading: true, error: null);
 
       final invoices = await repository.getMyInvoices();
 
-      state = state.copyWith(
-        isLoading: false,
-        invoices: invoices,
-        error: null,
-      );
+      state = state.copyWith(isLoading: false, invoices: invoices, error: null);
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
@@ -60,6 +54,24 @@ class InvoiceNotifier extends StateNotifier<InvoiceState> {
     await fetchInvoices();
   }
 
+  Future<InvoiceModel> fetchSingleInvoice(String id) async {
+    try {
+      debugPrint('🌐 Fetching invoice by notification ID: $id');
+
+      final invoice = await repository.getSingleInvoice(id);
+
+      debugPrint('✅ Invoice fetched: ${invoice.invoiceId}');
+
+      return invoice;
+    } catch (e) {
+      debugPrint('❌ Failed to fetch invoice: $e');
+
+      state = state.copyWith(error: ApiErrorHandler.getMessage(e));
+
+      rethrow;
+    }
+  }
+
   Future<void> deleteInvoice(String id) async {
     try {
       await repository.deleteInvoice(id);
@@ -68,9 +80,7 @@ class InvoiceNotifier extends StateNotifier<InvoiceState> {
         invoices: state.invoices.where((e) => e.id != id).toList(),
       );
     } catch (e) {
-      state = state.copyWith(
-        error: ApiErrorHandler.getMessage(e),
-      );
+      state = state.copyWith(error: ApiErrorHandler.getMessage(e));
       rethrow;
     }
   }
@@ -83,17 +93,12 @@ class InvoiceNotifier extends StateNotifier<InvoiceState> {
     try {
       await repository.updateInvoice(
         id: id,
-        request: UpdateInvoiceRequest(
-          amount: amount,
-          dueDate: dueDate,
-        ),
+        request: UpdateInvoiceRequest(amount: amount, dueDate: dueDate),
       );
 
       await fetchInvoices();
     } catch (e) {
-      state = state.copyWith(
-        error: ApiErrorHandler.getMessage(e),
-      );
+      state = state.copyWith(error: ApiErrorHandler.getMessage(e));
       rethrow;
     }
   }

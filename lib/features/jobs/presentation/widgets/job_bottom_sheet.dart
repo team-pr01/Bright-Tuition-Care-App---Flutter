@@ -317,7 +317,10 @@ class _JobCardState extends ConsumerState<JobBottomSheet> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 10),
+
+                if (variant == JobCardVariant.application &&
+                    application != null)
+                  const SizedBox(height: 10),
                 if (variant == JobCardVariant.application &&
                     application != null)
                   Row(
@@ -345,7 +348,9 @@ class _JobCardState extends ConsumerState<JobBottomSheet> {
                       ),
                     ],
                   ),
-                const SizedBox(height: 20),
+
+                if (variant == JobCardVariant.postedJob)
+                  const SizedBox(height: 10),
                 if (variant == JobCardVariant.postedJob)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

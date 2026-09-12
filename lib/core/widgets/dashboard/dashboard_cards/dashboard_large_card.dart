@@ -1,3 +1,4 @@
+import 'package:btcclient/core/responsive/responsive.dart';
 import 'package:flutter/material.dart';
 import '../../../config/theme.dart';
 
@@ -21,6 +22,19 @@ class DashboardLargeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final titleFontSize = context.responsiveFontSize(
+      extraSmall: 14,
+      small: 18,
+      medium: 22,
+      large: 22,
+    );
+
+    final subtitleFontSize = context.responsiveFontSize(
+      extraSmall: 14,
+      small: 18,
+      medium: 22,
+      large: 22,
+    );
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -46,9 +60,10 @@ class DashboardLargeCard extends StatelessWidget {
                                 color: Colors.black,
                                 fontWeight: FontWeight.w400,
                                 height: 1.2,
+                                fontSize: titleFontSize,
                               ),
                         ),
-                        TextSpan(text: (" ")),
+                        const TextSpan(text: " "),
                         if (subtitle != null)
                           TextSpan(
                             text: subtitle!,
@@ -57,6 +72,7 @@ class DashboardLargeCard extends StatelessWidget {
                                   color: AppColors.primary01,
                                   fontWeight: FontWeight.w400,
                                   height: 1.2,
+                                  fontSize: subtitleFontSize,
                                 ),
                           ),
                       ],

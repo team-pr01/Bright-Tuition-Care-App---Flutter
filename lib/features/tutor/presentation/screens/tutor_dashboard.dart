@@ -1,4 +1,5 @@
 import 'package:btcclient/core/models/notice_model.dart';
+import 'package:btcclient/core/responsive/responsive.dart';
 import 'package:btcclient/core/widgets/dashboard/dashboard_nav_links.dart';
 import 'package:btcclient/core/widgets/dashboard/skeletons/home_skeleton.dart';
 import 'package:btcclient/core/widgets/dashboard/verify_profile_card.dart';
@@ -30,31 +31,23 @@ class TutorHomeScreen extends ConsumerStatefulWidget {
 }
 
 class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
-
-Timer? _promotionDelayTimer;
-bool _promotionModalShown = false;
-bool _threeSecondDelayFinished = false;
+  Timer? _promotionDelayTimer;
+  bool _promotionModalShown = false;
+  bool _threeSecondDelayFinished = false;
 
   @override
   void initState() {
     super.initState();
 
-    ref
-    .read(promotionProvider.notifier)
-    .fetchPromotions();
+    ref.read(promotionProvider.notifier).fetchPromotions();
 
-_promotionDelayTimer = Timer(
-  const Duration(seconds: 7),
-  () {
-    if (!mounted) return;
+    _promotionDelayTimer = Timer(const Duration(seconds: 7), () {
+      if (!mounted) return;
 
-    _threeSecondDelayFinished = true;
+      _threeSecondDelayFinished = true;
 
-    _tryShowPromotionModal();
-  },
-);
-
- 
+      _tryShowPromotionModal();
+    });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final state = ref.read(tutorDashboardProvider);
@@ -64,7 +57,7 @@ _promotionDelayTimer = Timer(
       }
     });
   }
-   // ==============================================================
+  // ==============================================================
   // PROMOTION MODAL
   // ==============================================================
 
@@ -75,8 +68,7 @@ _promotionDelayTimer = Timer(
 
     if (!_threeSecondDelayFinished) return;
 
-    final promotionState =
-        ref.read(promotionProvider);
+    final promotionState = ref.read(promotionProvider);
 
     // API is still loading.
     //
@@ -91,14 +83,10 @@ _promotionDelayTimer = Timer(
       return;
     }
 
-    _openPromotionModal(
-      promotionState.promotions,
-    );
+    _openPromotionModal(promotionState.promotions);
   }
 
-  void _openPromotionModal(
-    List<PromotionModel> promotions,
-  ) {
+  void _openPromotionModal(List<PromotionModel> promotions) {
     if (!mounted) return;
 
     if (_promotionModalShown) return;
@@ -118,10 +106,7 @@ _promotionDelayTimer = Timer(
       // Promotion is an image-based modal.
       // Therefore don't add the normal modal padding.
       // edgeToEdge: true,
-
-      child: PromotionModal(
-        promotions: promotions,
-      ),
+      child: PromotionModal(promotions: promotions),
     );
   }
 
@@ -134,26 +119,19 @@ _promotionDelayTimer = Timer(
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<PromotionState>(promotionProvider, (previous, next) {
+      if (!mounted) return;
 
+      if (_promotionModalShown) return;
 
-    ref.listen<PromotionState>(
-      promotionProvider,
-      (previous, next) {
-        if (!mounted) return;
+      if (!_threeSecondDelayFinished) return;
 
-        if (_promotionModalShown) return;
+      if (next.isLoading) return;
 
-        if (!_threeSecondDelayFinished) return;
+      if (next.promotions.isEmpty) return;
 
-        if (next.isLoading) return;
-
-        if (next.promotions.isEmpty) return;
-
-        _openPromotionModal(
-          next.promotions,
-        );
-      },
-    );
+      _openPromotionModal(next.promotions);
+    });
     final dashboardState = ref.watch(tutorDashboardProvider);
 
     final dashboardData = dashboardState.data;
@@ -230,12 +208,17 @@ _promotionDelayTimer = Timer(
                 pinned: true,
 
                 delegate: _TutorStickyHeaderDelegate(
-                  height: 180,
+                  height: context.responsiveValue<double>(
+                    extraSmall: 145,
+                    small: 160,
+                    medium: 175,
+                    large: 180,
+                  ),
 
                   child: Container(
                     color: Theme.of(context).scaffoldBackgroundColor,
 
-                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
 
                     child: Column(
                       children: [
@@ -259,23 +242,21 @@ _promotionDelayTimer = Timer(
 
                             children: [
                               Expanded(
-                                child: Expanded(
-                                  child: DashboardNavLinks(
-                                    icon: SvgPicture.asset(
-                                      "assets/icons/navigations/applied.svg",
-                                      width: 24,
-                                      height: 24,
-                                      colorFilter: const ColorFilter.mode(
-                                        Colors.white,
-                                        BlendMode.srcIn,
-                                      ),
+                                child: DashboardNavLinks(
+                                  icon: SvgPicture.asset(
+                                    "assets/icons/navigations/applied.svg",
+                                    width: 24,
+                                    height: 24,
+                                    colorFilter: const ColorFilter.mode(
+                                      Colors.white,
+                                      BlendMode.srcIn,
                                     ),
-                                    label: "Applied",
-                                    count: applications["applied"] ?? 0,
-                                    onTap: () {
-                                      _openApplications(context, "applied");
-                                    },
                                   ),
+                                  label: "Applied",
+                                  count: applications["applied"] ?? 0,
+                                  onTap: () {
+                                    _openApplications(context, "applied");
+                                  },
                                 ),
                               ),
 
@@ -367,7 +348,7 @@ _promotionDelayTimer = Timer(
               // SCROLLABLE CONTENT
               // ==================================================
               SliverPadding(
-                padding: const EdgeInsets.fromLTRB(16, 20, 16, 20),
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
 
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import 'package:btcclient/core/services/navigation_service.dart';
+import 'package:btcclient/features/legal/data/tutor_important_guidelines_data.dart';
 
 class NotificationRouter {
   NotificationRouter._();
@@ -9,10 +10,8 @@ class NotificationRouter {
   ///
   /// The notification `type` determines where the user should be
   /// taken. Each notification type can use different data.
-  static void handleNotification(
-    Map<String, dynamic> data,
-  ) {
-    debugPrint('🔔 NotificationRouter received: $data');
+  static void handleNotification(Map<String, dynamic> data) {
+    print('🔔 NotificationRouter received: $data');
 
     final type = data['type']?.toString();
 
@@ -29,42 +28,44 @@ class NotificationRouter {
       case 'new_job_alert':
         _handleNewJobAlert(data);
         break;
+
       case 'job_details':
         _handleNewJobAlert(data);
-        break;   
+        break;
+      case 'invoice_details':
+        _handleInvoiceDetails(data);
+        break;
 
-      // ============================================================ 
+      // ============================================================
+      // TUTOR IMPORTANT GUIDELINES
+      // ============================================================
+
+      case 'tutor_important_guidelines':
+        _handleTutorImportantGuidelines();
+        break;
+
+      // ============================================================
       // FUTURE NOTIFICATION TYPES
-      // ====================================== job_details======================
-      //
-      // Add new backend notification types here.
-      //
-      // Example:
-      //
-      // case 'application_received':
-      //   _handleApplicationReceived(data);
-      //   break;
-      //
+      // ============================================================
+
       // case 'application_accepted':
       //   _handleApplicationAccepted(data);
       //   break;
-      //
+
       // case 'payment_received':
       //   _handlePaymentReceived(data);
       //   break;
-      //
+
       // case 'chat_message':
       //   _handleChatMessage(data);
       //   break;
-      //
+
       // case 'profile_update':
       //   _handleProfileUpdate(data);
       //   break;
 
       default:
-        debugPrint(
-          '⚠️ Unknown notification type: $type',
-        );
+        debugPrint('⚠️ Unknown notification type: $type');
         break;
     }
   }
@@ -73,21 +74,15 @@ class NotificationRouter {
   // NEW JOB ALERT
   // ================================================================
 
-  static void _handleNewJobAlert(
-    Map<String, dynamic> data,
-  ) {
+  static void _handleNewJobAlert(Map<String, dynamic> data) {
     final jobId = data['jobId']?.toString();
 
     if (jobId == null || jobId.isEmpty) {
-      debugPrint(
-        '⚠️ new_job_alert notification does not contain jobId',
-      );
+      debugPrint('⚠️ new_job_alert notification does not contain jobId');
       return;
     }
 
-    debugPrint(
-      '🔔 Opening job from notification: $jobId',
-    );
+    debugPrint('🔔 Opening job from notification: $jobId');
 
     /*
      * IMPORTANT:
@@ -104,13 +99,37 @@ class NotificationRouter {
     NavigationService.navigateToJobDetails(jobId);
   }
 
+  static void _handleInvoiceDetails(Map<String, dynamic> data) {
+    final invoiceId = data['invoiceId']?.toString();
+
+    if (invoiceId == null || invoiceId.isEmpty) {
+      debugPrint('⚠️ invoice_details notification does not contain invoiceId');
+      return;
+    }
+
+    debugPrint('🔔 Opening invoice from notification: $invoiceId');
+
+    NavigationService.navigateToInvoiceDetails(invoiceId);
+  }
+  // ================================================================
+  // TUTOR IMPORTANT GUIDELINES
+  // ================================================================
+
+  static void _handleTutorImportantGuidelines() {
+    debugPrint('🔔 Opening Tutor Important Guidelines');
+
+    NavigationService.navigateToImportantGuidelines(
+      tutorImportantGuidelinesData,
+    );
+  }
+
   // ================================================================
   // FUTURE HANDLERS
   // ================================================================
-  //
+
   // Keep these commented until the backend actually introduces
   // those notification types.
-  //
+
   // static void _handleApplicationReceived(
   //   Map<String, dynamic> data,
   // ) {
@@ -123,20 +142,26 @@ class NotificationRouter {
   //
   //   // NavigationService.navigateToApplication(applicationId);
   // }
-  //
+
   // static void _handleApplicationAccepted(
   //   Map<String, dynamic> data,
   // ) {
   //   // Future implementation
   // }
-  //
+
   // static void _handlePaymentReceived(
   //   Map<String, dynamic> data,
   // ) {
   //   // Future implementation
   // }
-  //
+
   // static void _handleChatMessage(
+  //   Map<String, dynamic> data,
+  // ) {
+  //   // Future implementation
+  // }
+
+  // static void _handleProfileUpdate(
   //   Map<String, dynamic> data,
   // ) {
   //   // Future implementation

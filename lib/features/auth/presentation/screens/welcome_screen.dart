@@ -1,3 +1,4 @@
+import 'package:btcclient/core/responsive/responsive.dart';
 import 'package:btcclient/core/widgets/testimonial/skeletons/testimonial_section_skeleton.dart';
 import 'package:btcclient/core/widgets/testimonial/testimonial_section.dart';
 import 'package:btcclient/features/auth/presentation/provider/testimonial_notifier.dart';
@@ -75,11 +76,27 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                               /// LOGO
                               Image.asset(
                                 'assets/images/logo-1.png',
-                                width: 287,
-                                height: 130,
+                                width: context.responsiveValue<double>(
+                                  extraSmall: 220,
+                                  small: 240,
+                                  medium: 260,
+                                  large: 280,
+                                ),
+                                height: context.responsiveValue<double>(
+                                  extraSmall: 80,
+                                  small: 90,
+                                  medium: 110,
+                                  large: 130,
+                                ),
+                                fit: BoxFit.contain,
                               ),
 
-                              const SizedBox(height: 30),
+                              SizedBox(height: context.responsiveValue<double>(
+                                  extraSmall: 18,
+                                  small: 22,
+                                  medium: 26,
+                                  large: 30,
+                                ),),
 
                               /// MAIN CARD
                               Container(
@@ -101,10 +118,21 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                           .copyWith(
                                             fontWeight: FontWeight.w400,
                                             color: AppColors.neutrals02,
+                                            fontSize: context.responsiveValue<double>(
+                                              extraSmall: 18,
+                                              small: 20,
+                                              medium: 22,
+                                              large: 24,
+                                            ),
                                           ),
                                     ),
 
-                                    const SizedBox(height: 6),
+                                    SizedBox(height: context.responsiveValue<double>(
+                                  extraSmall: 2,
+                                  small: 3,
+                                  medium: 6,
+                                  large: 6,
+                                ),),
 
                                     Text(
                                       "Connect with qualified and verified tutors for any subject or class in your area",
@@ -115,10 +143,21 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                           .copyWith(
                                             fontWeight: FontWeight.w300,
                                             color: AppColors.neutrals03,
+                                            fontSize: context.responsiveValue<double>(
+                                              extraSmall: 10,
+                                              small: 12,
+                                              medium: 12,
+                                              large: 12,
+                                            ),
                                           ),
                                     ),
 
-                                    const SizedBox(height: 24),
+                                    SizedBox(height: context.responsiveValue<double>(
+                                      extraSmall: 12,
+                                      small: 16,
+                                      medium: 20,
+                                      large: 24,
+                                    )),
 
                                     Row(
                                       children: [
@@ -186,7 +225,12 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                 ),
                               ),
 
-                              const SizedBox(height: 26),
+                              SizedBox(height: context.responsiveValue<double>(
+                                  extraSmall: 15,
+                                  small: 22,
+                                  medium: 22,
+                                  large: 24,
+                                ),),
 
                               /// IMPORTANT LINKS
                               Align(

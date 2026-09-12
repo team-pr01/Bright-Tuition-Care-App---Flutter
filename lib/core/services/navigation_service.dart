@@ -1,3 +1,4 @@
+import 'package:btcclient/features/legal/presentation/important_guidelines_screen.dart';
 import 'package:flutter/material.dart';
 
 class NavigationService {
@@ -40,14 +41,14 @@ class NavigationService {
   }
 
   // ============================================================
-  // DASHBOARD HANDLER
+  // DASHBOARD JOB HANDLER
   // ============================================================
 
   static Future<void> Function(String jobId)?
       onOpenJobDetails;
 
   // ============================================================
-  // NOTIFICATION → DASHBOARD
+  // NOTIFICATION → DASHBOARD JOB
   // ============================================================
 
   static void navigateToJobDetails(String jobId) {
@@ -59,7 +60,7 @@ class NavigationService {
 
     if (handler != null) {
       debugPrint(
-        '✅ Dashboard handler available',
+        '✅ Dashboard job handler available',
       );
 
       handler(jobId);
@@ -74,7 +75,7 @@ class NavigationService {
   }
 
   // ============================================================
-  // REGISTER DASHBOARD HANDLER
+  // REGISTER DASHBOARD JOB HANDLER
   // ============================================================
 
   static void registerJobDetailsHandler(
@@ -111,7 +112,137 @@ class NavigationService {
   }
 
   // ============================================================
-  // UNREGISTER
+  // PENDING INVOICE
+  // ============================================================
+
+  static String? _pendingInvoiceId;
+
+  static String? get pendingInvoiceId => _pendingInvoiceId;
+
+  static void setPendingInvoice(String invoiceId) {
+    debugPrint(
+      '📦 NavigationService: storing pending invoice $invoiceId',
+    );
+
+    _pendingInvoiceId = invoiceId;
+  }
+
+  static String? consumePendingInvoice() {
+    final invoiceId = _pendingInvoiceId;
+
+    if (invoiceId != null) {
+      debugPrint(
+        '📦 NavigationService: consuming pending invoice $invoiceId',
+      );
+    }
+
+    _pendingInvoiceId = null;
+
+    return invoiceId;
+  }
+
+  // ============================================================
+  // INVOICE HANDLER
+  // ============================================================
+
+  static Future<void> Function(String invoiceId)?
+      onOpenInvoiceDetails;
+
+  // ============================================================
+  // NOTIFICATION → INVOICE
+  // ============================================================
+
+  static void navigateToInvoiceDetails(String invoiceId) {
+    debugPrint(
+      '🔔 NavigationService.navigateToInvoiceDetails: $invoiceId',
+    );
+
+    final handler = onOpenInvoiceDetails;
+
+    if (handler != null) {
+      debugPrint(
+        '✅ Invoice handler available',
+      );
+
+      handler(invoiceId);
+      return;
+    }
+
+    debugPrint(
+      '⏳ Invoice screen not ready → storing pending invoice',
+    );
+
+    setPendingInvoice(invoiceId);
+  }
+
+  // ============================================================
+  // REGISTER INVOICE HANDLER
+  // ============================================================
+
+  static void registerInvoiceDetailsHandler(
+    Future<void> Function(String invoiceId) callback,
+  ) {
+    debugPrint(
+      '✅ Registering Invoice handler',
+    );
+
+    onOpenInvoiceDetails = callback;
+
+    final pendingInvoice = consumePendingInvoice();
+
+    if (pendingInvoice == null) {
+      debugPrint(
+        'ℹ️ No pending invoice notification',
+      );
+      return;
+    }
+
+    debugPrint(
+      '📦 Pending notification invoice found: $pendingInvoice',
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (onOpenInvoiceDetails != null) {
+        debugPrint(
+          '🚀 Sending pending invoice to InvoiceScreen: $pendingInvoice',
+        );
+
+        onOpenInvoiceDetails!(pendingInvoice);
+      }
+    });
+  }
+
+  // ============================================================
+  // IMPORTANT GUIDELINES
+  // ============================================================
+
+  static void navigateToImportantGuidelines(
+    dynamic document,
+  ) {
+    final navigator = navigatorKey.currentState;
+
+    if (navigator == null) {
+      debugPrint(
+        '⚠️ Navigator is not ready. Cannot open Important Guidelines.',
+      );
+      return;
+    }
+
+    debugPrint(
+      '🔔 Navigating to Important Guidelines',
+    );
+
+    navigator.push(
+      MaterialPageRoute(
+        builder: (_) => ImportantGuidelinesScreen(
+          document: document,
+        ),
+      ),
+    );
+  }
+
+  // ============================================================
+  // UNREGISTER JOB HANDLER
   // ============================================================
 
   static void unregisterJobDetailsHandler() {
@@ -120,5 +251,17 @@ class NavigationService {
     );
 
     onOpenJobDetails = null;
+  }
+
+  // ============================================================
+  // UNREGISTER INVOICE HANDLER
+  // ============================================================
+
+  static void unregisterInvoiceDetailsHandler() {
+    debugPrint(
+      '❌ Unregistering Invoice handler',
+    );
+
+    onOpenInvoiceDetails = null;
   }
 }

@@ -73,6 +73,15 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                 return _NotificationTile(
                   notification: notification,
                   onTap: () {
+                    debugPrint('════════════════════════════════════════════');
+                    debugPrint('🔔 NOTIFICATION TAPPED');
+                    debugPrint('📌 TYPE: ${notification.type}');
+                    debugPrint('📝 TITLE: ${notification.title}');
+                    debugPrint('💬 MESSAGE: ${notification.message}');
+                    debugPrint('🆔 NOTIFICATION ID: ${notification.id}');
+                    debugPrint('📅 CREATED AT: ${notification.createdAt}');
+                    debugPrint('📦 FULL NOTIFICATION OBJECT: $notification');
+                    debugPrint('════════════════════════════════════════════');
                     ref
                         .read(notificationNotifierProvider.notifier)
                         .onNotificationTap(notification);
