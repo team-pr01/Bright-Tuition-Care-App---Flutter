@@ -100,6 +100,8 @@ class NotificationRouter {
   }
 
   static void _handleInvoiceDetails(Map<String, dynamic> data) {
+    debugPrint('🔥🔥 INVOICE ROUTER RECEIVED: $data');
+
     final invoiceId = data['invoiceId']?.toString();
 
     if (invoiceId == null || invoiceId.isEmpty) {
