@@ -52,7 +52,7 @@ class NotificationRouter {
       // ============================================================
 
       case 'application_details':
-        _handleApplicationDetails(data);
+        _handleApplicationDetails(data); 
         break;
 
       case 'tutor_profile':
@@ -149,14 +149,22 @@ class NotificationRouter {
   // those notification types.
 
   static void _handleApplicationDetails(Map<String, dynamic> data) {
-    final applicationId = data['applicationId']?.toString();
+  final jobId = data['jobId']?.toString();
+  final status = data['status']?.toString();
 
-    if (applicationId == null || applicationId.isEmpty) {
-      return;
-    }
-
-    NavigationService.navigateToApplication(applicationId);
+  if (jobId == null || jobId.isEmpty) {
+    return;
   }
+
+  if (status == null || status.isEmpty) {
+    return;
+  }
+
+  NavigationService.navigateToApplication(
+    jobId,
+    status: status,
+  );
+}
 
   static void _handleTutorProfile(Map<String, dynamic> data) {
     final tutorId = data['tutorId']?.toString();

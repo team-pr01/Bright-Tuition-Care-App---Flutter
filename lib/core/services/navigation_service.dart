@@ -267,20 +267,25 @@ class NavigationService {
   // APPLICATION HANDLER
   // ============================================================
 
-  static Future<void> Function(String applicationId)? onOpenApplicationDetails;
+  Function(String jobId, {String? status})? onOpenApplicationDetails;
 
   // ============================================================
   // NOTIFICATION → APPLICATION
   // ============================================================
 
-  static void navigateToApplication(String applicationId) {
+static void navigateToApplication(
+  String jobId, {
+  String? status,
+}) {
     final handler = onOpenApplicationDetails;
 
-    // MyApplicationPage is already open
-    if (handler != null) {
-      handler(applicationId);
-      return;
-    }
+    if (_applicationDetailsHandler != null) {
+    _applicationDetailsHandler!(
+      jobId,
+      status: status,
+    );
+    return;
+  }
 
     // MyApplicationPage is not open yet
     setPendingApplication(applicationId);

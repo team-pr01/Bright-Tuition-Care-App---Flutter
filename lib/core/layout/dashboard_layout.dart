@@ -10,7 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:ui';
-import 'package:btcclient/core/services/notification_service.dart';
+import 'package:btcclient/core/utils/notification_service.dart';
 
 /// Controls what appears on the right side of the Dashboard AppBar.
 ///
