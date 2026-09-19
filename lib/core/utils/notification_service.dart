@@ -35,6 +35,11 @@ class NotificationService {
 
   bool _initialized = false;
 
+  Map<String, dynamic>? _pendingNotificationData;
+
+bool get hasPendingNotification =>
+    _pendingNotificationData != null;
+
   // ============================================================
   // INITIALIZE
   // ============================================================
@@ -152,8 +157,9 @@ class NotificationService {
     if (initialMessage != null) {
       debugPrint('📨 App opened from terminated notification');
       debugPrint('📨 Data: ${initialMessage.data}');
-
-      _handleNotificationData(initialMessage.data);
+      _pendingNotificationData =
+      Map<String, dynamic>.from(initialMessage.data);
+      // _handleNotificationData(initialMessage.data);
     }
 
     _initialized = true;
@@ -161,6 +167,31 @@ class NotificationService {
     debugPrint('✅ NotificationService initialization completed');
   }
 
+// ============================================================
+// PROCESS PENDING NOTIFICATION
+// ============================================================
+
+void processPendingNotification() {
+  if (_pendingNotificationData == null) {
+    debugPrint(
+      '🔔 No pending notification to process',
+    );
+    return;
+  }
+
+  final data =
+      Map<String, dynamic>.from(_pendingNotificationData!);
+
+  // Clear it BEFORE processing so the same notification
+  // cannot accidentally be opened twice.
+  _pendingNotificationData = null;
+
+  debugPrint(
+    '🚀 Processing pending notification: $data',
+  );
+
+  _handleNotificationData(data);
+}
   // ============================================================
   // PERMISSION
   // ============================================================

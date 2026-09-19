@@ -26,7 +26,7 @@ class VerifyProfileCard extends StatelessWidget {
               Flexible(
                 child: Text(
                   "Verify Your Profile",
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     color: Colors.black,
                     fontWeight: FontWeight.w400,
                     height: 1.2,
@@ -72,6 +72,7 @@ class VerifyProfileCard extends StatelessWidget {
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: AppColors.neutrals03,
                         height: 1.5,
+                        fontSize: 12,
                       ),
                     ),
 

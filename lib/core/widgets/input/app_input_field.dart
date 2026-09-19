@@ -813,125 +813,140 @@ class _Dropdown2SingleSelectionContentState
     Navigator.of(context).pop(selectedValue);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // ==========================================================
-          // TITLE
-          // ==========================================================
-          const Text(
-            "Select",
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w400,
-              color: AppColors.neutrals02,
-            ),
+ @override
+Widget build(BuildContext context) {
+  return SizedBox(
+    width: double.infinity,
+    height: MediaQuery.of(context).size.height * 0.65,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // ==========================================================
+        // TITLE
+        // ==========================================================
+        const Text(
+          "Select",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w400,
+            color: AppColors.neutrals02,
           ),
+        ),
 
-          const SizedBox(height: 20),
+        const SizedBox(height: 20),
 
-          // ==========================================================
-          // SEARCH BAR
-          // ==========================================================
-          TextFormField(
-            controller: searchController,
-            onChanged: _search,
-            style: const TextStyle(fontSize: 14, color: AppColors.neutrals02),
-            decoration: InputDecoration(
-              hintText: "Search...",
-              prefixIcon: Icon(Icons.search),
-
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppRadius.medium),
-                borderSide: BorderSide(
-                  color: AppColors.primary01.withOpacity(0.5),
-                  width: 1,
-                ),
+        // ==========================================================
+        // SEARCH BAR
+        // ==========================================================
+        TextFormField(
+          controller: searchController,
+          onChanged: _search,
+          style: const TextStyle(
+            fontSize: 14,
+            color: AppColors.neutrals02,
+          ),
+          decoration: InputDecoration(
+            hintText: "Search...",
+            prefixIcon: const Icon(Icons.search),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(AppRadius.medium),
+              borderSide: BorderSide(
+                color: AppColors.primary01.withOpacity(0.5),
+                width: 1,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(AppRadius.medium),
+              borderSide: const BorderSide(
+                color: AppColors.primary01,
+                width: 1.5,
               ),
             ),
           ),
+        ),
 
-          const SizedBox(height: 18),
+        const SizedBox(height: 18),
 
-          // ==========================================================
-          // OPTIONS
-          // ==========================================================
-          Wrap(
-            spacing: 10,
-            runSpacing: 10,
-            children: filteredItems.map((item) {
-              final bool isSelected = selectedValue == item;
+        // ==========================================================
+        // OPTIONS
+        // ONLY THIS AREA SCROLLS
+        // ==========================================================
+        Expanded(
+          child: SingleChildScrollView(
+            child: Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: filteredItems.map((item) {
+                final bool isSelected = selectedValue == item;
 
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    selectedValue = item;
-                  });
-                },
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 150),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 18,
-                    vertical: 10,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? AppColors.primary01.withOpacity(0.18)
-                        : AppColors.neutrals03.withOpacity(0.18),
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: Text(
-                    item,
-                    style: TextStyle(
-                      fontSize: 14,
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedValue = item;
+                    });
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 150),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 10,
+                    ),
+                    decoration: BoxDecoration(
                       color: isSelected
-                          ? AppColors.primary01
-                          : AppColors.neutrals02,
+                          ? AppColors.primary01.withOpacity(0.18)
+                          : AppColors.neutrals03.withOpacity(0.18),
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: Text(
+                      item,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: isSelected
+                            ? AppColors.primary01
+                            : AppColors.neutrals02,
+                      ),
                     ),
                   ),
-                ),
-              );
-            }).toList(),
+                );
+              }).toList(),
+            ),
           ),
+        ),
 
-          const SizedBox(height: 24),
+        const SizedBox(height: 16),
 
-          // ==========================================================
-          // CANCEL / APPLY
-          // ==========================================================
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              SizedBox(
-                width: 125,
-                child: AppButton(
-                  label: "Cancel",
-                  variant: AppButtonVariant.outline,
-                  onPressed: _cancel,
-                ),
+        // ==========================================================
+        // STICKY BOTTOM BUTTONS
+        // ==========================================================
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // CANCEL - FIT CONTENT
+            IntrinsicWidth(
+              child: AppButton(
+                label: "Cancel",
+                variant: AppButtonVariant.outline,
+                onPressed: _cancel,
               ),
+            ),
 
-              const SizedBox(width: 12),
+            const SizedBox(width: 12),
 
-              SizedBox(
-                width: 90,
-                child: AppButton(
-                  label: "Apply",
-                  variant: AppButtonVariant.primary,
-                  onPressed: selectedValue == null ? null : _apply,
-                ),
+            // APPLY - FULL REMAINING WIDTH
+            Expanded(
+              child: AppButton(
+                label: "Apply",
+                variant: AppButtonVariant.primary,
+                onPressed: selectedValue == null ? null : _apply,
               ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
 }
 
 // ==================================================================
@@ -1079,16 +1094,14 @@ class _Dropdown2SelectionContentState
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
+      height: MediaQuery.of(context).size.height * 0.65,
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // ==========================================================
           // TITLE
           // ==========================================================
-          const Padding(
-            padding: EdgeInsets.only(right: 0),
-            child: Text(
+           Text(
               "Select",
               style: TextStyle(
                 fontSize: 20,
@@ -1096,7 +1109,7 @@ class _Dropdown2SelectionContentState
                 color: AppColors.neutrals02,
               ),
             ),
-          ),
+          
 
           const SizedBox(height: 20),
 
@@ -1126,38 +1139,42 @@ class _Dropdown2SelectionContentState
           // ==========================================================
           // SELECTABLE CHIPS
           // ==========================================================
-          Wrap(
-            spacing: 10,
-            runSpacing: 10,
-            children: filteredItems.map((item) {
-              final isSelected = tempSelected.contains(item);
-
-              return GestureDetector(
-                onTap: () => _toggleItem(item),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 150),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 18,
-                    vertical: 10,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? AppColors.primary01.withOpacity(0.18)
-                        : AppColors.neutrals03.withOpacity(0.18),
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: Text(
-                    item,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: isSelected
-                          ? AppColors.primary01
-                          : AppColors.neutrals02,
+          Expanded(
+            child: SingleChildScrollView(
+              child: Wrap(
+                spacing: 10,
+                runSpacing: 10,
+                children: filteredItems.map((item) {
+                  final isSelected = tempSelected.contains(item);
+              
+                  return GestureDetector(
+                    onTap: () => _toggleItem(item),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 150),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? AppColors.primary01.withOpacity(0.18)
+                            : AppColors.neutrals03.withOpacity(0.18),
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: Text(
+                        item,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: isSelected
+                              ? AppColors.primary01
+                              : AppColors.neutrals02,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              );
-            }).toList(),
+                  );
+                }).toList(),
+              ),
+            ),
           ),
 
           const SizedBox(height: 24),
@@ -1169,7 +1186,7 @@ class _Dropdown2SelectionContentState
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               SizedBox(
-                width: 125,
+                // width: 125,
                 child: AppButton(
                   label: "Cancel",
                   variant: AppButtonVariant.outline,
@@ -1179,8 +1196,7 @@ class _Dropdown2SelectionContentState
 
               const SizedBox(width: 12),
 
-              SizedBox(
-                width: 90,
+              Expanded(
                 child: AppButton(
                   label: "Apply",
                   variant: AppButtonVariant.primary,

@@ -119,8 +119,8 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                             fontWeight: FontWeight.w400,
                                             color: AppColors.neutrals02,
                                             fontSize: context.responsiveValue<double>(
-                                              extraSmall: 18,
-                                              small: 20,
+                                              extraSmall: 12,
+                                              small: 14,
                                               medium: 22,
                                               large: 24,
                                             ),
@@ -144,7 +144,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                             fontWeight: FontWeight.w300,
                                             color: AppColors.neutrals03,
                                             fontSize: context.responsiveValue<double>(
-                                              extraSmall: 10,
+                                              extraSmall: 8,
                                               small: 12,
                                               medium: 12,
                                               large: 12,

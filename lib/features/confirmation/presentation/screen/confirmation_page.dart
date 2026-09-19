@@ -2,6 +2,7 @@ import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/widgets/navbar/common_appbar.dart';
 import 'package:btcclient/features/confirmation/presentation/notifier/confirmation_notifier.dart';
 import 'package:btcclient/features/confirmation/presentation/provider/confirmation_provider.dart';
+import 'package:btcclient/features/confirmation/presentation/screen/confirmation_letter_screen.dart';
 import 'package:btcclient/features/confirmation/presentation/widgets/confirmation_bottom_sheet.dart';
 import 'package:btcclient/features/confirmation/presentation/widgets/confirmation_card.dart';
 
@@ -93,16 +94,14 @@ class _ConfirmationScreenState extends ConsumerState<ConfirmationScreen> {
           return ConfirmationCard(
             letter: letter,
             onView: () {
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent,
-                builder: (_) {
-                  return ConfirmationBottomSheet(
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ConfirmationLetterScreen(
                     letterId: letter.id,
                     role: widget.role,
-                  );
-                },
+                  ),
+                ),
               );
             },
           );

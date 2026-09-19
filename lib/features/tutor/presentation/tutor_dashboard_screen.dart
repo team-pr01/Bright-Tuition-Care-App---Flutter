@@ -35,7 +35,7 @@ class TutorDashboardScreen extends ConsumerWidget {
     return DashboardLayout(
       role: "tutor",
       initialIndex: 2,
-      pageTitles: const ["Settings", "Payments", "Dashboard", "Job Board"],
+      pageTitles: const ["Job Board", "Payments", "Dashboard", "Settings"],
       drawerBuilder: (changeTab) => AppSidebar(
         user: user,
 

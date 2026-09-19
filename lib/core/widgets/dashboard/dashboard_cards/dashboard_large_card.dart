@@ -25,14 +25,14 @@ class DashboardLargeCard extends StatelessWidget {
     final titleFontSize = context.responsiveFontSize(
       extraSmall: 14,
       small: 18,
-      medium: 22,
+      medium: 18,
       large: 22,
     );
 
     final subtitleFontSize = context.responsiveFontSize(
       extraSmall: 14,
       small: 18,
-      medium: 22,
+      medium: 18,
       large: 22,
     );
     return GestureDetector(

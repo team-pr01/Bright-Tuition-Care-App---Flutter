@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:ui';
+import 'package:btcclient/core/services/notification_service.dart';
 
 /// Controls what appears on the right side of the Dashboard AppBar.
 ///
@@ -98,20 +99,29 @@ class _DashboardLayoutState extends ConsumerState<DashboardLayout> {
   // LIFECYCLE
   // =============================================================
 
-  @override
-  void initState() {
-    super.initState();
-    currentIndex = safeInitialIndex;
-    if (widget.appBarAction == DashboardAppBarAction.notification) {
-      Future.microtask(() async {
-        if (!mounted) return;
+ @override
+void initState() {
+  super.initState();
+  currentIndex = safeInitialIndex;
 
-        ref.read(notificationNotifierProvider.notifier).loadNotifications();
-      });
-    }
+  if (widget.appBarAction == DashboardAppBarAction.notification) {
+    Future.microtask(() async {
+      if (!mounted) return;
 
-    NavigationService.registerJobDetailsHandler(_openJobFromNotification);
+      ref.read(notificationNotifierProvider.notifier).loadNotifications();
+    });
   }
+
+  NavigationService.registerJobDetailsHandler(_openJobFromNotification);
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    if (!mounted) return;
+
+    NotificationService().processPendingNotification();
+  });
+}
+
+
 
   @override
   void dispose() {

@@ -1,8 +1,10 @@
 import 'package:btcclient/core/config/theme.dart';
+import 'package:btcclient/core/services/navigation_service.dart';
 import 'package:btcclient/core/widgets/dashboard/dashboard_nav_links.dart';
 import 'package:btcclient/core/widgets/navbar/common_appbar.dart';
 import 'package:btcclient/features/jobs/presentation/enums/job_card_variant.dart';
 import 'package:btcclient/features/jobs/presentation/provider/application_provider.dart';
+import 'package:btcclient/features/jobs/presentation/widgets/job_bottom_sheet.dart';
 import 'package:btcclient/features/jobs/presentation/widgets/job_card.dart';
 import 'package:btcclient/features/jobs/presentation/widgets/skeleton/job_card_skeleton.dart';
 import 'package:flutter/material.dart';
@@ -26,13 +28,17 @@ class MyApplicationPage extends ConsumerStatefulWidget {
 class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _searchController = TextEditingController();
-
+  bool _openingNotificationApplication = false;
   late String _selectedStatus;
   @override
   void initState() {
     super.initState();
 
     _selectedStatus = widget.initialStatus ?? "applied";
+
+    NavigationService.registerApplicationDetailsHandler(
+      _openNotificationApplication,
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
@@ -48,8 +54,57 @@ class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
     });
   }
 
+  Future<void> _openNotificationApplication(String applicationId) async {
+    if (_openingNotificationApplication) return;
+
+    _openingNotificationApplication = true;
+
+    try {
+      // Make sure applications are loaded before searching.
+      await ref
+          .read(applicationsProvider.notifier)
+          .fetchApplications(status: _selectedStatus);
+
+      if (!mounted) return;
+
+      final state = ref.read(applicationsProvider);
+
+      final application = state.applications.cast<dynamic>().firstWhere(
+        (item) =>
+            item.applicationId?.toString() == applicationId ||
+            item.id?.toString() == applicationId,
+        orElse: () => null,
+      );
+
+      if (application == null) {
+        return;
+      }
+
+      if (application.job == null) {
+        return;
+      }
+
+      await showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (_) {
+          return JobBottomSheet(
+            job: application.job,
+            application: application,
+            variant: JobCardVariant.application,
+            changeTab: widget.changeTab,
+          );
+        },
+      );
+    } finally {
+      _openingNotificationApplication = false;
+    }
+  }
+
   @override
   void dispose() {
+    NavigationService.unregisterApplicationDetailsHandler();
     _scrollController.dispose();
     _searchController.dispose();
     super.dispose();
@@ -177,7 +232,6 @@ class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
               ),
             ],
           ),
-        
         ],
       ),
     );

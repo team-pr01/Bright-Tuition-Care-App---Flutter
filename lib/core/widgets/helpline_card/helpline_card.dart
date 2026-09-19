@@ -83,6 +83,12 @@ class HelplineCard extends StatelessWidget {
                         style: Theme.of(context).textTheme.labelSmall!.copyWith(
                           color: AppColors.backgroundDark,
                           fontWeight: FontWeight.w400,
+                          fontSize: context.responsiveValue<double>(
+                            extraSmall: 8,
+                            small: 8,
+                            medium: 12,
+                            large: 12,
+                          ),
                         ),
                       ),
                     ],

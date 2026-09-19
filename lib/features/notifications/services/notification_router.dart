@@ -43,14 +43,24 @@ class NotificationRouter {
       case 'tutor_important_guidelines':
         _handleTutorImportantGuidelines();
         break;
+      case 'profile_verification':
+        _handleProfileVerification();
+        break;
 
       // ============================================================
       // FUTURE NOTIFICATION TYPES
       // ============================================================
 
-      // case 'application_accepted':
-      //   _handleApplicationAccepted(data);
-      //   break;
+      case 'application_details':
+        _handleApplicationDetails(data);
+        break;
+
+      case 'tutor_profile':
+        _handleTutorProfile(data);
+        break;
+      case 'confirmation_letter':
+        _handleConfirmationLetter(data);
+        break;
 
       // case 'payment_received':
       //   _handlePaymentReceived(data);
@@ -125,6 +135,12 @@ class NotificationRouter {
     );
   }
 
+  static void _handleProfileVerification() {
+    debugPrint('🔔 Opening Profile Verification');
+
+    NavigationService.navigateToProfileVerification();
+  }
+
   // ================================================================
   // FUTURE HANDLERS
   // ================================================================
@@ -132,18 +148,42 @@ class NotificationRouter {
   // Keep these commented until the backend actually introduces
   // those notification types.
 
-  // static void _handleApplicationReceived(
-  //   Map<String, dynamic> data,
-  // ) {
-  //   final applicationId =
-  //       data['applicationId']?.toString();
-  //
-  //   if (applicationId == null || applicationId.isEmpty) {
-  //     return;
-  //   }
-  //
-  //   // NavigationService.navigateToApplication(applicationId);
-  // }
+  static void _handleApplicationDetails(Map<String, dynamic> data) {
+    final applicationId = data['applicationId']?.toString();
+
+    if (applicationId == null || applicationId.isEmpty) {
+      return;
+    }
+
+    NavigationService.navigateToApplication(applicationId);
+  }
+
+  static void _handleTutorProfile(Map<String, dynamic> data) {
+    final tutorId = data['tutorId']?.toString();
+
+    if (tutorId == null || tutorId.isEmpty) {
+      return;
+    }
+
+    NavigationService.navigateToTutorProfile(tutorId);
+  }
+
+  static void _handleConfirmationLetter(Map<String, dynamic> data) {
+    final confirmationLetterId = data['confirmationLetterId']?.toString();
+
+    debugPrint('📄 Confirmation Letter ID: $confirmationLetterId');
+
+    if (confirmationLetterId == null || confirmationLetterId.isEmpty) {
+      debugPrint(
+        '❌ confirmation_letter notification does not contain confirmationLetterId',
+      );
+      return;
+    }
+
+    debugPrint('🔔 Opening confirmation letter: $confirmationLetterId');
+
+    NavigationService.navigateToConfirmationLetter(confirmationLetterId);
+  }
 
   // static void _handleApplicationAccepted(
   //   Map<String, dynamic> data,

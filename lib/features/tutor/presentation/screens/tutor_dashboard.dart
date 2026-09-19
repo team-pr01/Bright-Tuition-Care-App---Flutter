@@ -209,7 +209,7 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
 
                 delegate: _TutorStickyHeaderDelegate(
                   height: context.responsiveValue<double>(
-                    extraSmall: 145,
+                    extraSmall: 155,
                     small: 160,
                     medium: 175,
                     large: 180,
@@ -227,7 +227,7 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
                         // ========================================
                         TutorSearchBar(
                           onTap: () {
-                            widget.changeTab(3);
+                            widget.changeTab(0);
                           },
                         ),
 

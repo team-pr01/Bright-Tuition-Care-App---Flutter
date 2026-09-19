@@ -1,3 +1,4 @@
+import 'package:btcclient/core/responsive/responsive.dart';
 import 'package:btcclient/core/screens/join_community.dart';
 import 'package:btcclient/core/widgets/helpline_card/helpline_card.dart';
 import 'package:btcclient/core/widgets/reusable_bottom_sheet/reusable_bottom_sheet.dart';
@@ -1034,7 +1035,7 @@ class _CommunityCard extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(icon, color: color, size: 26),
+              Icon(icon, color: color, size: 16),
 
               const SizedBox(width: 10),
 
@@ -1046,6 +1047,12 @@ class _CommunityCard extends StatelessWidget {
                       title,
                       style: AppTextStyles.labelSmall.copyWith(
                         color: AppColors.neutrals02,
+                        fontSize: context.responsiveValue<double>(
+                          extraSmall: 8,
+                          small: 8,
+                          medium: 12,
+                          large: 12,
+                        ),
                       ),
                     ),
                     Text(
@@ -1053,6 +1060,12 @@ class _CommunityCard extends StatelessWidget {
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: AppColors.neutrals02,
                         fontWeight: FontWeight.w600,
+                        fontSize: context.responsiveValue<double>(
+                          extraSmall: 10,
+                          small: 10,
+                          medium: 14,
+                          large: 14,
+                        )
                       ),
                     ),
                   ],

@@ -439,13 +439,13 @@ class TutorResumeScreen extends StatelessWidget {
           _ResumeItem("Religion", personal.religion ?? ""),
 
           _ResumeItem("Date of Birth", personal.dateOfBirth ?? ""),
-
-          _ResumeItem("Father's Name", personal.fatherName ?? ""),
+          if (!hideContactDetails)
+            _ResumeItem("Father's Name", personal.fatherName ?? ""),
 
           if (!hideContactDetails)
             _ResumeItem("Father's Phone", personal.fatherPhoneNumber ?? ""),
-
-          _ResumeItem("Mother's Name", personal.motherName ?? ""),
+          if (!hideContactDetails)
+            _ResumeItem("Mother's Name", personal.motherName ?? ""),
 
           if (!hideContactDetails)
             _ResumeItem("Mother's Phone", personal.motherPhoneNumber ?? ""),
@@ -458,8 +458,8 @@ class TutorResumeScreen extends StatelessWidget {
               "Emergency Contact",
               personal.emergencyContactNumber ?? "",
             ),
-
-          _ResumeItem("Address", personal.address ?? ""),
+          if (!hideContactDetails)
+            _ResumeItem("Address", personal.address ?? ""),
         ],
       ),
     );

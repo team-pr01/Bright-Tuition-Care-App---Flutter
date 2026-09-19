@@ -1,95 +1,61 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
-/// Responsive breakpoints for the application.
-///
-/// Primary target devices:
-/// - 360 x 800  -> Primary baseline
-/// - 393 x 873  -> Common larger phone
-/// - 385 x 854  -> Common larger phone
-/// - 412 x 915  -> Large phone
-/// - 384 x 832  -> Common Android phone
-///
-/// The responsive system is width-based because width is the
-/// main constraint that determines whether UI elements fit.
-///
-/// IMPORTANT:
-/// Do not use these breakpoints to scale the entire UI.
-/// Use them to change layouts, spacing and constraints when needed.
 class AppBreakpoints {
   AppBreakpoints._();
 
   // ---------------------------------------------------------------------------
-  // PHONE BREAKPOINTS
+  // BREAKPOINTS
   // ---------------------------------------------------------------------------
 
-  /// Primary small-phone baseline.
-  ///
-  /// 360dp is the most important target for this application.
+  /// Very small phones: < 340dp
+  static const double extraSmallPhone = 340.0;
+
+  /// Small phones: 340–359dp
   static const double smallPhone = 360.0;
 
-  /// Standard phone breakpoint.
-  ///
-  /// 360dp - 599dp
+  /// Phones: 360–599dp
   static const double phone = 600.0;
 
-  /// Tablet breakpoint.
-  ///
-  /// 600dp - 899dp
+  /// Tablets: 600–899dp
   static const double tablet = 900.0;
 
-  /// Large tablet / desktop-style breakpoint.
-  ///
-  /// 900dp - 1199dp
+  /// Large screens: 900–1199dp
   static const double large = 1200.0;
 
   // ---------------------------------------------------------------------------
   // DEVICE CHECKS
   // ---------------------------------------------------------------------------
 
-  /// Returns true for devices narrower than the primary 360dp baseline.
-  ///
-  /// Typical examples:
-  /// - 320dp
-  /// - 340dp
-  /// - 350dp
   static bool isExtraSmallPhone(BuildContext context) {
-    return MediaQuery.sizeOf(context).width < smallPhone;
+    return MediaQuery.sizeOf(context).width < extraSmallPhone;
   }
 
-  /// Returns true for the primary phone range.
-  ///
-  /// Includes the important 360dp baseline and devices up to 599dp.
-  ///
-  /// Examples:
-  /// - 360 x 800
-  /// - 384 x 832
-  /// - 385 x 854
-  /// - 393 x 873
-  /// - 412 x 915
+  static bool isSmallPhone(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+
+    return width >= extraSmallPhone && width < smallPhone;
+  }
+
   static bool isPhone(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
 
     return width >= smallPhone && width < phone;
   }
 
-  /// Returns true for all phones, including extra-small phones.
   static bool isAnyPhone(BuildContext context) {
     return MediaQuery.sizeOf(context).width < phone;
   }
 
-  /// Returns true for tablet-sized screens.
   static bool isTablet(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
 
     return width >= phone && width < tablet;
   }
 
-  /// Returns true for large screens.
   static bool isLarge(BuildContext context) {
     return MediaQuery.sizeOf(context).width >= tablet;
   }
 
-  /// Returns true for extra-large screens.
   static bool isExtraLarge(BuildContext context) {
     return MediaQuery.sizeOf(context).width >= large;
   }
@@ -98,12 +64,10 @@ class AppBreakpoints {
   // SCREEN DIMENSIONS
   // ---------------------------------------------------------------------------
 
-  /// Current available screen width.
   static double width(BuildContext context) {
     return MediaQuery.sizeOf(context).width;
   }
 
-  /// Current available screen height.
   static double height(BuildContext context) {
     return MediaQuery.sizeOf(context).height;
   }
@@ -112,10 +76,6 @@ class AppBreakpoints {
   // PAGE PADDING
   // ---------------------------------------------------------------------------
 
-  /// Responsive horizontal page padding.
-  ///
-  /// The goal is to preserve usable content width on small phones
-  /// while giving larger screens more breathing room.
   static double pagePadding(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
 
@@ -142,10 +102,6 @@ class AppBreakpoints {
   // CONTENT MAX WIDTH
   // ---------------------------------------------------------------------------
 
-  /// Maximum width for readable content.
-  ///
-  /// Prevents UI from becoming unnecessarily stretched on tablets
-  /// and large screens.
   static double maxContentWidth(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
 
@@ -168,7 +124,6 @@ class AppBreakpoints {
   // SPACING
   // ---------------------------------------------------------------------------
 
-  /// Standard responsive spacing.
   static double spacing(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
 
@@ -191,7 +146,6 @@ class AppBreakpoints {
     return 24.0;
   }
 
-  /// Small spacing.
   static double spacingSmall(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
 
@@ -206,7 +160,6 @@ class AppBreakpoints {
     return 12.0;
   }
 
-  /// Large spacing.
   static double spacingLarge(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
 
@@ -226,20 +179,9 @@ class AppBreakpoints {
   }
 
   // ---------------------------------------------------------------------------
-  // RESPONSIVE VALUE HELPER
+  // RESPONSIVE VALUE
   // ---------------------------------------------------------------------------
 
-  /// Returns different values depending on the available width.
-  ///
-  /// Example:
-  ///
-  /// final padding = AppBreakpoints.value(
-  ///   context,
-  ///   extraSmall: 12,
-  ///   small: 16,
-  ///   medium: 20,
-  ///   large: 32,
-  /// );
   static T value<T>(
     BuildContext context, {
     required T extraSmall,
@@ -249,15 +191,15 @@ class AppBreakpoints {
   }) {
     final width = MediaQuery.sizeOf(context).width;
 
-    if (width < 340) {
+    if (width < extraSmallPhone) {
       return extraSmall;
     }
 
-    if (width < 360) {
+    if (width < smallPhone) {
       return small;
     }
 
-    if (width < 600) {
+    if (width < phone) {
       return medium;
     }
 
