@@ -1,19 +1,15 @@
 // ignore_for_file: constant_identifier_names
 
-const List<String> commonSubjects =["All", "Bangla", "English", "Math", "Islamic Studies"];
-const List<String> tutorGenderOptions = [
-
-  "Male",
-  "Female",
-  "Any"
+const List<String> commonSubjects = [
+  "All",
+  "Bangla",
+  "English",
+  "Math",
+  "Islamic Studies",
 ];
+const List<String> tutorGenderOptions = ["Male", "Female", "Any"];
 
-const List<String> studentGenderOptions = [
-
-  "Male",
-  "Female",
-  
-];
+const List<String> studentGenderOptions = ["Male", "Female"];
 const List<String> alimSubjects = [
   "Qur’an Majid & Tajweed",
   "Hadith Sharif",
@@ -48,12 +44,12 @@ const Map<String, dynamic> filterData = {
     "Shadow Tutoring ",
   ],
   "tuitionType": [
-   "Home Tutoring",
+    "Home Tutoring",
     "Online Tutoring",
     "Batch Tutoring",
     "Package Tutoring",
     "Coaching Tutoring",
-    "Shadow Tutoring"
+    "Shadow Tutoring",
   ],
   "daysPerWeek": [
     "1 Day",
@@ -1229,7 +1225,7 @@ const Map<String, dynamic> filterData = {
     "Professional Skill Development",
     "Special Skill Development",
     "Language Learning",
-    "Uni Help"
+    "Uni Help",
     // "Special Child Education",
     // "Uni Help",
   ],
@@ -1245,21 +1241,9 @@ const Map<String, dynamic> filterData = {
           "name": "Pre-Schooling",
           "subjects": commonSubjects,
         },
-        {
-          "id": "play",
-          "name": "Play",
-          "subjects": commonSubjects,
-        },
-        {
-          "id": "nursery",
-          "name": "Nursery",
-          "subjects": commonSubjects,
-        },
-        {
-          "id": "kg",
-          "name": "KG",
-          "subjects": commonSubjects,
-        },
+        {"id": "play", "name": "Play", "subjects": commonSubjects},
+        {"id": "nursery", "name": "Nursery", "subjects": commonSubjects},
+        {"id": "kg", "name": "KG", "subjects": commonSubjects},
 
         // ---------- STANDARD 1 ----------
         {
@@ -3182,7 +3166,11 @@ const Map<String, dynamic> filterData = {
         {
           "id": "fashion_drawing",
           "name": "Fashion Drawing",
-          "subjects": ["Elements of Design", "Illustration-1", "Illustration-2"],
+          "subjects": [
+            "Elements of Design",
+            "Illustration-1",
+            "Illustration-2",
+          ],
         },
 
         // ---------- DIGITAL MARKETING ----------
@@ -3217,10 +3205,12 @@ const Map<String, dynamic> filterData = {
       "classes": [
         // ---------- PHOTOGRAPHY ----------
         {
-          
           "id": "photography",
           "name": "Photography",
-          "subjects": ["Photography Primary Level", "Photography Advanced Level"],
+          "subjects": [
+            "Photography Primary Level",
+            "Photography Advanced Level",
+          ],
         },
 
         // ---------- COOKING ----------
@@ -3311,7 +3301,7 @@ const List<String> degreeOptions = [
   "MSS",
 ];
 
-const  List<String> levelOfEducationOptions = [
+const List<String> levelOfEducationOptions = [
   "Secondary",
   "Higher Secondary",
   "Diploma",
@@ -3321,14 +3311,18 @@ const  List<String> levelOfEducationOptions = [
   "Doctoral",
 ];
 
-const  List<String> curriculumTypes = [
+const List<String> curriculumTypes = [
+  "Bangla Medium",
+  "English Version",
+  "English Medium",
   "Cambridge",
   "Ed-Excel",
   "IB",
   "British",
+  "Oxford",
 ];
 
-const  List<String> academicGroups = [
+const List<String> academicGroups = [
   "Science",
   "Business Studies",
   "Commerce",
@@ -3340,7 +3334,7 @@ const  List<String> academicGroups = [
   "Islamic Studies",
 ];
 
-const  List<String> educationBoards = [
+const List<String> educationBoards = [
   "Dhaka Board",
   "Chattogram Board",
   "Rajshahi Board",
@@ -3354,7 +3348,7 @@ const  List<String> educationBoards = [
   "Bangladesh Technical Education Board",
 ];
 
-const  List<String> departmentsOrSubjects = [
+const List<String> departmentsOrSubjects = [
   "Business and Technology Management",
   "Computer Science & Engineering (CSE)",
   "Software Engineering (SWE)",

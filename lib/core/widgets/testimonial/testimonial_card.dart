@@ -8,10 +8,7 @@ import '../../../core/responsive/responsive.dart';
 class TestimonialCard extends StatefulWidget {
   final TestimonialModel testimonial;
 
-  const TestimonialCard({
-    super.key,
-    required this.testimonial,
-  });
+  const TestimonialCard({super.key, required this.testimonial});
 
   @override
   State<TestimonialCard> createState() => _TestimonialCardState();
@@ -33,10 +30,7 @@ class _TestimonialCardState extends State<TestimonialCard> {
     final textStyle = Theme.of(context).textTheme.bodyMedium;
 
     final textPainter = TextPainter(
-      text: TextSpan(
-        text: widget.testimonial.review,
-        style: textStyle,
-      ),
+      text: TextSpan(text: widget.testimonial.review, style: textStyle),
       maxLines: 3,
       textDirection: TextDirection.ltr,
     );
@@ -48,9 +42,7 @@ class _TestimonialCardState extends State<TestimonialCard> {
       large: 140,
     );
 
-    textPainter.layout(
-      maxWidth: context.screenWidth - horizontalSpace,
-    );
+    textPainter.layout(maxWidth: context.screenWidth - horizontalSpace);
 
     if (textPainter.didExceedMaxLines && mounted) {
       setState(() {
@@ -144,200 +136,193 @@ class _TestimonialCardState extends State<TestimonialCard> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => Container(
-        padding: EdgeInsets.all(
-          context.responsiveValue<double>(
-            extraSmall: 6,
-            small: 8,
-            medium: 8,
-            large: 12,
-          ),
-        ),
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter,
-            colors: [
-              Colors.white,
-              AppColors.primary02,
-            ],
-          ),
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(AppRadius.large),
-          ),
-        ),
-        child: SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // -----------------------------------------------------------------
-              // HEADER + FLOATING AVATAR
-              // -----------------------------------------------------------------
-
-              Stack(
-                clipBehavior: Clip.none,
-                alignment: Alignment.topCenter,
+      builder: (_) => Stack(
+        children: [
+          // -----------------------------------------------------------------
+          // EXISTING SHEET (unchanged)
+          // -----------------------------------------------------------------
+          Container(
+            padding: EdgeInsets.all(
+              context.responsiveValue<double>(
+                extraSmall: 6,
+                small: 8,
+                medium: 8,
+                large: 12,
+              ),
+            ),
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: [Colors.white, AppColors.primary02],
+              ),
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(AppRadius.large),
+              ),
+            ),
+            child: SafeArea(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    margin: EdgeInsets.only(
-                      top: context.responsiveValue<double>(
-                        extraSmall: 32,
-                        small: 36,
-                        medium: 40,
-                        large: 44,
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          widget.testimonial.name,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.headlineSmall,
-                        ),
-
-                        Text(
-                          widget.testimonial.role,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(
-                                color: AppColors.neutrals03,
-                              ),
-                        ),
-
-                        SizedBox(
-                          height: context.responsiveValue<double>(
-                            extraSmall: 4,
-                            small: 5,
-                            medium: 6,
-                            large: 8,
+                  // HEADER + FLOATING AVATAR (your existing Stack, untouched)
+                  Stack(
+                    clipBehavior: Clip.none,
+                    alignment: Alignment.topCenter,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(
+                          top: context.responsiveValue<double>(
+                            extraSmall: 32,
+                            small: 36,
+                            medium: 40,
+                            large: 44,
                           ),
                         ),
-
-                        StarRating(
-                          rating: 4.8,
-                          showValue: true,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              widget.testimonial.name,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.headlineSmall,
+                            ),
+                            Text(
+                              widget.testimonial.role == "tutor"
+                                  ? "Tutor"
+                                  : "Guardian",
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.bodyMedium!
+                                  .copyWith(color: AppColors.neutrals03),
+                            ),
+                            SizedBox(
+                              height: context.responsiveValue<double>(
+                                extraSmall: 4,
+                                small: 5,
+                                medium: 6,
+                                large: 8,
+                              ),
+                            ),
+                            StarRating(rating: 4.8, showValue: true),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-
-                  // -----------------------------------------------------------------
-                  // RESPONSIVE AVATAR
-                  // -----------------------------------------------------------------
-
-                  Positioned(
-                    top: -bottomSheetAvatarRadius - 22,
-                    child: Container(
-                      padding: const EdgeInsets.all(1),
-                      decoration: const BoxDecoration(
-                        color: AppColors.neutrals04,
-                        shape: BoxShape.circle,
                       ),
-                      child: Container(
-                        padding: const EdgeInsets.all(2),
-                        
-                        decoration: const BoxDecoration(
-                          color: AppColors.primary01,
-                          shape: BoxShape.circle,
-                        ),
+
+                      // Avatar (unchanged — no close button here anymore)
+                      Positioned(
+                        top: -bottomSheetAvatarRadius - 22,
                         child: Container(
-                          padding: const EdgeInsets.all(2),
+                          padding: const EdgeInsets.all(1),
                           decoration: const BoxDecoration(
-                            color: Colors.white,
+                            color: AppColors.neutrals04,
                             shape: BoxShape.circle,
                           ),
-                          child: CircleAvatar(
-                            radius: bottomSheetAvatarRadius,
-                            backgroundImage:
-                                widget.testimonial.image.isNotEmpty
-                                    ? NetworkImage(
-                                        widget.testimonial.image,
-                                      )
-                                    : const AssetImage(
-                                        "assets/images/user.jpg",
-                                      ) as ImageProvider,
+                          child: Container(
+                            padding: const EdgeInsets.all(2),
+                            decoration: const BoxDecoration(
+                              color: AppColors.primary01,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Container(
+                              padding: const EdgeInsets.all(2),
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                              ),
+                              child: CircleAvatar(
+                                radius: bottomSheetAvatarRadius,
+                                backgroundImage:
+                                    widget.testimonial.image.isNotEmpty
+                                    ? NetworkImage(widget.testimonial.image)
+                                    : const AssetImage("assets/images/user.jpg")
+                                          as ImageProvider,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                ],
-              ),
-
-              SizedBox(
-                height: context.responsiveValue<double>(
-                  extraSmall: 16,
-                  small: 18,
-                  medium: 20,
-                  large: 24,
-                ),
-              ),
-
-              // -----------------------------------------------------------------
-              // REVIEW
-              // -----------------------------------------------------------------
-
-              Stack(
-                children: [
-                  Positioned(
-                    left: 0,
-                    top: -5,
-                    child: Transform(
-                      alignment: Alignment.center,
-                      transform: Matrix4.identity()
-                        ..scale(1.0, 1.0),
-                      child: Image.asset(
-                        'assets/icons/quote.png',
-                        width: quoteSize,
-                        height: quoteSize,
-                      ),
-                    ),
-                  ),
-
-                  Positioned(
-                    right: 0,
-                    bottom: 0,
-                    child: Transform(
-                      alignment: Alignment.center,
-                      transform: Matrix4.identity()
-                        ..rotateZ(3.14),
-                      child: Image.asset(
-                        'assets/icons/quote.png',
-                        width: quoteSize,
-                        height: quoteSize,
-                      ),
-                    ),
+                    ],
                   ),
 
                   SizedBox(
-                    width: double.infinity,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: quoteHorizontalPadding,
-                        vertical: quoteVerticalPadding,
-                      ),
-                      child: Text(
-                        widget.testimonial.review,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium!
-                            .copyWith(
-                              height: 1.5,
-                            ),
-                      ),
+                    height: context.responsiveValue<double>(
+                      extraSmall: 16,
+                      small: 18,
+                      medium: 20,
+                      large: 24,
                     ),
+                  ),
+
+                  // REVIEW (unchanged)
+                  Stack(
+                    children: [
+                      Positioned(
+                        left: 0,
+                        top: -5,
+                        child: Image.asset(
+                          'assets/icons/quote.png',
+                          width: quoteSize,
+                          height: quoteSize,
+                        ),
+                      ),
+                      Positioned(
+                        right: 0,
+                        bottom: 0,
+                        child: Transform(
+                          alignment: Alignment.center,
+                          transform: Matrix4.identity()..rotateZ(3.14),
+                          child: Image.asset(
+                            'assets/icons/quote.png',
+                            width: quoteSize,
+                            height: quoteSize,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: quoteHorizontalPadding,
+                            vertical: quoteVerticalPadding,
+                          ),
+                          child: Text(
+                            widget.testimonial.review,
+                            textAlign: TextAlign.center,
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodyMedium!.copyWith(height: 1.5),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
-        ),
+
+          // -----------------------------------------------------------------
+          // ✅ SEPARATE STACK ENTRY — RED CROSS BUTTON (top-right, on top)
+          // -----------------------------------------------------------------
+          Positioned(
+            top: 12 + MediaQuery.of(context).padding.top, // below status bar
+            right: 16,
+            child: GestureDetector(
+              onTap: () => Navigator.of(context).maybePop(),
+              child: Container(
+                width: 36,
+                height: 36,
+                decoration: const BoxDecoration(
+                  // color: Color.fromARGB(107, 244, 67, 54),
+                  shape: BoxShape.circle,
+                  // boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4)],
+                ),
+                child: const Icon(Icons.close, color: Colors.red, size: 20),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -368,9 +353,7 @@ class _TestimonialCardState extends State<TestimonialCard> {
               radius: cardAvatarRadius,
               backgroundImage: widget.testimonial.image.isNotEmpty
                   ? NetworkImage(widget.testimonial.image)
-                  : const AssetImage(
-                      "assets/images/user.jpg",
-                    ) as ImageProvider,
+                  : const AssetImage("assets/images/user.jpg") as ImageProvider,
             ),
 
             SizedBox(width: cardAvatarGap),
@@ -378,7 +361,6 @@ class _TestimonialCardState extends State<TestimonialCard> {
             // -----------------------------------------------------------------
             // CONTENT
             // -----------------------------------------------------------------
-
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -387,40 +369,32 @@ class _TestimonialCardState extends State<TestimonialCard> {
                     widget.testimonial.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headlineSmall!
-                        .copyWith(
-                          fontWeight: FontWeight.w400,
-                          color: AppColors.neutrals02,
-                          fontSize: context.responsiveFontSize(
-                            extraSmall: 16,
-                            small: 17,
-                            medium: 18,
-                            large: 19,
-                          ),
-                        ),
+                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.neutrals02,
+                      fontSize: context.responsiveFontSize(
+                        extraSmall: 16,
+                        small: 17,
+                        medium: 18,
+                        large: 19,
+                      ),
+                    ),
                   ),
 
                   Text(
-                    widget.testimonial.role == "tutor"
-                        ? "Tutor"
-                        : "Guardian",
+                    widget.testimonial.role == "tutor" ? "Tutor" : "Guardian",
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(
-                          color: AppColors.neutrals03,
-                          fontWeight: FontWeight.w300,
-                          fontSize: context.responsiveFontSize(
-                            extraSmall: 11,
-                            small: 11,
-                            medium: 12,
-                            large: 13,
-                          ),
-                        ),
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: AppColors.neutrals03,
+                      fontWeight: FontWeight.w300,
+                      fontSize: context.responsiveFontSize(
+                        extraSmall: 11,
+                        small: 11,
+                        medium: 12,
+                        large: 13,
+                      ),
+                    ),
                   ),
 
                   SizedBox(
@@ -441,9 +415,7 @@ class _TestimonialCardState extends State<TestimonialCard> {
                             widget.testimonial.review,
                             maxLines: 3,
                             overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelSmall!
+                            style: Theme.of(context).textTheme.labelSmall!
                                 .copyWith(
                                   color: AppColors.neutrals03,
                                   fontSize: context.responsiveFontSize(
@@ -461,9 +433,7 @@ class _TestimonialCardState extends State<TestimonialCard> {
                             onTap: _openFullTestimonial,
                             child: Text(
                               "Read more",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelSmall!
+                              style: Theme.of(context).textTheme.labelSmall!
                                   .copyWith(
                                     color: AppColors.primary01,
                                     fontWeight: FontWeight.w500,

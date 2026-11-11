@@ -32,11 +32,11 @@ class GuardianEmergencySectionCard extends StatelessWidget {
                   ),
                 ),
               ),
-              // if (onEdit != null)
-              //   IconButton(
-              //     onPressed: onEdit,
-              //     icon: const Icon(Icons.edit_outlined),
-              //   ),
+              if (onEdit != null)
+                IconButton(
+                  onPressed: onEdit,
+                  icon: const Icon(Icons.edit_outlined),
+                ),
             ],
           ),
 

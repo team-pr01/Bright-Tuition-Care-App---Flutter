@@ -4,6 +4,7 @@ import 'package:btcclient/features/jobs/presentation/notifier/jobs_notifier.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/storage/local_storage.dart';
 import '../../data/jobs_repository.dart';
+import 'package:flutter/foundation.dart';
 
 /// ================= STATE =================
 class ApplicationsState {
@@ -129,6 +130,24 @@ class ApplicationsNotifier extends StateNotifier<ApplicationsState> {
       state = state.copyWith(isLoadingMore: false, error: e.toString());
     }
   }
+  Future<ApplicationModel?> fetchSingleApplications({
+  required String applicationId,
+}) async {
+  try {
+    final response = await repo.fetchSingleApplications(
+      applicationId: applicationId,
+    );
+
+    debugPrint('📦 SINGLE APPLICATION RESPONSE: $response');
+
+    return response;
+  } catch (e, stackTrace) {
+    debugPrint('❌ Failed to fetch single application: $e');
+    debugPrint('$stackTrace');
+
+    return null;
+  }
+}
 
   /// ================= REFRESH =================
   Future<void> refresh({String? status}) async {

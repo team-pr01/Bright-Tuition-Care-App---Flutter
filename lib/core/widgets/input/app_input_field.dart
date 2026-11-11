@@ -544,6 +544,7 @@ class _Dropdown2Field extends StatelessWidget {
     if (!enabled) return;
 
     if (multiSelect) {
+      debugPrint('Opening dropdown2 multi-select modal');
       final result = await ReusableModal.show<List<String>>(
         context: context,
         child: _Dropdown2SelectionContent(
@@ -813,140 +814,125 @@ class _Dropdown2SingleSelectionContentState
     Navigator.of(context).pop(selectedValue);
   }
 
- @override
-Widget build(BuildContext context) {
-  return SizedBox(
-    width: double.infinity,
-    height: MediaQuery.of(context).size.height * 0.65,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // ==========================================================
-        // TITLE
-        // ==========================================================
-        const Text(
-          "Select",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w400,
-            color: AppColors.neutrals02,
-          ),
-        ),
+  @override
+  Widget build(BuildContext context) {
+    final maxModalHeight = MediaQuery.of(context).size.height * 0.65;
 
-        const SizedBox(height: 20),
-
-        // ==========================================================
-        // SEARCH BAR
-        // ==========================================================
-        TextFormField(
-          controller: searchController,
-          onChanged: _search,
-          style: const TextStyle(
-            fontSize: 14,
-            color: AppColors.neutrals02,
-          ),
-          decoration: InputDecoration(
-            hintText: "Search...",
-            prefixIcon: const Icon(Icons.search),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppRadius.medium),
-              borderSide: BorderSide(
-                color: AppColors.primary01.withOpacity(0.5),
-                width: 1,
-              ),
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: maxModalHeight),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // TITLE
+          const Text(
+            "Select",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w400,
+              color: AppColors.neutrals02,
             ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppRadius.medium),
-              borderSide: const BorderSide(
-                color: AppColors.primary01,
-                width: 1.5,
+          ),
+
+          const SizedBox(height: 20),
+
+          // SEARCH
+          TextFormField(
+            controller: searchController,
+            onChanged: _search,
+            style: const TextStyle(fontSize: 14, color: AppColors.neutrals02),
+            decoration: InputDecoration(
+              hintText: "Search...",
+              prefixIcon: const Icon(Icons.search),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppRadius.medium),
+                borderSide: BorderSide(
+                  color: AppColors.primary01.withOpacity(0.5),
+                  width: 1,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppRadius.medium),
+                borderSide: const BorderSide(
+                  color: AppColors.primary01,
+                  width: 1.5,
+                ),
               ),
             ),
           ),
-        ),
 
-        const SizedBox(height: 18),
+          const SizedBox(height: 18),
 
-        // ==========================================================
-        // OPTIONS
-        // ONLY THIS AREA SCROLLS
-        // ==========================================================
-        Expanded(
-          child: SingleChildScrollView(
-            child: Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              children: filteredItems.map((item) {
-                final bool isSelected = selectedValue == item;
+          // SCROLLABLE OPTIONS — capped, not Expanded
+          Flexible(
+            child: SingleChildScrollView(
+              child: Wrap(
+                spacing: 10,
+                runSpacing: 10,
+                children: filteredItems.map((item) {
+                  final bool isSelected = selectedValue == item;
 
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedValue = item;
-                    });
-                  },
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 150),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 18,
-                      vertical: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? AppColors.primary01.withOpacity(0.18)
-                          : AppColors.neutrals03.withOpacity(0.18),
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Text(
-                      item,
-                      style: TextStyle(
-                        fontSize: 14,
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedValue = item;
+                      });
+                    },
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 150),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: 10,
+                      ),
+                      decoration: BoxDecoration(
                         color: isSelected
-                            ? AppColors.primary01
-                            : AppColors.neutrals02,
+                            ? AppColors.primary01.withOpacity(0.18)
+                            : AppColors.neutrals03.withOpacity(0.18),
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: Text(
+                        item,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: isSelected
+                              ? AppColors.primary01
+                              : AppColors.neutrals02,
+                        ),
                       ),
                     ),
-                  ),
-                );
-              }).toList(),
+                  );
+                }).toList(),
+              ),
             ),
           ),
-        ),
 
-        const SizedBox(height: 16),
+          const SizedBox(height: 16),
 
-        // ==========================================================
-        // STICKY BOTTOM BUTTONS
-        // ==========================================================
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // CANCEL - FIT CONTENT
-            IntrinsicWidth(
-              child: AppButton(
-                label: "Cancel",
-                variant: AppButtonVariant.outline,
-                onPressed: _cancel,
+          // BUTTONS
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              IntrinsicWidth(
+                child: AppButton(
+                  label: "Cancel",
+                  variant: AppButtonVariant.outline,
+                  onPressed: _cancel,
+                ),
               ),
-            ),
-
-            const SizedBox(width: 12),
-
-            // APPLY - FULL REMAINING WIDTH
-            Expanded(
-              child: AppButton(
-                label: "Apply",
-                variant: AppButtonVariant.primary,
-                onPressed: selectedValue == null ? null : _apply,
+              const SizedBox(width: 12),
+              Expanded(
+                child: AppButton(
+                  label: "Apply",
+                  variant: AppButtonVariant.primary,
+                  onPressed: selectedValue == null ? null : _apply,
+                ),
               ),
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
-}
-
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 // ==================================================================
@@ -1092,30 +1078,28 @@ class _Dropdown2SelectionContentState
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: MediaQuery.of(context).size.height * 0.65,
+    return ConstrainedBox(
+      // ← was SizedBox
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.65, // ← same cap
+      ),
       child: Column(
+        mainAxisSize: MainAxisSize.min, // ← NEW: shrink to fit
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ==========================================================
-          // TITLE
-          // ==========================================================
-           Text(
-              "Select",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w400,
-                color: AppColors.neutrals02,
-              ),
+          // TITLE (unchanged)
+          Text(
+            "Select",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w400,
+              color: AppColors.neutrals02,
             ),
-          
+          ),
 
           const SizedBox(height: 20),
 
-          // ==========================================================
-          // SEARCH
-          // ==========================================================
+          // SEARCH (unchanged)
           TextFormField(
             controller: searchController,
             onChanged: _search,
@@ -1123,7 +1107,6 @@ class _Dropdown2SelectionContentState
             decoration: InputDecoration(
               hintText: "Search...",
               prefixIcon: Icon(Icons.search),
-
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppRadius.medium),
                 borderSide: BorderSide(
@@ -1136,17 +1119,16 @@ class _Dropdown2SelectionContentState
 
           const SizedBox(height: 18),
 
-          // ==========================================================
-          // SELECTABLE CHIPS
-          // ==========================================================
-          Expanded(
+          // CHIPS — Expanded → Flexible (only change inside the list area)
+          Flexible(
+            // ← was Expanded
             child: SingleChildScrollView(
               child: Wrap(
                 spacing: 10,
                 runSpacing: 10,
                 children: filteredItems.map((item) {
                   final isSelected = tempSelected.contains(item);
-              
+
                   return GestureDetector(
                     onTap: () => _toggleItem(item),
                     child: AnimatedContainer(
@@ -1179,23 +1161,17 @@ class _Dropdown2SelectionContentState
 
           const SizedBox(height: 24),
 
-          // ==========================================================
-          // CANCEL / OK
-          // ==========================================================
+          // BUTTONS (unchanged)
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              SizedBox(
-                // width: 125,
+              Expanded(
                 child: AppButton(
                   label: "Cancel",
                   variant: AppButtonVariant.outline,
                   onPressed: _cancel,
                 ),
               ),
-
               const SizedBox(width: 12),
-
               Expanded(
                 child: AppButton(
                   label: "Apply",

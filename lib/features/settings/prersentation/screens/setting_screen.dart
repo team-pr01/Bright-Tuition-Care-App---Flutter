@@ -130,6 +130,15 @@ class SettingScreen extends ConsumerWidget {
               );
             },
           ),
+          _SettingsTile(
+            icon: Icons.star_border_outlined,
+            title: "Rate Us",
+            onTap: () {
+              launchUrl(
+                Uri(scheme: 'mailto', path: 'support@brighttutioncare.com'),
+              );
+            },
+          ),
 
           const SizedBox(height: 12),
 

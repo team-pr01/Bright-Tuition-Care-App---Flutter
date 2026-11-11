@@ -1,3 +1,4 @@
+import 'package:btcclient/features/jobs/data/models/application_modal.dart';
 import 'package:btcclient/features/jobs/data/models/job_application_meta.dart';
 import 'package:btcclient/features/jobs/data/models/job_application_modal.dart';
 import 'package:btcclient/features/jobs/data/models/job_model.dart';
@@ -119,6 +120,23 @@ Future<(List<JobApplicationModel>, JobApplicationMeta)> getApplications({
   }
 
   return Map<String, dynamic>.from(res["data"] ?? {});
+}
+Future<ApplicationModel?> fetchSingleApplications({
+  required String applicationId,
+}) async {
+  final response = await api.fetchSingleApplications(
+    applicationId: applicationId,
+  );
+
+  final data = response['data'];
+
+  if (data == null) {
+    return null;
+  }
+
+  return ApplicationModel.fromJson(
+    Map<String, dynamic>.from(data),
+  );
 }
 
 Future<JobModel> getSingleJobByCustomJobId(

@@ -4,6 +4,7 @@ import 'package:btcclient/core/widgets/snackbar/app_snackbar.dart';
 import 'package:btcclient/features/auth/data/models/guardian_model.dart';
 import 'package:btcclient/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:btcclient/features/profile/presentation/screens/edit_guardian_personal_information_screen.dart';
+// import 'package:btcclient/features/profile/presentation/screens/emergancy_information_screen.dart';
 import 'package:btcclient/features/profile/presentation/widgets/emergency_section_card.dart';
 import 'package:btcclient/features/profile/presentation/widgets/guardian_personal_section_card.dart';
 import 'package:btcclient/features/profile/presentation/widgets/guardian_profile_card.dart';
@@ -191,40 +192,40 @@ class _GuardianProfilePageState extends ConsumerState<GuardianProfilePage> {
                         // =================================================
                         // TABS
                         // =================================================
-                        SizedBox(
-                          height: 70,
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: ProfileTabCard(
-                                  title: "Personal",
-                                  icon: Icons.person_outline,
-                                  isActive: selectedTab == 0,
-                                  onTap: () {
-                                    setState(() {
-                                      selectedTab = 0;
-                                    });
-                                  },
-                                ),
-                              ),
+                        // SizedBox(
+                        //   height: 70,
+                        //   child: Row(
+                        //     children: [
+                        //       // Expanded(
+                        //       //   child: ProfileTabCard(
+                        //       //     title: "Personal",
+                        //       //     icon: Icons.person_outline,
+                        //       //     isActive: selectedTab == 0,
+                        //       //     onTap: () {
+                        //       //       setState(() {
+                        //       //         selectedTab = 0;
+                        //       //       });
+                        //       //     },
+                        //       //   ),
+                        //       // ),
 
-                              Expanded(
-                                child: ProfileTabCard(
-                                  title: "Emergency",
-                                  icon: Icons.emergency_outlined,
-                                  isActive: selectedTab == 1,
-                                  onTap: () {
-                                    setState(() {
-                                      selectedTab = 1;
-                                    });
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        //       // Expanded(
+                        //       //   child: ProfileTabCard(
+                        //       //     title: "Emergency",
+                        //       //     icon: Icons.emergency_outlined,
+                        //       //     isActive: selectedTab == 1,
+                        //       //     onTap: () {
+                        //       //       setState(() {
+                        //       //         selectedTab = 1;
+                        //       //       });
+                        //       //     },
+                        //       //   ),
+                        //       // ),
+                        //     ],
+                        //   ),
+                        // ),
 
-                        const Divider(height: 1, thickness: 1),
+                        // const Divider(height: 1, thickness: 1),
 
                         // =================================================
                         // TAB CONTENT
@@ -296,14 +297,32 @@ class _GuardianProfilePageState extends ConsumerState<GuardianProfilePage> {
           },
         );
 
-      case 1:
-        return GuardianEmergencySectionCard(
-          profile: profile,
-          // onEdit: () {
-          //   // Add emergency edit navigation here.
-          // },
-        );
+      // case 1:
+      //   return GuardianEmergencySectionCard(
+      //     profile: profile,
+      //    onEdit: () async {
+      //       if (profile.profileStatus == "locked") {
+      //         AppSnackbar.show(
+      //           context,
+      //           "Your profile is locked , request to unlock and edit the profile ",
+      //           SnackType.error,
+      //         );
+      //         return;
+      //       }
+      //       final updated = await Navigator.push<bool>(
+      //         context,
+      //         MaterialPageRoute(
+      //           builder: (_) => const EditGuardianEmergancyInformationScreen(),
+      //         ),
+      //       );
 
+      //       if (updated == true && mounted) {
+      //         await ref.read(profileProvider.notifier).refreshProfile();
+      //       }
+      //     },
+      //   );
+
+      //
       default:
         return const SizedBox.shrink();
     }

@@ -76,6 +76,8 @@ class GuardianProfileModel {
     final social = data['socialMediaInformation'] ?? {};
     final emergency = data['emergencyInformation'] ?? {};
 
+
+
     return GuardianProfileModel(
       id: data['_id'] ?? "",
       guardianId: data['guardianId'] ?? "",
@@ -116,3 +118,4 @@ class GuardianProfileModel {
     );
   }
 }
+

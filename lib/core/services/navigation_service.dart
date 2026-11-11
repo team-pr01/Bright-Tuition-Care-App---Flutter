@@ -241,101 +241,6 @@ class NavigationService {
   // PENDING APPLICATION
   // ============================================================
 
-  static String? _pendingApplicationId;
-
-  static String? get pendingApplicationId => _pendingApplicationId;
-
-  static void setPendingApplication(String applicationId) {
-    _pendingApplicationId = applicationId;
-  }
-
-  static String? consumePendingApplication() {
-    final applicationId = _pendingApplicationId;
-
-    if (applicationId != null) {
-      debugPrint(
-        '📦 NavigationService: consuming pending application $applicationId',
-      );
-    }
-
-    _pendingApplicationId = null;
-
-    return applicationId;
-  }
-
-  // ============================================================
-  // APPLICATION HANDLER
-  // ============================================================
-
-  Function(String jobId, {String? status})? onOpenApplicationDetails;
-
-  // ============================================================
-  // NOTIFICATION → APPLICATION
-  // ============================================================
-
-static void navigateToApplication(
-  String jobId, {
-  String? status,
-}) {
-    final handler = onOpenApplicationDetails;
-
-    if (_applicationDetailsHandler != null) {
-    _applicationDetailsHandler!(
-      jobId,
-      status: status,
-    );
-    return;
-  }
-
-    // MyApplicationPage is not open yet
-    setPendingApplication(applicationId);
-
-    final navigator = navigatorKey.currentState;
-
-    if (navigator == null) {
-      debugPrint('⚠️ Navigator is not ready. Cannot open My Applications.');
-      return;
-    }
-
-    navigator.push(
-      MaterialPageRoute(
-        builder: (_) => MyApplicationPage(changeTab: (index, {status}) {}),
-      ),
-    );
-  }
-
-  // ============================================================
-  // REGISTER APPLICATION HANDLER
-  // ============================================================
-
-  static void registerApplicationDetailsHandler(
-    Future<void> Function(String applicationId) callback,
-  ) {
-    onOpenApplicationDetails = callback;
-
-    final pendingApplication = consumePendingApplication();
-
-    if (pendingApplication == null) {
-      return;
-    }
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final handler = onOpenApplicationDetails;
-
-      if (handler != null) {
-        handler(pendingApplication);
-      }
-    });
-  }
-
-  // ============================================================
-  // UNREGISTER APPLICATION HANDLER
-  // ============================================================
-
-  static void unregisterApplicationDetailsHandler() {
-    onOpenApplicationDetails = null;
-  }
-
   static Future<void> navigateToTutorProfile(String tutorId) async {
     final navigator = navigatorKey.currentState;
 
@@ -381,4 +286,214 @@ static void navigateToApplication(
       ),
     );
   }
+
+
+
+
+
+
+
+
+
+  // ============================================================
+// PENDING APPLICATION
+// ============================================================
+
+static String? _pendingApplicationJobId;
+static String? _pendingApplicationApplicationId;
+static String? _pendingApplicationStatus;
+
+static String? get pendingApplicationJobId =>
+    _pendingApplicationJobId;
+
+static String? get pendingApplicationApplicationId =>
+    _pendingApplicationApplicationId;
+
+static String? get pendingApplicationStatus =>
+    _pendingApplicationStatus;
+static void setPendingApplication(
+  String jobId, String applicationId, {
+  String? status,
+}) {
+  debugPrint(
+    '📦 Storing pending application: '
+    'jobId=$jobId, status=$status',
+  );
+
+  _pendingApplicationJobId = jobId;
+  _pendingApplicationStatus = status;
+  _pendingApplicationApplicationId = applicationId;
+}
+
+static Map<String, String?>? consumePendingApplication() {
+  final jobId = _pendingApplicationJobId;
+  final status = _pendingApplicationStatus;
+  final applicationId = _pendingApplicationApplicationId;
+
+  _pendingApplicationJobId = null;
+  _pendingApplicationStatus = null;
+  _pendingApplicationApplicationId = null;
+
+  if (jobId == null || jobId.isEmpty) {
+    return null;
+  }
+
+
+  if (applicationId == null || applicationId.isEmpty) {
+    return null;
+  }
+
+  debugPrint(
+    '📦 Consuming pending application: '
+    'jobId=$jobId, applicationId=$applicationId, status=$status',
+  );
+
+  return {
+    'jobId': jobId,
+    'applicationId':applicationId,
+    'status': status,
+  };
+}
+
+// ============================================================
+// APPLICATION HANDLER
+// ============================================================
+
+static Future<void> Function(
+  String jobId,
+  String applicationId, {
+  String? status,
+})? onOpenApplicationDetails;
+
+// ============================================================
+// NOTIFICATION → APPLICATION
+// ============================================================
+
+static void navigateToApplication(
+  String jobId,
+  String applicationId, {
+  String? status,
+}) {
+  debugPrint(
+    '📋 navigateToApplication: '
+    'jobId=$jobId, status=$status',
+  );
+
+  final handler = onOpenApplicationDetails;
+
+  // MyApplicationPage is already mounted.
+  if (handler != null) {
+    debugPrint(
+      '🚀 Application page is ready. '
+      'Opening application directly.',
+    );
+
+    handler(
+      jobId,
+      applicationId,
+      status: status,
+    );
+
+    return;
+  }
+
+  // Application page isn't mounted yet.
+  setPendingApplication(
+    jobId,
+    applicationId,
+    status: status,
+  );
+
+  final navigator = navigatorKey.currentState;
+
+  if (navigator == null) {
+    debugPrint(
+      '⚠️ Navigator is not ready. '
+      'Application notification remains pending.',
+    );
+    return;
+  }
+
+  debugPrint(
+    '🚀 Opening MyApplicationPage...',
+  );
+
+  navigator.push(
+    MaterialPageRoute(
+      builder: (_) => MyApplicationPage(
+        initialStatus: status,
+        changeTab: (index, {status}) {},
+      ),
+    ),
+  );
+}
+
+// ============================================================
+// REGISTER APPLICATION HANDLER
+// ============================================================
+
+static void registerApplicationDetailsHandler(
+  Future<void> Function(
+    String jobId,
+    String applicationId, {
+    String? status,
+  }) callback,
+) {
+  debugPrint('✅ Registering Application handler');
+
+  onOpenApplicationDetails = callback;
+
+  final pendingApplication = consumePendingApplication();
+
+  if (pendingApplication == null) {
+    debugPrint('ℹ️ No pending application notification');
+    return;
+  }
+
+  final jobId = pendingApplication['jobId'];
+  final applicationId = pendingApplication['applicationId'];
+  final status = pendingApplication['status'];
+
+  if (jobId == null || jobId.isEmpty) {
+    debugPrint('❌ Pending application has no jobId');
+    return;
+  }
+
+  if (applicationId == null || applicationId.isEmpty) {
+    debugPrint('❌ Pending application has no applicationId');
+    return;
+  }
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    final handler = onOpenApplicationDetails;
+
+    if (handler == null) {
+      debugPrint('❌ Application handler disappeared');
+      return;
+    }
+
+    debugPrint(
+      '🚀 Sending pending application: '
+      'jobId=$jobId, applicationId=$applicationId, status=$status',
+    );
+
+    handler(
+      jobId,
+      applicationId,
+      status: status,
+    );
+  });
+}
+
+// ============================================================
+// UNREGISTER APPLICATION HANDLER
+// ============================================================
+
+static void unregisterApplicationDetailsHandler() {
+  debugPrint(
+    '❌ Unregistering Application handler',
+  );
+
+  onOpenApplicationDetails = null;
+}
 }

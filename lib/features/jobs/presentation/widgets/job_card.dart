@@ -137,7 +137,7 @@ class _JobCardState extends ConsumerState<JobCard> {
                         TextSpan(
                           text: safe(job.title).isEmpty ? "-" : job.title,
                           style: const TextStyle(
-                            fontSize: 15,
+                            fontSize: 13,
                             fontWeight: FontWeight.w500,
                             height: 1.4,
                             color: AppColors.neutrals02,
@@ -408,7 +408,11 @@ class _JobCardState extends ConsumerState<JobCard> {
                             : "assets/icons/visual/gender.svg",
                         height: 18,
                         width: 18,
-                        color: AppColors.primary01,
+                        color: job.preferredTutorGender == "male"
+                            ? AppColors.primary01
+                            : job.preferredTutorGender == "female"
+                            ? Colors.pink
+                            : const Color.fromARGB(255, 213, 129, 19),
                       ),
 
                       const SizedBox(width: 6),
@@ -418,10 +422,14 @@ class _JobCardState extends ConsumerState<JobCard> {
                             ? "Male"
                             : job.preferredTutorGender == "female"
                             ? "Female"
-                            : "Other",
+                            : "Any",
                         style: TextStyle(
                           fontSize: 12,
-                          color: AppColors.neutrals02,
+                          color: job.preferredTutorGender == "male"
+                              ? AppColors.primary01
+                              : job.preferredTutorGender == "female"
+                              ? Colors.pink
+                              : const Color.fromARGB(255, 213, 129, 19),
                           fontWeight: FontWeight.w700,
                         ),
                       ),

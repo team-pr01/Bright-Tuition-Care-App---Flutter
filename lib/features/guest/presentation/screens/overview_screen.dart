@@ -281,8 +281,8 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                         textAlign: TextAlign.center,
                         style: AppTextStyles.headlineMedium.copyWith(
                           color: AppColors.primary04,
-                           fontWeight: FontWeight.w500,
-                    fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 15,
                           decoration: TextDecoration.underline,
                           decorationThickness: 1.5,
                         ),
@@ -535,14 +535,7 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
           // ========================================================
           Row(
             children: [
-              Container(
-                width: 8,
-                height: 8,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF2196F3),
-                  shape: BoxShape.circle,
-                ),
-              ),
+              const PulsingDot(size: 8, color: Color(0xFF2196F3)),
 
               const SizedBox(width: 8),
 
@@ -915,4 +908,83 @@ class _UsefulItem {
   final String title;
 
   const _UsefulItem({required this.icon, required this.title});
+}
+
+class PulsingDot extends StatefulWidget {
+  const PulsingDot({
+    super.key,
+    this.size = 8,
+    this.color = const Color(0xFF2196F3),
+  });
+
+  final double size;
+  final Color color;
+
+  @override
+  State<PulsingDot> createState() => _PulsingDotState();
+}
+
+class _PulsingDotState extends State<PulsingDot>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1400),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: widget.size * 3,
+      height: widget.size * 3,
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, child) {
+          final t = _controller.value; // 0 → 1
+
+          return Stack(
+            alignment: Alignment.center,
+            children: [
+              // Expanding ripple (fades out as it grows)
+              Opacity(
+                opacity: (1 - t) * 0.6,
+                child: Container(
+                  width: widget.size + (widget.size * 2 * t),
+                  height: widget.size + (widget.size * 2 * t),
+                  decoration: BoxDecoration(
+                    color: widget.color,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+
+              // Solid core (breathing scale)
+              Transform.scale(
+                scale: 1 + (0.15 * (0.5 - (t - 0.5).abs()) * 2),
+                child: Container(
+                  width: widget.size,
+                  height: widget.size,
+                  decoration: BoxDecoration(
+                    color: widget.color,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
 }

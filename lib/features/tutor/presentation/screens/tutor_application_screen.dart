@@ -54,53 +54,87 @@ class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
     });
   }
 
-  Future<void> _openNotificationApplication(String applicationId) async {
-    if (_openingNotificationApplication) return;
+ Future<void> _openNotificationApplication(
+  String jobId,
+  String applicationId, {
+  String? status,
+}) async {
+  if (_openingNotificationApplication) return;
 
-    _openingNotificationApplication = true;
+  _openingNotificationApplication = true;
 
-    try {
-      // Make sure applications are loaded before searching.
-      await ref
-          .read(applicationsProvider.notifier)
-          .fetchApplications(status: _selectedStatus);
+  try {
+    final targetStatus =
+        status != null && status.isNotEmpty
+            ? status
+            : _selectedStatus;
 
-      if (!mounted) return;
+    debugPrint(
+      '📋 Opening application from notification: '
+      'jobId=$jobId, '
+      'applicationId=$applicationId, '
+      'status=$targetStatus',
+    );
 
-      final state = ref.read(applicationsProvider);
+    final application =
+        await ref
+            .read(applicationsProvider.notifier)
+            .fetchSingleApplications(
+              applicationId: applicationId,
+            );
 
-      final application = state.applications.cast<dynamic>().firstWhere(
-        (item) =>
-            item.applicationId?.toString() == applicationId ||
-            item.id?.toString() == applicationId,
-        orElse: () => null,
-      );
+    if (!mounted) return;
 
-      if (application == null) {
-        return;
-      }
-
-      if (application.job == null) {
-        return;
-      }
-
-      await showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent,
-        builder: (_) {
-          return JobBottomSheet(
-            job: application.job,
-            application: application,
-            variant: JobCardVariant.application,
-            changeTab: widget.changeTab,
-          );
-        },
-      );
-    } finally {
-      _openingNotificationApplication = false;
+    if (_selectedStatus != targetStatus) {
+      setState(() {
+        _selectedStatus = targetStatus;
+      });
     }
+
+    if (application == null) {
+      debugPrint(
+        '❌ Application not found: $applicationId',
+      );
+      return;
+    }
+
+    if (application.job == null) {
+      debugPrint(
+        '❌ Application found but application.job is null',
+      );
+      return;
+    }
+
+    debugPrint(
+      '✅ Application found: $applicationId',
+    );
+
+    debugPrint(
+      '🚀 Opening JobBottomSheet',
+    );
+
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        return JobBottomSheet(
+          job: application.job,
+          application: application,
+          variant: JobCardVariant.application,
+          changeTab: widget.changeTab,
+        );
+      },
+    );
+  } catch (e, stackTrace) {
+    debugPrint(
+      '❌ Failed to open application notification: $e',
+    );
+    debugPrint('$stackTrace');
+  } finally {
+    _openingNotificationApplication = false;
   }
+}
 
   @override
   void dispose() {

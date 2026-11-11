@@ -1,4 +1,3 @@
-
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/utils/get_cout.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
@@ -222,6 +221,7 @@ class _JobsPageState extends ConsumerState<JobsPage> {
     });
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF2F5FC),
       body: SafeArea(
         child: Column(
           children: [
@@ -434,9 +434,8 @@ class _JobsPageState extends ConsumerState<JobsPage> {
                           width: 42,
                           height: 32,
                           onPressed: () async {
-                            ref
-                                .read(selectedJobFilterProvider.notifier)
-                                .state = JobFilter(status: "live");
+                            ref.read(selectedJobFilterProvider.notifier).state =
+                                JobFilter(status: "live");
 
                             await ref
                                 .read(jobsProvider.notifier)
@@ -498,10 +497,7 @@ class _JobsPageState extends ConsumerState<JobsPage> {
             const SizedBox(width: 8),
             const Text(
               'No Jobs found',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
             ),
           ],
         ),

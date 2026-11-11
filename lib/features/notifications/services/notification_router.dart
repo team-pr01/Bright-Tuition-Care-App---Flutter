@@ -21,24 +21,14 @@ class NotificationRouter {
     }
 
     switch (type) {
-      // ============================================================
-      // REAL NOTIFICATION TYPE
-      // ============================================================
-
       case 'new_job_alert':
-        _handleNewJobAlert(data);
-        break;
-
       case 'job_details':
         _handleNewJobAlert(data);
         break;
+        
       case 'invoice_details':
         _handleInvoiceDetails(data);
         break;
-
-      // ============================================================
-      // TUTOR IMPORTANT GUIDELINES
-      // ============================================================
 
       case 'tutor_important_guidelines':
         _handleTutorImportantGuidelines();
@@ -46,10 +36,6 @@ class NotificationRouter {
       case 'profile_verification':
         _handleProfileVerification();
         break;
-
-      // ============================================================
-      // FUTURE NOTIFICATION TYPES
-      // ============================================================
 
       case 'application_details':
         _handleApplicationDetails(data); 
@@ -149,22 +135,45 @@ class NotificationRouter {
   // those notification types.
 
   static void _handleApplicationDetails(Map<String, dynamic> data) {
-  final jobId = data['jobId']?.toString();
-  final status = data['status']?.toString();
+    debugPrint('📦 FULL APPLICATION NOTIFICATION DATA:');
+  debugPrint(data.toString());
+    final jobId = data['jobId']?.toString();
+    final applicationId = data['applicationId']?.toString();
+    final status = data['applicationStatus']?.toString();
 
-  if (jobId == null || jobId.isEmpty) {
+    debugPrint(
+      '📋 Application notification: '
+      'jobId=$jobId, status=$status, applicationId=$applicationId',
+    );
+
+    if (jobId == null || jobId.isEmpty) {
+      debugPrint(
+        '❌ application_details notification does not contain jobId',
+      );
+      return;
+    }
+
+    if (applicationId == null || applicationId.isEmpty) {
+    debugPrint(
+      '❌ application_details notification does not contain applicationId',
+    );
     return;
   }
 
-  if (status == null || status.isEmpty) {
-    return;
-  }
 
-  NavigationService.navigateToApplication(
-    jobId,
-    status: status,
-  );
-}
+    if (status == null || status.isEmpty) {
+      debugPrint(
+        '❌ application_details notification does not contain status',
+      );
+      return;
+    }
+
+   NavigationService.navigateToApplication(
+  jobId,
+  applicationId,
+  status: status,
+);
+  }
 
   static void _handleTutorProfile(Map<String, dynamic> data) {
     final tutorId = data['tutorId']?.toString();
@@ -188,7 +197,7 @@ class NotificationRouter {
       return;
     }
 
-    debugPrint('🔔 Opening confirmation letter: $confirmationLetterId');
+    debugPrint('🔔 Opening confirmation letter: $confirmationLetterId'); 
 
     NavigationService.navigateToConfirmationLetter(confirmationLetterId);
   }

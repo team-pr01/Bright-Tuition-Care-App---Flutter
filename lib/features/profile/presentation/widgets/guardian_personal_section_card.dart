@@ -72,8 +72,7 @@ class GuardianPersonalSectionCard extends StatelessWidget {
           ProfileInfoRow(label: "Nationality", value: profile.nationality),
 
           ProfileInfoRow(label: "Facebook", value: profile.facebook),
-
-          
+          ProfileInfoRow(label: "Emergency Phone Number", value: profile.emergencyPhone),
         ],
       ),
     );

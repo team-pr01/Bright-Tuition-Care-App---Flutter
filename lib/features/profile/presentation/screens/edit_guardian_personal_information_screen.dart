@@ -313,9 +313,13 @@ class _EditGuardianPersonalInformationScreenState
           // ======================================================
           // EMERGENCY PHONE
           // ======================================================
-          emergencyContactNumber: _emergencyPhoneController.text.trim(),
         ),
-
+        emergencyInformation: EmergencyInformationRequest(
+          // emergencyContactPersonName: _emergencyNameController.text.trim(),
+          phoneNumber: _emergencyPhoneController.text.trim(),
+          // relation: _emergencyRelationController.text.trim(),
+          // address: _emergencyAddressController.text.trim(),
+        ),
         // ========================================================
         // SOCIAL MEDIA
         // ========================================================
@@ -599,21 +603,21 @@ class _EditGuardianPersonalInformationScreenState
                   type: AppInputType.multiline,
                   maxLines: 3,
                   enabled: !_saving,
-                  hint:"Enter your address"
+                  hint: "Enter your address",
                 ),
 
                 AppInputField(
                   controller: _religionController,
                   label: "Religion",
                   enabled: !_saving,
-                  hint:"Enter your Religion"
+                  hint: "Enter your Religion",
                 ),
 
                 AppInputField(
                   controller: _nationalityController,
                   label: "Nationality",
                   enabled: !_saving,
-                  hint:"eg: Bangladesh"
+                  hint: "eg: Bangladesh",
                 ),
 
                 const SizedBox(height: 32),
@@ -627,7 +631,7 @@ class _EditGuardianPersonalInformationScreenState
                   controller: _facebookController,
                   label: "Facebook Profile",
                   enabled: !_saving,
-                  hint:"facebook link"
+                  hint: "facebook link",
                 ),
 
                 const SizedBox(height: 32),
@@ -637,36 +641,36 @@ class _EditGuardianPersonalInformationScreenState
                 // ==================================================
                 _sectionTitle("Emergency Information"),
 
-                AppInputField(
-                  controller: _emergencyNameController,
-                  label: "Emergency Contact Person",
-                  enabled: !_saving,
-                    hint:"Enter Emergency Contact Person"
-                ),
+                // AppInputField(
+                //   controller: _emergencyNameController,
+                //   label: "Emergency Contact Person",
+                //   enabled: !_saving,
+                //   hint: "Enter Emergency Contact Person",
+                // ),
 
                 AppInputField(
                   controller: _emergencyPhoneController,
                   label: "Emergency Phone Number",
                   type: AppInputType.phone,
                   enabled: !_saving,
-                    hint:"eg: 01xxxxxxxxx"
+                  hint: "eg: 01xxxxxxxxx",
                 ),
 
-                AppInputField(
-                  controller: _emergencyRelationController,
-                  label: "Relation",
-                  enabled: !_saving,
-                  hint:"Enter your relation with Emergency content person"
-                ),
+                // AppInputField(
+                //   controller: _emergencyRelationController,
+                //   label: "Relation",
+                //   enabled: !_saving,
+                //   hint: "Enter your relation with Emergency content person",
+                // ),
 
-                AppInputField(
-                  controller: _emergencyAddressController,
-                  label: "Emergency Address",
-                  type: AppInputType.multiline,
-                  maxLines: 3,
-                  enabled: !_saving,
-                  hint:"Emergency Address"
-                ),
+                // AppInputField(
+                //   controller: _emergencyAddressController,
+                //   label: "Emergency Address",
+                //   type: AppInputType.multiline,
+                //   maxLines: 3,
+                //   enabled: !_saving,
+                //   hint: "Emergency Address",
+                // ),
 
                 const SizedBox(height: 32),
 
@@ -713,10 +717,10 @@ class _EditGuardianPersonalInformationScreenState
 
     _facebookController.dispose();
 
-    _emergencyNameController.dispose();
+    // _emergencyNameController.dispose();
     _emergencyPhoneController.dispose();
-    _emergencyAddressController.dispose();
-    _emergencyRelationController.dispose();
+    // _emergencyAddressController.dispose();
+    // _emergencyRelationController.dispose();
 
     super.dispose();
   }

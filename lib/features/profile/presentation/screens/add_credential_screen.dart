@@ -37,6 +37,7 @@ class _AddCredentialScreenState
     "HSC / Alim / A Level - Mark Sheet / Certificate",
     "NID / Passport / Birth Certificate",
     "Admission Pay Slip / University ID Card / Certificate",
+    "Student ID Card",
     "Others",
   ];
 

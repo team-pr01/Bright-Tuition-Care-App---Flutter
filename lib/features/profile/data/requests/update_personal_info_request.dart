@@ -7,11 +7,12 @@ class UpdatePersonalInfoRequest {
   final String? gender;
   final String? city;
   final String? area;
-   final File? profileImage;
+  final File? profileImage;
 
   final PersonalInformationRequest? personalInformation;
 
   final SocialMediaInformationRequest? socialMediaInformation;
+  final EmergencyInformationRequest? emergencyInformation;
 
   UpdatePersonalInfoRequest({
     this.name,
@@ -22,6 +23,7 @@ class UpdatePersonalInfoRequest {
     this.area,
     this.personalInformation,
     this.socialMediaInformation,
+    this.emergencyInformation,
     this.profileImage,
   });
 
@@ -35,9 +37,11 @@ class UpdatePersonalInfoRequest {
       "area": area,
       "personalInformation": personalInformation?.toJson(),
       "socialMediaInformation": socialMediaInformation?.toJson(),
+      "emergencyInformation": emergencyInformation?.toJson(),
     };
   }
 }
+
 class PersonalInformationRequest {
   final String? additionalPhoneNumber;
   final String? dateOfBirth;
@@ -81,16 +85,37 @@ class PersonalInformationRequest {
     };
   }
 }
+
 class SocialMediaInformationRequest {
   final String? facebook;
 
-  const SocialMediaInformationRequest({
-    this.facebook,
+  const SocialMediaInformationRequest({this.facebook});
+
+  Map<String, dynamic> toJson() {
+    return {"facebook": facebook};
+  }
+}
+
+
+class EmergencyInformationRequest {
+  final String? emergencyContactPersonName;
+  final String? phoneNumber;
+  final String? relation;
+  final String? address;
+
+  const EmergencyInformationRequest({
+    this.emergencyContactPersonName,
+    this.phoneNumber,
+    this.relation,
+    this.address,
   });
 
   Map<String, dynamic> toJson() {
     return {
-      "facebook": facebook,
+      "emergencyContactPersonName": emergencyContactPersonName,
+      "phoneNumber": phoneNumber,
+      "relation": relation,
+      "address": address,
     };
   }
 }

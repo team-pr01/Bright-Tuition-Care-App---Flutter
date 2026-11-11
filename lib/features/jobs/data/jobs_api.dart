@@ -50,6 +50,7 @@ class JobsApi {
 
     return response.data;
   }
+
   Future<Map<String, dynamic>> getCounterStats() async {
   final response = await DioClient.dio.get("/job/counter-stats");
 
@@ -93,6 +94,18 @@ class JobsApi {
     final response = await DioClient.dio.get(
       "/application/job/$jobId",
       queryParameters: query,
+    );
+
+    print("📦 APPLICATIONS RAW: ${response.data}");
+
+    return response.data;
+  }
+  Future<Map<String, dynamic>> fetchSingleApplications({
+    required String applicationId,
+  }) async {
+
+    final response = await DioClient.dio.get(
+      "/application/$applicationId"
     );
 
     print("📦 APPLICATIONS RAW: ${response.data}");
