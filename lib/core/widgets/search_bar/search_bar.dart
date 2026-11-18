@@ -27,7 +27,7 @@ class ReusableSearchBar extends StatelessWidget {
             blurRadius: 2,
           ),
         ],
-        color: AppColors.primary03,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(30),
       ),
       child: Row(
@@ -51,25 +51,28 @@ class ReusableSearchBar extends StatelessWidget {
               onChanged: onChanged,
               onTap: onTap,
               style: Theme.of(context).textTheme.titleSmall,
-
               cursorColor: AppColors.primary01,
+
+              // kill Android autofill highlight (blue/yellow overlay)
+              autofillHints: const <String>[],
+              enableSuggestions: false,
+              autocorrect: false,
+
               decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.white, // <-- force white fill
                 hintText: "Search by job title or job id",
                 hintStyle: Theme.of(context).textTheme.labelSmall!.copyWith(
                   color: AppColors.neutrals03,
-
                   fontWeight: FontWeight.w400,
                   height: 1.5,
                 ),
-
-                /// 🔴 REMOVE DEFAULT BORDERS
                 border: InputBorder.none,
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
                 disabledBorder: InputBorder.none,
                 errorBorder: InputBorder.none,
                 isDense: true,
-                filled: false,
                 contentPadding: EdgeInsets.zero,
               ),
             ),

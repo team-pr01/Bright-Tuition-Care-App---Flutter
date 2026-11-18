@@ -418,12 +418,7 @@ class _TestimonialCardState extends State<TestimonialCard> {
                             style: Theme.of(context).textTheme.labelSmall!
                                 .copyWith(
                                   color: AppColors.neutrals03,
-                                  fontSize: context.responsiveFontSize(
-                                    extraSmall: 10,
-                                    small: 10,
-                                    medium: 11,
-                                    large: 14,
-                                  ),
+                                  fontSize: 13,
                                 ),
                           ),
                         ),
@@ -437,12 +432,7 @@ class _TestimonialCardState extends State<TestimonialCard> {
                                   .copyWith(
                                     color: AppColors.primary01,
                                     fontWeight: FontWeight.w500,
-                                    fontSize: context.responsiveFontSize(
-                                      extraSmall: 9,
-                                      small: 10,
-                                      medium: 11,
-                                      large: 12,
-                                    ),
+                                    fontSize: 13,
                                   ),
                             ),
                           ),

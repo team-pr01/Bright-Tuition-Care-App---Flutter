@@ -38,6 +38,7 @@ class IconRow extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                   color: AppColors.neutrals02,
                   fontWeight: FontWeight.w500,
+                  fontSize: 12,
                 ),
               ),
             ],

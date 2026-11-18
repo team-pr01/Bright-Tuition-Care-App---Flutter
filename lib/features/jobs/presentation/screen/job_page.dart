@@ -279,6 +279,65 @@ class _JobsPageState extends ConsumerState<JobsPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          /// 📊 COUNT + FILTER
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  getCountText(
+                    (isTutor || isGuest)
+                        ? (state.meta?.liveJobs ?? 0)
+                        : (state.meta?.counts.liveJobs ?? 0),
+                  ),
+                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                    color: AppColors.neutrals02,
+                    fontWeight: FontWeight.w600,
+                    height: 1.5,
+                  ),
+                ),
+              ),
+
+              if (isTutor || isGuest) ...[
+                /// Clear Filters
+                Row(
+                  children: [
+                    if (hasFilters)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 6),
+                        child: AppButton(
+                          iconOnly: true,
+                          icon: Icons.filter_alt_off_rounded,
+                          variant: AppButtonVariant.outline,
+                          width: 42,
+                          height: 32,
+                          onPressed: () async {
+                            ref.read(selectedJobFilterProvider.notifier).state =
+                                JobFilter(status: "live");
+
+                            await ref
+                                .read(jobsProvider.notifier)
+                                .applyFilter(JobFilter(status: "live"));
+                          },
+                        ),
+                      ),
+
+                    const SizedBox(width: 6),
+
+                    AppButton(
+                      label: "Filter",
+                      onPressed: () => openFilter(context),
+                      variant: AppButtonVariant.outline,
+                      height: 32,
+                      width: 100,
+                      icon: Icons.tune,
+                    ),
+                  ],
+                ),
+              ],
+            ],
+          ),
+          const SizedBox(height: 16),
+
           /// 🔍 SEARCH
           if (isTutor) ...[
             ReusableSearchBar(
@@ -297,7 +356,6 @@ class _JobsPageState extends ConsumerState<JobsPage> {
             ),
           ],
 
-          const SizedBox(height: 16),
           if (!isTutor && !isGuest) ...[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -401,64 +459,6 @@ class _JobsPageState extends ConsumerState<JobsPage> {
 
             const SizedBox(height: 20),
           ],
-
-          /// 📊 COUNT + FILTER
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  getCountText(
-                    (isTutor || isGuest)
-                        ? (state.meta?.liveJobs ?? 0)
-                        : (state.meta?.counts.liveJobs ?? 0),
-                  ),
-                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                    color: AppColors.neutrals02,
-                    fontWeight: FontWeight.w600,
-                    height: 1.5,
-                  ),
-                ),
-              ),
-
-              if (isTutor || isGuest) ...[
-                /// Clear Filters
-                Row(
-                  children: [
-                    if (hasFilters)
-                      Padding(
-                        padding: const EdgeInsets.only(right: 6),
-                        child: AppButton(
-                          iconOnly: true,
-                          icon: Icons.filter_alt_off_rounded,
-                          variant: AppButtonVariant.outline,
-                          width: 42,
-                          height: 32,
-                          onPressed: () async {
-                            ref.read(selectedJobFilterProvider.notifier).state =
-                                JobFilter(status: "live");
-
-                            await ref
-                                .read(jobsProvider.notifier)
-                                .applyFilter(JobFilter(status: "live"));
-                          },
-                        ),
-                      ),
-
-                    const SizedBox(width: 6),
-
-                    AppButton(
-                      label: "Filter",
-                      onPressed: () => openFilter(context),
-                      variant: AppButtonVariant.outline,
-                      height: 32,
-                      width: 100,
-                      icon: Icons.tune,
-                    ),
-                  ],
-                ),
-              ],
-            ],
-          ),
         ],
       ),
     );

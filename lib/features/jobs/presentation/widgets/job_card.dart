@@ -127,54 +127,74 @@ class _JobCardState extends ConsumerState<JobCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             /// ================= HEADER =================
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: safe(job.title).isEmpty ? "-" : job.title,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
-                            height: 1.4,
-                            color: AppColors.neutrals02,
-                          ),
-                        ),
-                        TextSpan(
-                          text: safe(job.tutoringDays).isEmpty
-                              ? "-"
-                              : " - ${job.tutoringDays}/Week",
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            height: 1.4,
-                            color: AppColors.neutrals02,
-                          ),
-                        ),
-                        if (safe(job.tuitionType).isNotEmpty)
-                          TextSpan(
-                            text: " — ${job.tuitionType}",
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: AppColors.primary01,
-                              fontWeight: FontWeight.w400,
+            SizedBox(
+              width: double.infinity,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  // ============================================================
+                  // TITLE (90% max width, so it never runs under the SVG)
+                  // ============================================================
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      right: 60,
+                    ), // reserve space for SVG
+                    child: FractionallySizedBox(
+                      alignment: Alignment.topLeft,
+                      widthFactor: 0.9,
+                      child: RichText(
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: safe(job.title).isEmpty ? "-" : job.title,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                                height: 1.4,
+                                color: AppColors.neutrals02,
+                              ),
                             ),
-                          ),
-                      ],
+                            TextSpan(
+                              text: safe(job.tutoringDays).isEmpty
+                                  ? "-"
+                                  : " - ${job.tutoringDays}/Week",
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                height: 1.4,
+                                color: AppColors.neutrals02,
+                              ),
+                            ),
+                            if (safe(job.tuitionType).isNotEmpty)
+                              TextSpan(
+                                text: " — ${job.tuitionType}",
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: AppColors.primary01,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                ),
 
-                /// RIGHT ILLUSTRATION (optional)
-                ///
-                Opacity(
-                  opacity: 0.3,
-                  child: SvgPicture.asset(iconPath, height: 60),
-                ),
-              ],
+                  // ============================================================
+                  // SVG PINNED TO TOP-RIGHT
+                  // ============================================================
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    child: Opacity(
+                      opacity: 0.3,
+                      child: SvgPicture.asset(iconPath, height: 60),
+                    ),
+                  ),
+                ],
+              ),
             ),
 
             // const SizedBox(height: 6),
@@ -300,7 +320,7 @@ class _JobCardState extends ConsumerState<JobCard> {
               value: safe(job.subjects?.join(", ")),
             ),
 
-            const SizedBox(height: 12),
+            const SizedBox(height:8),
 
             /// ================= DAYS + SALARY =================
             Row(
@@ -340,7 +360,7 @@ class _JobCardState extends ConsumerState<JobCard> {
               ],
             ),
 
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
 
             /// ================= LOCATION =================
             IconRow(

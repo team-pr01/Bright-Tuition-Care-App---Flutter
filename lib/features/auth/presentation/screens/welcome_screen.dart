@@ -89,14 +89,24 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                   large: 130,
                                 ),
                                 fit: BoxFit.contain,
+                                filterQuality:
+                                    FilterQuality.high, // 👈 sharper scaling
+                                cacheWidth:
+                                    (280 *
+                                            MediaQuery.of(
+                                              context,
+                                            ).devicePixelRatio)
+                                        .round(),
                               ),
 
-                              SizedBox(height: context.responsiveValue<double>(
+                              SizedBox(
+                                height: context.responsiveValue<double>(
                                   extraSmall: 18,
                                   small: 22,
                                   medium: 26,
                                   large: 30,
-                                ),),
+                                ),
+                              ),
 
                               /// MAIN CARD
                               Container(
@@ -118,21 +128,24 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                           .copyWith(
                                             fontWeight: FontWeight.w400,
                                             color: AppColors.neutrals02,
-                                            fontSize: context.responsiveValue<double>(
-                                              extraSmall: 12,
-                                              small: 14,
-                                              medium: 22,
-                                              large: 24,
-                                            ),
+                                            fontSize: context
+                                                .responsiveValue<double>(
+                                                  extraSmall: 12,
+                                                  small: 14,
+                                                  medium: 22,
+                                                  large: 24,
+                                                ),
                                           ),
                                     ),
 
-                                    SizedBox(height: context.responsiveValue<double>(
-                                  extraSmall: 2,
-                                  small: 3,
-                                  medium: 6,
-                                  large: 6,
-                                ),),
+                                    SizedBox(
+                                      height: context.responsiveValue<double>(
+                                        extraSmall: 2,
+                                        small: 3,
+                                        medium: 6,
+                                        large: 6,
+                                      ),
+                                    ),
 
                                     Text(
                                       "Connect with qualified and verified tutors for any subject or class in your area",
@@ -143,21 +156,24 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                           .copyWith(
                                             fontWeight: FontWeight.w300,
                                             color: AppColors.neutrals03,
-                                            fontSize: context.responsiveValue<double>(
-                                              extraSmall: 8,
-                                              small: 12,
-                                              medium: 12,
-                                              large: 12,
-                                            ),
+                                            fontSize: context
+                                                .responsiveValue<double>(
+                                                  extraSmall: 8,
+                                                  small: 12,
+                                                  medium: 12,
+                                                  large: 12,
+                                                ),
                                           ),
                                     ),
 
-                                    SizedBox(height: context.responsiveValue<double>(
-                                      extraSmall: 12,
-                                      small: 16,
-                                      medium: 20,
-                                      large: 24,
-                                    )),
+                                    SizedBox(
+                                      height: context.responsiveValue<double>(
+                                        extraSmall: 12,
+                                        small: 16,
+                                        medium: 20,
+                                        large: 24,
+                                      ),
+                                    ),
 
                                     Row(
                                       children: [
@@ -225,12 +241,14 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                 ),
                               ),
 
-                              SizedBox(height: context.responsiveValue<double>(
+                              SizedBox(
+                                height: context.responsiveValue<double>(
                                   extraSmall: 15,
                                   small: 22,
                                   medium: 22,
                                   large: 24,
-                                ),),
+                                ),
+                              ),
 
                               /// IMPORTANT LINKS
                               Align(
@@ -365,7 +383,9 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                             : state.testimonials.isEmpty
                             ? const SizedBox()
                             : TestimonialSection(
-                                testimonials: state.testimonials,
+                                testimonials: state.testimonials
+                                    .take(9)
+                                    .toList(),
                               ),
 
                         const SizedBox(height: 20),
