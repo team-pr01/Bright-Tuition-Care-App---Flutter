@@ -24,6 +24,8 @@ class EditEducationScreen extends ConsumerStatefulWidget {
 class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
   final _formKey = GlobalKey<FormState>();
 
+  late final bool _isEdit = widget.education != null;
+
   bool _saving = false;
 
   bool _currentInstitute = false;
@@ -51,23 +53,17 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
     _currentInstitute = e?.isCurrentInstitute ?? false;
 
     _levelController = TextEditingController(text: e?.level ?? "");
-
     _degreeController = TextEditingController(text: e?.degree ?? "");
-
     _instituteController = TextEditingController(text: e?.institute ?? "");
-
     _curriculumController = TextEditingController(text: e?.curriculum ?? "");
 
     _groupController = TextEditingController(text: e?.group ?? "");
-
     _boardController = TextEditingController(text: e?.board ?? "");
 
     _departmentController = TextEditingController(text: e?.department ?? "");
-
     _semesterController = TextEditingController(text: e?.semester ?? "");
 
     _resultController = TextEditingController(text: e?.result ?? "");
-
     _passingYearController = TextEditingController(text: e?.passingYear ?? "");
   }
 
@@ -122,10 +118,10 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
         board: shouldShowSchoolLevelFields
             ? _boardController.text.trim()
             : null,
-        department: !shouldShowSchoolLevelFields
+        department: shouldShowHigherEducationFields
             ? _departmentController.text.trim()
             : null,
-        semester: !shouldShowSchoolLevelFields
+        semester: shouldShowHigherEducationFields
             ? _semesterController.text.trim()
             : null,
         result: _resultController.text.trim(),
@@ -137,7 +133,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
 
       bool success;
 
-      if (widget.isEdit) {
+      if (_isEdit) {
         success = await ref
             .read(profileProvider.notifier)
             .updateEducation(id: widget.education!.id, request: request);
@@ -152,7 +148,11 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
       if (success) {
         Navigator.pop(context, true);
       } else {
-        AppSnackbar.show(context, "Failed to send OTP", SnackType.error);
+        AppSnackbar.show(
+          context,
+          _isEdit ? "Failed to update education" : "Failed to add education",
+          SnackType.error,
+        );
       }
     } catch (e) {
       if (!mounted) return;
@@ -173,7 +173,6 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CommonAppBar(title: "Edit Education"),
-
       body: SafeArea(
         child: Form(
           key: _formKey,
@@ -188,6 +187,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                 ),
 
                 const SizedBox(height: 16),
+
                 AppInputField(
                   label: "Level of Education",
                   type: AppInputType.dropdown2,
@@ -196,8 +196,21 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                       : _levelController.text,
                   dropdownItems: levelOfEducationOptions,
                   onChanged: (value) {
+                    final v = value ?? "";
+                    final nowSchool = v == "Secondary" ||
+                        v == "Higher Secondary" ||
+                        v == "O Level" ||
+                        v == "A Level";
+
                     setState(() {
-                      _levelController.text = value ?? "";
+                      _levelController.text = v;
+                      if (nowSchool) {
+                        _departmentController.clear();
+                        _semesterController.clear();
+                      } else {
+                        _groupController.clear();
+                        _boardController.clear();
+                      }
                     });
                   },
                 ),
@@ -235,18 +248,22 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                     });
                   },
                 ),
-                const SizedBox(height: 16),
-                Text(
-                  shouldShowSchoolLevelFields
-                      ? "School Information"
-                      : "Higher Education",
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
 
-                const SizedBox(height: 16),
+                // Section header only appears when a level is chosen
+                if (_levelController.text.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  Text(
+                    shouldShowSchoolLevelFields
+                        ? "School Information"
+                        : "Higher Education",
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+
                 if (shouldShowSchoolLevelFields) ...[
                   AppInputField(
                     label: "Group",
@@ -276,6 +293,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                     },
                   ),
                 ],
+
                 if (shouldShowHigherEducationFields) ...[
                   AppInputField(
                     label: "Department / Subject",
@@ -297,6 +315,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                     hint: "e.g., 5th semester, 3rd year",
                   ),
                 ],
+
                 AppInputField(
                   controller: _resultController,
                   label: "Result",
@@ -311,6 +330,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                     keyboardType: TextInputType.number,
                   ),
                 ],
+
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -327,11 +347,11 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                         onChanged: (value) {
                           setState(() {
                             _currentInstitute = value ?? false;
-
                             if (_currentInstitute) {
                               _passingYearController.clear();
                             }
                           });
+                          _formKey.currentState?.validate();
                         },
                       ),
                     ),
@@ -342,9 +362,11 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                     ),
                   ],
                 ),
+
                 const SizedBox(height: 16),
+
                 AppButton(
-                  label: widget.isEdit ? "Update Education" : "Add Education",
+                  label: _isEdit ? "Update Education" : "Add Education",
                   loading: _saving,
                   onPressed: _save,
                 ),

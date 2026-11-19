@@ -43,6 +43,6 @@ class _ContactInfoScreenState extends ConsumerState<ContactInfoScreen> {
     return Scaffold(
       appBar: const CommonAppBar(title: "Contact Information"),
       body: ContactForm(isProfileLocked: isProfileLocked),
-    );
+    );  
   }
 }

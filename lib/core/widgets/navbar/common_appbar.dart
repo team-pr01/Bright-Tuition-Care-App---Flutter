@@ -113,7 +113,7 @@ class CommonAppBar extends ConsumerWidget implements PreferredSizeWidget {
                     Align(
                       alignment: Alignment.centerRight,
                       child: Padding(
-                        padding: const EdgeInsets.only(right: 12),
+                        padding: const EdgeInsets.only(right: 16),
                         child: Stack(
                           clipBehavior: Clip.none,
                           children: [
