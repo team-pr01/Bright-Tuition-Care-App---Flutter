@@ -98,10 +98,9 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
   }
 
   bool get shouldShowHigherEducationFields {
-    return _levelController.text == "Secondary" &&
-        _levelController.text == "Higher Secondary" &&
-        _levelController.text == "O Level" &&
-        _levelController.text == "A Level";
+    // Higher education = anything that is NOT a school level
+    // AND a level has actually been chosen.
+    return _levelController.text.isNotEmpty && !shouldShowSchoolLevelFields;
   }
 
   Future<void> _save() async {
@@ -343,7 +342,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
                     ),
                   ],
                 ),
-               const SizedBox(height: 16),
+                const SizedBox(height: 16),
                 AppButton(
                   label: widget.isEdit ? "Update Education" : "Add Education",
                   loading: _saving,

@@ -39,7 +39,7 @@ const List<String> alimSubjects = [
 const Map<String, dynamic> filterData = {
   "tutoringStyles": [
     "One to One",
-    "One to many",
+    "One to Many",
     "Online Tutoring",
     "Shadow Tutoring ",
   ],
@@ -3308,6 +3308,8 @@ const List<String> levelOfEducationOptions = [
   "Bachelor",
   "Honors",
   "Masters",
+  "O level",
+  "A level",
   "Doctoral",
 ];
 

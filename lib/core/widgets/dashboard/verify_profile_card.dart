@@ -11,6 +11,7 @@ class VerifyProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
@@ -26,7 +27,7 @@ class VerifyProfileCard extends StatelessWidget {
               Flexible(
                 child: Text(
                   "Verify Your Profile",
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: Colors.black,
                     fontWeight: FontWeight.w400,
                     height: 1.2,
@@ -68,7 +69,7 @@ class VerifyProfileCard extends StatelessWidget {
                     Text(
                       isVerified
                           ? "You are a verified member of Bright Tuition Care community."
-                          : "Verify your profile to build trust, increase visibility, and get faster matches.",
+                          : "Get exclusive benefits by completing your profile verification.",
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: AppColors.neutrals03,
                         height: 1.5,

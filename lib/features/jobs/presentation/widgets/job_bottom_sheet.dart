@@ -476,7 +476,13 @@ class _JobCardState extends ConsumerState<JobBottomSheet> {
                           child: IconRow(
                             icon: "assets/icons/visual/gender.svg",
                             title: "Student Gender",
-                            value: safe(job.studentGender),
+                            value: safe(
+                              job.studentGender == "male"
+                                  ? "Male"
+                                  : job.preferredTutorGender == "female"
+                                  ? "Female"
+                                  : "Other",
+                            ),
                           ),
                         ),
                         Expanded(
@@ -526,12 +532,14 @@ class _JobCardState extends ConsumerState<JobBottomSheet> {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    IconRow(
-                      icon: "assets/icons/visual/requirements.svg",
-                      title: "Other Requirements",
-                      value: safe("${job.otherRequirements ?? ""} "),
-                    ),
-                    const SizedBox(height: 16),
+                    job.otherRequirements != null &&
+                            job.otherRequirements!.trim().isNotEmpty
+                        ? IconRow(
+                            icon: "assets/icons/visual/requirements.svg",
+                            title: "Other Requirements",
+                            value: safe(job.otherRequirements!.trim()),
+                          )
+                        : const SizedBox.shrink(),
                   ],
                 ),
               ),

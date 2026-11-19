@@ -41,7 +41,7 @@ class _ContactFormState extends ConsumerState<ContactForm> {
             Text(
               widget.isProfileLocked
                   ? "Your profile is locked. Unlock it to update your contact details."
-                  : "Manage your contact details.",
+                  : "Update your phone number ",
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: AppColors.neutrals03,
               ),
@@ -57,7 +57,7 @@ class _ContactFormState extends ConsumerState<ContactForm> {
               required: true,
             ),
 
-            const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.sm),
 
             AppButton(
               loading: isLoading,

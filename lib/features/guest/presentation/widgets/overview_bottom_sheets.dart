@@ -3,6 +3,7 @@ import 'package:btcclient/core/screens/join_community.dart';
 import 'package:btcclient/core/widgets/helpline_card/helpline_card.dart';
 import 'package:btcclient/core/widgets/reusable_bottom_sheet/reusable_bottom_sheet.dart';
 import 'package:btcclient/features/auth/presentation/screens/register_screen.dart';
+import 'package:btcclient/features/auth/presentation/screens/request_tutor_screen.dart';
 import 'package:btcclient/features/legal/presentation/terms_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:btcclient/core/config/theme.dart';
@@ -88,7 +89,7 @@ class _BottomSheetTitle extends StatelessWidget {
         title,
         textAlign: TextAlign.center,
         style: AppTextStyles.headlineMedium.copyWith(
-          color: AppColors.primary01,
+          color: AppColors.neutrals01,
           fontWeight: FontWeight.w500,
           fontSize: 16,
           height: 1.2,
@@ -174,7 +175,6 @@ class AboutUsContent extends StatelessWidget {
                 textAlign: TextAlign.justify,
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.neutrals04,
-                  fontSize: 13,
                   height: 1.6,
                 ),
               ),
@@ -191,7 +191,7 @@ class AboutUsContent extends StatelessWidget {
         Text(
           'Company Details',
           style: AppTextStyles.headlineMedium.copyWith(
-            color: AppColors.primary01,
+            color: AppColors.neutrals01,
             fontWeight: FontWeight.w500,
             fontSize: 16,
             height: 1.2,
@@ -257,7 +257,6 @@ class AboutUsContent extends StatelessWidget {
               //           fontSize: 14,
               //         ),
               //       ),
-              
             ],
           ),
         ),
@@ -300,7 +299,6 @@ class AboutUsContent extends StatelessWidget {
         //     ),
         //   ),
         // ),
-
         const SizedBox(height: 8),
       ],
     );
@@ -349,7 +347,6 @@ class _CompanyInfoRow extends StatelessWidget {
     );
   }
 }
-
 
 class ContactUsContent extends StatelessWidget {
   const ContactUsContent({super.key});
@@ -484,7 +481,7 @@ class ContactUsContent extends StatelessWidget {
                         _openLocation(context);
                       },
                       icon: const Icon(Icons.directions_outlined, size: 18),
-                      label: const Text('Open Location'),
+                      label: const Text('View on Map'),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppColors.primary01,
                         side: const BorderSide(color: AppColors.primary01),
@@ -512,7 +509,7 @@ class ContactUsContent extends StatelessWidget {
         Text(
           'Contact Us',
           style: AppTextStyles.headlineMedium.copyWith(
-            color: AppColors.primary01,
+            color: AppColors.neutrals01,
             fontWeight: FontWeight.w500,
             fontSize: 16,
             height: 1.2,
@@ -759,27 +756,27 @@ class SocialLinksContent extends StatelessWidget {
       const _SocialItem(
         title: 'Facebook',
         assetPath: 'assets/icons/social_media/facebook2.svg',
-        url: 'https://www.facebook.com/brighttuitioncare',
+        url: 'https://www.facebook.com/brightcaretuition',
       ),
       const _SocialItem(
         title: 'Instagram',
         assetPath: 'assets/icons/social_media/instagram2.svg',
-        url: 'https://www.instagram.com/brighttuitioncare',
+        url: 'https://www.instagram.com/brighttuitioncare?igsh=eDkweG9taGwycG56',
       ),
       const _SocialItem(
         title: 'YouTube',
         assetPath: 'assets/icons/social_media/youtube2.svg',
-        url: 'https://www.youtube.com/@brighttuitioncare',
+        url: 'https://www.youtube.com/@BrightTuitionCare',
       ),
       const _SocialItem(
         title: 'LinkedIn',
         assetPath: 'assets/icons/social_media/linkedin2.svg',
-        url: 'https://www.linkedin.com/company/bright-tuition-care',
+        url: 'https://www.linkedin.com/in/bright-tuition-care-bd-ba38b5372',
       ),
       const _SocialItem(
         title: 'TikTok',
         assetPath: 'assets/icons/social_media/tiktok.svg',
-        url: 'https://www.tiktok.com/@brighttuitioncare',
+        url: 'https://www.tiktok.com/@bright.tuition.ca?_r=1&_t=ZS-91mdCCXGuuG',
       ),
       // const _SocialItem(
       //   title: 'X',
@@ -794,7 +791,6 @@ class SocialLinksContent extends StatelessWidget {
         const _BottomSheetTitle(title: 'Follow Us'),
 
         // const SizedBox(height: 8),
-
         Text(
           'Stay connected with Bright Tuition Care on social media.',
           textAlign: TextAlign.center,
@@ -812,21 +808,21 @@ class SocialLinksContent extends StatelessWidget {
         // ============================================================
         // SingleChildScrollView(
         //   scrollDirection: Axis.horizontal,
-          // child: 
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: socials.map((item) {
-              return Padding(
-                padding: const EdgeInsets.only(right: 2),
-                child: _SocialCard(
-                  item: item,
-                  onTap: () {
-                    _openSocialLink(context, item.url);
-                  },
-                ),
-              );
-            }).toList(),
-          ),
+        // child:
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: socials.map((item) {
+            return Padding(
+              padding: const EdgeInsets.only(right: 2),
+              child: _SocialCard(
+                item: item,
+                onTap: () {
+                  _openSocialLink(context, item.url);
+                },
+              ),
+            );
+          }).toList(),
+        ),
         // ),
         const SizedBox(height: 30),
 
@@ -836,7 +832,7 @@ class SocialLinksContent extends StatelessWidget {
         Text(
           'Join Our Community ',
           style: AppTextStyles.headlineMedium.copyWith(
-            color: AppColors.primary01,
+            color: AppColors.neutrals01,
             fontWeight: FontWeight.w500,
             fontSize: 16,
             height: 1.2,
@@ -853,22 +849,10 @@ class SocialLinksContent extends StatelessWidget {
                 title: 'Tutors',
                 subtitle: 'Community',
                 color: const Color(0xFF3BC4B6),
-                onTap: () {
-                  Navigator.pop(context);
-
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const CommunityPage(
-                        title: "Tutor Community",
-                        description:
-                            "Join our tutor community to exchange teaching strategies, gain valuable insights, stay informed on the latest trends and access resources that support your professional growth.",
-                        buttonText: "Join Community",
-                        link: "https://www.facebook.com/groups/252670130864095",
-                      ),
-                    ),
-                  );
-                },
+                onTap: () => _openSocialLink(
+                  context,
+                  "https://www.facebook.com/groups/252670130864095",
+                ),
               ),
             ),
 
@@ -880,42 +864,29 @@ class SocialLinksContent extends StatelessWidget {
                 title: 'Guardians',
                 subtitle: 'Community',
                 color: const Color(0xFF1976C9),
-                onTap: () {
-                  Navigator.pop(context);
-
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const CommunityPage(
-                        title: "Guardian Community",
-                        description:
-                            "Join the Guardian Community to share your feedback, stay connected with our team and receive important updates and expert guidance to support your child’s learning.",
-                        buttonText: "Join Community",
-                        link: "https://www.facebook.com/groups/248374924778212",
-                      ),
-                    ),
-                  );
-                },
+                onTap: () => _openSocialLink(
+                  context,
+                  "https://www.facebook.com/groups/248374924778212",
+                ),
               ),
             ),
           ],
         ),
         const SizedBox(height: 14),
         const Divider(),
-          const SizedBox(height: 14),
-              Center(
-                child: Text(
-                  'All Rights Reserved by Bright Tuition Care © 2026',
-                  textAlign: TextAlign.center,
-                  style: AppTextStyles.bodySmall.copyWith(
-                    color: AppColors.neutrals04,
-                    fontSize: 12,
-                    height: 1.4,
-                  ),
-                ),
-              ),
-               SizedBox(height: 14,),
-              
+        const SizedBox(height: 14),
+        Center(
+          child: Text(
+            'All Rights Reserved by Bright Tuition Care © 2027',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.bodySmall.copyWith(
+              color: AppColors.neutrals04,
+              fontSize: 12,
+              height: 1.4,
+            ),
+          ),
+        ),
+        SizedBox(height: 14),
       ],
     );
   }
@@ -1065,7 +1036,7 @@ class _CommunityCard extends StatelessWidget {
                           small: 10,
                           medium: 14,
                           large: 14,
-                        )
+                        ),
                       ),
                     ),
                   ],
@@ -1122,7 +1093,6 @@ class QuickLinksContent extends StatelessWidget {
         const _BottomSheetTitle(title: 'Quick Links'),
 
         // const SizedBox(height: 8),
-
         Container(
           width: double.infinity,
           // decoration: BoxDecoration(
@@ -1167,8 +1137,7 @@ class QuickLinksContent extends StatelessWidget {
                         case 'Hire a Tutor':
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  const RegisterScreen(role: "guardian"),
+                              builder: (context) => const RequestTutorScreen(),
                             ),
                           );
 
@@ -1228,7 +1197,7 @@ class _QuickLinkRow extends StatelessWidget {
         splashColor: AppColors.primary04.withValues(alpha: 0.35),
         highlightColor: AppColors.primary04.withValues(alpha: 0.15),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 2),
           child: Row(
             children: [
               // ============================================================

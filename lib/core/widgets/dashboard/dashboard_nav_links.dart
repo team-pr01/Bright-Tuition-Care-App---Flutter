@@ -55,9 +55,9 @@ class DashboardNavLinks extends StatelessWidget {
 
     final labelFontSize = context.responsiveFontSize(
       extraSmall: 9,
-      small: 10,
-      medium: 12,
-      large: 12,
+      small: 9,
+      medium: 11,
+      large: 11,
     );
 
     final badgeSize = context.responsiveValue<double>(

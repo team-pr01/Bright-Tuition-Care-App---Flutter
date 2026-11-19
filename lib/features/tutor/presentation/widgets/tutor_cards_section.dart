@@ -48,8 +48,9 @@ class TutorCardsSection extends ConsumerWidget {
                 child: DashboardSmallCard(
                   onAction: () => changeTab(4),
                   title: profileCompletion.toString() + "%",
-                  description:
-                      "Complete & organized profile may help to get better response",
+                  description: profileCompletion < 100
+                      ? "Well-organized profiles improve your selection by guardians"
+                      : "Apply for tuition jobs that best match your profile.",
                   icon: ProfileProgressIcon(
                     progress: (profileCompletion / 100).clamp(0.0, 1.0),
                   ),
@@ -73,7 +74,7 @@ class TutorCardsSection extends ConsumerWidget {
                   },
                   subtitle: "Nearby Jobs",
                   title: formatNumber(nearbyJobsCount).toString(),
-                  description: " jobs available in your nearest area.",
+                  description: "Check out your nearby tuition jobs.",
                   actionText: "View All",
                   icon: SvgPicture.asset(
                     "assets/icons/visual/location.svg",
@@ -119,14 +120,14 @@ class TutorCardsSection extends ConsumerWidget {
         const SizedBox(height: 14),
         DashboardLargeCard(
           title: "Invoices",
-          onTap: () =>{
+          onTap: () => {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (_) => const InvoiceScreen(role: "tutor"),
               ),
             ),
-          } ,
+          },
           subtitle: formatNumber(invoicesCount),
 
           description: invoicesCount > 0

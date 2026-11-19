@@ -235,7 +235,7 @@ class _TestimonialCardState extends State<TestimonialCard> {
                                 backgroundImage:
                                     widget.testimonial.image.isNotEmpty
                                     ? NetworkImage(widget.testimonial.image)
-                                    : const AssetImage("assets/images/user.jpg")
+                                    : const AssetImage("assets/images/dummy-avatar.jpg")
                                           as ImageProvider,
                               ),
                             ),
@@ -353,7 +353,7 @@ class _TestimonialCardState extends State<TestimonialCard> {
               radius: cardAvatarRadius,
               backgroundImage: widget.testimonial.image.isNotEmpty
                   ? NetworkImage(widget.testimonial.image)
-                  : const AssetImage("assets/images/user.jpg") as ImageProvider,
+                  : const AssetImage("assets/images/dummy-avatar.jpg") as ImageProvider,
             ),
 
             SizedBox(width: cardAvatarGap),
