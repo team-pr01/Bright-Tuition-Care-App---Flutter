@@ -92,7 +92,7 @@ class InvoiceCard extends StatelessWidget {
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            "ID: ${invoice.invoiceId}",
+                            "ID: #${invoice.invoiceId}",
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: AppTextStyles.bodyMedium.copyWith(

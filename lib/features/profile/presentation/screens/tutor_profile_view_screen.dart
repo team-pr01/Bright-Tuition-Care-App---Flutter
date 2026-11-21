@@ -165,14 +165,7 @@ class TutorResumeScreen extends StatelessWidget {
                           ),
                         ),
 
-                        if (profile.isVerified) ...[
-                          const SizedBox(width: 6),
-                          const Icon(
-                            Icons.verified,
-                            color: AppColors.primary01,
-                            size: 19,
-                          ),
-                        ],
+                      
                       ],
                     ),
 

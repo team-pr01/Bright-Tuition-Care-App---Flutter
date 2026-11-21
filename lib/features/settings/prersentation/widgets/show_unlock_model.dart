@@ -72,7 +72,7 @@ void showUnlockModal(BuildContext context) {
                         required: true,
                       ),
 
-                      const SizedBox(height: AppSpacing.lg),
+                      const SizedBox(height: 4),
 
                       Row(
                         children: [
@@ -109,7 +109,7 @@ void showUnlockModal(BuildContext context) {
 
                                         AppSnackbar.show(
                                           context,
-                                          "Unlock request sent",
+                                          "Unlock request sent successfully",
                                           SnackType.success,
                                         );
                                       } else {

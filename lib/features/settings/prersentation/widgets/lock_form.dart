@@ -7,61 +7,64 @@ import 'package:btcclient/features/settings/prersentation/widgets/card_wrapper.d
 import 'package:btcclient/features/settings/prersentation/widgets/show_unlock_model.dart';
 import 'package:flutter/material.dart';
 
-Widget lockForm( BuildContext context,ThemeData theme, bool isProfileLocked, Function(int, {String? status}) changeTab,) {
-    return cardWrapper(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Your Profile Status", style: theme.textTheme.headlineSmall),
+Widget lockForm(
+  BuildContext context,
+  ThemeData theme,
+  bool isProfileLocked,
+  Function(int, {String? status}) changeTab,
+) {
+  return cardWrapper(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("Your Profile Status", style: theme.textTheme.headlineSmall),
 
-          const SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.sm),
 
-          Text(
-            isProfileLocked
-                ? "Your profile is now locked and you can't edit it until you unlock it."
-                : "Your profile is now unlocked and you can edit it whenever you want.",
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: AppColors.neutrals03,
-            ),
+        Text(
+          isProfileLocked
+              ? "Your profile is now locked and you can't edit it until you unlock it."
+              : "Your profile is now unlocked and you can edit it whenever you want.",
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: AppColors.neutrals03,
           ),
-
-          const SizedBox(height: AppSpacing.lg),
-
-          /// CTA Button (ONLY ONE like React version)
-          AppButton(
-            variant: AppButtonVariant.gradient,
-            label: isProfileLocked ? "Unlock Profile" : "Edit Profile",
-            onPressed: () {
-              if (isProfileLocked) {
-                showUnlockModal(context);
-              } else {
-  () async {
-    final role = await LocalStorage.getRole();
-
-    if (!context.mounted) return;
-
-    if (role == "tutor") {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => TutorProfileScreen(changeTab: changeTab),
         ),
-      );
-    } else if (role == "guardian") {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => GuardianProfilePage(changeTab: changeTab),
+
+        const SizedBox(height: AppSpacing.lg),
+
+        /// CTA Button (ONLY ONE like React version)
+        AppButton(
+          variant: AppButtonVariant.gradient,
+          label: isProfileLocked ? "Request to Unlock" : "Edit Profile",
+          onPressed: () {
+            if (isProfileLocked) {
+              showUnlockModal(context);
+            } else {
+              () async {
+                final role = await LocalStorage.getRole();
+
+                if (!context.mounted) return;
+
+                if (role == "tutor") {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => TutorProfileScreen(changeTab: changeTab),
+                    ),
+                  );
+                } else if (role == "guardian") {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => GuardianProfilePage(changeTab: changeTab),
+                    ),
+                  );
+                }
+              }();
+            }
+          },
         ),
-      );
-    }
-  }();
+      ],
+    ),
+  );
 }
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  

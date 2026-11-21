@@ -43,7 +43,7 @@ class EducationSectionCard extends StatelessWidget {
               const Expanded(
                 child: Text(
                   "Educational Information",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
               ),
 
@@ -103,21 +103,37 @@ class EducationSectionCard extends StatelessWidget {
           else
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 350),
-
               child: Column(
                 children: List.generate(educations.length, (index) {
                   final education = educations[index];
+                  final hasNext =
+                      index <
+                      educations.length - 1; // 👈 Check if a next item exists
 
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 18),
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      EducationItemCard(
+                        education: education,
+                        onEdit: onEdit == null
+                            ? null
+                            : () => onEdit!(education),
+                        onDelete: onDelete == null
+                            ? null
+                            : () => onDelete!(education),
+                      ),
 
-                    child: EducationItemCard(
-                      education: education,
-                      onEdit: onEdit == null ? null : () => onEdit!(education),
-                      onDelete: onDelete == null
-                          ? null
-                          : () => onDelete!(education),
-                    ),
+                      // 👈 Show divider ONLY if there is a next education
+                      if (hasNext) ...[
+                        const SizedBox(height: 18),
+                        Divider(
+                          color: AppColors.primary01,
+                          height: 1,
+                          thickness: 1,
+                        ),
+                        const SizedBox(height: 18),
+                      ],
+                    ],
                   );
                 }),
               ),

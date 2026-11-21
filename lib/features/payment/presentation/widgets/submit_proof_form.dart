@@ -6,9 +6,11 @@ import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/core/widgets/input/app_input_field.dart';
 import 'package:btcclient/core/widgets/snackbar/app_snackbar.dart';
 import 'package:btcclient/features/auth/presentation/provider/auth_notifier.dart';
+import 'package:flutter/gestures.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/requests/pay_request.dart';
 
@@ -58,7 +60,7 @@ class _SubmitProofFormState extends ConsumerState<SubmitProofForm> {
   }
 
   Future<void> pickFile() async {
-    final file = await FilePickerUtils.pickSingleFile( 
+    final file = await FilePickerUtils.pickSingleFile(
       allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
     );
 
@@ -198,7 +200,9 @@ class _SubmitProofFormState extends ConsumerState<SubmitProofForm> {
           AppInputField(
             label: "Amount",
 
-            controller: TextEditingController(text: widget.amount.toString() + " BDT"),
+            controller: TextEditingController(
+              text: widget.amount.round().toString() + " BDT",
+            ),
 
             enabled: false,
           ),
@@ -253,7 +257,7 @@ class _SubmitProofFormState extends ConsumerState<SubmitProofForm> {
 
                         AppSnackbar.show(
                           context,
-                          "Payment submitted successfully",
+                          "Payment is successful. Please wait for admin approval.",
                           SnackType.success,
                         );
                       } else {
@@ -280,13 +284,28 @@ class _SubmitProofFormState extends ConsumerState<SubmitProofForm> {
 
           const SizedBox(height: AppSpacing.md),
 
-          Text(
-            "Facing any payment issues? Call us",
-
+          RichText(
             textAlign: TextAlign.center,
-
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.neutrals03,
+            text: TextSpan(
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.neutrals03,
+              ),
+              children: [
+                const TextSpan(text: "Facing any payment issues? "),
+                TextSpan(
+                  text: "Call Us",
+                  style: const TextStyle(
+                    color: AppColors.primary01, // 👈 blue
+                    fontWeight: FontWeight.w600,
+                    decoration: TextDecoration.underline,
+                    decorationColor: AppColors.primary01,
+                  ),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      launchUrl(Uri.parse("tel:+8801616012365"));
+                    },
+                ),
+              ],
             ),
           ),
         ],

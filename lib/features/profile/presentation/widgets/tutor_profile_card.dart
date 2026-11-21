@@ -5,7 +5,6 @@ import 'package:btcclient/features/profile/presentation/screens/tutor_profile_vi
 import 'package:btcclient/features/profile/presentation/widgets/profile_ring_painter.dart';
 import 'package:btcclient/features/profile/presentation/widgets/progress_dot_painter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class TutorProfileCard extends StatelessWidget {
   final String name;

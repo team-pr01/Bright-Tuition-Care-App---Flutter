@@ -459,25 +459,25 @@ class _SelectedPaymentMethodSheetState
               ),
 
               /// ================= CLOSE =================
-              SizedBox(
-                width: double.infinity,
+              // SizedBox(
+              //   width: double.infinity,
 
-                child: AppButton(
-                  label: "Close",
+              //   child: AppButton(
+              //     label: "Close",
 
-                  onPressed: () {
-                    Navigator.pop(
-                      context,
-                    );
-                  },
+              //     onPressed: () {
+              //       Navigator.pop(
+              //         context,
+              //       );
+              //     },
 
-                  variant:
-                      AppButtonVariant
-                          .outlineGray,
+              //     variant:
+              //         AppButtonVariant
+              //             .outlineGray,
 
-                  height: 48,
-                ),
-              ),
+              //     height: 48,
+              //   ),
+              // ),
             ],
           ),
         ),

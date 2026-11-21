@@ -106,7 +106,7 @@ class PersonalSectionCard extends StatelessWidget {
         
 
           ProfileInfoRow(
-            label: " Emergency Contact Number",
+            label: "Emergency Contact Number",
             value: profile.personalInfo.emergencyContactNumber,
           ),
           ProfileInfoRow(

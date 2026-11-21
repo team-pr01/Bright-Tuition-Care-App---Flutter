@@ -73,7 +73,7 @@ class _PasswordFormState extends ConsumerState<PasswordForm> {
 
             /// Confirm Password
             AppInputField(
-              label: "Confirm Password",
+              label: "Confirm New Password",
               type: AppInputType.password,
               controller: confirmPasswordController,
               hint:"********",
@@ -88,7 +88,7 @@ class _PasswordFormState extends ConsumerState<PasswordForm> {
               },
             ),
 
-            const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: 4),
 
             /// BUTTON
             AppButton(

@@ -33,6 +33,9 @@ class ApiErrorHandler {
         case DioExceptionType.receiveTimeout:
           return "Server took too long to respond.";
 
+        case DioExceptionType.transformTimeout:
+          return "Data processing timed out. Please try again.";
+
         case DioExceptionType.connectionError:
           final e = error.error;
 

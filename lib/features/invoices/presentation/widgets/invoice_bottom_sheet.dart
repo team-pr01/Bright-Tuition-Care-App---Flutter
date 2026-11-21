@@ -1,8 +1,5 @@
 import 'package:btcclient/core/utils/date_formatter.dart';
-import 'package:btcclient/core/utils/number_formatter.dart';
 import 'package:btcclient/features/auth/data/models/user_model.dart';
-import 'package:btcclient/features/payment/presentation/widgets/select_payment_method_sheet.dart';
-import 'package:btcclient/features/payment/presentation/widgets/selected_payment_method_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -16,6 +13,7 @@ class InvoiceBottomSheet extends ConsumerWidget {
   final InvoiceModel invoice;
   final UserModel? user;
   final Function onPayNow;
+
   const InvoiceBottomSheet({
     super.key,
     required this.invoice,
@@ -26,324 +24,270 @@ class InvoiceBottomSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isPaid = invoice.status == "paid";
-    print(invoice);
+    final statusColor = isPaid ? Colors.green : Colors.red;
+    final invoiceTitle = invoice.invoiceType == "verificationCharge"
+        ? "Verification Charge"
+        : "Platform Charge";
+
     return ReusableBottomSheet(
       child: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            /// ================= HEADER & AMOUNT =================
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        invoiceTitle,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: -0.3,
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      Row(
+                        children: [
+                          Text(
+                            "Invoice #${invoice.invoiceId}",
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 12.5,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 5,
+                            ),
+                            decoration: BoxDecoration(
+                              color: statusColor.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: 6,
+                                  height: 6,
+                                  decoration: BoxDecoration(
+                                    color: statusColor,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                                const SizedBox(width: 5),
+                                Text(
+                                  isPaid ? "Paid" : "Due",
+                                  style: TextStyle(
+                                    color: statusColor,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+
+            Text(
+              "TOTAL AMOUNT",
+              style: TextStyle(
+                fontSize: 10.5,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.7,
+                color: Colors.grey.shade500,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: "${invoice.amount}",
+                    style: TextStyle(
+                      color: AppColors.primary01,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 26,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                  TextSpan(
+                    text: " BDT",
+                    style: TextStyle(
+                      color: Colors.grey.shade600,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            Divider(height: 28, thickness: 1, color: Colors.grey.shade200),
+
+            /// ================= INVOICE DETAILS =================
+            _sectionTitle("INVOICE DETAILS"),
+            const SizedBox(height: 12),
+            _detailRow(title: "Title", value: invoiceTitle),
+            const SizedBox(height: 10),
+            _detailRow(title: "Invoice ID", value: "#${invoice.invoiceId}"),
+            if (invoice.jobId != null) ...[
+              const SizedBox(height: 10),
+              _detailRow(title: "Job ID", value: invoice.jobId!),
+            ],
+            const SizedBox(height: 10),
+            _detailRow(
+              title: "Issue Date",
+              value: invoice.createdDate != null
+                  ? DateFormatter.formattedDate(invoice.createdDate!)
+                  : "N/A",
+            ),
+            const SizedBox(height: 10),
+            _detailRow(
+              title: "Due Date",
+              value: invoice.dueDate != null
+                  ? DateFormatter.formattedDate(invoice.dueDate!)
+                  : "N/A",
+            ),
+            if (invoice.paidDate != null) ...[
+              const SizedBox(height: 10),
+              _detailRow(
+                title: "Paid Date",
+                value: DateFormatter.formattedDate(invoice.paidDate!),
+              ),
+            ],
+
+            Divider(height: 28, thickness: 1, color: Colors.grey.shade200),
+
+            /// ================= BILL TO =================
+            _sectionTitle("BILL TO"),
+            const SizedBox(height: 12),
+            _detailRow(title: "Name", value: user?.name ?? "N/A"),
+            const SizedBox(height: 10),
+            _detailRow(title: "Email", value: user?.email ?? "N/A"),
+            const SizedBox(height: 10),
+            _detailRow(title: "Phone", value: user?.phoneNumber ?? "N/A"),
+
+            Divider(height: 28, thickness: 1, color: Colors.grey.shade200),
+
             /// ================= PAYMENT HELPLINE =================
-            GestureDetector(
+            InkWell(
               onTap: () {
                 launchUrl(Uri.parse("tel:+8801616012365"));
               },
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade300),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Row(
                   children: [
+                    Icon(
+                      Icons.support_agent_rounded,
+                      size: 20,
+                      color: AppColors.primary01,
+                    ),
+                    const SizedBox(width: 8),
                     const Text(
                       "Payment Helpline",
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-
-                    const SizedBox(height: 10),
-
-                    Row(
-                      children: [
-                        const Text(
-                          "Contact: ",
-                          style: TextStyle(fontWeight: FontWeight.w500),
-                        ),
-
-                        Text(
-                          "01610-785588",
-                          style: TextStyle(
-                            color: AppColors.primary01,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
+                    const Spacer(),
+                    Text(
+                      "01610-785588",
+                      style: TextStyle(
+                        color: AppColors.primary01,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Icon(
+                      Icons.call_outlined,
+                      size: 16,
+                      color: AppColors.primary01,
                     ),
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 20),
 
-            /// ================= MAIN CARD =================
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(18),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(10),
+            /// ================= PAY BUTTON =================
+            if (!isPaid) ...[
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: AppButton(
+                  label: "Pay Now",
+                  onPressed: () {
+                    Navigator.pop(context); // Close invoice details
+                    onPayNow(); // Let parent open payment sheet
+                  },
+                  variant: AppButtonVariant.gradient,
+                  height: 45,
+                ),
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  /// ================= PAYMENT STATUS =================
-                  const Text(
-                    "Bill To",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  /// ================= DATES =================
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _infoText(title: "Name", value: user?.name ?? "N'A"),
-
-                        const SizedBox(height: 12),
-
-                        _infoText(title: "Email", value: user?.email ?? "N'A"),
-
-                        const SizedBox(height: 12),
-
-                        _infoText(
-                          title: "Phone",
-                          value: user?.phoneNumber ?? "N/A",
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 34),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "Payment Status: ",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 5,
-                        ),
-
-                        decoration: BoxDecoration(
-                          color: isPaid
-                              ? Colors.green.withOpacity(0.1)
-                              : Colors.red.withOpacity(0.1),
-
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-
-                        child: Text(
-                          isPaid ? "Paid" : "Due",
-
-                          style: TextStyle(
-                            color: isPaid ? Colors.green : Colors.red,
-
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  /// ================= DATES =================
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _infoText(
-                          title: "Issue Date",
-                          value: invoice.createdDate != null
-                              ? DateFormatter.formattedDate(
-                                  invoice.createdDate!,
-                                )
-                              : "N/A",
-                        ),
-
-                        const SizedBox(height: 12),
-
-                        _infoText(
-                          title: "Due Date",
-                          value: invoice.dueDate != null
-                              ? DateFormatter.formattedDate(invoice.dueDate!)
-                              : "N/A",
-                        ),
-
-                        if (invoice.paidDate != null) ...[
-                          const SizedBox(height: 12),
-
-                          _infoText(
-                            title: "Paid Date",
-                            value: DateFormatter.formattedDate(
-                              invoice.paidDate!,
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 34),
-
-                  /// ================= INVOICE DETAILS =================
-                  const Text(
-                    "Invoice Details",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _infoText(
-                        title: "Title",
-                        value: invoice.invoiceType == "verificationCharge"
-                            ? "Verification Charge"
-                            : "Platform Charge",
-                      ),
-
-                      const SizedBox(height: 12),
-
-                      _infoText(title: "Invoice ID", value: invoice.invoiceId),
-
-                      const SizedBox(height: 12),
-
-                      if (invoice.jobId != null)
-                        _infoText(title: "Job ID", value: invoice.jobId!),
-
-                      const SizedBox(height: 12),
-
-                      Row(
-                        children: [
-                          const Text(
-                            "Amount: ",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 18,
-                            ),
-                          ),
-
-                          Text(
-                            "${invoice.amount} BDT",
-
-                            style: TextStyle(
-                              color: AppColors.primary01,
-
-                              fontWeight: FontWeight.bold,
-
-                              fontSize: 20,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 30),
-
-                  /// ================= PAY BUTTON =================
-                  /// ================= PAY BUTTON =================
-                  if (!isPaid)
-                    SizedBox(
-                      width: double.infinity,
-
-                      child: AppButton(
-                        label: "Pay Now",
-                        onPressed: () {
-                          Navigator.pop(context); // Close invoice details
-                          onPayNow(); // Let parent open payment sheet
-                        },
-                        // onPressed: () async {
-                        //   showModalBottomSheet(
-                        //     context: context,
-
-                        //     isScrollControlled: true,
-
-                        //     backgroundColor: Colors.transparent,
-
-                        //     builder: (_) {
-                        //       return SelectPaymentMethodSheet(
-                        //         onSelected: (selectedMethod) async {
-                        //           /// CLOSE METHOD SHEET
-                        //           Navigator.pop(context);
-
-                        //           await Future.delayed(
-                        //             const Duration(milliseconds: 250),
-                        //           );
-
-                        //           /// OPEN PAYMENT DETAILS
-                        //           showModalBottomSheet(
-                        //             context: context,
-
-                        //             isScrollControlled: true,
-
-                        //             backgroundColor: Colors.transparent,
-
-                        //             builder: (_) {
-                        //               return SelectedPaymentMethodSheet(
-                        //                 selectedPaymentMethod: selectedMethod,
-
-                        //                 amount: invoice.amount,
-
-                        //                 invoiceId: invoice.invoiceId,
-
-                        //                 paidFor: invoice.invoiceType,
-                        //               );
-                        //             },
-                        //           );
-                        //         },
-                        //       );
-                        //     },
-                        //   );
-                        // },
-                        variant: AppButtonVariant.gradient,
-
-                        height: 45,
-                      ),
-                    ),
-                ],
-              ),
-            ),
+            ],
           ],
         ),
       ),
     );
   }
 
-  Widget _infoText({required String title, required String value}) {
-    return RichText(
-      text: TextSpan(
-        style: const TextStyle(color: Colors.black, fontSize: 16),
+  Widget _sectionTitle(String text) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 11,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 0.8,
+        color: Colors.grey.shade500,
+      ),
+    );
+  }
 
-        children: [
-          TextSpan(
-            text: "$title: ",
-            style: const TextStyle(fontWeight: FontWeight.w500),
+  Widget _detailRow({required String title, required String value}) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 13.5,
+            color: Colors.grey.shade600,
+            fontWeight: FontWeight.w500,
           ),
-
-          TextSpan(
-            text: value,
-            style: TextStyle(
-              color: Colors.grey.shade700,
-              fontWeight: FontWeight.w400,
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Text(
+            value,
+            textAlign: TextAlign.end,
+            style: const TextStyle(
+              fontSize: 13.5,
+              color: Colors.black87,
+              fontWeight: FontWeight.w600,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

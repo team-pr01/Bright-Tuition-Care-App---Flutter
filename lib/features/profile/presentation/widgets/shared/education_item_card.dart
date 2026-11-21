@@ -102,11 +102,11 @@ class EducationItemCard extends StatelessWidget {
                 ProfileInfoRow(label: "Group", value: education.group),
 
                 ProfileInfoRow(label: "Board", value: education.board),
-                ProfileInfoRow(
-                  label: "Is Current Institute",
-                  value: education.isCurrentInstitute == true ? "Yes" : "No",
-                ),
               ],
+              ProfileInfoRow(
+                label: "Is Current Institute",
+                value: education.isCurrentInstitute == true ? "Yes" : "No",
+              ),
 
               /// DEPARTMENT & SEMESTER
               if (!_isSchoolLevel) ...[
@@ -127,13 +127,10 @@ class EducationItemCard extends StatelessWidget {
                   label: "Passing Year",
                   value: education.passingYear,
                 ),
-            
-                ProfileInfoRow(label: "Result", value: "${education.result!}"),
+
+              ProfileInfoRow(label: "Result", value: "${education.result!}"),
             ],
           ),
-
-          const SizedBox(height: 18),
-          Divider(color: AppColors.primary01, height: 1),
         ],
       ),
     );

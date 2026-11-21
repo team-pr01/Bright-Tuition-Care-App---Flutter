@@ -13,86 +13,93 @@ void showDeleteDialog(BuildContext context) {
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (context) {
-      return ReusableBottomSheet(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: AppSpacing.sm),
-
-            /// ICON
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              decoration: BoxDecoration(
-                color: AppColors.error.withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.delete_outline,
-                size: 40,
-                color: AppColors.error,
-              ),
-            ),
-
-            const SizedBox(height: AppSpacing.md),
-
-            /// TITLE
-            Text(
-              "Delete Account",
-              style: theme.textTheme.headlineSmall?.copyWith(
-                color: AppColors.error,
-              ),
-            ),
-
-            const SizedBox(height: AppSpacing.sm),
-
-            /// TEXT
-            Text(
-              "It’s sad to see you go. Are you sure you want to delete your account?",
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: AppColors.neutrals03,
-              ),
-            ),
-
-            const SizedBox(height: AppSpacing.lg),
-
-            /// INPUT
-            AppInputField(
-              label: "Reason for account deletion (Optional)",
-              hint: "Please enter reason ...",
-              controller: reasonController,
-              type: AppInputType.multiline,
-              maxLines: 4,
-            ),
-
-            const SizedBox(height: AppSpacing.lg),
-
-            /// BUTTONS
-            Row(
+      return Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: ReusableBottomSheet(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Expanded(
-                  child: AppButton(
-                    variant: AppButtonVariant.outlineGray,
-                    label: "Cancel",
-                    onPressed: () => Navigator.pop(context),
+                const SizedBox(height: AppSpacing.sm),
+
+                /// ICON
+                Container(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  decoration: BoxDecoration(
+                    color: AppColors.error.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.delete_outline,
+                    size: 40,
+                    color: AppColors.error,
                   ),
                 ),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: AppButton(
-                    label: "Delete",
-                    variant: AppButtonVariant.delete,
-                    onPressed: () {
-                      Navigator.pop(context);
 
-                      final reason = reasonController.text.trim();
-                      print("Delete reason: $reason");
-                    },
+                const SizedBox(height: AppSpacing.md),
+
+                /// TITLE
+                Text(
+                  "Delete Account",
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    color: AppColors.error,
                   ),
+                ),
+
+                const SizedBox(height: AppSpacing.sm),
+
+                /// TEXT
+                Text(
+                  "It’s sad to see you go. Are you sure you want to delete your account?",
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: AppColors.neutrals03,
+                  ),
+                ),
+
+                const SizedBox(height: AppSpacing.slg),
+
+                /// INPUT
+                AppInputField(
+                  label: "Reason for account deletion (Optional)",
+                  hint: "Please enter reason ...",
+                  controller: reasonController,
+                  type: AppInputType.multiline,
+                  maxLines: 4,
+                ),
+
+                const SizedBox(height: 4),
+
+                /// BUTTONS
+                Row(
+                  children: [
+                    Expanded(
+                      child: AppButton(
+                        variant: AppButtonVariant.outlineGray,
+                        label: "Cancel",
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    Expanded(
+                      child: AppButton(
+                        label: "Delete",
+                        variant: AppButtonVariant.delete,
+                        onPressed: () {
+                          Navigator.pop(context);
+
+                          final reason = reasonController.text.trim();
+                          print("Delete reason: $reason");
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
+          ),
         ),
       );
     },

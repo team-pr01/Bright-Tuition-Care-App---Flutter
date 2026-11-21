@@ -45,7 +45,7 @@ Future<bool?> showDeleteEducationDialog(
             Text(
               "Delete Education",
               style: theme.textTheme.headlineSmall?.copyWith(
-                color: AppColors.error,
+                color: AppColors.neutrals02,
               ),
               textAlign: TextAlign.center,
             ),
@@ -74,6 +74,8 @@ Future<bool?> showDeleteEducationDialog(
                 Expanded(
                   child: AppButton(
                     label: "Cancel",
+                    variant: AppButtonVariant.outlineGray,
+                    textColor: AppColors.neutrals03,
                     onPressed: () {
                       Navigator.pop(context, false);
                     },

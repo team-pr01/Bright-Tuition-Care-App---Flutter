@@ -202,229 +202,246 @@ class _EditPersonalInformationScreenState
       body: SafeArea(
         child: Form(
           key: _formKey,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          child: Column(
+            children: [
+              /// SCROLLABLE CONTENT
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Basic Information",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
 
-              children: [
-                const SizedBox(height: 12),
+                      const SizedBox(height: 16),
 
-                Container(
-                  child: const Text(
-                    "Basic Information",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      AppInputField(
+                        controller: _nameController,
+                        label: "Full Name",
+                        hint: "Enter your Name",
+                      ),
+
+                      AppInputField(
+                        controller: _emailController,
+                        label: "Email",
+                        hint: "youremail.com",
+                      ),
+
+                      AppInputField(
+                        controller: _phoneController,
+                        label: "Phone Number",
+                        type: AppInputType.phone,
+                        hint: "eg: 01xxxxxxxxx",
+                      ),
+
+                      AppInputField(
+                        controller: _genderController,
+                        label: "Gender",
+                        type: AppInputType.dropdown2,
+                        dropdownItems: List<String>.from(studentGenderOptions),
+                      ),
+
+                      AppInputField(
+                        label: "City",
+                        type: AppInputType.dropdown2,
+                        value: _cityController.text,
+                        hint: "Select City",
+                        dropdownItems: List<String>.from(
+                          filterData["cityCorporations"],
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            _cityController.text = value ?? "";
+                            _areaController.clear();
+                            _areaOptions = _getAreaOptions(
+                              _cityController.text,
+                            );
+                          });
+                        },
+                      ),
+
+                      AppInputField(
+                        label: "Location",
+                        type: AppInputType.dropdown2,
+                        value: _areaController.text,
+                        hint: _cityController.text.isEmpty
+                            ? "Select city first"
+                            : "Select Area",
+                        enabled:
+                            _cityController.text.isNotEmpty &&
+                            _areaOptions.isNotEmpty,
+                        dropdownItems: _areaOptions,
+                        onChanged: (value) {
+                          setState(() {
+                            _areaController.text = value ?? "";
+                          });
+                        },
+                      ),
+
+                      const SizedBox(height: 4),
+
+                      const Text(
+                        "Personal Information",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      AppInputField(
+                        controller: _additionalPhoneController,
+                        label: "Additional Phone Number",
+                        type: AppInputType.phone,
+                        hint: "eg: 01xxxxxxxxx",
+                      ),
+
+                      AppInputField(
+                        controller: _dobController,
+                        label: "Date of Birth",
+                        type: AppInputType.date,
+                        hint: "dd/mm/yyyy",
+                      ),
+
+                      AppInputField(
+                        controller: _addressController,
+                        label: "PresentAddress",
+                        type: AppInputType.multiline,
+                        maxLines: 3,
+                        hint: "Enter your address",
+                      ),
+
+                      AppInputField(
+                        controller: _religionController,
+                        label: "Religion",
+                        hint: "Enter your Religion",
+                      ),
+
+                      AppInputField(
+                        controller: _nationalityController,
+                        label: "Nationality",
+                        hint: "eg: Bangladesh",
+                      ),
+
+                      const SizedBox(height: 4),
+
+                      const Text(
+                        "Family Information",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      AppInputField(
+                        controller: _fatherNameController,
+                        label: "Father Name",
+                        hint: "Enter your Father Name",
+                      ),
+
+                      AppInputField(
+                        controller: _fatherPhoneController,
+                        label: "Father Phone Number",
+                        type: AppInputType.phone,
+                        hint: "eg: 01xxxxxxxxx",
+                      ),
+
+                      AppInputField(
+                        controller: _motherNameController,
+                        label: "Mother Name",
+                        hint: "Enter your Mother Name",
+                      ),
+
+                      AppInputField(
+                        controller: _motherPhoneController,
+                        label: "Mother Phone Number",
+                        type: AppInputType.phone,
+                        hint: "eg: 01xxxxxxxxx",
+                      ),
+
+                      AppInputField(
+                        controller: _emergencyPhoneController,
+                        label: "Emergency Contact Number",
+                        type: AppInputType.phone,
+                        hint: "eg: 01xxxxxxxxx",
+                      ),
+
+                      const SizedBox(height: 4),
+
+                      const Text(
+                        "Social Media",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      AppInputField(
+                        controller: _facebookController,
+                        label: "Facebook Profile",
+                        hint: "Enter Facebook link",
+                      ),
+
+                      const SizedBox(height: 4),
+
+                      const Text(
+                        "Personal Overview",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      AppInputField(
+                        controller: _overviewController,
+                        label: "Write something about yourself",
+                        type: AppInputType.multiline,
+                        maxLines: 6,
+                        hint: "describe why should we hire you hired",
+                      ),
+
+                      const SizedBox(height: 20),
+                    ],
                   ),
                 ),
+              ),
 
-                const SizedBox(height: 16),
-
-                AppInputField(controller: _nameController, label: "Full Name" ,hint:"Enter your Name"),
-
-               
-
-                AppInputField(controller: _emailController, label: "Email",hint:"youremail.com"),
-
-               
-
-                AppInputField(
-                  controller: _phoneController,
-                  label: "Phone Number",
-                  type: AppInputType.phone,
-                    hint:"eg: 01xxxxxxxxx"
+              /// STICKY SAVE BUTTON
+              Container(
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.06),
+                      blurRadius: 12,
+                      offset: const Offset(0, -4),
+                    ),
+                  ],
                 ),
-
-               
-
-                AppInputField(
-                  controller: _genderController,
-                  label: "Gender",
-                  type: AppInputType.dropdown2,
-                  dropdownItems: List<String>.from(studentGenderOptions),
-                ),
-
-               
-
-                AppInputField(
-                  label: "City",
-                  type: AppInputType.dropdown2,
-                  value: _cityController.text,
-                  hint: "Select City",
-                  dropdownItems: List<String>.from(
-                    filterData["cityCorporations"],
+                child: SafeArea(
+                  top: false,
+                  child: AppButton(
+                    label: "Save Changes",
+                    loading: _saving,
+                    onPressed: _saving ? null : _save,
                   ),
-                  onChanged: (value) {
-                    setState(() {
-                      _cityController.text = value ?? "";
-                      _areaController.clear();
-
-                      _areaOptions = _getAreaOptions(_cityController.text);
-                    });
-                  },
                 ),
-
-               
-
-                AppInputField(
-                  label: "Area",
-                  type: AppInputType.dropdown2,
-                  value: _areaController.text,
-                  hint: _cityController.text.isEmpty
-                      ? "Select city first"
-                      : "Select Area",
-                  enabled:
-                      _cityController.text.isNotEmpty &&
-                      _areaOptions.isNotEmpty,
-                  dropdownItems: _areaOptions,
-                  onChanged: (value) {
-                    setState(() {
-                      _areaController.text = value ?? "";
-                    });
-                  },
-                ),
-
-                const SizedBox(height: 30),
-                const Text(
-                  "Personal Information",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-
-                const SizedBox(height: 16),
-
-                AppInputField(
-                  controller: _additionalPhoneController,
-                  label: "Additional Phone Number",
-                  type: AppInputType.phone,
-                    hint:"eg: 01xxxxxxxxx"
-                ),
-
-               
-
-                AppInputField(
-                  controller: _dobController,
-                  label: "Date of Birth",
-                  type: AppInputType.date,
-                   hint:"dd/mm/yyyy",
-                ),
-
-               
-
-                AppInputField(
-                  controller: _addressController,
-                  label: "Address",
-                  type: AppInputType.multiline,
-                  maxLines: 3,
-                  hint:"Enter your address"
-                ),
-
-               
-
-                AppInputField(
-                  controller: _religionController,
-                  label: "Religion",
-                  hint :"Enter your Religion"
-                ),
-
-               
-
-                AppInputField(
-                  controller: _nationalityController,
-                  label: "Nationality",
-                  hint:"eg: Bangladesh"
-                ),
-
-                const SizedBox(height: 32),
-
-                const Text(
-                  "Family Information",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-
-                const SizedBox(height: 16),
-
-                AppInputField(
-                  controller: _fatherNameController,
-                  label: "Father Name",
-                  hint:"Enter your Father Name"
-                ),
-
-               
-
-                AppInputField(
-                  controller: _fatherPhoneController,
-                  label: "Father Phone Number",
-                  type: AppInputType.phone,  hint:"eg: 01xxxxxxxxx"
-                ),
-
-               
-
-                AppInputField(
-                  controller: _motherNameController,
-                  label: "Mother Name",
-                  hint:"Enter your Mother Name"
-                ),
-
-               
-
-                AppInputField(
-                  controller: _motherPhoneController,
-                  label: "Mother Phone Number",
-                  type: AppInputType.phone,
-                    hint:"eg: 01xxxxxxxxx"
-                ),
-
-               
-
-                AppInputField(
-                  controller: _emergencyPhoneController,
-                  label: "Emergency Contact Number",
-                  type: AppInputType.phone,
-                    hint:"eg: 01xxxxxxxxx"
-                ),
-
-                const SizedBox(height: 32),
-
-                const Text(
-                  "Social Media",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-
-                const SizedBox(height: 16),
-
-                AppInputField(
-                  controller: _facebookController,
-                  label: "Facebook Profile",
-                  hint:"Enter Facebook link"
-                ),
-
-                const SizedBox(height: 32),
-
-                const Text(
-                  "Overview",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-
-                const SizedBox(height: 16),
-
-                AppInputField(
-                  controller: _overviewController,
-                  label: "Write something about yourself",
-                  type: AppInputType.multiline,
-                  maxLines: 6,
-                  hint:"describe why should we hire you hired"
-                ),
-
-                const SizedBox(height: 40),
-
-                AppButton(
-                  label: "Save Changes",
-                  loading: _saving,
-                  onPressed: _saving ? null : _save,
-                ),
-
-                const SizedBox(height: 30),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

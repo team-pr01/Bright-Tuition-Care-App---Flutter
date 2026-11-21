@@ -170,211 +170,237 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const CommonAppBar(title: "Edit Education"),
-      body: SafeArea(
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Educational Information",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-
-                const SizedBox(height: 16),
-
-                AppInputField(
-                  label: "Level of Education",
-                  type: AppInputType.dropdown2,
-                  value: _levelController.text.isEmpty
-                      ? null
-                      : _levelController.text,
-                  dropdownItems: levelOfEducationOptions,
-                  onChanged: (value) {
-                    final v = value ?? "";
-                    final nowSchool = v == "Secondary" ||
-                        v == "Higher Secondary" ||
-                        v == "O Level" ||
-                        v == "A Level";
-
-                    setState(() {
-                      _levelController.text = v;
-                      if (nowSchool) {
-                        _departmentController.clear();
-                        _semesterController.clear();
-                      } else {
-                        _groupController.clear();
-                        _boardController.clear();
-                      }
-                    });
-                  },
-                ),
-
-                AppInputField(
-                  controller: _instituteController,
-                  label: "Institute Name",
-                  hint: "Enter institute name",
-                ),
-
-                AppInputField(
-                  label: "Curriculum",
-                  type: AppInputType.dropdown2,
-                  value: _curriculumController.text.isEmpty
-                      ? null
-                      : _curriculumController.text,
-                  dropdownItems: curriculumTypes,
-                  onChanged: (value) {
-                    setState(() {
-                      _curriculumController.text = value ?? "";
-                    });
-                  },
-                ),
-
-                AppInputField(
-                  label: "Exam / Degree Title",
-                  type: AppInputType.dropdown2,
-                  value: _degreeController.text.isEmpty
-                      ? null
-                      : _degreeController.text,
-                  dropdownItems: degreeOptions,
-                  onChanged: (value) {
-                    setState(() {
-                      _degreeController.text = value ?? "";
-                    });
-                  },
-                ),
-
-                // Section header only appears when a level is chosen
-                if (_levelController.text.isNotEmpty) ...[
-                  const SizedBox(height: 16),
-                  Text(
-                    shouldShowSchoolLevelFields
-                        ? "School Information"
-                        : "Higher Education",
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                ],
-
-                if (shouldShowSchoolLevelFields) ...[
-                  AppInputField(
-                    label: "Group",
-                    type: AppInputType.dropdown2,
-                    value: _groupController.text.isEmpty
-                        ? null
-                        : _groupController.text,
-                    dropdownItems: academicGroups,
-                    onChanged: (value) {
-                      setState(() {
-                        _groupController.text = value ?? "";
-                      });
-                    },
-                  ),
-
-                  AppInputField(
-                    label: "Board",
-                    type: AppInputType.dropdown2,
-                    value: _boardController.text.isEmpty
-                        ? null
-                        : _boardController.text,
-                    dropdownItems: educationBoards,
-                    onChanged: (value) {
-                      setState(() {
-                        _boardController.text = value ?? "";
-                      });
-                    },
-                  ),
-                ],
-
-                if (shouldShowHigherEducationFields) ...[
-                  AppInputField(
-                    label: "Department / Subject",
-                    type: AppInputType.dropdown2,
-                    value: _departmentController.text.isEmpty
-                        ? null
-                        : _departmentController.text,
-                    dropdownItems: departmentsOrSubjects,
-                    onChanged: (value) {
-                      setState(() {
-                        _departmentController.text = value ?? "";
-                      });
-                    },
-                  ),
-
-                  AppInputField(
-                    controller: _semesterController,
-                    label: "Year / Semester",
-                    hint: "e.g., 5th semester, 3rd year",
-                  ),
-                ],
-
-                AppInputField(
-                  controller: _resultController,
-                  label: "Result",
-                  hint: "e.g., 3.75 GPA/CGPA",
-                ),
-
-                if (!_currentInstitute) ...[
-                  AppInputField(
-                    controller: _passingYearController,
-                    label: "Passing Year",
-                    hint: "e.g., 2023",
-                    keyboardType: TextInputType.number,
-                  ),
-                ],
-
-                Row(
-                  mainAxisSize: MainAxisSize.min,
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: const CommonAppBar(title: "Edit Education"),
+    body: SafeArea(
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            /// SCROLLABLE FIELDS
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: Checkbox(
-                        value: _currentInstitute,
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        visualDensity: const VisualDensity(
-                          horizontal: -4,
-                          vertical: -4,
-                        ),
-                        onChanged: (value) {
-                          setState(() {
-                            _currentInstitute = value ?? false;
-                            if (_currentInstitute) {
-                              _passingYearController.clear();
-                            }
-                          });
-                          _formKey.currentState?.validate();
-                        },
+                    const Text(
+                      "Educational Information",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(width: 6),
-                    const Text(
-                      "Currently studying here",
-                      style: TextStyle(fontSize: 14),
+
+                    const SizedBox(height: 16),
+
+                    AppInputField(
+                      label: "Level of Education",
+                      type: AppInputType.dropdown2,
+                      value: _levelController.text.isEmpty
+                          ? null
+                          : _levelController.text,
+                      dropdownItems: levelOfEducationOptions,
+                      onChanged: (value) {
+                        final v = value ?? "";
+                        final nowSchool = v == "Secondary" ||
+                            v == "Higher Secondary" ||
+                            v == "O Level" ||
+                            v == "A Level";
+
+                        setState(() {
+                          _levelController.text = v;
+                          if (nowSchool) {
+                            _departmentController.clear();
+                            _semesterController.clear();
+                          } else {
+                            _groupController.clear();
+                            _boardController.clear();
+                          }
+                        });
+                      },
                     ),
+
+                    AppInputField(
+                      controller: _instituteController,
+                      label: "Institute Name",
+                      hint: "Enter institute name",
+                    ),
+
+                    AppInputField(
+                      label: "Curriculum",
+                      type: AppInputType.dropdown2,
+                      value: _curriculumController.text.isEmpty
+                          ? null
+                          : _curriculumController.text,
+                      dropdownItems: curriculumTypes,
+                      onChanged: (value) {
+                        setState(() {
+                          _curriculumController.text = value ?? "";
+                        });
+                      },
+                    ),
+
+                    AppInputField(
+                      label: "Exam / Degree Title",
+                      type: AppInputType.dropdown2,
+                      value: _degreeController.text.isEmpty
+                          ? null
+                          : _degreeController.text,
+                      dropdownItems: degreeOptions,
+                      onChanged: (value) {
+                        setState(() {
+                          _degreeController.text = value ?? "";
+                        });
+                      },
+                    ),
+
+                    // Section header only appears when a level is chosen
+                    if (_levelController.text.isNotEmpty) ...[
+                      Text(
+                        shouldShowSchoolLevelFields
+                            ? "School Information"
+                            : "Higher Education",
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+
+                    if (shouldShowSchoolLevelFields) ...[
+                      AppInputField(
+                        label: "Group",
+                        type: AppInputType.dropdown2,
+                        value: _groupController.text.isEmpty
+                            ? null
+                            : _groupController.text,
+                        dropdownItems: academicGroups,
+                        onChanged: (value) {
+                          setState(() {
+                            _groupController.text = value ?? "";
+                          });
+                        },
+                      ),
+
+                      AppInputField(
+                        label: "Board",
+                        type: AppInputType.dropdown2,
+                        value: _boardController.text.isEmpty
+                            ? null
+                            : _boardController.text,
+                        dropdownItems: educationBoards,
+                        onChanged: (value) {
+                          setState(() {
+                            _boardController.text = value ?? "";
+                          });
+                        },
+                      ),
+                    ],
+
+                    if (shouldShowHigherEducationFields) ...[
+                      AppInputField(
+                        label: "Department / Subject",
+                        type: AppInputType.dropdown2,
+                        value: _departmentController.text.isEmpty
+                            ? null
+                            : _departmentController.text,
+                        dropdownItems: departmentsOrSubjects,
+                        onChanged: (value) {
+                          setState(() {
+                            _departmentController.text = value ?? "";
+                          });
+                        },
+                      ),
+
+                      AppInputField(
+                        controller: _semesterController,
+                        label: "Year / Semester",
+                        hint: "e.g., 5th semester, 3rd year",
+                      ),
+                    ],
+
+                    AppInputField(
+                      controller: _resultController,
+                      label: "Result",
+                      hint: "e.g., 3.75 GPA/CGPA",
+                    ),
+
+                    if (!_currentInstitute) ...[
+                      AppInputField(
+                        controller: _passingYearController,
+                        label: "Passing Year",
+                        hint: "e.g., 2023",
+                        keyboardType: TextInputType.number,
+                      ),
+                    ],
+
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: Checkbox(
+                            value: _currentInstitute,
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                            visualDensity: const VisualDensity(
+                              horizontal: -4,
+                              vertical: -4,
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                _currentInstitute = value ?? false;
+                                if (_currentInstitute) {
+                                  _passingYearController.clear();
+                                }
+                              });
+                              _formKey.currentState?.validate();
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        const Text(
+                          "Currently studying here",
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 20),
                   ],
                 ),
+              ),
+            ),
 
-                const SizedBox(height: 16),
-
-                AppButton(
+            /// STICKY BUTTON
+            Container(
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+              decoration: BoxDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.06),
+                    blurRadius: 12,
+                    offset: const Offset(0, -4),
+                  ),
+                ],
+              ),
+              child: SafeArea(
+                top: false,
+                child: AppButton(
                   label: _isEdit ? "Update Education" : "Add Education",
                   loading: _saving,
                   onPressed: _save,
                 ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
-    );
-  }
-}
+    ),
+  );
+}}
