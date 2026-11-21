@@ -65,7 +65,8 @@ void showLogoutDialog(BuildContext context) {
                   children: [
                     Expanded(
                       child: AppButton(
-                        variant: AppButtonVariant.outlineGray,
+                         variant: AppButtonVariant.outlineGray,
+                    textColor: AppColors.neutrals03,
                         label: "Cancel",
                         onPressed: () {
                           Navigator.of(bottomSheetContext).pop();

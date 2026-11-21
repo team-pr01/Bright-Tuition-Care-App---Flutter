@@ -680,16 +680,16 @@ class _Dropdown2Field extends StatelessWidget {
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
-        constraints: const BoxConstraints(minHeight: 38),
+        constraints: const BoxConstraints(minHeight: 30),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: AppColors.neutrals03.withOpacity(0.18),
+          color: AppColors.neutrals03.withOpacity(0.11),
           borderRadius: BorderRadius.circular(22),
           border: Border.all(color: Colors.white, width: 1),
         ),
         child: Text(
           value!,
-          style: const TextStyle(fontSize: 14, color: AppColors.neutrals02),
+          style: const TextStyle(fontSize: 12, color: AppColors.neutrals02),
         ),
       ),
     );
@@ -888,7 +888,7 @@ class _Dropdown2SingleSelectionContentState
                       decoration: BoxDecoration(
                         color: isSelected
                             ? AppColors.primary01.withOpacity(0.18)
-                            : AppColors.neutrals03.withOpacity(0.18),
+                            : AppColors.neutrals03.withOpacity(0.11),
                         borderRadius: BorderRadius.circular(24),
                       ),
                       child: Text(
@@ -949,10 +949,10 @@ class _SelectedChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: const BoxConstraints(minHeight: 38),
-      padding: const EdgeInsets.only(left: 8, right: 12),
+      constraints: const BoxConstraints(minHeight: 30),
+      padding: const EdgeInsets.only(left: 12, right: 12),
       decoration: BoxDecoration(
-        color: AppColors.neutrals03.withOpacity(0.18),
+        color: AppColors.neutrals03.withOpacity(0.11),
         borderRadius: BorderRadius.circular(22),
         border: Border.all(color: Colors.white, width: 1),
       ),
@@ -969,7 +969,7 @@ class _SelectedChip extends StatelessWidget {
           Flexible(
             child: Text(
               label,
-              style: const TextStyle(fontSize: 14, color: AppColors.neutrals02),
+              style: const TextStyle(fontSize: 12, color: AppColors.neutrals02),
             ),
           ),
           if (onRemove != null)
@@ -981,10 +981,10 @@ class _SelectedChip extends StatelessWidget {
                 height: 18,
                 margin: const EdgeInsets.only(left: 8),
                 decoration: BoxDecoration(
-                  color: AppColors.primary01,
+                  color: const Color.fromARGB(31, 229, 56, 53),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.close, size: 12, color: Colors.white),
+                child: const Icon(Icons.close, size: 12, color: AppColors.error),
               ),
             ),
         ],

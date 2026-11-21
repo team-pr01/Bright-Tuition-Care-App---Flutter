@@ -164,7 +164,8 @@ class _TutorProfileScreenState extends ConsumerState<TutorProfileScreen> {
                     Expanded(
                       child: AppButton(
                         label: 'Cancel',
-                        variant: AppButtonVariant.outlineGray,
+                         variant: AppButtonVariant.outlineGray,
+                    textColor: AppColors.neutrals03,
                         height: 46,
                         onPressed: () {
                           Navigator.pop(sheetContext, false);

@@ -73,7 +73,8 @@ class _ApplyJobDialogState extends State<ApplyJobDialog> {
               Expanded(
                 child: AppButton(
                   label: "Cancel",
-                  variant: AppButtonVariant.outlineGray,
+                   variant: AppButtonVariant.outlineGray,
+                    textColor: AppColors.neutrals03,
                   loading: false,
                   onPressed: _loading ? null : () => Navigator.pop(context),
                 ),

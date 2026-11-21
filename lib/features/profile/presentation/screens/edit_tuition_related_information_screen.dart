@@ -62,8 +62,8 @@ class _EditTuitionRelatedInformationScreenState
     );
 
     _totalExperienceController = TextEditingController(
-  text: profile.experience.totalExperience ?? '',
-);
+      text: profile.experience.totalExperience ?? '',
+    );
 
     // ----------------------------------------------------------
     // MULTI SELECT VALUES
@@ -275,272 +275,263 @@ class _EditTuitionRelatedInformationScreenState
       body: SafeArea(
         child: Form(
           key: _formKey,
+          child: Column(
+            children: [
+              /// SCROLLABLE CONTENT
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 12),
 
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
+                      // ==================================================
+                      // TUTORING INFORMATION
+                      // ==================================================
+                      const Text(
+                        "Tutoring Information",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
 
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+                      const SizedBox(height: 16),
 
-              children: [
-                const SizedBox(height: 12),
+                      AppInputField(
+                        controller: _tutoringMethodController,
+                        label: "Tutoring Method",
+                        type: AppInputType.multiline,
+                        maxLines: 4,
+                        hint: "Explain your Tutoring Method ",
+                      ),
 
-                // ==================================================
-                // TUTORING INFORMATION
-                // ==================================================
-                const Text(
-                  "Tutoring Information",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
+                      // --------------------------------------------------
+                      // TUTORING STYLE
+                      // --------------------------------------------------
+                      AppInputField(
+                        label: "Tutoring Styles",
+                        type: AppInputType.dropdown2,
+                        dropdownItems: List<String>.from(
+                          filterData["tutoringStyles"] ?? [],
+                        ),
+                        multiSelect: true,
+                        selectedValues: _selectedTutoringStyles,
+                        onMultiChanged: (values) {
+                          setState(() {
+                            _selectedTutoringStyles = List<String>.from(values);
+                          });
+                        },
+                      ),
 
-                const SizedBox(height: 16),
+                      const SizedBox(height: 4),
 
-                AppInputField(
-                  controller: _tutoringMethodController,
-                  label: "Tutoring Method",
-                  type: AppInputType.multiline,
-                  maxLines: 4,
-                  hint: "Explain your Tutoring Method ",
-                ),
+                      // ==================================================
+                      // TUITION PREFERENCES
+                      // ==================================================
+                      const Text(
+                        "Tuition Preferences",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
 
-                // --------------------------------------------------
-                // TUTORING STYLE
-                // --------------------------------------------------
-                AppInputField(
-                  label: "Tutoring Styles",
-                  type: AppInputType.dropdown2,
+                      const SizedBox(height: 16),
 
-                  dropdownItems: List<String>.from(
-                    filterData["tutoringStyles"] ?? [],
+                      // --------------------------------------------------
+                      // CATEGORY
+                      // --------------------------------------------------
+                      AppInputField(
+                        label: "Preferred Categories",
+                        type: AppInputType.dropdown2,
+                        dropdownItems: List<String>.from(
+                          filterData["category"] ?? [],
+                        ),
+                        multiSelect: true,
+                        selectedValues: _selectedCategories,
+                        onMultiChanged: (values) {
+                          setState(() {
+                            _selectedCategories = List<String>.from(values);
+                            _buildClassOptions();
+                            _selectedSubjects = [];
+                            _buildSubjectOptions();
+                          });
+                        },
+                      ),
+
+                      // --------------------------------------------------
+                      // CLASSES
+                      // --------------------------------------------------
+                      AppInputField(
+                        label: "Preferred Classes",
+                        type: AppInputType.dropdown2,
+                        hint: _selectedCategories.isEmpty
+                            ? "Select category first"
+                            : "Select Classes",
+                        enabled: _selectedCategories.isNotEmpty,
+                        dropdownItems: _classOptions,
+                        multiSelect: true,
+                        selectedValues: _selectedClasses,
+                        onMultiChanged: (values) {
+                          setState(() {
+                            _selectedClasses = List<String>.from(values);
+                            _buildSubjectOptions();
+                          });
+                        },
+                      ),
+
+                      // --------------------------------------------------
+                      // SUBJECTS
+                      // --------------------------------------------------
+                      AppInputField(
+                        label: "Preferred Subjects",
+                        type: AppInputType.dropdown2,
+                        hint: _selectedClasses.isEmpty
+                            ? "Select class first"
+                            : "Select Subjects",
+                        enabled: _selectedClasses.isNotEmpty,
+                        dropdownItems: _subjectOptions,
+                        multiSelect: true,
+                        selectedValues: _selectedSubjects,
+                        onMultiChanged: (values) {
+                          setState(() {
+                            _selectedSubjects = List<String>.from(values);
+                          });
+                        },
+                      ),
+
+                      // --------------------------------------------------
+                      // PLACE OF TUITION
+                      // --------------------------------------------------
+                      AppInputField(
+                        label: "Place of Tuition",
+                        type: AppInputType.dropdown2,
+                        dropdownItems: List<String>.from(
+                          filterData["placeOfTuition"] ?? [],
+                        ),
+                        multiSelect: true,
+                        selectedValues: _selectedPlacesOfTuition,
+                        onMultiChanged: (values) {
+                          setState(() {
+                            _selectedPlacesOfTuition = List<String>.from(
+                              values,
+                            );
+                          });
+                        },
+                      ),
+
+                      const SizedBox(height: 4),
+
+                      // ==================================================
+                      // LOCATION
+                      // ==================================================
+                      const Text(
+                        "Preferred Location",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      const SizedBox(height: 4),
+
+                      // --------------------------------------------------
+                      // CITIES
+                      // --------------------------------------------------
+                      AppInputField(
+                        label: "Preferred Cities",
+                        type: AppInputType.dropdown2,
+                        dropdownItems: List<String>.from(
+                          filterData["cityCorporations"] ?? [],
+                        ),
+                        multiSelect: true,
+                        selectedValues: _selectedCities,
+                        onMultiChanged: (values) {
+                          setState(() {
+                            _selectedCities = List<String>.from(values);
+                            _buildLocationOptions();
+                          });
+                        },
+                      ),
+
+                      // --------------------------------------------------
+                      // LOCATIONS
+                      // --------------------------------------------------
+                      AppInputField(
+                        label: "Preferred Locations",
+                        type: AppInputType.dropdown2,
+                        hint: _selectedCities.isEmpty
+                            ? "Select city first"
+                            : "Select Locations",
+                        enabled: _selectedCities.isNotEmpty,
+                        dropdownItems: _locationOptions,
+                        multiSelect: true,
+                        selectedValues: _selectedLocations,
+                        onMultiChanged: (values) {
+                          setState(() {
+                            _selectedLocations = List<String>.from(values);
+                          });
+                        },
+                      ),
+
+                      const SizedBox(height: 4),
+
+                      // ==================================================
+                      // EXPERIENCE & SALARY
+                      // ==================================================
+                      const Text(
+                        "Experience & Salary",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      AppInputField(
+                        controller: _expectedSalaryController,
+                        label: "Expected Salary",
+                        hint: "eg: 6000",
+                      ),
+
+                      AppInputField(
+                        controller: _totalExperienceController,
+                        label: "Total Experience",
+                        hint: "eg: 5 Years",
+                      ),
+
+                      const SizedBox(height: 20),
+                    ],
                   ),
-
-                  multiSelect: true,
-
-                  selectedValues: _selectedTutoringStyles,
-
-                  onMultiChanged: (values) {
-                    setState(() {
-                      _selectedTutoringStyles = List<String>.from(values);
-                    });
-                  },
                 ),
+              ),
 
-                const SizedBox(height: 16),
-
-                // ==================================================
-                // TUITION PREFERENCES
-                // ==================================================
-                const Text(
-                  "Tuition Preferences",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              /// STICKY SAVE BUTTON
+              Container(
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.06),
+                      blurRadius: 12,
+                      offset: const Offset(0, -4),
+                    ),
+                  ],
                 ),
-
-                const SizedBox(height: 16),
-
-                // --------------------------------------------------
-                // CATEGORY
-                // --------------------------------------------------
-                AppInputField(
-                  label: "Preferred Categories",
-                  type: AppInputType.dropdown2,
-
-                  dropdownItems: List<String>.from(
-                    filterData["category"] ?? [],
+                child: SafeArea(
+                  top: false,
+                  child: AppButton(
+                    label: "Save Changes",
+                    loading: _saving,
+                    onPressed: _saving ? null : _save,
                   ),
-
-                  multiSelect: true,
-
-                  selectedValues: _selectedCategories,
-
-                  onMultiChanged: (values) {
-                    setState(() {
-                      _selectedCategories = List<String>.from(values);
-
-                      _buildClassOptions();
-
-                      _selectedSubjects = [];
-
-                      _buildSubjectOptions();
-                    });
-                  },
                 ),
-
-                // --------------------------------------------------
-                // CLASSES
-                // --------------------------------------------------
-                AppInputField(
-                  label: "Preferred Classes",
-                  type: AppInputType.dropdown2,
-
-                  hint: _selectedCategories.isEmpty
-                      ? "Select category first"
-                      : "Select Classes",
-
-                  enabled: _selectedCategories.isNotEmpty,
-
-                  dropdownItems: _classOptions,
-
-                  multiSelect: true,
-
-                  selectedValues: _selectedClasses,
-
-                  onMultiChanged: (values) {
-                    setState(() {
-                      _selectedClasses = List<String>.from(values);
-
-                      _buildSubjectOptions();
-                    });
-                  },
-                ),
-
-                // --------------------------------------------------
-                // SUBJECTS
-                // --------------------------------------------------
-                AppInputField(
-                  label: "Preferred Subjects",
-                  type: AppInputType.dropdown2,
-
-                  hint: _selectedClasses.isEmpty
-                      ? "Select class first"
-                      : "Select Subjects",
-
-                  enabled: _selectedClasses.isNotEmpty,
-
-                  dropdownItems: _subjectOptions,
-
-                  multiSelect: true,
-
-                  selectedValues: _selectedSubjects,
-
-                  onMultiChanged: (values) {
-                    setState(() {
-                      _selectedSubjects = List<String>.from(values);
-                    });
-                  },
-                ),
-
-                // --------------------------------------------------
-                // PLACE OF TUITION
-                // --------------------------------------------------
-                AppInputField(
-                  label: "Place of Tuition",
-                  type: AppInputType.dropdown2,
-
-                  dropdownItems: List<String>.from(
-                    filterData["placeOfTuition"] ?? [],
-                  ),
-
-                  multiSelect: true,
-
-                  selectedValues: _selectedPlacesOfTuition,
-
-                  onMultiChanged: (values) {
-                    setState(() {
-                      _selectedPlacesOfTuition = List<String>.from(values);
-                    });
-                  },
-                ),
-
-                const SizedBox(height: 16),
-
-                // ==================================================
-                // LOCATION
-                // ==================================================
-                const Text(
-                  "Preferred Location",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-
-                const SizedBox(height: 16),
-
-                // --------------------------------------------------
-                // CITIES
-                // --------------------------------------------------
-                AppInputField(
-                  label: "Preferred Cities",
-                  type: AppInputType.dropdown2,
-
-                  dropdownItems: List<String>.from(
-                    filterData["cityCorporations"] ?? [],
-                  ),
-
-                  multiSelect: true,
-
-                  selectedValues: _selectedCities,
-
-                  onMultiChanged: (values) {
-                    setState(() {
-                      _selectedCities = List<String>.from(values);
-
-                      _buildLocationOptions();
-                    });
-                  },
-                ),
-
-                // --------------------------------------------------
-                // LOCATIONS
-                // --------------------------------------------------
-                AppInputField(
-                  label: "Preferred Locations",
-                  type: AppInputType.dropdown2,
-
-                  hint: _selectedCities.isEmpty
-                      ? "Select city first"
-                      : "Select Locations",
-
-                  enabled: _selectedCities.isNotEmpty,
-
-                  dropdownItems: _locationOptions,
-
-                  multiSelect: true,
-
-                  selectedValues: _selectedLocations,
-
-                  onMultiChanged: (values) {
-                    setState(() {
-                      _selectedLocations = List<String>.from(values);
-                    });
-                  },
-                ),
-
-                const SizedBox(height: 16),
-
-                // ==================================================
-                // EXPERIENCE & SALARY
-                // ==================================================
-                const Text(
-                  "Experience & Salary",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-
-                const SizedBox(height: 16),
-
-                AppInputField(
-                  controller: _expectedSalaryController,
-                  label: "Expected Salary",
-                  hint:"eg: 6000"
-                ),
-
-                AppInputField(
-                  controller: _totalExperienceController,
-                  label: "Total Experience",
-                  hint: "eg: 5 Years"
-                ),
-
-                const SizedBox(height: 30),
-
-                // ==================================================
-                // SAVE
-                // ==================================================
-                AppButton(
-                  label: "Save Changes",
-                  loading: _saving,
-                  onPressed: _saving ? null : _save,
-                ),
-
-                const SizedBox(height: 30),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

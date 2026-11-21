@@ -279,8 +279,8 @@ class _AddCredentialScreenState
                   Expanded(
                     child: AppButton(
                       label: "Cancel",
-                      variant:
-                          AppButtonVariant.outlineGray,
+                       variant: AppButtonVariant.outlineGray,
+                    textColor: AppColors.neutrals03,
                       height: 48,
                       onPressed: _isSubmitting
                           ? null

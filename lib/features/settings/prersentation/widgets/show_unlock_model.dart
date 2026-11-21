@@ -80,6 +80,7 @@ void showUnlockModal(BuildContext context) {
                             child: AppButton(
                               label: "Cancel",
                               variant: AppButtonVariant.outlineGray,
+                    textColor: AppColors.neutrals03,
                               onPressed: isLoading
                                   ? null
                                   : () => Navigator.pop(context),

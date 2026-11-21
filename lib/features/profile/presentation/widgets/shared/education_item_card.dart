@@ -103,10 +103,6 @@ class EducationItemCard extends StatelessWidget {
 
                 ProfileInfoRow(label: "Board", value: education.board),
               ],
-              ProfileInfoRow(
-                label: "Is Current Institute",
-                value: education.isCurrentInstitute == true ? "Yes" : "No",
-              ),
 
               /// DEPARTMENT & SEMESTER
               if (!_isSchoolLevel) ...[
@@ -128,6 +124,10 @@ class EducationItemCard extends StatelessWidget {
                   value: education.passingYear,
                 ),
 
+              ProfileInfoRow(
+                label: "Is Current Institute",
+                value: education.isCurrentInstitute == true ? "Yes" : "No",
+              ),
               ProfileInfoRow(label: "Result", value: "${education.result!}"),
             ],
           ),
