@@ -316,7 +316,7 @@ void initState() {
                               Align(
                                 alignment: Alignment.centerLeft,
                                 child: Padding(
-                                  padding: const EdgeInsets.only(left: 12),
+                                  padding: const EdgeInsets.only(left: 0),
                                   child: Builder(
                                     builder: (context) {
                                       return IconButton(
@@ -368,7 +368,7 @@ void initState() {
                               Align(
                                 alignment: Alignment.centerRight,
                                 child: Padding(
-                                  padding: const EdgeInsets.only(right: 16),
+                                  padding: const EdgeInsets.only(right: 0),
                                   child: _buildAppBarAction(
                                     unreadCount: unreadCount,
                                   ),

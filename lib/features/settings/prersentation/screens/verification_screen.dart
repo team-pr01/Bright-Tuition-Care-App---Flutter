@@ -14,12 +14,10 @@ class VerificationScreen extends ConsumerStatefulWidget {
   const VerificationScreen({super.key});
 
   @override
-  ConsumerState<VerificationScreen> createState() =>
-      _VerificationScreenState();
+  ConsumerState<VerificationScreen> createState() => _VerificationScreenState();
 }
 
-class _VerificationScreenState
-    extends ConsumerState<VerificationScreen> {
+class _VerificationScreenState extends ConsumerState<VerificationScreen> {
   @override
   void initState() {
     super.initState();
@@ -27,18 +25,15 @@ class _VerificationScreenState
     Future.microtask(() async {
       await ref.read(profileProvider.notifier).fetchProfile();
 
-      await ref
-          .read(verificationProvider.notifier)
-          .fetchVerification();
+      await ref.read(verificationProvider.notifier).fetchVerification();
+      await ref.read(invoiceProvider.notifier).fetchInvoices();
     });
   }
 
   Future<void> _refresh() async {
     await ref.read(profileProvider.notifier).fetchProfile();
 
-    await ref
-        .read(verificationProvider.notifier)
-        .fetchVerification();
+    await ref.read(verificationProvider.notifier).fetchVerification();
   }
 
   @override
@@ -47,16 +42,13 @@ class _VerificationScreenState
 
     final invoiceState = ref.watch(invoiceProvider);
 
-    final verificationInvoice =
-        invoiceState.invoices.firstWhereOrNull(
-      (invoice) =>
-          invoice.invoiceType == "verificationCharge",
+    final verificationInvoice = invoiceState.invoices.firstWhereOrNull(
+      (invoice) => invoice.invoiceType == "verificationCharge",
     );
 
     final profile = ref.watch(profileProvider);
 
-    final verification =
-        ref.watch(verificationProvider);
+    final verification = ref.watch(verificationProvider);
 
     bool isVerified = false;
     bool hasRequested = false;
@@ -71,16 +63,13 @@ class _VerificationScreenState
 
     return Scaffold(
       backgroundColor: AppColors.neutrals01,
-      appBar: const CommonAppBar( title: "Profile Verification",),
+      appBar: const CommonAppBar(title: "Profile Verification"),
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: _refresh,
           child: SingleChildScrollView(
-            physics:
-                const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.lg,
-            ),
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             child: Column(
               children: [
                 const SizedBox(height: AppSpacing.slg),

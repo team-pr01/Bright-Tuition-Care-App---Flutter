@@ -173,7 +173,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               //     });
               //   },
               // ),
-              const SizedBox(height: 20),
+              // const SizedBox(height: 20),
 
               // =================================================
               // EMAIL

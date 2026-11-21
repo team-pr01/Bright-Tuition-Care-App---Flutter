@@ -192,7 +192,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               //     });
               //   },
               // ),
-              const SizedBox(height: 20),
+              // const SizedBox(height: 20),
 
               /// NAME
               AppInputField(
@@ -201,6 +201,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 controller: nameController,
                 required: true,
               ),
+              // const SizedBox(height: 4),
 
               /// EMAIL
               AppInputField(
@@ -282,7 +283,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     },
                   ),
 
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                 ],
               ),
 

@@ -218,7 +218,7 @@ class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
                   Icons.cancel_outlined,
                   size: 24,
                   color: Colors.white,
-                ), 
+                ),
                 onTap: () {
                   setState(() => _selectedStatus = "cancelled");
                   ref
@@ -247,7 +247,7 @@ class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
                       ? "Confirmed"
                       : _selectedStatus == "cancelled"
                       ? "Cancelled"
-                      : "Rejected"} Applications",
+                      : "Rejected"}${state.applications.length == 1 ? "Application" : "Applications"}",
                   style: Theme.of(context).textTheme.titleLarge!.copyWith(
                     color: AppColors.neutrals02,
                     fontWeight: FontWeight.w400,

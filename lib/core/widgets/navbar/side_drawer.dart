@@ -122,7 +122,7 @@ class AppSidebar extends StatelessWidget {
           const SizedBox(height: 12),
 
           const Text(
-            'Welcome Guest',
+            'Guest Mode',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.white,

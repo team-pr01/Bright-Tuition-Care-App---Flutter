@@ -432,7 +432,7 @@ class _TestimonialCardState extends State<TestimonialCard> {
                                   .copyWith(
                                     color: AppColors.primary01,
                                     fontWeight: FontWeight.w500,
-                                    fontSize: 13,
+                                    fontSize: 12,
                                   ),
                             ),
                           ),

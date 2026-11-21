@@ -197,42 +197,6 @@ class _JobCardState extends ConsumerState<JobCard> {
               ),
             ),
 
-            // const SizedBox(height: 6),
-            if (variant == JobCardVariant.application)
-              Row(
-                children: [
-                  /// DETAILS
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        "assets/icons/visual/status.svg",
-                        height: 16,
-                      ),
-                      const SizedBox(width: 6),
-
-                      Text("Status :"),
-                      const SizedBox(width: 8),
-                      Text(
-                        StatusDataFormatter.getApplicationStatus(
-                          applicationStatus: application?.status,
-                          jobStatus: job.status,
-                        ),
-                        style: TextStyle(
-                          color: StatusDataFormatter.getApplicationStatusColor(
-                            applicationStatus: application?.status,
-                            jobStatus: job.status,
-                          ),
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(width: 20),
-
-                  /// APPLY BUTTON
-                ],
-              ),
             if (variant == JobCardVariant.postedJob)
               Row(
                 children: [
@@ -241,11 +205,11 @@ class _JobCardState extends ConsumerState<JobCard> {
                     children: [
                       SvgPicture.asset(
                         "assets/icons/visual/status.svg",
-                        height: 16,
+                        height: 12,
                       ),
                       const SizedBox(width: 6),
 
-                      Text("Status :"),
+                      Text("Status :", style: TextStyle(fontSize: 12)),
                       const SizedBox(width: 8),
                       Text(
                         TextFormatter.capitalize(job.status ?? ""),
@@ -254,6 +218,7 @@ class _JobCardState extends ConsumerState<JobCard> {
                             application?.status,
                           ),
                           fontWeight: FontWeight.w500,
+                          fontSize: 12,
                         ),
                       ),
                     ],
@@ -320,7 +285,7 @@ class _JobCardState extends ConsumerState<JobCard> {
               value: safe(job.subjects?.join(", ")),
             ),
 
-            const SizedBox(height:8),
+            const SizedBox(height: 8),
 
             /// ================= DAYS + SALARY =================
             Row(
@@ -591,35 +556,76 @@ class _JobCardState extends ConsumerState<JobCard> {
             if (variant == JobCardVariant.application)
               Row(
                 children: [
-                  /// DETAILS
-                  GestureDetector(
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        builder: (_) => JobBottomSheet(
-                          changeTab: changeTab,
-                          variant: JobCardVariant.application,
-                          application: application,
-                          job: job, // 🔥 pass exact clicked job
-                        ),
-                      );
-                    },
-                    child: Row(
-                      children: [
-                        SvgPicture.asset(
-                          "assets/icons/operations/job-details.svg",
-                          height: 16,
-                        ),
-                        const SizedBox(width: 6),
-                        const Text("Details"),
-                      ],
-                    ),
+                  Row(
+                    children: [
+                      /// DETAILS
+                      Row(
+                        children: [
+                          SvgPicture.asset(
+                            "assets/icons/visual/status.svg",
+                            height: 12,
+                          ),
+                          const SizedBox(width: 6),
+
+                          Text("Status :", style: TextStyle(fontSize: 12)),
+                          const SizedBox(width: 4),
+                          Text(
+                            StatusDataFormatter.getApplicationStatus(
+                              applicationStatus: application?.status,
+                              jobStatus: job.status,
+                            ),
+                            style: TextStyle(
+                              color:
+                                  StatusDataFormatter.getApplicationStatusColor(
+                                    applicationStatus: application?.status,
+                                    jobStatus: job.status,
+                                  ),
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(width: 20),
+
+                      /// APPLY BUTTON
+                    ],
                   ),
+
+                  /// DETAILS
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     showModalBottomSheet(
+                  //       context: context,
+                  //       isScrollControlled: true,
+                  //       builder: (_) => JobBottomSheet(
+                  //         changeTab: changeTab,
+                  //         variant: JobCardVariant.application,
+                  //         application: application,
+                  //         job: job, // 🔥 pass exact clicked job
+                  //       ),
+                  //     );
+                  //   },
+                  //   child: Row(
+                  //     children: [
+                  //       SvgPicture.asset(
+                  //         "assets/icons/operations/job-details.svg",
+                  //         height: 16,
+                  //       ),
+                  //       const SizedBox(width: 6),
+                  //       const Text("Details"),
+                  //     ],
+                  //   ),
+                  // ),
+                  //
                   const SizedBox(width: 10),
                   Row(
                     children: [
-                      const Text("Applied on :"),
+                      const Text(
+                        "Applied on :",
+                        style: TextStyle(fontSize: 12),
+                      ),
                       const SizedBox(width: 6),
                       Text(
                         DateFormatter.formattedDate(
@@ -628,6 +634,7 @@ class _JobCardState extends ConsumerState<JobCard> {
                         style: const TextStyle(
                           color: AppColors.primary01,
                           fontWeight: FontWeight.w500,
+                          fontSize: 12,
                         ),
                       ),
                     ],

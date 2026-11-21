@@ -142,7 +142,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
             required: true,
           ),
 
-          const SizedBox(height: 20),
+          // const SizedBox(height: 20),
 
           AppButton(
             label: "Reset Password",

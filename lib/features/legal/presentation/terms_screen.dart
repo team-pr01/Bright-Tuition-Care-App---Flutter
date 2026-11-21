@@ -1,3 +1,4 @@
+import 'package:btcclient/core/widgets/navbar/common_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -15,8 +16,9 @@ class TermsScreen extends ConsumerWidget {
 
     return Scaffold(
 
-      appBar: AppBar(
-        title: Text(document.title),
+      appBar: CommonAppBar(
+        title:"Terms and Conditions",
+        showNotification: false,
       ),
 
       body: SingleChildScrollView(
@@ -28,21 +30,21 @@ class TermsScreen extends ConsumerWidget {
 
           children: [
 
-            Text(
-              document.title,
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineMedium,
-            ),
+            // Text(
+            //   document.title,
+            //   style: Theme.of(context)
+            //       .textTheme
+            //       .headlineMedium,
+            // ),
 
-            const SizedBox(height: AppSpacing.lg),
+            // const SizedBox(height: AppSpacing.lg),
 
             ...document.sections.map(
 
               (section) => Padding(
 
                 padding: const EdgeInsets.only(
-                  bottom: AppSpacing.lg,
+                  bottom: AppSpacing.sm,
                 ),
 
                 child: Column(

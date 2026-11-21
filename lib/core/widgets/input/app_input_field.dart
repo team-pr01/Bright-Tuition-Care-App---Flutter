@@ -124,6 +124,7 @@ class _AppInputFieldState extends State<AppInputField> {
               icon: Icon(
                 obscure ? Icons.visibility_off : Icons.visibility,
                 size: 18,
+                color: AppColors.neutrals03,
               ),
               onPressed: () {
                 setState(() {
@@ -413,7 +414,7 @@ class _AppInputFieldState extends State<AppInputField> {
         labelWidget,
         const SizedBox(height: 6),
         field,
-        const SizedBox(height: 14),
+        const SizedBox(height: 16),
       ],
     );
   }

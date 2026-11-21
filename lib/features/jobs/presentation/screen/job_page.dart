@@ -301,7 +301,7 @@ class _JobsPageState extends ConsumerState<JobsPage> {
                 /// Clear Filters
                 Row(
                   children: [
-                    if (hasFilters)
+                    if (hasFilters && (state.meta?.liveJobs ?? 0) > 0) ...[
                       Padding(
                         padding: const EdgeInsets.only(right: 6),
                         child: AppButton(
@@ -321,16 +321,17 @@ class _JobsPageState extends ConsumerState<JobsPage> {
                         ),
                       ),
 
-                    const SizedBox(width: 6),
+                      const SizedBox(width: 6),
 
-                    AppButton(
-                      label: "Filter",
-                      onPressed: () => openFilter(context),
-                      variant: AppButtonVariant.outline,
-                      height: 32,
-                      width: 100,
-                      icon: Icons.tune,
-                    ),
+                      AppButton(
+                        label: "Filter",
+                        onPressed: () => openFilter(context),
+                        variant: AppButtonVariant.outline,
+                        height: 32,
+                        width: 100,
+                        icon: Icons.tune,
+                      ),
+                    ],
                   ],
                 ),
               ],
@@ -487,17 +488,18 @@ class _JobsPageState extends ConsumerState<JobsPage> {
           children: [
             SvgPicture.asset(
               'assets/icons/navigations/jobs.svg',
-              width: 80,
-              height: 80,
+              width: 60,
+              height: 60,
               colorFilter: const ColorFilter.mode(
                 AppColors.primary01,
                 BlendMode.srcIn,
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(height: 12),
             const Text(
-              'No Jobs found',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+              'No live job openings are available \nat the moment.',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+              textAlign: TextAlign.center,
             ),
           ],
         ),

@@ -7,8 +7,9 @@ import 'testimonial_card.dart';
 
 class TestimonialSection extends StatefulWidget {
   final List<TestimonialModel> testimonials;
+  final bool isLoading;
 
-  const TestimonialSection({super.key, required this.testimonials});
+  const TestimonialSection({super.key, required this.testimonials, required this.isLoading});
 
   @override
   State<TestimonialSection> createState() => _TestimonialSectionState();
@@ -94,7 +95,7 @@ class _TestimonialSectionState extends State<TestimonialSection> {
 
         const SizedBox(height: AppSpacing.md),
 
-        /// DOT INDICATOR
+       
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(

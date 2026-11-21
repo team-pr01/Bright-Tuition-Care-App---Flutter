@@ -48,7 +48,7 @@ class AuthLayout extends StatelessWidget {
                     ? Align(
                         alignment: Alignment.centerLeft,
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 12),
+                          padding: const EdgeInsets.only(left: 0),
                           child: IconButton(
                             onPressed: () {
                               Navigator.pop(context);
@@ -134,7 +134,7 @@ class AuthLayout extends StatelessWidget {
               Expanded(
                 child: Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  padding: const EdgeInsets.only(left: AppSpacing.lg, right: AppSpacing.lg, top: AppSpacing.lg),
                   decoration: const BoxDecoration(
                     color: AppColors.neutrals01,
                     borderRadius: BorderRadius.only(

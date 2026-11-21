@@ -140,6 +140,7 @@ class _NoticeBoardCardState extends State<NoticeBoardCard> {
                             style: TextStyle(
                               color: AppColors.primary01,
                               fontWeight: FontWeight.w500,
+                              fontSize: 12,
                             ),
                           ),
                         ),

@@ -19,21 +19,7 @@ class TestimonialSectionSkeleton extends StatelessWidget {
 
         const SizedBox(height: AppSpacing.md),
 
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(
-            3,
-            (index) => Container(
-              margin: const EdgeInsets.symmetric(horizontal: 4),
-              width: index == 0 ? 16 : 6,
-              height: 6,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-        ),
+       
       ],
     );
   }

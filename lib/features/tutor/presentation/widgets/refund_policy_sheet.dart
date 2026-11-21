@@ -29,7 +29,7 @@ class RefundPolicySheet extends StatelessWidget {
               "At Bright Tuition Care, we maintain a clear and fair refund policy for our tutors. "
               "If a tutor loses a tuition job for a valid reason, they may apply for a partial refund "
               "of the paid service charge under the following conditions:",
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
 
             const SizedBox(height: 16),
@@ -47,7 +47,7 @@ class RefundPolicySheet extends StatelessWidget {
 
             Text(
               "The discontinuation must be due to a genuine issue from the guardian or student’s side.",
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
 
             const SizedBox(height: 12),
@@ -66,7 +66,7 @@ class RefundPolicySheet extends StatelessWidget {
             Text(
               "If a confirmed tuition is cancelled by the guardian within the first month, "
               "the tutor may receive 30% of the paid service charge.",
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
 
             const SizedBox(height: 12),
@@ -83,7 +83,7 @@ class RefundPolicySheet extends StatelessWidget {
             const SizedBox(height: 4),
             RichText(
               text: TextSpan(
-                style: Theme.of(context).textTheme.bodyLarge,
+                style: Theme.of(context).textTheme.bodyMedium,
                 children: [
                   const TextSpan(
                     text:
@@ -91,7 +91,7 @@ class RefundPolicySheet extends StatelessWidget {
                   ),
                   TextSpan(
                     text: "09617-785588",
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                       color: AppColors.primary01,
                       decoration: TextDecoration.underline,
                     ),
@@ -123,7 +123,7 @@ class RefundPolicySheet extends StatelessWidget {
             Text(
               "If cancellation occurs due to the tutor’s fault, negligence, or failure to fulfill responsibilities, "
               "no refund will be issued.",
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
           ],
         ),

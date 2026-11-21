@@ -386,6 +386,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                 testimonials: state.testimonials
                                     .take(9)
                                     .toList(),
+                                    isLoading: state.isLoading,   
                               ),
 
                         const SizedBox(height: 20),

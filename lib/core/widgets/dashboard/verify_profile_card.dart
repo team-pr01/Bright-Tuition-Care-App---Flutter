@@ -1,3 +1,4 @@
+import 'package:btcclient/core/responsive/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -11,7 +12,6 @@ class VerifyProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
@@ -27,10 +27,16 @@ class VerifyProfileCard extends StatelessWidget {
               Flexible(
                 child: Text(
                   "Verify Your Profile",
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                     color: Colors.black,
                     fontWeight: FontWeight.w400,
                     height: 1.2,
+                    fontSize: context.responsiveFontSize(
+                      extraSmall: 14,
+                      small: 18,
+                      medium: 18,
+                      large: 22,
+                    ),
                   ),
                 ),
               ),
@@ -70,10 +76,8 @@ class VerifyProfileCard extends StatelessWidget {
                       isVerified
                           ? "You are a verified member of Bright Tuition Care community."
                           : "Get exclusive benefits by completing your profile verification.",
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         color: AppColors.neutrals03,
-                        height: 1.5,
-                        fontSize: 12,
                       ),
                     ),
 

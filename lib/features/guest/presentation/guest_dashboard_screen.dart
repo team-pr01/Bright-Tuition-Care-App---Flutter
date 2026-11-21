@@ -16,15 +16,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 class GuestDashboardScreen extends StatelessWidget {
   final int initialIndex;
 
-  const GuestDashboardScreen({
-    super.key,
-    this.initialIndex = 0,
-  });
+  const GuestDashboardScreen({super.key, this.initialIndex = 0});
 
   @override
   Widget build(BuildContext context) {
     return DashboardLayout(
-      role:"guest",
+      role: "guest",
       // =========================================================
       // INITIAL TAB
       // =========================================================
@@ -39,9 +36,7 @@ class GuestDashboardScreen extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => const RegisterScreen(
-              role: "tutor",
-            ),
+            builder: (_) => const RegisterScreen(role: "tutor"),
           ),
         );
       },
@@ -59,14 +54,48 @@ class GuestDashboardScreen extends StatelessWidget {
           menuItems: [
             SidebarItem(
               label: "Job Board",
-              icon: _icon(
-                "assets/icons/navigations/job-board.svg",
-              ),
+              icon: _icon("assets/icons/navigations/job-board.svg"),
               onTap: () {
                 Navigator.pop(context);
 
                 // TAB 0 = JOBS
                 changeTab(0);
+              },
+            ),
+            SidebarItem(
+              label: "Join Community",
+              icon: _icon("assets/icons/social_media/facebook.svg"),
+              onTap: () {
+                Navigator.pop(context);
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const CommunityPage(
+                      title: "Tutor Community",
+                      description:
+                          "Join our tutor community to exchange "
+                          "teaching strategies, gain valuable insights, "
+                          "stay informed on the latest trends and access "
+                          "resources that support your professional growth.",
+                      buttonText: "Join Community",
+                      link: "https://www.facebook.com/groups/252670130864095",
+                    ),
+                  ),
+                );
+              },
+            ),
+
+            SidebarItem(
+              label: "How It Works",
+              icon: _icon("assets/icons/navigations/how-it-works.svg"),
+              onTap: () {
+                Navigator.pop(context);
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const HowItWorksScreen()),
+                );
               },
             ),
 
@@ -87,51 +116,7 @@ class GuestDashboardScreen extends StatelessWidget {
           // =======================================================
           // COMMON MENU
           // =======================================================
-          menuItemsCommon: [
-            SidebarItem(
-              label: "Join Community",
-              icon: _icon(
-                "assets/icons/social_media/facebook.svg",
-              ),
-              onTap: () {
-                Navigator.pop(context);
-
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const CommunityPage(
-                      title: "Tutor Community",
-                      description:
-                          "Join our tutor community to exchange "
-                          "teaching strategies, gain valuable insights, "
-                          "stay informed on the latest trends and access "
-                          "resources that support your professional growth.",
-                      buttonText: "Join Community",
-                      link:
-                          "https://www.facebook.com/groups/252670130864095",
-                    ),
-                  ),
-                );
-              },
-            ),
-
-            SidebarItem(
-              label: "How It Works",
-              icon: _icon(
-                "assets/icons/navigations/how-it-works.svg",
-              ),
-              onTap: () {
-                Navigator.pop(context);
-
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const HowItWorksScreen(),
-                  ),
-                );
-              },
-            ),
-          ],
+          menuItemsCommon: [],
 
           // =======================================================
           // LOGIN
@@ -139,9 +124,7 @@ class GuestDashboardScreen extends StatelessWidget {
           onLogin: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (_) => const ChooseRoleScreen(),
-              ),
+              MaterialPageRoute(builder: (_) => const ChooseRoleScreen()),
               // MaterialPageRoute(
               //   builder: (_) => const LoginScreen(role:"tutor"),
               // ),
@@ -162,10 +145,7 @@ class GuestDashboardScreen extends StatelessWidget {
         // TAB 0 — JOBS
         // =========================================================
         (changeTab, status) {
-          return JobsPage(
-            role: "guest",
-            changeTab: changeTab,
-          );
+          return JobsPage(role: "guest", changeTab: changeTab);
         },
 
         // =========================================================
@@ -186,8 +166,7 @@ class GuestDashboardScreen extends StatelessWidget {
                   "Help your friends and relatives to find the right "
                   "tutor for their children by sharing our platform "
                   "— and earn exclusive rewards!",
-              link:
-                  "https://www.brighttuitioncare.com",
+              link: "https://www.brighttuitioncare.com",
             ),
           );
         },
@@ -283,10 +262,7 @@ class GuestDashboardScreen extends StatelessWidget {
       path,
       width: 20,
       height: 20,
-      colorFilter: const ColorFilter.mode(
-        Colors.white,
-        BlendMode.srcIn,
-      ),
+      colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
     );
   }
 }

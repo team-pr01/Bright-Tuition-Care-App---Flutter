@@ -200,19 +200,16 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
             physics: const AlwaysScrollableScrollPhysics(),
 
             slivers: [
-              // ==================================================
-              // STICKY HEADER
-              // SEARCH + APPLICATION STATUS
-              // ==================================================
+              
               SliverPersistentHeader(
                 pinned: true,
 
                 delegate: _TutorStickyHeaderDelegate(
                   height: context.responsiveValue<double>(
-                    extraSmall: 155,
-                    small: 160,
-                    medium: 175,
-                    large: 180,
+                    extraSmall: 105, 
+                    small: 110,
+                    medium: 120,
+                    large: 125,
                   ),
 
                   child: Container(
@@ -225,13 +222,13 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
                         // ========================================
                         // SEARCH BAR
                         // ========================================
-                        TutorSearchBar(
-                          onTap: () {
-                            widget.changeTab(0);
-                          },
-                        ),
+                        // TutorSearchBar(
+                        //   onTap: () {
+                        //     widget.changeTab(0);
+                        //   },
+                        // ),
 
-                        const SizedBox(height: 18),
+                        // const SizedBox(height: 18),
 
                         // ========================================
                         // APPLICATION STATUS

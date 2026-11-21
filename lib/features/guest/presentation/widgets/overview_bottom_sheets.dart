@@ -338,7 +338,7 @@ class _CompanyInfoRow extends StatelessWidget {
               text,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.neutrals04,
-                fontSize: 13,
+                fontSize: 15,
               ),
             ),
           ),
@@ -1112,7 +1112,7 @@ class QuickLinksContent extends StatelessWidget {
                     item: item,
                     onTap: () {
                       // Close the bottom sheet first.
-                      Navigator.of(context).pop();
+                      // Navigator.of(context).pop();
 
                       // Navigate directly to the required page.
                       switch (item.title) {

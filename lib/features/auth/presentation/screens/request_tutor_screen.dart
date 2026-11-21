@@ -15,7 +15,7 @@ class RequestTutorScreen extends StatefulWidget {
   const RequestTutorScreen({super.key});
 
   @override
-  State<RequestTutorScreen> createState() => _RequestTutorScreenState();
+  State<RequestTutorScreen> createState() => _RequestTutorScreenState();  
 }
 
 class _RequestTutorScreenState extends State<RequestTutorScreen> {
@@ -102,19 +102,14 @@ class _RequestTutorScreenState extends State<RequestTutorScreen> {
 
         AppSnackbar.show(
           context,
-          data?["message"]?.toString() ??
-              "Tutor request submitted successfully.",
+          // data?["message"]?.toString() ??
+              "Thank you for submitting your tutor request. We will contact with you shortly.",
           SnackType.success,
         );
 
         guardianPhoneController.clear();
         classController.clear();
 
-        Future.delayed(const Duration(milliseconds: 500), () {
-          if (mounted) {
-            Navigator.pop(context);
-          }
-        });
 
         return;
       }
@@ -223,7 +218,7 @@ class _RequestTutorScreenState extends State<RequestTutorScreen> {
                 loading: _isLoading,
                 onPressed: _isLoading ? null : _submitRequest,
               ),
-
+               const SizedBox(height: 16), 
               // ==================================================
               // FLEXIBLE SPACE
               // ==================================================

@@ -34,7 +34,7 @@ class TutorPaymentScreen extends StatelessWidget {
                           title: "Platform Charges",
                           description:
                               "A one-time platform fee is applicable after a tutor successfully confirms a tuition job. This fee is charged separately for each tuition job processed through the platform.",
-                          buttonText: "Click Here",
+                          buttonText: "View Invoice",
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -51,7 +51,7 @@ class TutorPaymentScreen extends StatelessWidget {
                           title: "Verification Charges",
                           description:
                               "A one-time fee of BDT 500 is required to complete the profile verification process, ensuring authenticity and trustworthiness on our platform.",
-                          buttonText: "Click Here",
+                          buttonText: "View Invoice",
                           onPressed: () {
                             Navigator.push(
                               context,

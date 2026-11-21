@@ -99,8 +99,8 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   Widget build(BuildContext context) {
     return AuthLayout(
       imagePath: "assets/images/forgot-password.webp",
-      title: "Forgot Password",
-      subtitle: "Enter your phone to receive OTP",
+      title: "Forgot Password?",
+      subtitle: "Enter your registered phone number to receive OTP",
 
       child: Form(
         key: _formKey,
@@ -128,7 +128,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
               },
             ),
 
-            const SizedBox(height: 20),
+            // const SizedBox(height: 20),
 
             AppButton(
               label: "Send OTP",
@@ -137,7 +137,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
               onPressed: loading ? null : sendOtp,
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
 
             TextButton(
               onPressed: () {
