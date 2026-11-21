@@ -70,7 +70,7 @@ class TutorPaymentScreen extends StatelessWidget {
                           description:
                               "If a tutor pays the platform charge in advance but subsequently loses the tuition job for a valid reason, the payment will be refunded in accordance with our ",
                           linkText: "Refund Policy",
-                          buttonText: "Apply",
+                          buttonText: "Request Refund",
                           onLinkTap: () {
                             showModalBottomSheet(
                               context: context,

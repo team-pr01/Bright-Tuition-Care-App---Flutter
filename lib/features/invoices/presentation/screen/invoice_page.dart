@@ -226,6 +226,7 @@ class _InvoiceScreenState extends ConsumerState<InvoiceScreen> {
     return Scaffold(
       appBar: CommonAppBar(title: "Invoices"),
       body: SafeArea(child: _buildBody(state)),
+      backgroundColor: const Color(0xFFF2F5FC),
     );
   }
 
