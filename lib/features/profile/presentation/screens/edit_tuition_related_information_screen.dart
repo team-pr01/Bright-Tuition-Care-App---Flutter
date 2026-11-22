@@ -428,14 +428,14 @@ class _EditTuitionRelatedInformationScreenState
                       // LOCATION
                       // ==================================================
                       const Text(
-                        "Preferred Location",
+                        "Location Preferences",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
 
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 16),
 
                       // --------------------------------------------------
                       // CITIES

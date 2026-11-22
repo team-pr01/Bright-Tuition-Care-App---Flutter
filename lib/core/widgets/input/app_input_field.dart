@@ -83,9 +83,9 @@ class _AppInputFieldState extends State<AppInputField> {
     final labelWidget = RichText(
       text: TextSpan(
         text: widget.label,
-        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+        style: Theme.of(context).textTheme.titleSmall!.copyWith(
           color: AppColors.neutrals02,
-          fontWeight: FontWeight.w400,
+          fontWeight: FontWeight.w500,
         ),
         children: widget.required
             ? const [
@@ -1127,7 +1127,7 @@ class _Dropdown2SelectionContentState
             ),
           ],
 
-          const SizedBox(height: 18),
+          const SizedBox(height: 12),
 
           // CHIPS — Expanded → Flexible (only change inside the list area)
           Flexible(
