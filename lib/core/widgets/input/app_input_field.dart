@@ -835,32 +835,33 @@ class _Dropdown2SingleSelectionContentState
             ),
           ),
 
-          const SizedBox(height: 20),
-
           // SEARCH
-          TextFormField(
-            controller: searchController,
-            onChanged: _search,
-            style: const TextStyle(fontSize: 14, color: AppColors.neutrals02),
-            decoration: InputDecoration(
-              hintText: "Search...",
-              prefixIcon: const Icon(Icons.search),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppRadius.medium),
-                borderSide: BorderSide(
-                  color: AppColors.primary01.withOpacity(0.5),
-                  width: 1,
+          if (widget.items.length > 15) ...[
+            const SizedBox(height: 20),
+            TextFormField(
+              controller: searchController,
+              onChanged: _search,
+              style: const TextStyle(fontSize: 14, color: AppColors.neutrals02),
+              decoration: InputDecoration(
+                hintText: "Search...",
+                prefixIcon: const Icon(Icons.search),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.medium),
+                  borderSide: BorderSide(
+                    color: AppColors.primary01.withOpacity(0.5),
+                    width: 1,
+                  ),
                 ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppRadius.medium),
-                borderSide: const BorderSide(
-                  color: AppColors.primary01,
-                  width: 1.5,
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.medium),
+                  borderSide: const BorderSide(
+                    color: AppColors.primary01,
+                    width: 1.5,
+                  ),
                 ),
               ),
             ),
-          ),
+          ],
 
           const SizedBox(height: 18),
 
@@ -883,7 +884,7 @@ class _Dropdown2SingleSelectionContentState
                       duration: const Duration(milliseconds: 150),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 18,
-                        vertical: 10,
+                        vertical: 6,
                       ),
                       decoration: BoxDecoration(
                         color: isSelected
@@ -894,7 +895,7 @@ class _Dropdown2SingleSelectionContentState
                       child: Text(
                         item,
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 12,
                           color: isSelected
                               ? AppColors.primary01
                               : AppColors.neutrals02,
@@ -907,7 +908,7 @@ class _Dropdown2SingleSelectionContentState
             ),
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
 
           // BUTTONS
           Row(
@@ -916,6 +917,8 @@ class _Dropdown2SingleSelectionContentState
               IntrinsicWidth(
                 child: AppButton(
                   label: "Cancel",
+                  height: 38,
+                  width: 100,
                   variant: AppButtonVariant.outline,
                   onPressed: _cancel,
                 ),
@@ -924,6 +927,7 @@ class _Dropdown2SingleSelectionContentState
               Expanded(
                 child: AppButton(
                   label: "Apply",
+                  height: 38,
                   variant: AppButtonVariant.primary,
                   onPressed: selectedValue == null ? null : _apply,
                 ),
@@ -984,7 +988,11 @@ class _SelectedChip extends StatelessWidget {
                   color: const Color.fromARGB(31, 229, 56, 53),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.close, size: 12, color: AppColors.error),
+                child: const Icon(
+                  Icons.close,
+                  size: 12,
+                  color: AppColors.error,
+                ),
               ),
             ),
         ],
@@ -1098,25 +1106,26 @@ class _Dropdown2SelectionContentState
             ),
           ),
 
-          const SizedBox(height: 20),
-
           // SEARCH (unchanged)
-          TextFormField(
-            controller: searchController,
-            onChanged: _search,
-            style: const TextStyle(fontSize: 14),
-            decoration: InputDecoration(
-              hintText: "Search...",
-              prefixIcon: Icon(Icons.search),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppRadius.medium),
-                borderSide: BorderSide(
-                  color: AppColors.primary01.withOpacity(0.5),
-                  width: 1,
+          if (widget.items.length > 15) ...[
+            const SizedBox(height: 20),
+            TextFormField(
+              controller: searchController,
+              onChanged: _search,
+              style: const TextStyle(fontSize: 14),
+              decoration: InputDecoration(
+                hintText: "Search...",
+                prefixIcon: Icon(Icons.search),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.medium),
+                  borderSide: BorderSide(
+                    color: AppColors.primary01.withOpacity(0.5),
+                    width: 1,
+                  ),
                 ),
               ),
             ),
-          ),
+          ],
 
           const SizedBox(height: 18),
 
@@ -1141,13 +1150,13 @@ class _Dropdown2SelectionContentState
                       decoration: BoxDecoration(
                         color: isSelected
                             ? AppColors.primary01.withOpacity(0.18)
-                            : AppColors.neutrals03.withOpacity(0.18),
+                            : AppColors.neutrals03.withOpacity(0.11),
                         borderRadius: BorderRadius.circular(24),
                       ),
                       child: Text(
                         item,
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 12,
                           color: isSelected
                               ? AppColors.primary01
                               : AppColors.neutrals02,
@@ -1160,14 +1169,17 @@ class _Dropdown2SelectionContentState
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: 12),
 
           // BUTTONS (unchanged)
           Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(
+              IntrinsicWidth(
                 child: AppButton(
                   label: "Cancel",
+                  height: 38,
+                  width: 100,
                   variant: AppButtonVariant.outline,
                   onPressed: _cancel,
                 ),
@@ -1176,6 +1188,7 @@ class _Dropdown2SelectionContentState
               Expanded(
                 child: AppButton(
                   label: "Apply",
+                  height: 38,
                   variant: AppButtonVariant.primary,
                   onPressed: _apply,
                 ),

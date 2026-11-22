@@ -159,11 +159,17 @@ class AppButton extends StatelessWidget {
         return ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary01,
           foregroundColor: Colors.white,
+          side: BorderSide(
+            color: borderColor ?? AppColors.primary01,
+            width: borderWidth,
+          ),
           elevation: 0,
           padding: iconOnly
               ? EdgeInsets.zero
               : const EdgeInsets.symmetric(horizontal: 10),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius),),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(borderRadius),
+          ),
         );
 
       /// EXISTING SECONDARY
@@ -171,12 +177,16 @@ class AppButton extends StatelessWidget {
         return ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary01,
           foregroundColor: Colors.white,
+          side: BorderSide(
+            color: borderColor ?? AppColors.primary01,
+            width: borderWidth,
+          ),
           elevation: 0,
           padding: iconOnly
               ? EdgeInsets.zero
               : const EdgeInsets.symmetric(horizontal: 10),
           shape: RoundedRectangleBorder(
-           borderRadius: BorderRadius.circular(borderRadius),
+            borderRadius: BorderRadius.circular(borderRadius),
           ),
         );
 
@@ -207,11 +217,17 @@ class AppButton extends StatelessWidget {
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
           foregroundColor: Colors.white,
+          // side: BorderSide(
+          //   color: borderColor ?? AppColors.primary01,
+          //   width: borderWidth,
+          // ),
           elevation: 0,
           padding: iconOnly
               ? EdgeInsets.zero
               : const EdgeInsets.symmetric(horizontal: 10),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius),),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(borderRadius),
+          ),
         );
 
       /// NEW OUTLINE GRAY
@@ -221,7 +237,9 @@ class AppButton extends StatelessWidget {
           foregroundColor: AppColors.primary01,
           elevation: 0,
           side: BorderSide(color: AppColors.neutrals04),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius),),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(borderRadius),
+          ),
           padding: iconOnly
               ? EdgeInsets.zero
               : const EdgeInsets.symmetric(horizontal: 10),
@@ -230,12 +248,15 @@ class AppButton extends StatelessWidget {
         return ElevatedButton.styleFrom(
           backgroundColor: AppColors.error,
           foregroundColor: AppColors.neutrals01,
+          
           elevation: 0,
           padding: iconOnly
               ? EdgeInsets.zero
               : const EdgeInsets.symmetric(horizontal: 10),
           side: BorderSide(color: AppColors.neutrals04),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius),),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(borderRadius),
+          ),
         );
     }
   }
