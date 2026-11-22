@@ -615,7 +615,7 @@ class _Dropdown2Field extends StatelessWidget {
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 150),
             width: double.infinity,
-            constraints: const BoxConstraints(minHeight: 48),
+            constraints: const BoxConstraints(minHeight: 28),
             padding: EdgeInsets.symmetric(
               horizontal: hasSelection ? 0 : 12,
               vertical: hasSelection ? 0 : 0,
@@ -927,7 +927,7 @@ class _Dropdown2SingleSelectionContentState
               Expanded(
                 child: AppButton(
                   label: "Apply",
-                  height: 38,
+                  height: 40,
                   variant: AppButtonVariant.primary,
                   onPressed: selectedValue == null ? null : _apply,
                 ),

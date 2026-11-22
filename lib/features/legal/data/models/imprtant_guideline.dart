@@ -9,7 +9,7 @@ class ImportantGuidelinesData {
 }
 
 class ImportantGuidelineSection {
-  final String title;
+  final String? title;
   final List<String>? content;
   final String? description;
 
@@ -23,7 +23,7 @@ class ImportantGuidelineSection {
   final String? note;
 
   const ImportantGuidelineSection({
-    required this.title,
+    this.title,
     this.content,
     this.description,
     this.points,

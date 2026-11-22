@@ -159,9 +159,8 @@ class _EditTuitionRelatedInformationScreenState
     _subjectOptions = subjects.toSet().toList();
 
     // Remove subjects which don't belong to selected classes.
-    _selectedSubjects = _selectedSubjects
-        .where(_subjectOptions.contains)
-        .toList();
+    _selectedSubjects =
+        _selectedSubjects.where(_subjectOptions.contains).toList();
   }
 
   // ============================================================
@@ -186,9 +185,8 @@ class _EditTuitionRelatedInformationScreenState
     _locationOptions = locations.toSet().toList();
 
     // Remove locations which don't belong to selected cities.
-    _selectedLocations = _selectedLocations
-        .where(_locationOptions.contains)
-        .toList();
+    _selectedLocations =
+        _selectedLocations.where(_locationOptions.contains).toList();
   }
 
   // ============================================================
@@ -206,21 +204,13 @@ class _EditTuitionRelatedInformationScreenState
 
     final tuitionPreference = {
       "tutoringMethod": _tutoringMethodController.text.trim(),
-
       "tuitionStyle": _selectedTutoringStyles,
-
       "preferredCategories": _selectedCategories,
-
       "preferredClasses": _selectedClasses,
-
       "preferredSubjects": _selectedSubjects,
-
       "placeOfTuition": _selectedPlacesOfTuition,
-
       "preferredCities": _selectedCities,
-
       "preferredLocations": _selectedLocations,
-
       "expectedSalary": _expectedSalaryController.text.trim(),
     };
 
@@ -271,7 +261,6 @@ class _EditTuitionRelatedInformationScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CommonAppBar(title: "Edit Tuition Information"),
-
       body: SafeArea(
         child: Form(
           key: _formKey,
@@ -284,13 +273,11 @@ class _EditTuitionRelatedInformationScreenState
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 12),
-
                       // ==================================================
-                      // TUTORING INFORMATION
+                      // 1. ACCESSIBILITY INFORMATION
                       // ==================================================
                       const Text(
-                        "Tutoring Information",
+                        "Accessibility Information",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -304,12 +291,9 @@ class _EditTuitionRelatedInformationScreenState
                         label: "Tutoring Method",
                         type: AppInputType.multiline,
                         maxLines: 4,
-                        hint: "Explain your Tutoring Method ",
+                        hint: "Explain your Tutoring Method",
                       ),
 
-                      // --------------------------------------------------
-                      // TUTORING STYLE
-                      // --------------------------------------------------
                       AppInputField(
                         label: "Tutoring Styles",
                         type: AppInputType.dropdown2,
@@ -325,13 +309,50 @@ class _EditTuitionRelatedInformationScreenState
                         },
                       ),
 
-                      const SizedBox(height: 4),
+                      AppInputField(
+                        controller: _expectedSalaryController,
+                        label: "Expected Salary",
+                        hint: "eg: 6000",
+                      ),
+
+                      AppInputField(
+                        label: "Preferred Cities",
+                        type: AppInputType.dropdown2,
+                        dropdownItems: List<String>.from(
+                          filterData["cityCorporations"] ?? [],
+                        ),
+                        multiSelect: true,
+                        selectedValues: _selectedCities,
+                        onMultiChanged: (values) {
+                          setState(() {
+                            _selectedCities = List<String>.from(values);
+                            _buildLocationOptions();
+                          });
+                        },
+                      ),
+
+                      AppInputField(
+                        label: "Preferred Locations",
+                        type: AppInputType.dropdown2,
+                        hint: _selectedCities.isEmpty
+                            ? "Select city first"
+                            : "Select Locations",
+                        enabled: _selectedCities.isNotEmpty,
+                        dropdownItems: _locationOptions,
+                        multiSelect: true,
+                        selectedValues: _selectedLocations,
+                        onMultiChanged: (values) {
+                          setState(() {
+                            _selectedLocations = List<String>.from(values);
+                          });
+                        },
+                      ),
 
                       // ==================================================
-                      // TUITION PREFERENCES
+                      // 2. ADDITIONAL INFORMATION
                       // ==================================================
                       const Text(
-                        "Tuition Preferences",
+                        "Additional Information",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -340,9 +361,6 @@ class _EditTuitionRelatedInformationScreenState
 
                       const SizedBox(height: 16),
 
-                      // --------------------------------------------------
-                      // CATEGORY
-                      // --------------------------------------------------
                       AppInputField(
                         label: "Preferred Categories",
                         type: AppInputType.dropdown2,
@@ -361,9 +379,6 @@ class _EditTuitionRelatedInformationScreenState
                         },
                       ),
 
-                      // --------------------------------------------------
-                      // CLASSES
-                      // --------------------------------------------------
                       AppInputField(
                         label: "Preferred Classes",
                         type: AppInputType.dropdown2,
@@ -382,9 +397,6 @@ class _EditTuitionRelatedInformationScreenState
                         },
                       ),
 
-                      // --------------------------------------------------
-                      // SUBJECTS
-                      // --------------------------------------------------
                       AppInputField(
                         label: "Preferred Subjects",
                         type: AppInputType.dropdown2,
@@ -402,11 +414,8 @@ class _EditTuitionRelatedInformationScreenState
                         },
                       ),
 
-                      // --------------------------------------------------
-                      // PLACE OF TUITION
-                      // --------------------------------------------------
                       AppInputField(
-                        label: "Place of Tuition",
+                        label: "Place of Tutoring",
                         type: AppInputType.dropdown2,
                         dropdownItems: List<String>.from(
                           filterData["placeOfTuition"] ?? [],
@@ -415,86 +424,10 @@ class _EditTuitionRelatedInformationScreenState
                         selectedValues: _selectedPlacesOfTuition,
                         onMultiChanged: (values) {
                           setState(() {
-                            _selectedPlacesOfTuition = List<String>.from(
-                              values,
-                            );
+                            _selectedPlacesOfTuition =
+                                List<String>.from(values);
                           });
                         },
-                      ),
-
-                      const SizedBox(height: 4),
-
-                      // ==================================================
-                      // LOCATION
-                      // ==================================================
-                      const Text(
-                        "Location Preferences",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-
-                      const SizedBox(height: 16),
-
-                      // --------------------------------------------------
-                      // CITIES
-                      // --------------------------------------------------
-                      AppInputField(
-                        label: "Preferred Cities",
-                        type: AppInputType.dropdown2,
-                        dropdownItems: List<String>.from(
-                          filterData["cityCorporations"] ?? [],
-                        ),
-                        multiSelect: true,
-                        selectedValues: _selectedCities,
-                        onMultiChanged: (values) {
-                          setState(() {
-                            _selectedCities = List<String>.from(values);
-                            _buildLocationOptions();
-                          });
-                        },
-                      ),
-
-                      // --------------------------------------------------
-                      // LOCATIONS
-                      // --------------------------------------------------
-                      AppInputField(
-                        label: "Preferred Locations",
-                        type: AppInputType.dropdown2,
-                        hint: _selectedCities.isEmpty
-                            ? "Select city first"
-                            : "Select Locations",
-                        enabled: _selectedCities.isNotEmpty,
-                        dropdownItems: _locationOptions,
-                        multiSelect: true,
-                        selectedValues: _selectedLocations,
-                        onMultiChanged: (values) {
-                          setState(() {
-                            _selectedLocations = List<String>.from(values);
-                          });
-                        },
-                      ),
-
-                      const SizedBox(height: 4),
-
-                      // ==================================================
-                      // EXPERIENCE & SALARY
-                      // ==================================================
-                      const Text(
-                        "Experience & Salary",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-
-                      const SizedBox(height: 16),
-
-                      AppInputField(
-                        controller: _expectedSalaryController,
-                        label: "Expected Salary",
-                        hint: "eg: 6000",
                       ),
 
                       AppInputField(
@@ -503,7 +436,7 @@ class _EditTuitionRelatedInformationScreenState
                         hint: "eg: 5 Years",
                       ),
 
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 12),
                     ],
                   ),
                 ),

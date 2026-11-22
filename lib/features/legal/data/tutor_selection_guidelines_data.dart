@@ -1,10 +1,9 @@
 import 'package:btcclient/features/legal/data/models/imprtant_guideline.dart';
 
-const ImportantGuidelinesData tutorSelectionGuidelinesData =
-    ImportantGuidelinesData(
+const ImportantGuidelinesData
+tutorSelectionGuidelinesData = ImportantGuidelinesData(
   title: "Important Guidelines for Tutor Selection",
   sections: [
-
     /// Introduction
     ImportantGuidelineSection(
       title: "Introduction",
@@ -53,7 +52,8 @@ Initiate a conversation with the appointed tutor via phone to discuss your requi
         "Assess the tutor’s knowledge, communication style and suitability for your required subject during your interaction.",
         "If you have any questions or require assistance, feel free to reach out to our support team at 09617-785588.",
       ],
-      note: "Note: Communicate respectfully to ensure a positive interaction and an effective assessment of the tutor.",
+      note:
+          "Note: Communicate respectfully to ensure a positive interaction and an effective assessment of the tutor.",
     ),
 
     /// After Selecting a Tutor
@@ -67,6 +67,9 @@ Thank you for choosing Bright Tuition Care — where your child’s learning is 
 We wish you a successful and rewarding tutoring experience.
 """,
     ),
-
+    ImportantGuidelineSection(
+      description:
+          "Thank you for choosing Bright Tuition Care — where your child’s learning is supported with quality, safety and professionalism.We wish you a successful and rewarding tutoring experience.",
+    ),
   ],
 );

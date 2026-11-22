@@ -157,7 +157,7 @@ class CredentialSectionCard extends StatelessWidget {
           // TITLE
           // ----------------------------------------------------------
           const Text(
-            "No documents uploaded yet.",
+            "No identity information submitted",
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 16,
@@ -172,7 +172,7 @@ class CredentialSectionCard extends StatelessWidget {
           // DESCRIPTION
           // ----------------------------------------------------------
           const Text(
-            "Upload your credential document to complete "
+            "Upload your identity information to complete "
             "your profile.",
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 13, height: 1.4, color: Colors.black54),

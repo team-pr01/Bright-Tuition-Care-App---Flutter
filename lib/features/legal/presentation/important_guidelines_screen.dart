@@ -8,38 +8,30 @@ import '../../../../core/config/theme.dart';
 class ImportantGuidelinesScreen extends ConsumerWidget {
   final ImportantGuidelinesData document;
 
-  const ImportantGuidelinesScreen({
-    super.key,
-    required this.document,
-  });
+  const ImportantGuidelinesScreen({super.key, required this.document});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: const CommonAppBar(
-        title: "Important Guidelines",
-      ),
+      appBar: const CommonAppBar(title: "Important Guidelines"),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// Main Title
-            Text(
-              document.title,
-              style: theme.textTheme.headlineMedium,
-            ),
+            // /// Main Title
+            // Text(
+            //   document.title,
+            //   style: theme.textTheme.headlineMedium,
+            // ),
 
-            const SizedBox(height: AppSpacing.lg),
+            // const SizedBox(height: AppSpacing.lg),
 
             /// Sections
             ...document.sections.map(
-              (section) => _buildSection(
-                context,
-                section,
-              ),
+              (section) => _buildSection(context, section),
             ),
           ],
         ),
@@ -54,15 +46,13 @@ class ImportantGuidelinesScreen extends ConsumerWidget {
     final theme = Theme.of(context);
 
     return Padding(
-      padding: const EdgeInsets.only(
-        bottom: AppSpacing.lg,
-      ),
+      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           /// Section Title
           Text(
-            section.title,
+            section.title!,
             style: theme.textTheme.titleLarge?.copyWith(
               color: AppColors.primary01,
             ),
@@ -73,14 +63,10 @@ class ImportantGuidelinesScreen extends ConsumerWidget {
           /// Description
           if (section.description != null)
             Padding(
-              padding: const EdgeInsets.only(
-                bottom: AppSpacing.sm,
-              ),
+              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
               child: Text(
                 section.description!,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  height: 1.6,
-                ),
+                style: theme.textTheme.bodyMedium?.copyWith(height: 1.6),
               ),
             ),
 
@@ -88,14 +74,10 @@ class ImportantGuidelinesScreen extends ConsumerWidget {
           if (section.content != null)
             ...section.content!.map(
               (text) => Padding(
-                padding: const EdgeInsets.only(
-                  bottom: AppSpacing.sm,
-                ),
+                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                 child: Text(
                   text,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    height: 1.6,
-                  ),
+                  style: theme.textTheme.bodyMedium?.copyWith(height: 1.6),
                 ),
               ),
             ),
@@ -103,27 +85,17 @@ class ImportantGuidelinesScreen extends ConsumerWidget {
           /// Bullet Points
           if (section.points != null)
             ...section.points!.map(
-              (point) => _buildBulletPoint(
-                context,
-                point,
-              ),
+              (point) => _buildBulletPoint(context, point),
             ),
 
           /// Nested Subsections
           if (section.subsections != null)
             ...section.subsections!.map(
-              (subsection) => _buildSubsection(
-                context,
-                subsection,
-              ),
+              (subsection) => _buildSubsection(context, subsection),
             ),
 
           /// Section Note
-          if (section.note != null)
-            _buildNote(
-              context,
-              section.note!,
-            ),
+          if (section.note != null) _buildNote(context, section.note!),
         ],
       ),
     );
@@ -136,9 +108,7 @@ class ImportantGuidelinesScreen extends ConsumerWidget {
     final theme = Theme.of(context);
 
     return Padding(
-      padding: const EdgeInsets.only(
-        top: AppSpacing.md,
-      ),
+      padding: const EdgeInsets.only(top: AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -156,55 +126,37 @@ class ImportantGuidelinesScreen extends ConsumerWidget {
           if (subsection.content != null)
             ...subsection.content!.map(
               (text) => Padding(
-                padding: const EdgeInsets.only(
-                  bottom: AppSpacing.sm,
-                ),
+                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                 child: Text(
                   text,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    height: 1.6,
-                  ),
+                  style: theme.textTheme.bodyMedium?.copyWith(height: 1.6),
                 ),
               ),
             ),
 
           /// Subsection Note
-          if (subsection.note != null)
-            _buildNote(
-              context,
-              subsection.note!,
-            ),
+          if (subsection.note != null) _buildNote(context, subsection.note!),
         ],
       ),
     );
   }
 
-  Widget _buildBulletPoint(
-    BuildContext context,
-    String point,
-  ) {
+  Widget _buildBulletPoint(BuildContext context, String point) {
     final theme = Theme.of(context);
 
     return Padding(
-      padding: const EdgeInsets.only(
-        bottom: 6,
-      ),
+      padding: const EdgeInsets.only(bottom: 6),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Padding(
-            padding: EdgeInsets.only(
-              top: 2,
-              right: 8,
-            ),
+            padding: EdgeInsets.only(top: 2, right: 8),
             child: Text("•"),
           ),
           Expanded(
             child: Text(
               point,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                height: 1.5,
-              ),
+              style: theme.textTheme.bodyMedium?.copyWith(height: 1.5),
             ),
           ),
         ],
@@ -212,27 +164,47 @@ class ImportantGuidelinesScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildNote(
-    BuildContext context,
-    String note,
-  ) {
+  Widget _buildNote(BuildContext context, String note) {
     final theme = Theme.of(context);
 
     return Container(
-      margin: const EdgeInsets.only(
-        top: AppSpacing.md,
-      ),
-      padding: const EdgeInsets.all(
-        AppSpacing.md,
-      ),
+      margin: const EdgeInsets.only(top: 8),
       decoration: BoxDecoration(
-        color: Colors.yellow.shade100,
+        color: AppColors.warning03,
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Text(
-        note,
-        style: theme.textTheme.bodyMedium?.copyWith(
-          height: 1.5,
+      child: Container(
+        margin: const EdgeInsets.only(left: 4),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: AppColors.warning02,
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(8),
+            bottomRight: Radius.circular(8),
+          ),
+        ),
+        child: RichText(
+          text: TextSpan(
+            text: "Special Note: ",
+            style: theme.textTheme.bodyMedium?.copyWith(
+              height: 1.5,
+              fontWeight: FontWeight.bold, // 👈 Makes "Special Note:" bold
+            ),
+            children: [
+              TextSpan(
+                text: note,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  height: 1.5,
+                  fontWeight:
+                      FontWeight.normal, // 👈 Keeps the note text normal
+                ),
+              ),
+            ],
+          ),
+          textHeightBehavior: const TextHeightBehavior(
+            applyHeightToFirstAscent: false,
+            applyHeightToLastDescent: false,
+          ),
         ),
       ),
     );

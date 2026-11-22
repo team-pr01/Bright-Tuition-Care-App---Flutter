@@ -114,14 +114,14 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
               const SizedBox(height: 20),
 
               AppInputField(
-                label: "Class",
+                label: "Class/Grade",
                 controller: classController,
                 required: true,
-                hint: "Enter Class",
+                hint: "Enter Class/Grade",
               ),
 
               AppInputField(
-                label: "Guardian Phone Number",
+                label: "Guardian/Student Phone Number",
                 controller: guardianPhoneController,
                 keyboardType: TextInputType.phone,
                 required: true,
@@ -145,7 +145,7 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
                     "Enter details of lead including salary expectations, subjects, etc.",
               ),
 
-              const SizedBox(height: 20),
+              // const SizedBox(height: 20),
 
               AppButton(
                 label: widget.isEdit ? "Update Lead" : "Submit Lead",

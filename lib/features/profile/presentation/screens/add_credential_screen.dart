@@ -181,7 +181,7 @@ class _AddCredentialScreenState
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(
-            AppSpacing.lg,
+            AppSpacing.slg,
           ),
           child: Column(
             crossAxisAlignment:
@@ -190,7 +190,7 @@ class _AddCredentialScreenState
               const Text(
                 "Add Credential Information",
                 style: TextStyle(
-                  fontSize: 22,
+                  fontSize: 16,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -207,7 +207,7 @@ class _AddCredentialScreenState
                 ),
               ),
 
-              const SizedBox(height: 28),
+              const SizedBox(height: 16),
 
               // ==================================================
               // CREDENTIAL TYPE
@@ -229,11 +229,6 @@ class _AddCredentialScreenState
                 },
               ),
 
-              const SizedBox(height: 8),
-
-              // ==================================================
-              // DOCUMENT
-              // ==================================================
 
               const Text(
                 "Credential Document",
