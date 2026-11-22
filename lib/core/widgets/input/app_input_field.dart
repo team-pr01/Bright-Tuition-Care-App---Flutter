@@ -884,7 +884,7 @@ class _Dropdown2SingleSelectionContentState
                       duration: const Duration(milliseconds: 150),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 18,
-                        vertical: 6,
+                        vertical: 8,
                       ),
                       decoration: BoxDecoration(
                         color: isSelected
@@ -1145,7 +1145,7 @@ class _Dropdown2SelectionContentState
                       duration: const Duration(milliseconds: 150),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 18,
-                        vertical: 6,
+                        vertical: 8,
                       ),
                       decoration: BoxDecoration(
                         color: isSelected
