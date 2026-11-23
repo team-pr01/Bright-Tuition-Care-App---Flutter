@@ -71,6 +71,14 @@ class PersonalSectionCard extends StatelessWidget {
             label: "Present Address",
             value: profile.personalInfo.address,
           ),
+          ProfileInfoRow(
+            label: "Home District",
+            value: profile.personalInfo.homeDistrict,
+          ),
+          ProfileInfoRow(
+            label: "Blood Group",
+            value: profile.personalInfo.bloodGroup,
+          ),
 
           ProfileInfoRow(
             label: "Religion",
@@ -102,8 +110,6 @@ class PersonalSectionCard extends StatelessWidget {
           ),
 
           const SizedBox(height: 16),
-
-        
 
           ProfileInfoRow(
             label: "Emergency Contact Number",

@@ -54,6 +54,8 @@ class PersonalInformationRequest {
   final String? motherPhoneNumber;
   final String? overview;
   final String? emergencyContactNumber;
+   final String? homeDistrict;
+  final String? bloodGroup;
 
   PersonalInformationRequest({
     this.additionalPhoneNumber,
@@ -67,6 +69,8 @@ class PersonalInformationRequest {
     this.motherPhoneNumber,
     this.overview,
     this.emergencyContactNumber,
+    this.homeDistrict,
+    this.bloodGroup,
   });
 
   Map<String, dynamic> toJson() {
@@ -82,6 +86,8 @@ class PersonalInformationRequest {
       "motherPhoneNumber": motherPhoneNumber,
       "overview": overview,
       "emergencyContactNumber": emergencyContactNumber,
+      "homeDistrict": homeDistrict,
+      "bloodGroup": bloodGroup,
     };
   }
 }

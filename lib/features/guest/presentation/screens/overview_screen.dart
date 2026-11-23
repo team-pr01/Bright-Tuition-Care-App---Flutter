@@ -687,7 +687,6 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
     return Material(
       color: Colors.transparent,
       child: GestureDetector(
-        // borderRadius: BorderRadius.circular(8),
         onTap: () async {
           final selectedCity = city.trim();
 
@@ -695,16 +694,12 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
             return;
           }
 
-          print(
-            '🏙️ SELECTED CITY: '
-            '$selectedCity',
-          );
+          print('🏙️ SELECTED CITY: $selectedCity');
 
           final filter = JobFilter(status: 'live', city: [selectedCity]);
 
           try {
-            // Fetch the jobs for the
-            // selected city first.
+            // 1. Fetch the jobs for the selected city first.
             await ref.read(jobsProvider.notifier).applyFilter(filter);
 
             if (!mounted) return;
@@ -722,7 +717,6 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           decoration: BoxDecoration(
             color: Colors.white,
-            // border: Border.all(color: AppColors.primary01),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Text(
@@ -736,9 +730,6 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
       ),
     );
   }
-  // ============================================================
-  // NAV BUTTON
-  // ============================================================
 
   Widget _buildNavButton({required IconData icon, VoidCallback? onTap}) {
     return Material(

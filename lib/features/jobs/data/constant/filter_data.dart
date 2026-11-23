@@ -4140,6 +4140,17 @@ const Map<String, dynamic> filterData = {
   ],
 };
 
+const List<String> bloodGroups = [
+  "A+",
+  "A-",
+  "B+",
+  "B-",
+  "AB+",
+  "AB-",
+  "O+",
+  "O-",
+];
+
 const List<String> degreeOptions = [
   "SSC",
   "Dakhil",

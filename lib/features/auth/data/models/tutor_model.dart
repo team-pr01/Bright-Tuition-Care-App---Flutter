@@ -137,6 +137,8 @@ class PersonalInfo {
   final String? motherName;
   final String? motherPhoneNumber;
   final String? emergencyContactNumber;
+  final String? homeDistrict;
+  final String? bloodGroup;
 
   PersonalInfo({
     this.additionalPhone,
@@ -149,6 +151,8 @@ class PersonalInfo {
     this.motherName,
     this.motherPhoneNumber,
     this.emergencyContactNumber,
+    this.homeDistrict,
+    this.bloodGroup,
   });
 
   factory PersonalInfo.fromJson(Map<String, dynamic> json) {
@@ -165,6 +169,8 @@ class PersonalInfo {
       motherName: json['motherName'],
       motherPhoneNumber: json['motherPhoneNumber'],
       emergencyContactNumber: json['emergencyContactNumber'],
+      homeDistrict: json['homeDistrict'],
+      bloodGroup: json['bloodGroup']
     );
   }
 }

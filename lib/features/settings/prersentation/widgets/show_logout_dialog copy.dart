@@ -43,7 +43,7 @@ void showLogoutDialog(BuildContext context) {
                 Text(
                   "Logout",
                   style: theme.textTheme.headlineSmall?.copyWith(
-                    color: AppColors.error,
+                    color: AppColors.neutrals02,
                   ),
                 ),
 

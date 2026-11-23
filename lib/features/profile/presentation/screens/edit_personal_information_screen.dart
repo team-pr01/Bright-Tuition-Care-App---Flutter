@@ -36,6 +36,8 @@ class _EditPersonalInformationScreenState
   late final TextEditingController _addressController;
   late final TextEditingController _religionController;
   late final TextEditingController _nationalityController;
+  late final TextEditingController _homeDistrictController;
+  late final TextEditingController _bloodGroupController;
 
   late final TextEditingController _fatherNameController;
   late final TextEditingController _fatherPhoneController;
@@ -80,6 +82,12 @@ class _EditPersonalInformationScreenState
       text: p.personalInfo.religion ?? "",
     );
 
+    _homeDistrictController = TextEditingController(
+      text: p.personalInfo.homeDistrict ?? "",
+    );
+    _bloodGroupController = TextEditingController(
+      text: p.personalInfo.bloodGroup ?? "",
+    );
     _nationalityController = TextEditingController();
 
     _fatherNameController = TextEditingController(
@@ -125,6 +133,8 @@ class _EditPersonalInformationScreenState
     _addressController.dispose();
     _religionController.dispose();
     _nationalityController.dispose();
+    _homeDistrictController.dispose();
+    _bloodGroupController.dispose();
 
     _fatherNameController.dispose();
     _fatherPhoneController.dispose();
@@ -158,6 +168,8 @@ class _EditPersonalInformationScreenState
         address: _addressController.text.trim(),
         religion: _religionController.text.trim(),
         nationality: _nationalityController.text.trim(),
+        homeDistrict: _homeDistrictController.text.trim(),
+        bloodGroup: _bloodGroupController.text.trim(),
         fatherName: _fatherNameController.text.trim(),
         fatherPhoneNumber: _fatherPhoneController.text.trim(),
         motherName: _motherNameController.text.trim(),
@@ -284,18 +296,6 @@ class _EditPersonalInformationScreenState
                         },
                       ),
 
-                      const SizedBox(height: 4),
-
-                      const Text(
-                        "Personal Information",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-
-                      const SizedBox(height: 16),
-
                       AppInputField(
                         controller: _additionalPhoneController,
                         label: "Additional Phone Number",
@@ -316,6 +316,34 @@ class _EditPersonalInformationScreenState
                         type: AppInputType.multiline,
                         maxLines: 3,
                         hint: "Enter your address",
+                      ),
+
+                      AppInputField(
+                        label: "Home District",
+                        type: AppInputType.dropdown2,
+                        value: _homeDistrictController.text,
+                        hint: "Select Home District",
+                        dropdownItems: List<String>.from(
+                          filterData["cityCorporations"],
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            _homeDistrictController.text = value ?? "";
+                          });
+                        },
+                      ),
+
+                      AppInputField(
+                        label: "Blood Group",
+                        type: AppInputType.dropdown2,
+                        value: _bloodGroupController.text,
+                        hint: "Select Blood Group",
+                        dropdownItems: bloodGroups,
+                        onChanged: (value) {
+                          setState(() {
+                            _bloodGroupController.text = value ?? "";
+                          });
+                        },
                       ),
 
                       AppInputField(
