@@ -209,15 +209,15 @@ class _NotificationTile extends StatelessWidget {
               // ICON + UNREAD INDICATOR
               // ==================================================
               SizedBox(
-                width: 44,
-                height: 44,
+                width: 34,
+                height: 34,
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
                     Container(
                       width: 44,
                       height: 44,
-                      padding: const EdgeInsets.all(11),
+                      padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
                         color: isUnread
                             ? AppColors.primary02
@@ -232,8 +232,8 @@ class _NotificationTile extends StatelessWidget {
                       ),
                       child: SvgPicture.asset(
                         _iconPath,
-                        width: 20,
-                        height: 20,
+                        width: 16,
+                        height: 16,
                         colorFilter: const ColorFilter.mode(
                           AppColors.primary01,
                           BlendMode.srcIn,

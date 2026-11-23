@@ -2,6 +2,7 @@ import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/services/navigation_service.dart';
 import 'package:btcclient/core/widgets/dashboard/dashboard_nav_links.dart';
 import 'package:btcclient/core/widgets/navbar/common_appbar.dart';
+import 'package:btcclient/features/jobs/data/models/application_modal.dart';
 import 'package:btcclient/features/jobs/presentation/enums/job_card_variant.dart';
 import 'package:btcclient/features/jobs/presentation/provider/application_provider.dart';
 import 'package:btcclient/features/jobs/presentation/widgets/job_bottom_sheet.dart';
@@ -77,9 +78,24 @@ class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
         'status=$targetStatus',
       );
 
-      final application = await ref
-          .read(applicationsProvider.notifier)
-          .fetchSingleApplications(applicationId: applicationId);
+      // 1. Look for the application in the current list first
+      final currentState = ref.read(applicationsProvider);
+      ApplicationModel? application;
+
+      try {
+        application = currentState.applications.firstWhere(
+          (app) => app.id == applicationId || app.id.contains(applicationId),
+        );
+      } catch (_) {
+        // Not found in list
+      }
+
+      // 2. If not found, then fetch it
+      if (application == null) {
+        application = await ref
+            .read(applicationsProvider.notifier)
+            .fetchSingleApplications(applicationId: applicationId);
+      }
 
       if (!mounted) return;
 
@@ -94,13 +110,13 @@ class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
         return;
       }
 
+      // 3. Check if the job is loaded properly (either as an object or if we need to fetch it)
       if (application.job == null) {
         debugPrint('❌ Application found but application.job is null');
         return;
       }
 
       debugPrint('✅ Application found: $applicationId');
-
       debugPrint('🚀 Opening JobBottomSheet');
 
       await showModalBottomSheet(
@@ -109,7 +125,7 @@ class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
         backgroundColor: Colors.transparent,
         builder: (_) {
           return JobBottomSheet(
-            job: application.job,
+            job: application!.job!,
             application: application,
             variant: JobCardVariant.application,
             changeTab: widget.changeTab,

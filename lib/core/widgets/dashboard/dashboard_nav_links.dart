@@ -25,12 +25,7 @@ class DashboardNavLinks extends StatelessWidget {
     // RESPONSIVE VALUES
     // -------------------------------------------------------------------------
 
-    final outerPadding = context.responsiveValue<double>(
-      extraSmall: 2,
-      small: 3,
-      medium: 4,
-      large: 4,
-    );
+   
 
     final circlePadding = context.responsiveValue<double>(
       extraSmall: 9,
@@ -99,7 +94,7 @@ class DashboardNavLinks extends StatelessWidget {
         ),
       ),
       child: Padding(
-        padding: EdgeInsets.all(outerPadding),
+        padding: EdgeInsets.all(2),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
