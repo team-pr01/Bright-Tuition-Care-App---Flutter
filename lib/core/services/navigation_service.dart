@@ -381,7 +381,7 @@ static void navigateToApplication(
 
   final handler = onOpenApplicationDetails;
 
-  // MyApplicationPage is already mounted.
+  // MyApplicationPage is already mounted.`
   if (handler != null) {
     debugPrint(
       '🚀 Application page is ready. '

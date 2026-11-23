@@ -170,6 +170,16 @@ class _NotificationTile extends StatelessWidget {
         return 'assets/icons/navigations/job-board.svg';
       case 'job_details':
         return 'assets/icons/navigations/job-board.svg';
+      case 'application_details':
+        return 'assets/icons/navigations/applied.svg';
+      case 'tutor_important_guidelines':
+        return 'assets/icons/navigations/question-mark.svg';
+      case 'tutor_profile':
+        return 'assets/icons/navigations/user-circle.svg';
+      case 'invoice_details':
+        return 'assets/icons/navigations/invoice.svg';
+      case 'profile_verification':
+        return 'assets/icons/visual/tick.svg';
 
       default:
         return 'assets/icons/operations/notification.svg';
