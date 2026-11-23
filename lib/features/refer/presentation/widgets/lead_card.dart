@@ -165,7 +165,7 @@ class _LeadCardState extends State<LeadCard> {
                       Expanded(
                         child: _infoTile(
                           Icons.school_outlined,
-                          "Class",
+                          "Class/Grade",
                           widget.lead.classes,
                         ),
                       ),
@@ -189,7 +189,16 @@ class _LeadCardState extends State<LeadCard> {
                   _infoTile(
                     Icons.description_outlined,
                     "Details",
-                    widget.lead.details,
+                    (widget.lead.details == null ||
+                            widget.lead.details!.trim().isEmpty)
+                        ? "No details provided"
+                        : widget.lead.details!,
+                    // Optional: Make the fallback text look disabled/lighter
+                    valueColor:
+                        (widget.lead.details == null ||
+                            widget.lead.details!.trim().isEmpty)
+                        ? AppColors.neutrals03
+                        : null,
                   ),
 
                   _paymentTile(),
@@ -365,6 +374,10 @@ class _LeadCardState extends State<LeadCard> {
         bg = AppColors.primary03;
         text = AppColors.primary01;
     }
+    final status = widget.lead.status;
+    final capitalizedStatus = status.isNotEmpty
+        ? status[0].toUpperCase() + status.substring(1).toLowerCase()
+        : "";
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -373,7 +386,7 @@ class _LeadCardState extends State<LeadCard> {
         borderRadius: BorderRadius.circular(30),
       ),
       child: Text(
-        widget.lead.status,
+        capitalizedStatus,
         style: AppTextStyles.labelSmall.copyWith(
           color: text,
           fontWeight: FontWeight.w600,

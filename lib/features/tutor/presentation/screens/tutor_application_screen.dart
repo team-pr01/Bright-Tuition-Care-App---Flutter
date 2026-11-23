@@ -43,7 +43,9 @@ class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
           .read(applicationsProvider.notifier)
-          .fetchApplications(status: _selectedStatus);
+          .fetchApplications(
+            status: _selectedStatus == "applied" ? "" : _selectedStatus,
+          );
     });
 
     _scrollController.addListener(() {
@@ -163,7 +165,7 @@ class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
                   setState(() => _selectedStatus = "applied");
                   ref
                       .read(applicationsProvider.notifier)
-                      .fetchApplications(status: "applied");
+                      .fetchApplications(status: "");
                 },
                 label: "Applied",
                 count: state.meta?.counts?.applied ?? 0,
@@ -247,7 +249,7 @@ class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
                       ? "Confirmed"
                       : _selectedStatus == "cancelled"
                       ? "Cancelled"
-                      : "Rejected"}${state.applications.length == 1 ? "Application" : "Applications"}",
+                      : "Rejected"}${state.applications.length == 1 ? " Application" : " Applications"}",
                   style: Theme.of(context).textTheme.titleLarge!.copyWith(
                     color: AppColors.neutrals02,
                     fontWeight: FontWeight.w400,

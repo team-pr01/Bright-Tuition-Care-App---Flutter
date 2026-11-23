@@ -592,14 +592,14 @@ class _Dropdown2Field extends StatelessWidget {
           child: Row(
             children: [
               Expanded(child: label),
-
-              Icon(
-                Icons.keyboard_arrow_down_rounded,
-                size: 22,
-                color: enabled
-                    ? AppColors.neutrals03
-                    : AppColors.neutrals03.withOpacity(0.5),
-              ),
+              if (hasSelection)
+                Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  size: 22,
+                  color: enabled
+                      ? AppColors.neutrals03
+                      : AppColors.neutrals03.withOpacity(0.5),
+                ),
             ],
           ),
         ),

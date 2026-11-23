@@ -3,6 +3,8 @@ import 'package:btcclient/core/utils/get_cout.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
 import 'package:btcclient/core/widgets/dashboard/dashboard_nav_links.dart';
 import 'package:btcclient/core/widgets/search_bar/search_bar.dart';
+import 'package:btcclient/core/widgets/skeleton/shimmer_wrapper.dart';
+import 'package:btcclient/core/widgets/skeleton/skeleton_box.dart';
 import 'package:btcclient/features/jobs/data/models/job_filter.dart';
 import 'package:btcclient/features/jobs/presentation/enums/job_card_variant.dart';
 import 'package:btcclient/features/jobs/presentation/provider/job_provider.dart';
@@ -282,26 +284,37 @@ class _JobsPageState extends ConsumerState<JobsPage> {
           /// 📊 COUNT + FILTER
           Row(
             children: [
-              Expanded(
-                child: Text(
-                  getCountText(
-                    (isTutor || isGuest)
-                        ? (state.meta?.liveJobs ?? 0)
-                        : (state.meta?.counts.liveJobs ?? 0),
-                  ),
-                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                    color: AppColors.neutrals02,
-                    fontWeight: FontWeight.w600,
-                    height: 1.5,
-                  ),
-                ),
+                            Expanded(
+                child: state.isLoading
+                    ? const Align(
+                        alignment: Alignment.centerLeft,
+                        child: ShimmerWrapper(
+                          child: SkeletonBox(
+                            width: 140, // Adjust width based on your text length
+                            height: 30,
+                            borderRadius: BorderRadius.all(Radius.circular(6)),
+                          ),
+                        ),
+                      )
+                    : Text(
+                        getCountText(
+                          (isTutor || isGuest)
+                              ? (state.meta?.liveJobs ?? 0)
+                              : (state.meta?.counts.liveJobs ?? 0),
+                        ),
+                        style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                          color: AppColors.neutrals02,
+                          fontWeight: FontWeight.w600,
+                          height: 1.5,
+                        ),
+                      ),
               ),
 
               if (isTutor || isGuest) ...[
                 /// Clear Filters
                 Row(
                   children: [
-                    if (hasFilters && (state.meta?.liveJobs ?? 0) > 0) ...[
+                    if (hasFilters ) ...[
                       Padding(
                         padding: const EdgeInsets.only(right: 6),
                         child: AppButton(
@@ -321,17 +334,17 @@ class _JobsPageState extends ConsumerState<JobsPage> {
                         ),
                       ),
 
-                      const SizedBox(width: 6),
+                      const SizedBox(width: 6),],
 
                       AppButton(
-                        label: "Filter",
+                        label: "Filters",
                         onPressed: () => openFilter(context),
                         variant: AppButtonVariant.outline,
                         height: 32,
                         width: 100,
                         icon: Icons.tune,
                       ),
-                    ],
+                  
                   ],
                 ),
               ],

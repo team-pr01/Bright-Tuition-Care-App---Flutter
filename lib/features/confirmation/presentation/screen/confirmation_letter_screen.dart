@@ -2,7 +2,9 @@ import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/pdf/pdf_service.dart';
 import 'package:btcclient/core/utils/date_formatter.dart';
 import 'package:btcclient/core/widgets/button/app_button.dart';
+import 'package:btcclient/core/widgets/input/app_input_field.dart';
 import 'package:btcclient/core/widgets/navbar/common_appbar.dart';
+import 'package:btcclient/core/widgets/reusable_modal.dart';
 import 'package:btcclient/core/widgets/snackbar/app_snackbar.dart';
 import 'package:btcclient/features/confirmation/pdf/confirmation_letter_pdf.dart';
 import 'package:btcclient/features/confirmation/presentation/notifier/confirmation_notifier.dart';
@@ -45,21 +47,15 @@ class _ConfirmationLetterScreenState
     final state = ref.watch(confirmationProvider);
 
     return Scaffold(
-      appBar: CommonAppBar(
-        title: "Confirmation Letter",
-      ),
-      body: SafeArea(
-        child: _buildBody(state),
-      ),
+      appBar: CommonAppBar(title: "Confirmation Letter"),
+      body: SafeArea(child: _buildBody(state)),
     );
   }
 
   Widget _buildBody(ConfirmationState state) {
     if (state.isLoading) {
       return const Center(
-        child: CircularProgressIndicator(
-          color: AppColors.primary01,
-        ),
+        child: CircularProgressIndicator(color: AppColors.primary01),
       );
     }
 
@@ -78,9 +74,7 @@ class _ConfirmationLetterScreenState
             SizedBox(height: 12),
             Text(
               "Unable to load confirmation letter.",
-              style: TextStyle(
-                color: AppColors.neutrals03,
-              ),
+              style: TextStyle(color: AppColors.neutrals03),
             ),
           ],
         ),
@@ -109,26 +103,16 @@ class _ConfirmationLetterScreenState
               title: "Tuition Details",
               icon: Icons.school_outlined,
               children: [
-                _infoRow(
-                  "Job ID",
-                  letter.job.jobId,
-                  isHighlighted: true,
-                ),
-                _infoRow(
-                  "Job Title",
-                  letter.job.title,
-                ),
-                _infoRow(
-                  "Subjects",
-                  letter.job.subjects.join(", "),
-                ),
-                _infoRow(
-                  "Class",
-                  letter.job.classes.join(", "),
-                ),
+                _infoRow("Job ID", letter.job.jobId, isHighlighted: true),
+                _infoRow("Job Title", letter.job.title),
+                _infoRow("Subjects", letter.job.subjects.join(", ")),
+                _infoRow("Class", letter.job.classes.join(", ")),
                 _infoRow(
                   "Salary",
-                  "${letter.job.salary} BDT",
+                  RegExp(r'\d').hasMatch(letter.job.salary ?? '')
+                      ? "${letter.job.salary} BDT"
+                      : (letter.job.salary ??
+                            "Negotiable"), // Fallback if text is "Negotiable" or empty
                   isMoney: true,
                 ),
                 _infoRow(
@@ -154,8 +138,8 @@ class _ConfirmationLetterScreenState
                   (letter.guardian?.name.isNotEmpty ?? false)
                       ? letter.guardian!.name
                       : (letter.job.guardianName.isNotEmpty
-                          ? letter.job.guardianName
-                          : "-"),
+                            ? letter.job.guardianName
+                            : "-"),
                 ),
                 _infoRow(
                   "Guardian ID",
@@ -174,8 +158,8 @@ class _ConfirmationLetterScreenState
                   (letter.guardian?.phoneNumber.isNotEmpty ?? false)
                       ? letter.guardian!.phoneNumber
                       : (letter.job.guardianPhoneNumber.isNotEmpty
-                          ? letter.job.guardianPhoneNumber
-                          : "-"),
+                            ? letter.job.guardianPhoneNumber
+                            : "-"),
                 ),
               ],
             ),
@@ -241,13 +225,9 @@ class _ConfirmationLetterScreenState
             const SizedBox(height: 32),
 
             AppButton(
-              label: _isDownloadingPdf
-                  ? "Downloading..."
-                  : "Download PDF",
+              label: _isDownloadingPdf ? "Downloading..." : "Download PDF",
               variant: AppButtonVariant.gradient,
-              icon: _isDownloadingPdf
-                  ? null
-                  : Icons.download_outlined,
+              icon: _isDownloadingPdf ? null : Icons.download_outlined,
               onPressed: _isDownloadingPdf
                   ? null
                   : () async {
@@ -256,8 +236,7 @@ class _ConfirmationLetterScreenState
                       });
 
                       try {
-                        final pdfWidget =
-                            await ConfirmationLetterPdf.build(
+                        final pdfWidget = await ConfirmationLetterPdf.build(
                           letter: letter,
                         );
 
@@ -300,9 +279,7 @@ class _ConfirmationLetterScreenState
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: AppColors.primary03.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(
-                  AppRadius.medium,
-                ),
+                borderRadius: BorderRadius.circular(AppRadius.medium),
               ),
               child: Row(
                 children: [
@@ -336,16 +313,10 @@ class _ConfirmationLetterScreenState
   Widget _buildHeader() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(
-        vertical: 20,
-        horizontal: 20,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            AppColors.primary01,
-            AppColors.primary01.withOpacity(0.8),
-          ],
+          colors: [AppColors.primary01, AppColors.primary01.withOpacity(0.8)],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
         ),
@@ -453,9 +424,7 @@ class _ConfirmationLetterScreenState
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.large),
-        border: Border.all(
-          color: AppColors.primary01.withOpacity(0.08),
-        ),
+        border: Border.all(color: AppColors.primary01.withOpacity(0.08)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.03),
@@ -469,11 +438,7 @@ class _ConfirmationLetterScreenState
         children: [
           Row(
             children: [
-              Icon(
-                icon,
-                size: 22,
-                color: AppColors.primary01,
-              ),
+              Icon(icon, size: 22, color: AppColors.primary01),
               const SizedBox(width: 10),
               Text(
                 title,
@@ -519,8 +484,8 @@ class _ConfirmationLetterScreenState
                 color: isHighlighted
                     ? AppColors.primary01
                     : isMoney
-                        ? AppColors.success
-                        : AppColors.neutrals02,
+                    ? AppColors.success
+                    : AppColors.neutrals02,
                 fontWeight: isHighlighted || isMoney
                     ? FontWeight.w600
                     : FontWeight.w400,
@@ -567,13 +532,9 @@ class _ConfirmationLetterScreenState
           Row(
             children: [
               Icon(
-                signed
-                    ? Icons.check_circle_rounded
-                    : Icons.draw_outlined,
+                signed ? Icons.check_circle_rounded : Icons.draw_outlined,
                 size: 22,
-                color: signed
-                    ? AppColors.success
-                    : AppColors.primary01,
+                color: signed ? AppColors.success : AppColors.primary01,
               ),
               const SizedBox(width: 10),
               Text(
@@ -608,16 +569,11 @@ class _ConfirmationLetterScreenState
           if (signed)
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(
-                vertical: 20,
-                horizontal: 16,
-              ),
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
               decoration: BoxDecoration(
                 color: AppColors.primary03.withOpacity(0.05),
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: AppColors.primary01.withOpacity(0.1),
-                ),
+                border: Border.all(color: AppColors.primary01.withOpacity(0.1)),
               ),
               child: Column(
                 children: [
@@ -717,136 +673,149 @@ class _ConfirmationLetterScreenState
     );
   }
 
-  Future<void> _showSignatureDialog({
-    required bool isTutor,
-  }) async {
+  Future<void> _showSignatureDialog({required bool isTutor}) async {
     final controller = TextEditingController();
+    bool isLoading = false;
 
-    await showDialog(
+    await ReusableModal.show(
       context: context,
-      builder: (_) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-              AppRadius.large,
-            ),
-          ),
-          title: Row(
-            children: [
-              const Icon(
-                Icons.draw_outlined,
-                color: AppColors.primary01,
-                size: 24,
-              ),
-              const SizedBox(width: 10),
-              Text(
-                isTutor
-                    ? "Tutor Signature"
-                    : "Guardian Signature",
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-          content: Column(
+      barrierDismissible: true,
+      maxHeightFactor: 0.8,
+      child: StatefulBuilder(
+        builder: (context, setModalState) {
+          return Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text(
-                "Type your full name as your digital signature:",
-                style: TextStyle(
-                  color: AppColors.neutrals03,
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: controller,
-                decoration: InputDecoration(
-                  hintText: "Type your signature",
-                  hintStyle: const TextStyle(
-                    color: AppColors.neutrals04,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(
-                      AppRadius.small,
+              // ==========================================================
+              // HEADER
+              // ==========================================================
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary01.withOpacity(0.1),
+                      shape: BoxShape.circle,
                     ),
-                    borderSide: const BorderSide(
-                      color: AppColors.neutrals04,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(
-                      AppRadius.small,
-                    ),
-                    borderSide: const BorderSide(
+                    child: const Icon(
+                      Icons.draw_outlined,
                       color: AppColors.primary01,
+                      size: 24,
                     ),
                   ),
-                ),
-                autofocus: true,
-                textCapitalization:
-                    TextCapitalization.words,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          isTutor ? "Tutor Signature" : "Guardian Signature",
+                          style: AppTextStyles.titleLarge.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.neutrals02,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          "Type your full name as your digital signature",
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: AppColors.neutrals03,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 24),
+
+              // ==========================================================
+              // INPUT FIELD
+              // ==========================================================
+              AppInputField(
+                controller: controller,
+                label: "Signature",
+                hint: "Type your signature",
+                required: true,
+              ),
+
+              const SizedBox(height: 16),
+
+              // ==========================================================
+              // ACTIONS
+              // ==========================================================
+              Row(
+                children: [
+                  Expanded(
+                    child: AppButton(
+                      label: "Cancel",
+                      variant: AppButtonVariant.outlineGray,
+                      onPressed: isLoading
+                          ? null
+                          : () => Navigator.pop(context),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: AppButton(
+                      label: "Sign",
+                      variant: AppButtonVariant.gradient,
+                      loading: isLoading,
+                      onPressed: isLoading
+                          ? null
+                          : () async {
+                              final signature = controller.text.trim();
+
+                              if (signature.isEmpty) return;
+
+                              setModalState(() => isLoading = true);
+
+                              final notifier = ref.read(
+                                confirmationProvider.notifier,
+                              );
+                              bool success;
+
+                              if (isTutor) {
+                                success = await notifier.signTutor(
+                                  id: widget.letterId,
+                                  signature: signature,
+                                );
+                              } else {
+                                success = await notifier.signGuardian(
+                                  id: widget.letterId,
+                                  signature: signature,
+                                );
+                              }
+
+                              if (success) {
+                                await notifier.fetchSingleLetter(
+                                  widget.letterId,
+                                );
+
+                                if (context.mounted) {
+                                  Navigator.pop(context);
+                                }
+                              } else {
+                                if (context.mounted) {
+                                  setModalState(() => isLoading = false);
+                                  AppSnackbar.show(
+                                    context,
+                                    "Failed to sign letter. Please try again.",
+                                    SnackType.error,
+                                  );
+                                }
+                              }
+                            },
+                    ),
+                  ),
+                ],
               ),
             ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text(
-                "Cancel",
-                style: TextStyle(
-                  color: AppColors.neutrals03,
-                ),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                final signature = controller.text.trim();
-
-                if (signature.isEmpty) return;
-
-                final notifier =
-                    ref.read(confirmationProvider.notifier);
-
-                bool success;
-
-                if (isTutor) {
-                  success = await notifier.signTutor(
-                    id: widget.letterId,
-                    signature: signature,
-                  );
-                } else {
-                  success = await notifier.signGuardian(
-                    id: widget.letterId,
-                    signature: signature,
-                  );
-                }
-
-                if (success) {
-                  await notifier.fetchSingleLetter(
-                    widget.letterId,
-                  );
-
-                  if (mounted) {
-                    Navigator.pop(context);
-                  }
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary01,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(
-                    AppRadius.small,
-                  ),
-                ),
-              ),
-              child: const Text("Sign"),
-            ),
-          ],
-        );
-      },
+          );
+        },
+      ),
     );
 
     controller.dispose();

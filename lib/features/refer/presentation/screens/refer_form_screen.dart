@@ -104,9 +104,10 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
           child: Column(
             children: [
               Text(
-                widget.isEdit ? "Edit Lead" : "Add New Lead",
+                widget.isEdit ? "Edit Lead Information" : "Add New Lead",
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.w500,
+                      fontSize: 16,
                       color: Colors.black,
                     ),
               ),

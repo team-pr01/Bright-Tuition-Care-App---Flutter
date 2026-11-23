@@ -82,7 +82,7 @@ class JobCardSkeleton extends StatelessWidget {
                 SizedBox(width: 16),
                 SkeletonBox(width: 60, height: 16),
                 Spacer(),
-                SkeletonBox(width: 120, height: 40),
+                // SkeletonBox(width: 120, height: 40),
               ],
             ),
           ],

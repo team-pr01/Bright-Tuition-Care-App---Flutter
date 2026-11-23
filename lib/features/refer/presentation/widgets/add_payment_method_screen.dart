@@ -31,7 +31,7 @@ class _AddPaymentMethodScreenState
   String? paymentMethod;
 
   final paymentMethods = const [
-    "Bkash",
+    "bKash",
     "Nagad",
     "Rocket",
     "Bank",
@@ -104,6 +104,7 @@ class _AddPaymentMethodScreenState
                   "Add Payment Method",
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         fontWeight: FontWeight.w600,
+                        fontSize: 16,
                         color: Colors.black,
                       ),
                 ),
@@ -117,7 +118,7 @@ class _AddPaymentMethodScreenState
                       ),
                 ),
 
-                const SizedBox(height: 30),
+                const SizedBox(height: 20),
 
                 AppInputField(
                   label: "Payment Method",
@@ -141,10 +142,9 @@ class _AddPaymentMethodScreenState
                   keyboardType: TextInputType.phone,
                 ),
 
-                const SizedBox(height: 10),
 
                 AppButton(
-                  label: "Save Payment",
+                  label: "Save Payment Details",
                   variant: AppButtonVariant.gradient,
                   loading: state.isLoading,
                   onPressed: state.isLoading ? null : _submit,

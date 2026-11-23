@@ -20,300 +20,186 @@ class ConfirmationCard extends StatelessWidget {
     final guardianSigned = letter.guardianSignature != null;
     final bothSigned = tutorSigned && guardianSigned;
     final totalSigned = (tutorSigned ? 1 : 0) + (guardianSigned ? 1 : 0);
+    final statusColor = bothSigned ? AppColors.success : Colors.orange;
+    final accentColor = bothSigned ? AppColors.success : AppColors.primary01;
 
     return Container(
       margin: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
         vertical: AppSpacing.sm,
       ),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppColors.neutrals01,
         borderRadius: BorderRadius.circular(AppRadius.large),
         border: Border.all(
-          color: bothSigned
-              ? AppColors.success.withOpacity(0.2)
-              : AppColors.primary01.withOpacity(0.08),
+          color: AppColors.neutrals04.withOpacity(0.5),
+          width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            color: Colors.black.withOpacity(0.035),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// ========== HEADER ==========
-          Container(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: bothSigned
-                    ? [
-                        AppColors.success.withOpacity(0.05),
-                        AppColors.neutrals01,
-                      ]
-                    : [
-                        AppColors.primary03.withOpacity(0.05),
-                        AppColors.neutrals01,
-                      ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(AppRadius.large),
-                topRight: Radius.circular(AppRadius.large),
-              ),
-            ),
-            child: Row(
-              children: [
-                /// Icon
-                Container(
-                  width: 54,
-                  height: 54,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: bothSigned
-                          ? [
-                              AppColors.success,
-                              AppColors.success.withOpacity(0.7),
-                            ]
-                          : [
-                              AppColors.primary01,
-                              AppColors.primary01.withOpacity(0.7),
-                            ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(14),
-                    boxShadow: [
-                      BoxShadow(
-                        color:
-                            (bothSigned
-                                    ? AppColors.success
-                                    : AppColors.primary01)
-                                .withOpacity(0.2),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Icon(
-                    bothSigned
-                        ? Icons.verified_rounded
-                        : Icons.description_outlined,
-                    color: Colors.white,
-                    size: 28,
-                  ),
+          /// ========== HEADER (JOB TITLE + META + STATUS) ==========
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  color: accentColor.withOpacity(0.10),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-
-                const SizedBox(width: AppSpacing.md),
-
-                /// Title
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Confirmation Letter",
-                        style: AppTextStyles.headlineSmall.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.neutrals02,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.primary03,
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: Text(
-                              "Job #${letter.job.jobId}",
-                              style: AppTextStyles.labelSmall.copyWith(
-                                color: AppColors.primary01,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            "•",
-                            style: TextStyle(
-                              color: AppColors.neutrals04,
-                              fontSize: 12,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            DateFormatter.formattedDate(
-                                  letter.createdAt.toIso8601String(),
-                                ) ??
-                                "-",
-                            style: AppTextStyles.labelSmall.copyWith(
-                              color: AppColors.neutrals03,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                child: Icon(
+                  bothSigned
+                      ? Icons.verified_outlined
+                      : Icons.description_outlined,
+                  color: accentColor,
+                  size: 20,
                 ),
-
-                /// Status Badge
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: bothSigned
-                              ? [
-                                  AppColors.success,
-                                  AppColors.success.withOpacity(0.8),
-                                ]
-                              : [Colors.orange, Colors.orange.withOpacity(0.8)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(100),
-                        boxShadow: [
-                          BoxShadow(
-                            color:
-                                (bothSigned ? AppColors.success : Colors.orange)
-                                    .withOpacity(0.2),
-                            blurRadius: 4,
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            bothSigned
-                                ? Icons.check_circle_rounded
-                                : Icons.pending,
-                            color: Colors.white,
-                            size: 14,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            bothSigned ? "Completed" : "Pending",
-                            style: AppTextStyles.labelSmall.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ],
+                    Text(
+                      letter.job.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTextStyles.titleMedium.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.neutrals02,
+                        height: 1.3,
                       ),
                     ),
-                    // const SizedBox(height: 4),
-                    // Text(
-                    //   "$totalSigned/2 Signed",
-                    //   style: AppTextStyles.labelSmall.copyWith(
-                    //     color: AppColors.neutrals03,
-                    //     fontWeight: FontWeight.w500,
-                    //   ),
-                    // ),
+                    const SizedBox(height: 4),
+                    Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 6,
+                      runSpacing: 2,
+                      children: [
+                        Text(
+                          "Job #${letter.job.jobId}",
+                          style: AppTextStyles.labelSmall.copyWith(
+                            color: AppColors.primary01,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(
+                          "•",
+                          style: TextStyle(
+                            color: AppColors.neutrals04,
+                            fontSize: 12,
+                          ),
+                        ),
+                        Text(
+                          DateFormatter.formattedDate(
+                                letter.createdAt.toIso8601String(),
+                              ) ??
+                              "-",
+                          style: AppTextStyles.labelSmall.copyWith(
+                            color: AppColors.neutrals03,
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
-              ],
+              ),
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
+                decoration: BoxDecoration(
+                  color: statusColor.withOpacity(0.10),
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 6,
+                      height: 6,
+                      decoration: BoxDecoration(
+                        color: statusColor,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      bothSigned ? "Completed" : "Pending",
+                      style: AppTextStyles.labelSmall.copyWith(
+                        color: statusColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            child: Divider(
+              height: 1,
+              thickness: 1,
+              color: AppColors.neutrals04.withOpacity(0.45),
             ),
           ),
 
-          /// ========== CONTENT ==========
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                /// Job Title
-                Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.primary03.withOpacity(0.08),
-                    // borderRadius: BorderRadius.circular(AppRadius.small),
-                    // border: Border.all(
-                    //   color: AppColors.primary01.withOpacity(0.1),
-                    // ),
-                  ),
-                  child: Row(
-                    children: [
-                      // Icon(
-                      //   Icons.work_outline_rounded,
-                      //   size: 18,
-                      //   color: AppColors.primary01,
-                      // ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          letter.job.title,
-                          style: AppTextStyles.titleMedium.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.neutrals02,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: AppSpacing.md),
-
-                /// ========== PARTICIPANTS ==========
-                Text(
-                  "Participants",
-                  style: AppTextStyles.labelMedium.copyWith(
-                    color: AppColors.neutrals03,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-                const SizedBox(height: 8),
-
-                _participantTile(
-                  icon: Icons.person_outline_rounded,
-                  name: letter.guardian?.name.isNotEmpty == true
-                      ? letter.guardian!.name
-                      : "Guardian",
-                  role: "Guardian",
-                  isSigned: guardianSigned,
-                ),
-                const SizedBox(height: 6),
-                _participantTile(
-                  icon: Icons.person_outline_rounded,
-                  name: letter.tutor.name,
-                  role: "Tutor",
-                  isSigned: tutorSigned,
-                ),
-
-                const SizedBox(height: AppSpacing.md),
-
-                /// ========== PROGRESS ==========
-                _buildProgressIndicator(totalSigned: totalSigned),
-
-                const SizedBox(height: AppSpacing.md),
-
-                /// ========== VIEW BUTTON ==========
-                AppButton(
-                  label: "View Letter",
-                  onPressed: onView,
-                  variant: AppButtonVariant.gradient,
-                  icon: Icons.remove_red_eye_outlined,
-                  height: 48,
-                ),
-              ],
+          /// ========== PARTICIPANTS ==========
+          Text(
+            "Participants",
+            style: AppTextStyles.labelMedium.copyWith(
+              color: AppColors.neutrals03,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.4,
             ),
+          ),
+          const SizedBox(height: 8),
+
+          _participantTile(
+            icon: Icons.person_outline_rounded,
+            name: letter.guardian?.name.isNotEmpty == true
+                ? letter.guardian!.name
+                : "Guardian",
+            role: "Guardian",
+            isSigned: guardianSigned,
+          ),
+          const SizedBox(height: 8),
+          _participantTile(
+            icon: Icons.person_outline_rounded,
+            name: letter.tutor.name,
+            role: "Tutor",
+            isSigned: tutorSigned,
+          ),
+
+          const SizedBox(height: 14),
+
+          /// ========== PROGRESS ==========
+          _buildProgressIndicator(totalSigned: totalSigned),
+
+          const SizedBox(height: AppSpacing.md),
+
+          /// ========== VIEW BUTTON ==========
+          AppButton(
+            label: "View Letter",
+            onPressed: onView,
+            variant: AppButtonVariant.gradient,
+            icon: Icons.remove_red_eye_outlined,
+            height: 44,
           ),
         ],
       ),
@@ -327,17 +213,15 @@ class ConfirmationCard extends StatelessWidget {
     required String role,
     required bool isSigned,
   }) {
+    final badgeColor = isSigned ? AppColors.success : Colors.orange;
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
       decoration: BoxDecoration(
-        color: isSigned
-            ? AppColors.success.withOpacity(0.05)
-            : AppColors.neutrals01,
+        color: AppColors.neutrals01,
         borderRadius: BorderRadius.circular(AppRadius.small),
         border: Border.all(
-          color: isSigned
-              ? AppColors.success.withOpacity(0.2)
-              : AppColors.neutrals04.withOpacity(0.3),
+          color: AppColors.neutrals04.withOpacity(0.45),
         ),
       ),
       child: Row(
@@ -346,8 +230,8 @@ class ConfirmationCard extends StatelessWidget {
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
               color: isSigned
-                  ? AppColors.success.withOpacity(0.1)
-                  : AppColors.neutrals04.withOpacity(0.2),
+                  ? AppColors.success.withOpacity(0.10)
+                  : AppColors.neutrals04.withOpacity(0.20),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -363,6 +247,8 @@ class ConfirmationCard extends StatelessWidget {
               children: [
                 Text(
                   name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: AppTextStyles.bodyMedium.copyWith(
                     fontWeight: FontWeight.w600,
                     color: AppColors.neutrals02,
@@ -377,27 +263,26 @@ class ConfirmationCard extends StatelessWidget {
               ],
             ),
           ),
+          const SizedBox(width: 8),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: isSigned
-                  ? AppColors.success.withOpacity(0.1)
-                  : Colors.orange.withOpacity(0.1),
+              color: badgeColor.withOpacity(0.10),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
-                  isSigned ? Icons.check_circle_rounded : Icons.pending,
+                  isSigned ? Icons.check_circle_rounded : Icons.pending_outlined,
                   size: 12,
-                  color: isSigned ? AppColors.success : Colors.orange,
+                  color: badgeColor,
                 ),
                 const SizedBox(width: 4),
                 Text(
                   isSigned ? "Signed" : "Pending",
                   style: AppTextStyles.labelSmall.copyWith(
-                    color: isSigned ? AppColors.success : Colors.orange,
+                    color: badgeColor,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -422,13 +307,13 @@ class ConfirmationCard extends StatelessWidget {
               style: AppTextStyles.labelMedium.copyWith(
                 color: AppColors.neutrals03,
                 fontWeight: FontWeight.w600,
-                letterSpacing: 0.5,
+                letterSpacing: 0.4,
               ),
             ),
             Text(
               "$totalSigned/2",
               style: AppTextStyles.labelMedium.copyWith(
-                color: AppColors.primary01,
+                color: totalSigned == 2 ? AppColors.success : AppColors.primary01,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -439,13 +324,13 @@ class ConfirmationCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           child: LinearProgressIndicator(
             value: totalSigned / 2,
-            minHeight: 6,
-            backgroundColor: AppColors.neutrals04.withOpacity(0.2),
+            minHeight: 5,
+            backgroundColor: AppColors.neutrals04.withOpacity(0.25),
             color: totalSigned == 2 ? AppColors.success : AppColors.primary01,
           ),
         ),
         if (totalSigned == 2) ...[
-          const SizedBox(height: 4),
+          const SizedBox(height: 6),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -465,32 +350,6 @@ class ConfirmationCard extends StatelessWidget {
             ],
           ),
         ],
-      ],
-    );
-  }
-
-  /// ========== OLD STATUS ROW (Kept for reference but not used) ==========
-  Widget _statusRow(String title, bool signed) {
-    return Row(
-      children: [
-        Text(
-          "$title : ",
-          style: AppTextStyles.bodyMedium.copyWith(color: AppColors.neutrals03),
-        ),
-        const Spacer(),
-        Icon(
-          signed ? Icons.check_circle : Icons.pending,
-          color: signed ? AppColors.success : Colors.orange,
-          size: 18,
-        ),
-        const SizedBox(width: 6),
-        Text(
-          signed ? "Signed" : "Pending",
-          style: AppTextStyles.bodyMedium.copyWith(
-            color: signed ? AppColors.success : Colors.orange,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
       ],
     );
   }
