@@ -54,8 +54,9 @@ class GuardianCardsSection extends StatelessWidget {
               Expanded(
                 child: DashboardSmallCard(
                   title: "$profileCompletion%",
-                  description:
-                      "Complete & organized profile may help to get better response",
+                  description: profileCompletion > 100
+                      ? "Complete your profile to become one of the most trusted members on the platform."
+                      : "Your profile is now fully completed.",
                   icon: ProfileProgressIcon(
                     progress: (profileCompletion / 100).clamp(0.0, 1.0),
                   ),
