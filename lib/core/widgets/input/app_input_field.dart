@@ -667,12 +667,23 @@ class _Dropdown2Field extends StatelessWidget {
     if (!hasSelection) {
       return SizedBox(
         height: 48,
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            hint ?? "Select",
-            style: const TextStyle(fontSize: 14, color: AppColors.neutrals03),
-          ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                hint ?? "Select",
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: AppColors.neutrals03,
+                ),
+              ),
+            ),
+
+            const Icon(
+              Icons.keyboard_arrow_down_rounded,
+              color: AppColors.neutrals03,
+            ),
+          ],
         ),
       );
     }
@@ -703,12 +714,23 @@ class _Dropdown2Field extends StatelessWidget {
     if (selectedValues.isEmpty) {
       return SizedBox(
         height: 48,
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            hint ?? "Select",
-            style: const TextStyle(fontSize: 14, color: AppColors.neutrals03),
-          ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                hint ?? "Select",
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: AppColors.neutrals03,
+                ),
+              ),
+            ),
+
+            const Icon(
+              Icons.keyboard_arrow_down_rounded,
+              color: AppColors.neutrals03,
+            ),
+          ],
         ),
       );
     }
