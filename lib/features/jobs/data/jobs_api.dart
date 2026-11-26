@@ -66,9 +66,6 @@ class JobsApi {
       "/job/my-posted-jobs",
       queryParameters: query,
     );
-
-    print("📦 POSTED JOBS RAW: ${response.data}");
-
     return response.data;
   }
 

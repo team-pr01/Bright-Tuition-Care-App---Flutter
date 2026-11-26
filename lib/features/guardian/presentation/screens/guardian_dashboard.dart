@@ -203,14 +203,10 @@ class _GuardianHomeScreenState extends ConsumerState<GuardianHomeScreen> {
         ? dashboardData["data"]["confirmationLetterCount"] ?? 0
         : 0;
 
-    final hasPostedAnyJob = dashboardData != null
-        ? dashboardData["data"]["hasPostedAnyJob"] ?? false
-        : false;
-    // ============================================================
-    // DASHBOARD
-    // ============================================================
-
-    debugPrint("📊 GUARDIAN DASHBOARD STATS: $dashboardData");
+    final hasPostedAnyJob = dashboardData?["data"]?["hasPostedAnyJob"] ?? false;
+    debugPrint(
+    "📊 hasPostedAnyJob STATS: $hasPostedAnyJob"
+    );
 
     return Scaffold(
       body: SafeArea(

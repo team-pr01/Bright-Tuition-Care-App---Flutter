@@ -282,6 +282,7 @@ class _JobsPageState extends ConsumerState<JobsPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           /// 📊 COUNT + FILTER
+          if(isTutor || isGuest)...[
           Row(
             children: [
               Expanded(
@@ -353,7 +354,7 @@ class _JobsPageState extends ConsumerState<JobsPage> {
               const SizedBox(height: 16),
             ],
           ),
-
+         SizedBox(height: 8,) ],
           /// 🔍 SEARCH
           if (isTutor) ...[
             ReusableSearchBar(

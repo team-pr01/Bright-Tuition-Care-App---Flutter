@@ -28,14 +28,8 @@ class VerifyProfileCard extends StatelessWidget {
       }
 
       if (role == "tutor") {
-        if (hasConfirmedAnyJob) {
-          return "Get exclusive benefits by completing your profile verification.";
-        }
         return "Get exclusive benefits by completing your profile verification.";
       } else if (role == "guardian") {
-        if (hasPostedAnyJob) {
-          return "Submit a verification request to become a trusted member on the platform.";
-        }
         return "Submit a verification request to become a trusted member on the platform.";
       }
 
