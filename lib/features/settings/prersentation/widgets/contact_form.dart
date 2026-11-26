@@ -41,7 +41,7 @@ class _ContactFormState extends ConsumerState<ContactForm> {
             Text(
               widget.isProfileLocked
                   ? "Your profile is locked. Unlock it to update your contact details."
-                  : "Update your phone number ",
+                  : "Update your phone number.(WhatsApp preferred)",
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: AppColors.neutrals03,
               ),

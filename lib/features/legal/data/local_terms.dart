@@ -3,7 +3,6 @@ import 'models/legal_document.dart';
 const LegalDocument termsDocument = LegalDocument(
   title: "Acceptance of Terms of Use",
   sections: [
-
     LegalSection(
       title: "Acceptance of Terms of Use",
       content: """
@@ -16,7 +15,7 @@ To ensure transparency, we will inform users of any updates through:
 • Email notifications to registered users
 • The Notice Board in the user’s account dashboard
 
-After updates are published, you will be required to review and agree to the revised Terms of Use before continuing to use the platform.
+After updates are published, you will be required to review and agree to the revised Terms of Use before continuing to use the platform.If you do not agree with the updated terms, you must discontinue use of our services immediately.If you do not agree with the updated terms, you must discontinue use of our services immediately.
 """,
     ),
 
@@ -157,6 +156,5 @@ Unauthorized use is prohibited.
 • Platform reserves right to refuse service
 """,
     ),
-
   ],
 );

@@ -273,40 +273,6 @@ class _PromotionPage extends StatelessWidget {
                     );
                   },
                 ),
-
-                // ==================================================
-                // OPTIONAL BUTTON
-                // ==================================================
-                if (promotion.buttonText != null &&
-                    promotion.buttonText!.trim().isNotEmpty &&
-                    hasLink)
-                  Positioned(
-                    left: 20,
-                    right: 20,
-                    bottom: 20,
-
-                    child: ElevatedButton(
-                      onPressed: onTap,
-
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 13),
-
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-
-                      child: Text(
-                        // 👈 Check if text is longer than 15 characters
-                        promotion.buttonText!.length > 15
-                            ? '${promotion.buttonText!.substring(0, 15)}...'
-                            : promotion.buttonText!,
-                        overflow: TextOverflow
-                            .ellipsis, // Safety fallback for extremely long words
-                        maxLines: 1,
-                      ),
-                    ),
-                  ),
               ],
             ),
           ),

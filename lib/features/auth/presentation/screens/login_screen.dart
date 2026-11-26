@@ -150,8 +150,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return AuthListener(
       child: AuthLayout(
         // imagePath: "assets/images/teacher.webp",
-        title: "Get Started Now",
-        subtitle: "Create an account or sign in as tutor or guardian/student",
+        title: "Welcome Back",
+        subtitle: "Enter credentials below to access personalized dashboard",
         child: Form(
           key: _formKey,
           child: Column(
@@ -218,7 +218,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 },
               ),
 
-              const SizedBox(height: 8),
+              // const SizedBox(height: 8),
 
               // =================================================
               // FORGOT PASSWORD

@@ -89,7 +89,7 @@ class _GuardianProfilePageState extends ConsumerState<GuardianProfilePage> {
                   // GUARDIAN PROFILE HEADER
                   // =====================================================
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 36, 16, 0),
+                    padding: const EdgeInsets.fromLTRB(8, 36, 16, 0),
                     child: _buildBackButton(),
                   ),
                   GuardianProfileCard(

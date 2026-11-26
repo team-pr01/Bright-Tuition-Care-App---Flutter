@@ -114,8 +114,9 @@ class ReusableModal extends StatelessWidget {
                 top: 10,
                 right: 12,
                 child: Material(
-                  color: AppColors.error.withOpacity(0.1),
+                  color: const Color.fromARGB(255, 248, 229, 229),
                   shape: const CircleBorder(),
+                     elevation: 2, 
                   child: InkWell(
                     customBorder: const CircleBorder(),
                     onTap: () {
