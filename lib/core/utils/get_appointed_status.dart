@@ -12,7 +12,7 @@ class StatusDataFormatter {
         return const Color(0xFF9C9700);
       case "confirmed":
       case "ongoing":
-        return const Color(0xFF39BA3D);
+        return const Color(0xFF00c950);
       case "withdrawn":
       case "rejected":
         return Colors.red;
@@ -20,18 +20,19 @@ class StatusDataFormatter {
         return Colors.grey;
     }
   }
+
   static Color getStatusColorGuardian(String? status) {
     switch (status) {
       case "pending":
-        return Colors.yellow;
+        return const Color(0xFFca8a04);
       case "closed":
-        return Colors.grey;
+        return const Color(0xFF4a5565);
       case "ongoing":
-        return const Color(0xFF39BA3D);
+        return const Color(0xFF00c950);
       case "cancelled":
-        return Colors.red;
+        return const Color(0xFFe7000b);
       default:
-         return const Color(0xFF39BA3D);
+        return const Color(0xFF00c950);
     }
   }
 
@@ -57,74 +58,74 @@ class StatusDataFormatter {
   }
 
   static Color getJobApplicationStatusColor(String status) {
-  switch (status) {
-    case "applied":
-      return Colors.blue;
-    case "shortlisted":
-      return Colors.orange;
-    case "appointed":
-    case "confirmed":
-      return Colors.green;
-    case "ongoing":
-      return Colors.green;
-    case "rejected":
-      return Colors.red;
-    default:
-      return Colors.grey;
-  }
-}
-static String getApplicationStatus({
-  required String? applicationStatus,
-  required String? jobStatus,
-}) {
-  if (jobStatus == null || jobStatus.isEmpty) return "N/A";
-
-  if (jobStatus == "closed") {
-    return "Closed";
+    switch (status) {
+      case "applied":
+        return Colors.blue;
+      case "shortlisted":
+        return Colors.orange;
+      case "appointed":
+      case "confirmed":
+        return Colors.green;
+      case "ongoing":
+        return Colors.green;
+      case "rejected":
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
   }
 
-  switch (applicationStatus) {
-    case "rejected":
-    case "confirmed":
+  static String getApplicationStatus({
+    required String? applicationStatus,
+    required String? jobStatus,
+  }) {
+    if (jobStatus == null || jobStatus.isEmpty) return "N/A";
+
+    if (jobStatus == "closed") {
       return "Closed";
+    }
 
-    case "appointed":
-      return "Appointed";
+    switch (applicationStatus) {
+      case "rejected":
+      case "confirmed":
+        return "Closed";
 
-    case "applied":
-    case "shortlisted":
-      return "Ongoing";
+      case "appointed":
+        return "Appointed";
 
-    default:
-      return jobStatus == "Live" ? "Ongoing" : "Closed";
-  }
-}
- static Color getApplicationStatusColor({
-  required String? applicationStatus,
-  required String? jobStatus,
-}) {
+      case "applied":
+      case "shortlisted":
+        return "Ongoing";
 
-  if (jobStatus == "closed") {
-    return Colors.red;
+      default:
+        return jobStatus == "Live" ? "Ongoing" : "Closed";
+    }
   }
 
-  switch (applicationStatus) {
-    case "rejected":
-    case "confirmed":
+  static Color getApplicationStatusColor({
+    required String? applicationStatus,
+    required String? jobStatus,
+  }) {
+    if (jobStatus == "closed") {
       return Colors.red;
+    }
 
-    case "appointed":
-       return Colors.green;
-    case "live":
-       return Colors.green;
+    switch (applicationStatus) {
+      case "rejected":
+      case "confirmed":
+        return Colors.red;
 
-    case "applied":
-    case "shortlisted":
-       return Colors.green;
+      case "appointed":
+        return Colors.green;
+      case "live":
+        return Colors.green;
 
-    default:
-       return Colors.grey;
+      case "applied":
+      case "shortlisted":
+        return Colors.green;
+
+      default:
+        return Colors.grey;
+    }
   }
-}
-
 }

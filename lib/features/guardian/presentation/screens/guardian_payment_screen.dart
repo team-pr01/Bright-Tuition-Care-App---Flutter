@@ -1,6 +1,7 @@
 import 'package:btcclient/core/config/theme.dart';
 import 'package:btcclient/core/widgets/dashboard/action_card.dart';
 import 'package:btcclient/core/widgets/helpline_card/helpline_card.dart';
+import 'package:btcclient/core/widgets/navbar/common_appbar.dart';
 import 'package:btcclient/features/invoices/presentation/screen/invoice_page.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -12,6 +13,7 @@ class GuardianPaymentScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.neutrals01,
+      appBar: const CommonAppBar(title: "Payment"),
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {

@@ -27,18 +27,13 @@ import 'package:url_launcher/url_launcher.dart';
 class GuardianHomeScreen extends ConsumerStatefulWidget {
   final Function(int, {String? status}) changeTab;
 
-  const GuardianHomeScreen({
-    super.key,
-    required this.changeTab,
-  });
+  const GuardianHomeScreen({super.key, required this.changeTab});
 
   @override
-  ConsumerState<GuardianHomeScreen> createState() =>
-      _GuardianHomeScreenState();
+  ConsumerState<GuardianHomeScreen> createState() => _GuardianHomeScreenState();
 }
 
-class _GuardianHomeScreenState
-    extends ConsumerState<GuardianHomeScreen> {
+class _GuardianHomeScreenState extends ConsumerState<GuardianHomeScreen> {
   Timer? _promotionDelayTimer;
 
   bool _promotionModalShown = false;
@@ -50,24 +45,17 @@ class _GuardianHomeScreenState
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref
-          .read(guardianDashboardProvider.notifier)
-          .fetchStats();
+      ref.read(guardianDashboardProvider.notifier).fetchStats();
 
-      ref
-          .read(promotionProvider.notifier)
-          .fetchPromotions();
+      ref.read(promotionProvider.notifier).fetchPromotions();
 
-      _promotionDelayTimer = Timer(
-        const Duration(seconds: 7),
-        () {
-          if (!mounted) return;
+      _promotionDelayTimer = Timer(const Duration(seconds: 7), () {
+        if (!mounted) return;
 
-          _threeSecondDelayFinished = true;
+        _threeSecondDelayFinished = true;
 
-          _tryShowPromotionModal();
-        },
-      );
+        _tryShowPromotionModal();
+      });
     });
   }
 
@@ -82,8 +70,7 @@ class _GuardianHomeScreenState
 
     if (!_threeSecondDelayFinished) return;
 
-    final promotionState =
-        ref.read(promotionProvider);
+    final promotionState = ref.read(promotionProvider);
 
     // API is still loading.
     //
@@ -98,14 +85,10 @@ class _GuardianHomeScreenState
       return;
     }
 
-    _openPromotionModal(
-      promotionState.promotions,
-    );
+    _openPromotionModal(promotionState.promotions);
   }
 
-  void _openPromotionModal(
-    List<PromotionModel> promotions,
-  ) {
+  void _openPromotionModal(List<PromotionModel> promotions) {
     if (!mounted) return;
 
     if (_promotionModalShown) return;
@@ -125,10 +108,7 @@ class _GuardianHomeScreenState
       // Promotion is an image-based modal.
       // Therefore don't add the normal modal padding.
       // edgeToEdge: true,
-
-      child: PromotionModal(
-        promotions: promotions,
-      ),
+      child: PromotionModal(promotions: promotions),
     );
   }
 
@@ -141,42 +121,30 @@ class _GuardianHomeScreenState
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<PromotionState>(
-      promotionProvider,
-      (previous, next) {
-        if (!mounted) return;
+    ref.listen<PromotionState>(promotionProvider, (previous, next) {
+      if (!mounted) return;
 
-        if (_promotionModalShown) return;
+      if (_promotionModalShown) return;
 
-        if (!_threeSecondDelayFinished) return;
+      if (!_threeSecondDelayFinished) return;
 
-        if (next.isLoading) return;
+      if (next.isLoading) return;
 
-        if (next.promotions.isEmpty) return;
+      if (next.promotions.isEmpty) return;
 
-        _openPromotionModal(
-          next.promotions,
-        );
-      },
-    );
+      _openPromotionModal(next.promotions);
+    });
 
-    final dashboardState =
-        ref.watch(guardianDashboardProvider);
+    final dashboardState = ref.watch(guardianDashboardProvider);
 
-    final dashboardData =
-        dashboardState.data;
+    final dashboardData = dashboardState.data;
 
     // ============================================================
     // DASHBOARD LOADING
     // ============================================================
 
-    if (dashboardState.loading &&
-        dashboardState.data == null) {
-      return const Scaffold(
-        body: SafeArea(
-          child: HomeSkeleton(),
-        ),
-      );
+    if (dashboardState.loading && dashboardState.data == null) {
+      return const Scaffold(body: SafeArea(child: HomeSkeleton()));
     }
 
     // ============================================================
@@ -186,29 +154,17 @@ class _GuardianHomeScreenState
     if (dashboardState.error != null) {
       return Center(
         child: Column(
-          mainAxisAlignment:
-              MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              dashboardState.error!,
-            ),
+            Text(dashboardState.error!),
 
-            const SizedBox(
-              height: 16,
-            ),
+            const SizedBox(height: 16),
 
             ElevatedButton(
               onPressed: () {
-                ref
-                    .read(
-                      guardianDashboardProvider
-                          .notifier,
-                    )
-                    .fetchStats();
+                ref.read(guardianDashboardProvider.notifier).fetchStats();
               },
-              child: const Text(
-                "Retry",
-              ),
+              child: const Text("Retry"),
             ),
           ],
         ),
@@ -219,72 +175,54 @@ class _GuardianHomeScreenState
     // VERIFIED
     // ============================================================
 
-    final isVerified =
-        dashboardData != null
-            ? dashboardData["data"]
-                    ["isVerified"] ??
-                false
-            : false;
+    final isVerified = dashboardData != null
+        ? dashboardData["data"]["isVerified"] ?? false
+        : false;
 
     // ============================================================
     // NOTICES
     // ============================================================
 
-    final notices =
-        (dashboardData?["data"]?["notices"]
-                    as List? ??
-                [])
-            .map(
-              (notice) =>
-                  NoticeModel.fromJson(
-                notice,
-              ),
-            )
-            .toList();
+    final notices = (dashboardData?["data"]?["notices"] as List? ?? [])
+        .map((notice) => NoticeModel.fromJson(notice))
+        .toList();
 
     // ============================================================
     // PROFILE COMPLETION
     // ============================================================
 
-    final profileCompleted =
-        dashboardData != null
-            ? dashboardData["data"]
-                    ["profileCompleted"] ??
-                0
-            : 0;
+    final profileCompleted = dashboardData != null
+        ? dashboardData["data"]["profileCompleted"] ?? 0
+        : 0;
 
     // ============================================================
     // CONFIRMATION LETTERS
     // ============================================================
 
-    final confirmationLetters =
-        dashboardData != null
-            ? dashboardData["data"]
-                    ["confirmationLetterCount"] ??
-                0
-            : 0;
+    final confirmationLetters = dashboardData != null
+        ? dashboardData["data"]["confirmationLetterCount"] ?? 0
+        : 0;
 
+    final hasPostedAnyJob = dashboardData != null
+        ? dashboardData["data"]["hasPostedAnyJob"] ?? false
+        : false;
     // ============================================================
     // DASHBOARD
     // ============================================================
+
+    debugPrint("📊 GUARDIAN DASHBOARD STATS: $dashboardData");
 
     return Scaffold(
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () {
             return ref
-                .read(
-                  guardianDashboardProvider
-                      .notifier,
-                )
-                .fetchStats(
-                  refresh: true,
-                );
+                .read(guardianDashboardProvider.notifier)
+                .fetchStats(refresh: true);
           },
 
           child: CustomScrollView(
-            physics:
-                const AlwaysScrollableScrollPhysics(),
+            physics: const AlwaysScrollableScrollPhysics(),
 
             slivers: [
               // ==================================================
@@ -295,8 +233,7 @@ class _GuardianHomeScreenState
               SliverPersistentHeader(
                 pinned: true,
 
-                delegate:
-                    _TutorStickyHeaderDelegate(
+                delegate: _TutorStickyHeaderDelegate(
                   height: context.responsiveValue<double>(
                     extraSmall: 145,
                     small: 160,
@@ -305,8 +242,7 @@ class _GuardianHomeScreenState
                   ),
 
                   child: Container(
-                    color: Theme.of(context)
-                        .scaffoldBackgroundColor,
+                    color: Theme.of(context).scaffoldBackgroundColor,
 
                     padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
 
@@ -322,19 +258,14 @@ class _GuardianHomeScreenState
                           },
                         ),
 
-                        const SizedBox(
-                          height: 16,
-                        ),
+                        const SizedBox(height: 16),
 
                         // ========================================
                         // JOB NAVIGATION
                         // ========================================
-
                         Expanded(
                           child: Row(
-                            mainAxisAlignment:
-                                MainAxisAlignment
-                                    .spaceAround,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
 
                             children: [
                               // ==================================
@@ -342,16 +273,12 @@ class _GuardianHomeScreenState
                               // ==================================
 
                               Expanded(
-                                child:
-                                    DashboardNavLinks(
-                                  icon:
-                                      SvgPicture.asset(
+                                child: DashboardNavLinks(
+                                  icon: SvgPicture.asset(
                                     "assets/icons/navigations/appointed.svg",
                                     width: 24,
                                     height: 24,
-                                    colorFilter:
-                                        const ColorFilter
-                                            .mode(
+                                    colorFilter: const ColorFilter.mode(
                                       Colors.white,
                                       BlendMode.srcIn,
                                     ),
@@ -360,17 +287,11 @@ class _GuardianHomeScreenState
                                   label: "All Jobs",
 
                                   count:
-                                      dashboardData?[
-                                                  "data"]
-                                              ?["jobs"]
-                                          ?["total"] ??
-                                          0,
+                                      dashboardData?["data"]?["jobs"]?["total"] ??
+                                      0,
 
                                   onTap: () {
-                                    widget.changeTab(
-                                      0,
-                                      status: null,
-                                    );
+                                    widget.changeTab(0, status: null);
                                   },
                                 ),
                               ),
@@ -378,18 +299,13 @@ class _GuardianHomeScreenState
                               // ==================================
                               // PENDING
                               // ==================================
-
                               Expanded(
-                                child:
-                                    DashboardNavLinks(
-                                  icon:
-                                      SvgPicture.asset(
+                                child: DashboardNavLinks(
+                                  icon: SvgPicture.asset(
                                     "assets/icons/navigations/pending-jobs.svg",
                                     width: 24,
                                     height: 24,
-                                    colorFilter:
-                                        const ColorFilter
-                                            .mode(
+                                    colorFilter: const ColorFilter.mode(
                                       Colors.white,
                                       BlendMode.srcIn,
                                     ),
@@ -398,17 +314,11 @@ class _GuardianHomeScreenState
                                   label: "Pending",
 
                                   count:
-                                      dashboardData?[
-                                                  "data"]
-                                              ?["jobs"]
-                                          ?["pending"] ??
-                                          0,
+                                      dashboardData?["data"]?["jobs"]?["pending"] ??
+                                      0,
 
                                   onTap: () {
-                                    widget.changeTab(
-                                      0,
-                                      status: "pending",
-                                    );
+                                    widget.changeTab(0, status: "pending");
                                   },
                                 ),
                               ),
@@ -416,18 +326,13 @@ class _GuardianHomeScreenState
                               // ==================================
                               // LIVE
                               // ==================================
-
                               Expanded(
-                                child:
-                                    DashboardNavLinks(
-                                  icon:
-                                      SvgPicture.asset(
+                                child: DashboardNavLinks(
+                                  icon: SvgPicture.asset(
                                     "assets/icons/navigations/jobs-search.svg",
                                     width: 24,
                                     height: 24,
-                                    colorFilter:
-                                        const ColorFilter
-                                            .mode(
+                                    colorFilter: const ColorFilter.mode(
                                       Colors.white,
                                       BlendMode.srcIn,
                                     ),
@@ -436,17 +341,11 @@ class _GuardianHomeScreenState
                                   label: "Live",
 
                                   count:
-                                      dashboardData?[
-                                                  "data"]
-                                              ?["jobs"]
-                                          ?["live"] ??
-                                          0,
+                                      dashboardData?["data"]?["jobs"]?["live"] ??
+                                      0,
 
                                   onTap: () {
-                                    widget.changeTab(
-                                      0,
-                                      status: "live",
-                                    );
+                                    widget.changeTab(0, status: "live");
                                   },
                                 ),
                               ),
@@ -454,18 +353,13 @@ class _GuardianHomeScreenState
                               // ==================================
                               // CONFIRMED
                               // ==================================
-
                               Expanded(
-                                child:
-                                    DashboardNavLinks(
-                                  icon:
-                                      SvgPicture.asset(
+                                child: DashboardNavLinks(
+                                  icon: SvgPicture.asset(
                                     "assets/icons/navigations/confirmed.svg",
                                     width: 24,
                                     height: 24,
-                                    colorFilter:
-                                        const ColorFilter
-                                            .mode(
+                                    colorFilter: const ColorFilter.mode(
                                       Colors.white,
                                       BlendMode.srcIn,
                                     ),
@@ -474,17 +368,11 @@ class _GuardianHomeScreenState
                                   label: "Confirmed",
 
                                   count:
-                                      dashboardData?[
-                                                  "data"]
-                                              ?["jobs"]
-                                          ?["closed"] ??
-                                          0,
+                                      dashboardData?["data"]?["jobs"]?["closed"] ??
+                                      0,
 
                                   onTap: () {
-                                    widget.changeTab(
-                                      0,
-                                      status: "closed",
-                                    );
+                                    widget.changeTab(0, status: "closed");
                                   },
                                 ),
                               ),
@@ -492,18 +380,13 @@ class _GuardianHomeScreenState
                               // ==================================
                               // CANCELLED
                               // ==================================
-
                               Expanded(
-                                child:
-                                    DashboardNavLinks(
-                                  icon:
-                                      SvgPicture.asset(
+                                child: DashboardNavLinks(
+                                  icon: SvgPicture.asset(
                                     "assets/icons/navigations/cancelled.svg",
                                     width: 24,
                                     height: 24,
-                                    colorFilter:
-                                        const ColorFilter
-                                            .mode(
+                                    colorFilter: const ColorFilter.mode(
                                       Colors.white,
                                       BlendMode.srcIn,
                                     ),
@@ -512,17 +395,11 @@ class _GuardianHomeScreenState
                                   label: "Cancelled",
 
                                   count:
-                                      dashboardData?[
-                                                  "data"]
-                                              ?["jobs"]
-                                          ?["cancelled"] ??
-                                          0,
+                                      dashboardData?["data"]?["jobs"]?["cancelled"] ??
+                                      0,
 
                                   onTap: () {
-                                    widget.changeTab(
-                                      0,
-                                      status: "cancelled",
-                                    );
+                                    widget.changeTab(0, status: "cancelled");
                                   },
                                 ),
                               ),
@@ -538,91 +415,55 @@ class _GuardianHomeScreenState
               // ==================================================
               // SCROLLABLE CONTENT
               // ==================================================
-
               SliverPadding(
-                padding:
-                    const EdgeInsets.fromLTRB(
-                  16,
-                  0,
-                  16,
-                  20,
-                ),
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
 
                 sliver: SliverList(
-                  delegate:
-                      SliverChildListDelegate([
+                  delegate: SliverChildListDelegate([
                     // ==========================================
                     // NOTICE BOARD
                     // ==========================================
 
-                    NoticeSection(
-                      notices: notices,
-                    ),
+                    NoticeSection(notices: notices),
 
-                    const SizedBox(
-                      height: 20,
-                    ),
+                    const SizedBox(height: 20),
 
                     // ==========================================
                     // GUARDIAN OF THE MONTH
                     // ==========================================
-
                     if (dashboardData != null)
                       RecognitionCard(
                         image:
-                            dashboardData["data"]
-                                        ?[
-                                            "guardianOfTheMonth"
-                                          ]
-                                    ?["imageUrl"] ??
-                                "assets/images/dummy-avatar.jpg",
+                            dashboardData["data"]?["guardianOfTheMonth"]?["imageUrl"] ??
+                            "assets/images/dummy-avatar.jpg",
 
-                        title:
-                            "Guardian of the Month",
+                        title: "Guardian of the Month",
 
                         tutorId:
-                            dashboardData["data"]
-                                        ?[
-                                            "guardianOfTheMonth"
-                                          ]
-                                    ?["guardianId"] ??
-                                "",
+                            dashboardData["data"]?["guardianOfTheMonth"]?["guardianId"] ??
+                            "",
 
                         rating:
-                            dashboardData["data"]
-                                        ?[
-                                            "guardianOfTheMonth"
-                                          ]
-                                    ?["rating"]
-                                    ?.toString() ??
-                                "0",
+                            dashboardData["data"]?["guardianOfTheMonth"]?["rating"]
+                                ?.toString() ??
+                            "0",
 
                         name:
-                            dashboardData["data"]
-                                        ?[
-                                            "guardianOfTheMonth"
-                                          ]
-                                    ?["userId"]
-                                    ?["name"] ??
-                                "",
+                            dashboardData["data"]?["guardianOfTheMonth"]?["userId"]?["name"] ??
+                            "",
 
                         date: "This Month",
                       ),
 
-                    const SizedBox(
-                      height: 20,
-                    ),
+                    const SizedBox(height: 20),
 
                     // ==========================================
                     // GUARDIAN CARDS
                     // ==========================================
-
                     GuardianCardsSection(
-                      profileCompletion:
-                          profileCompleted,
+                      profileCompletion: profileCompleted,
 
-                      confirmationLettersCount:
-                          confirmationLetters,
+                      confirmationLettersCount: confirmationLetters,
 
                       onHireTutorTap: () {
                         widget.changeTab(1);
@@ -632,60 +473,44 @@ class _GuardianHomeScreenState
                         widget.changeTab(4);
                       },
 
-                      onConfirmationLettersTap:
-                          () {
+                      onConfirmationLettersTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder:
-                                (context) =>
-                                    const ConfirmationScreen(
-                              role: "guardian",
-                            ),
+                            builder: (context) =>
+                                const ConfirmationScreen(role: "guardian"),
                           ),
                         );
                       },
                     ),
 
-                    const SizedBox(
-                      height: 20,
-                    ),
+                    const SizedBox(height: 20),
 
                     // ==========================================
                     // VERIFY PROFILE
                     // ==========================================
-
                     VerifyProfileCard(
                       isVerified: isVerified,
+                      role: "guardian", // 👈 Pass role
+                      hasConfirmedAnyJob: hasPostedAnyJob,
                     ),
 
-                    const SizedBox(
-                      height: 20,
-                    ),
+                    const SizedBox(height: 20),
 
                     // ==========================================
                     // HELPLINE
                     // ==========================================
-
                     HelplineCard(
-                      phone:
-                          "+880 1616-012 365",
+                      phone: "+880 1616-012 365",
 
-                      timing:
-                          "10:00 AM - 10:00 PM",
+                      timing: "10:00 AM - 10:00 PM",
 
                       onTap: () {
-                        launchUrl(
-                          Uri.parse(
-                            "tel:+8801616012365",
-                          ),
-                        );
+                        launchUrl(Uri.parse("tel:+8801616012365"));
                       },
                     ),
 
-                    const SizedBox(
-                      height: 20,
-                    ),
+                    const SizedBox(height: 20),
                   ]),
                 ),
               ),
@@ -701,15 +526,11 @@ class _GuardianHomeScreenState
 // STICKY HEADER DELEGATE
 // ==================================================================
 
-class _TutorStickyHeaderDelegate
-    extends SliverPersistentHeaderDelegate {
+class _TutorStickyHeaderDelegate extends SliverPersistentHeaderDelegate {
   final Widget child;
   final double height;
 
-  _TutorStickyHeaderDelegate({
-    required this.child,
-    required this.height,
-  });
+  _TutorStickyHeaderDelegate({required this.child, required this.height});
 
   @override
   double get minExtent => height;
@@ -724,23 +545,16 @@ class _TutorStickyHeaderDelegate
     bool overlapsContent,
   ) {
     return Material(
-      color:
-          Theme.of(context)
-              .scaffoldBackgroundColor,
+      color: Theme.of(context).scaffoldBackgroundColor,
 
-      elevation:
-          overlapsContent ? 3 : 0,
+      elevation: overlapsContent ? 3 : 0,
 
       child: child,
     );
   }
 
   @override
-  bool shouldRebuild(
-    covariant _TutorStickyHeaderDelegate
-        oldDelegate,
-  ) {
-    return oldDelegate.height != height ||
-        oldDelegate.child != child;
+  bool shouldRebuild(covariant _TutorStickyHeaderDelegate oldDelegate) {
+    return oldDelegate.height != height || oldDelegate.child != child;
   }
 }

@@ -83,7 +83,7 @@ class SuccessBottomSheet extends StatelessWidget {
                 const SizedBox(height: 8),
 
                 const Text(
-                  "Having any problem or urgent requirement?",
+                  "Or having any problem / urgent requirement?",
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.grey),
                 ),

@@ -32,7 +32,7 @@ class GuardianCardsSection extends StatelessWidget {
           title: "Looking for a tutor?",
           description:
               "Submit your requirements to find expert and verified tutors.",
-          actionText: "Hire Tutor",
+          actionText: "Hire a Tutor",
           icon: SvgPicture.asset(
             "assets/icons/visual/hire-tutor.svg",
             width: 80,
@@ -55,8 +55,8 @@ class GuardianCardsSection extends StatelessWidget {
                 child: DashboardSmallCard(
                   title: "$profileCompletion%",
                   description: profileCompletion > 100
-                      ? "Complete your profile to become one of the most trusted members on the platform."
-                      : "Your profile is now fully completed.",
+                      ? "Your profile is now fully completed."
+                      : "Complete your profile to become one of the most trusted members on the platform.",
                   icon: ProfileProgressIcon(
                     progress: (profileCompletion / 100).clamp(0.0, 1.0),
                   ),

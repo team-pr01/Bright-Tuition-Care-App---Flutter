@@ -186,6 +186,7 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
     final confirmationLetters = data["confirmationLetterCount"] ?? 0;
 
     final invoices = data["invoiceCount"] ?? 0;
+    final hasConfirmedAnyJob = data["hasConfirmedAnyJob"] ?? false;
 
     return Scaffold(
       body: SafeArea(
@@ -200,13 +201,12 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
             physics: const AlwaysScrollableScrollPhysics(),
 
             slivers: [
-              
               SliverPersistentHeader(
                 pinned: true,
 
                 delegate: _TutorStickyHeaderDelegate(
                   height: context.responsiveValue<double>(
-                    extraSmall: 105, 
+                    extraSmall: 105,
                     small: 110,
                     medium: 120,
                     large: 125,
@@ -411,7 +411,11 @@ class _TutorHomeScreenState extends ConsumerState<TutorHomeScreen> {
                     // ==========================================
                     // VERIFY PROFILE
                     // ==========================================
-                    VerifyProfileCard(isVerified: isVerified),
+                    VerifyProfileCard(
+                      isVerified: isVerified,
+                      role: "tutor", // 👈 Pass role
+                      hasConfirmedAnyJob: hasConfirmedAnyJob,
+                    ),
 
                     const SizedBox(height: 20),
 

@@ -460,7 +460,7 @@ class _EditGuardianPersonalInformationScreenState
       padding: const EdgeInsets.only(bottom: 16),
       child: Text(
         title,
-        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
       ),
     );
   }
@@ -482,214 +482,225 @@ class _EditGuardianPersonalInformationScreenState
         child: Form(
           key: _formKey,
 
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              /// SCROLLABLE FIELDS
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(20),
 
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
 
-              children: [
-                // ==================================================
-                // BASIC INFORMATION
-                // ==================================================
-                _sectionTitle("Basic Information"),
+                    children: [
+                      // ==================================================
+                      // BASIC INFORMATION
+                      // ==================================================
+                      _sectionTitle("Basic Information"),
 
-                AppInputField(
-                  controller: _nameController,
-                  label: "Full Name",
-                  enabled: !_saving,
-                  hint: "Enter your Full Name",
-                ),
+                      AppInputField(
+                        controller: _nameController,
+                        label: "Full Name",
+                        enabled: !_saving,
+                        hint: "Enter your Full Name",
+                      ),
 
-                AppInputField(
-                  controller: _emailController,
-                  label: "Email",
-                  enabled: !_saving,
-                  hint: "youremail.com",
-                ),
+                      AppInputField(
+                        controller: _emailController,
+                        label: "Email",
+                        enabled: !_saving,
+                        hint: "youremail.com",
+                      ),
 
-                AppInputField(
-                  controller: _phoneController,
-                  label: "Phone Number",
-                  type: AppInputType.phone,
-                  enabled: !_saving,
-                  hint: "eg: 01xxxxxxxxx",
-                ),
+                      AppInputField(
+                        controller: _phoneController,
+                        label: "Phone Number",
+                        type: AppInputType.phone,
+                        enabled: !_saving,
+                        hint: "eg: 01xxxxxxxxx",
+                      ),
 
-                AppInputField(
-                  controller: _genderController,
-                  label: "Gender",
-                  type: AppInputType.dropdown2,
-                  value: _genderController.text,
-                  dropdownItems: const ["male", "female", "other"],
-                  enabled: !_saving,
-                  onChanged: (value) {
-                    setState(() {
-                      _genderController.text = value ?? "";
-                    });
-                  },
-                ),
+                      AppInputField(
+                        controller: _genderController,
+                        label: "Gender",
+                        type: AppInputType.dropdown2,
+                        value: _genderController.text,
+                        dropdownItems: const ["male", "female", "other"],
+                        enabled: !_saving,
+                        onChanged: (value) {
+                          setState(() {
+                            _genderController.text = value ?? "";
+                          });
+                        },
+                      ),
 
-                // ==================================================
-                // CITY
-                // ==================================================
-                AppInputField(
-                  label: "City",
-                  type: AppInputType.dropdown2,
-                  value: _cityController.text,
-                  hint: "Select City",
-                  dropdownItems: cityOptions,
-                  enabled: !_saving,
-                  onChanged: (value) {
-                    final city = value ?? "";
+                      // ==================================================
+                      // CITY
+                      // ==================================================
+                      AppInputField(
+                        label: "City",
+                        type: AppInputType.dropdown2,
+                        value: _cityController.text,
+                        hint: "Select City",
+                        dropdownItems: cityOptions,
+                        enabled: !_saving,
+                        onChanged: (value) {
+                          final city = value ?? "";
 
-                    setState(() {
-                      _cityController.text = city;
+                          setState(() {
+                            _cityController.text = city;
 
-                      _areaController.clear();
+                            _areaController.clear();
 
-                      _areaOptions = _getAreaOptions(city);
-                    });
-                  },
-                ),
+                            _areaOptions = _getAreaOptions(city);
+                          });
+                        },
+                      ),
 
-                // ==================================================
-                // AREA
-                // ==================================================
-                AppInputField(
-                  label: "Area",
-                  type: AppInputType.dropdown2,
-                  value: _areaController.text,
-                  hint: _cityController.text.trim().isEmpty
-                      ? "Select city first"
-                      : "Select Area",
-                  enabled:
-                      !_saving &&
-                      _cityController.text.trim().isNotEmpty &&
-                      _areaOptions.isNotEmpty,
-                  dropdownItems: _areaOptions,
-                  onChanged: (value) {
-                    setState(() {
-                      _areaController.text = value ?? "";
-                    });
-                  },
-                ),
+                      // ==================================================
+                      // AREA
+                      // ==================================================
+                      AppInputField(
+                        label: "Area",
+                        type: AppInputType.dropdown2,
+                        value: _areaController.text,
+                        hint: _cityController.text.trim().isEmpty
+                            ? "Select city first"
+                            : "Select Area",
+                        enabled: !_saving &&
+                            _cityController.text.trim().isNotEmpty &&
+                            _areaOptions.isNotEmpty,
+                        dropdownItems: _areaOptions,
+                        onChanged: (value) {
+                          setState(() {
+                            _areaController.text = value ?? "";
+                          });
+                        },
+                      ),
 
-                const SizedBox(height: 32),
+                      // ==================================================
+                      // PERSONAL INFORMATION
+                      // ==================================================
+                      _sectionTitle("Personal Information"),
 
-                // ==================================================
-                // PERSONAL INFORMATION
-                // ==================================================
-                _sectionTitle("Personal Information"),
+                      AppInputField(
+                        controller: _additionalPhoneController,
+                        label: "Additional Phone Number",
+                        type: AppInputType.phone,
+                        enabled: !_saving,
+                        hint: "eg: 01xxxxxxxxx",
+                      ),
 
-                AppInputField(
-                  controller: _additionalPhoneController,
-                  label: "Additional Phone Number",
-                  type: AppInputType.phone,
-                  enabled: !_saving,
-                  hint: "eg: 01xxxxxxxxx",
-                ),
+                      AppInputField(
+                        controller: _dobController,
+                        label: "Date of Birth",
+                        type: AppInputType.date,
+                        enabled: !_saving,
+                      ),
 
-                AppInputField(
-                  controller: _dobController,
-                  label: "Date of Birth",
-                  type: AppInputType.date,
-                  enabled: !_saving,
-                ),
+                      AppInputField(
+                        controller: _addressController,
+                        label: "Address",
+                        type: AppInputType.multiline,
+                        maxLines: 3,
+                        enabled: !_saving,
+                        hint: "Enter your address",
+                      ),
 
-                AppInputField(
-                  controller: _addressController,
-                  label: "Address",
-                  type: AppInputType.multiline,
-                  maxLines: 3,
-                  enabled: !_saving,
-                  hint: "Enter your address",
-                ),
+                      AppInputField(
+                        controller: _religionController,
+                        label: "Religion",
+                        enabled: !_saving,
+                        hint: "Enter your Religion",
+                      ),
 
-                AppInputField(
-                  controller: _religionController,
-                  label: "Religion",
-                  enabled: !_saving,
-                  hint: "Enter your Religion",
-                ),
+                      AppInputField(
+                        controller: _nationalityController,
+                        label: "Nationality",
+                        enabled: !_saving,
+                        hint: "eg: Bangladesh",
+                      ),
 
-                AppInputField(
-                  controller: _nationalityController,
-                  label: "Nationality",
-                  enabled: !_saving,
-                  hint: "eg: Bangladesh",
-                ),
+                      // ==================================================
+                      // SOCIAL MEDIA
+                      // ==================================================
+                      _sectionTitle("Social Media"),
 
-                const SizedBox(height: 32),
+                      AppInputField(
+                        controller: _facebookController,
+                        label: "Facebook Profile",
+                        enabled: !_saving,
+                        hint: "facebook link",
+                      ),
 
-                // ==================================================
-                // SOCIAL MEDIA
-                // ==================================================
-                _sectionTitle("Social Media"),
+                      // ==================================================
+                      // EMERGENCY INFORMATION
+                      // ==================================================
+                      _sectionTitle("Emergency Information"),
 
-                AppInputField(
-                  controller: _facebookController,
-                  label: "Facebook Profile",
-                  enabled: !_saving,
-                  hint: "facebook link",
-                ),
+                      // AppInputField(
+                      //   controller: _emergencyNameController,
+                      //   label: "Emergency Contact Person",
+                      //   enabled: !_saving,
+                      //   hint: "Enter Emergency Contact Person",
+                      // ),
+                      AppInputField(
+                        controller: _emergencyPhoneController,
+                        label: "Emergency Phone Number",
+                        type: AppInputType.phone,
+                        enabled: !_saving,
+                        hint: "eg: 01xxxxxxxxx",
+                      ),
 
-                const SizedBox(height: 32),
+                      // AppInputField(
+                      //   controller: _emergencyRelationController,
+                      //   label: "Relation",
+                      //   enabled: !_saving,
+                      //   hint: "Enter your relation with Emergency content person",
+                      // ),
 
-                // ==================================================
-                // EMERGENCY INFORMATION
-                // ==================================================
-                _sectionTitle("Emergency Information"),
+                      // AppInputField(
+                      //   controller: _emergencyAddressController,
+                      //   label: "Emergency Address",
+                      //   type: AppInputType.multiline,
+                      //   maxLines: 3,
+                      //   enabled: !_saving,
+                      //   hint: "Emergency Address",
+                      // ),
 
-                // AppInputField(
-                //   controller: _emergencyNameController,
-                //   label: "Emergency Contact Person",
-                //   enabled: !_saving,
-                //   hint: "Enter Emergency Contact Person",
-                // ),
-
-                AppInputField(
-                  controller: _emergencyPhoneController,
-                  label: "Emergency Phone Number",
-                  type: AppInputType.phone,
-                  enabled: !_saving,
-                  hint: "eg: 01xxxxxxxxx",
-                ),
-
-                // AppInputField(
-                //   controller: _emergencyRelationController,
-                //   label: "Relation",
-                //   enabled: !_saving,
-                //   hint: "Enter your relation with Emergency content person",
-                // ),
-
-                // AppInputField(
-                //   controller: _emergencyAddressController,
-                //   label: "Emergency Address",
-                //   type: AppInputType.multiline,
-                //   maxLines: 3,
-                //   enabled: !_saving,
-                //   hint: "Emergency Address",
-                // ),
-
-                const SizedBox(height: 32),
-
-                // ==================================================
-                // SAVE BUTTON
-                // ==================================================
-                SizedBox(
-                  width: double.infinity,
-                  child: AppButton(
-                    label: _saving ? "Saving..." : "Save Changes",
-                    variant: AppButtonVariant.gradient,
-                    height: 48,
-                    onPressed: _saving ? null : _save,
+                      const SizedBox(height: 20),
+                    ],
                   ),
                 ),
+              ),
 
-                const SizedBox(height: 20),
-              ],
-            ),
+              /// STICKY SAVE BUTTON
+              Container(
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.06),
+                      blurRadius: 12,
+                      offset: const Offset(0, -4),
+                    ),
+                  ],
+                ),
+                child: SafeArea(
+                  top: false,
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: AppButton(
+                      label: _saving ? "Saving..." : "Save Changes",
+                      variant: AppButtonVariant.gradient,
+                      height: 48,
+                      onPressed: _saving ? null : _save,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -702,6 +713,8 @@ class _EditGuardianPersonalInformationScreenState
 
   @override
   void dispose() {
+    FocusManager.instance.primaryFocus?.unfocus();
+
     _nameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();

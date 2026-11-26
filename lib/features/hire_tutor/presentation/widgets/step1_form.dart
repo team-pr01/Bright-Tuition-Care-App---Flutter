@@ -134,7 +134,7 @@ void initState() {
 
           /// 🔥 CLASS
           AppInputField(
-            label: "Class",
+            label: "Class/Course",
             required: true,
             type: AppInputType.dropdown2,
             multiSelect: true,
@@ -198,7 +198,7 @@ void initState() {
 
           /// 🔥 SALARY (FIXED)
           AppInputField(
-            label: "Salary",
+            label: "Salary (BDT)",
             type: AppInputType.text,
             keyboardType: TextInputType.number,
               hint: "eg:5000",

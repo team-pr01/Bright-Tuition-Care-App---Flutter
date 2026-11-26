@@ -7,11 +7,51 @@ import 'package:btcclient/features/settings/prersentation/screens/verification_s
 
 class VerifyProfileCard extends StatelessWidget {
   final bool isVerified;
+  final String role;
+  final bool hasPostedAnyJob;
+  final bool hasConfirmedAnyJob;
 
-  const VerifyProfileCard({super.key, required this.isVerified});
+  const VerifyProfileCard({
+    super.key,
+    required this.isVerified,
+    required this.role,
+    this.hasPostedAnyJob = false,
+    this.hasConfirmedAnyJob = false,
+  });
 
   @override
   Widget build(BuildContext context) {
+    // 👈 1. Logic for Description
+    String getDescription() {
+      if (isVerified) {
+        return "You are a verified member of Bright Tuition Care community.";
+      }
+
+      if (role == "tutor") {
+        if (hasConfirmedAnyJob) {
+          return "Get exclusive benefits by completing your profile verification.";
+        }
+        return "Get exclusive benefits by completing your profile verification.";
+      } else if (role == "guardian") {
+        if (hasPostedAnyJob) {
+          return "Submit a verification request to become a trusted member on the platform.";
+        }
+        return "Submit a verification request to become a trusted member on the platform.";
+      }
+
+      return "Get exclusive benefits by completing your profile verification.";
+    }
+
+    // 👈 2. Logic for "Recommended" Badge
+    bool showRecommended = false;
+    if (!isVerified) {
+      if (role == "tutor" && hasConfirmedAnyJob) {
+        showRecommended = true;
+      } else if (role == "guardian" && hasPostedAnyJob) {
+        showRecommended = true;
+      }
+    }
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
@@ -40,52 +80,45 @@ class VerifyProfileCard extends StatelessWidget {
                   ),
                 ),
               ),
-
               const SizedBox(width: 8),
 
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: AppColors.primary01.withValues(alpha: 0.10),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Text(
-                  "Recommended",
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.primary01,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 10,
+              // 👈 3. Conditionally show the Badge
+              if (showRecommended)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary01.withValues(alpha: 0.10),
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text(
+                    "Recommended",
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: AppColors.primary01,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 10,
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
-
           const SizedBox(height: 8),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // ============================================================
-              // LEFT CONTENT
-              // ============================================================
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      isVerified
-                          ? "You are a verified member of Bright Tuition Care community."
-                          : "Get exclusive benefits by completing your profile verification.",
+                      getDescription(),
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         color: AppColors.neutrals03,
                       ),
                     ),
-
                     const SizedBox(height: 14),
-
-                    // ========================================================
-                    // VIEW / VERIFY BUTTON
-                    // ========================================================
                     OutlinedButton(
                       onPressed: isVerified
                           ? null
@@ -124,12 +157,7 @@ class VerifyProfileCard extends StatelessWidget {
                   ],
                 ),
               ),
-
               const SizedBox(width: 25),
-
-              // ============================================================
-              // RIGHT ICON
-              // ============================================================
               SvgPicture.asset(
                 "assets/icons/visual/verify-shield.svg",
                 width: 70,

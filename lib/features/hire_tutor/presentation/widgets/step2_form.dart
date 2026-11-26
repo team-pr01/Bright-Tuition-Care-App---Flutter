@@ -73,7 +73,7 @@ class Step2Form extends ConsumerWidget {
             AppInputField(
               label: "Other Requirements",
               hint: "Please specify any additional requirements",
-              type: AppInputType.text,
+              type: AppInputType.multiline,
               maxLines: 4,
               value: data.otherRequirements.toString(),
               onChanged: (v) {

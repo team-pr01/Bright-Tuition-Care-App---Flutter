@@ -121,7 +121,8 @@ const SizedBox(height: 12),
           section("Job Details", [
             row("Tuition Type", data.tuitionType),
             row("Category", data.category),
-            row("Curriculum", data.curriculum),
+                if (data.curriculum != null && data.curriculum.toString().trim().isNotEmpty)
+              row("Curriculum", data.curriculum),
             row("Classes", listToString(data.classes)),
             row("Subjects", listToString(data.subjects)),
             row("Tutoring Days", data.tutoringDays),

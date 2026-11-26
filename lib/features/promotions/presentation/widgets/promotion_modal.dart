@@ -9,18 +9,13 @@ import '../../data/models/promotion_model.dart';
 class PromotionModal extends StatefulWidget {
   final List<PromotionModel> promotions;
 
-  const PromotionModal({
-    super.key,
-    required this.promotions,
-  });
+  const PromotionModal({super.key, required this.promotions});
 
   @override
-  State<PromotionModal> createState() =>
-      _PromotionModalState();
+  State<PromotionModal> createState() => _PromotionModalState();
 }
 
-class _PromotionModalState
-    extends State<PromotionModal> {
+class _PromotionModalState extends State<PromotionModal> {
   late final PageController _pageController;
 
   Timer? _autoScrollTimer;
@@ -47,59 +42,42 @@ class _PromotionModalState
       return;
     }
 
-    _autoScrollTimer = Timer.periodic(
-      const Duration(seconds: 4),
-      (_) {
-        if (!mounted ||
-            !_pageController.hasClients) {
-          return;
-        }
+    _autoScrollTimer = Timer.periodic(const Duration(seconds: 4), (_) {
+      if (!mounted || !_pageController.hasClients) {
+        return;
+      }
 
-        final nextPage =
-            (_currentPage + 1) %
-                widget.promotions.length;
+      final nextPage = (_currentPage + 1) % widget.promotions.length;
 
-        _pageController.animateToPage(
-          nextPage,
-          duration:
-              const Duration(milliseconds: 600),
-          curve: Curves.easeInOut,
-        );
-      },
-    );
+      _pageController.animateToPage(
+        nextPage,
+        duration: const Duration(milliseconds: 600),
+        curve: Curves.easeInOut,
+      );
+    });
   }
 
   // ==============================================================
   // OPEN PROMOTION LINK
   // ==============================================================
 
-  Future<void> _openPromotionLink(
-    PromotionModel promotion,
-  ) async {
+  Future<void> _openPromotionLink(PromotionModel promotion) async {
     final link = promotion.buttonLink;
 
-    if (link == null ||
-        link.trim().isEmpty) {
+    if (link == null || link.trim().isEmpty) {
       return;
     }
 
-    final uri = Uri.tryParse(
-      link.trim(),
-    );
+    final uri = Uri.tryParse(link.trim());
 
     if (uri == null) {
       return;
     }
 
     try {
-      await launchUrl(
-        uri,
-        mode: LaunchMode.externalApplication,
-      );
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
     } catch (e) {
-      debugPrint(
-        'Could not open promotion link: $e',
-      );
+      debugPrint('Could not open promotion link: $e');
     }
   }
 
@@ -120,105 +98,87 @@ class _PromotionModalState
   // ==============================================================
 
   @override
-Widget build(BuildContext context) {
-  if (widget.promotions.isEmpty) {
-    return const SizedBox.shrink();
-  }
+  Widget build(BuildContext context) {
+    if (widget.promotions.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
-  return AspectRatio(
-    aspectRatio: 1,
-    child: Stack(
-      children: [
-        // ==========================================================
-        // SQUARE PROMOTION CAROUSEL
-        // ==========================================================
+    return AspectRatio(
+      aspectRatio: 1,
+      child: Stack(
+        children: [
+          // ==========================================================
+          // SQUARE PROMOTION CAROUSEL
+          // ==========================================================
 
-        Positioned.fill(
-          child: PageView.builder(
-            controller: _pageController,
-            itemCount: widget.promotions.length,
-            physics: const BouncingScrollPhysics(),
+          Positioned.fill(
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: widget.promotions.length,
+              physics: const BouncingScrollPhysics(),
 
-            onPageChanged: (index) {
-              if (!mounted) return;
+              onPageChanged: (index) {
+                if (!mounted) return;
 
-              setState(() {
-                _currentPage = index;
-              });
-            },
+                setState(() {
+                  _currentPage = index;
+                });
+              },
 
-            itemBuilder: (context, index) {
-              final promotion =
-                  widget.promotions[index];
+              itemBuilder: (context, index) {
+                final promotion = widget.promotions[index];
 
-              return _PromotionPage(
-                promotion: promotion,
-                onTap: () {
-                  _openPromotionLink(
-                    promotion,
-                  );
-                },
-              );
-            },
+                return _PromotionPage(
+                  promotion: promotion,
+                  onTap: () {
+                    _openPromotionLink(promotion);
+                  },
+                );
+              },
+            ),
           ),
-        ),
 
-        // ==========================================================
-        // INDICATOR OVER IMAGE
-        // ==========================================================
-
-        Positioned(
-          left: 0,
-          right: 0,
-          bottom: 10,
-          child: _buildPromotionIndicator(),
-        ),
-      ],
-    ),
-  );
-}
- // ==============================================================
+          // ==========================================================
+          // INDICATOR OVER IMAGE
+          // ==========================================================
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 10,
+            child: _buildPromotionIndicator(),
+          ),
+        ],
+      ),
+    );
+  }
+  // ==============================================================
   // PAGE INDICATOR
   // ==============================================================
 
   Widget _buildPromotionIndicator() {
     return Row(
-      mainAxisAlignment:
-          MainAxisAlignment.center,
-      children: List.generate(
-        widget.promotions.length,
-        (index) {
-          final isSelected =
-              _currentPage == index;
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(widget.promotions.length, (index) {
+        final isSelected = _currentPage == index;
 
-          return AnimatedContainer(
-            duration:
-                const Duration(milliseconds: 250),
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
 
-            curve: Curves.easeInOut,
+          curve: Curves.easeInOut,
 
-            margin:
-                const EdgeInsets.symmetric(
-              horizontal: 3,
-            ),
+          margin: const EdgeInsets.symmetric(horizontal: 3),
 
-            width:
-                isSelected ? 16 : 6,
+          width: isSelected ? 16 : 6,
 
-            height: 6,
+          height: 6,
 
-            decoration:
-                BoxDecoration(
-              color: isSelected
-                  ? AppColors.primary01
-                  : Colors.grey[300],
+          decoration: BoxDecoration(
+            color: isSelected ? AppColors.primary01 : Colors.grey[300],
 
-              borderRadius:
-                  BorderRadius.circular(10),
-            ),
-          );
-        },
-      ),
+            borderRadius: BorderRadius.circular(10),
+          ),
+        );
+      }),
     );
   }
 }
@@ -227,37 +187,26 @@ Widget build(BuildContext context) {
 // SINGLE PROMOTION PAGE
 // ==================================================================
 
-class _PromotionPage
-    extends StatelessWidget {
+class _PromotionPage extends StatelessWidget {
   final PromotionModel promotion;
 
   final VoidCallback onTap;
 
-  const _PromotionPage({
-    required this.promotion,
-    required this.onTap,
-  });
+  const _PromotionPage({required this.promotion, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final hasLink =
-        promotion.buttonLink != null &&
-            promotion.buttonLink!
-                .trim()
-                .isNotEmpty;
+        promotion.buttonLink != null && promotion.buttonLink!.trim().isNotEmpty;
 
     return GestureDetector(
       onTap: hasLink ? onTap : null,
 
       child: Padding(
-        padding:
-            const EdgeInsets.symmetric(
-          horizontal: 0,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 0),
 
         child: ClipRRect(
-          borderRadius:
-              BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16),
 
           child: Container(
             width: double.infinity,
@@ -281,74 +230,43 @@ class _PromotionPage
 
                   fit: BoxFit.contain,
 
-                  filterQuality:
-                      FilterQuality.high,
+                  filterQuality: FilterQuality.high,
 
-                  loadingBuilder:
-                      (
-                        context,
-                        child,
-                        loadingProgress,
-                      ) {
-                    if (loadingProgress ==
-                        null) {
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) {
                       return child;
                     }
 
-                    return const Center(
-                      child:
-                          CircularProgressIndicator(),
-                    );
+                    return const Center(child: CircularProgressIndicator());
                   },
 
-                  errorBuilder:
-                      (
-                        context,
-                        error,
-                        stackTrace,
-                      ) {
-                    debugPrint(
-                      'PROMOTION IMAGE ERROR',
-                    );
+                  errorBuilder: (context, error, stackTrace) {
+                    debugPrint('PROMOTION IMAGE ERROR');
 
-                    debugPrint(
-                      'URL: ${promotion.imageUrl}',
-                    );
+                    debugPrint('URL: ${promotion.imageUrl}');
 
-                    debugPrint(
-                      'ERROR: $error',
-                    );
+                    debugPrint('ERROR: $error');
 
                     return Container(
-                      color:
-                          AppColors.primary03,
+                      color: AppColors.primary03,
 
-                      alignment:
-                          Alignment.center,
+                      alignment: Alignment.center,
 
                       child: const Column(
-                        mainAxisAlignment:
-                            MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
 
                         children: [
                           Icon(
-                            Icons
-                                .image_not_supported_outlined,
+                            Icons.image_not_supported_outlined,
                             size: 48,
-                            color:
-                                Colors.grey,
+                            color: Colors.grey,
                           ),
 
-                          SizedBox(
-                            height: 8,
-                          ),
+                          SizedBox(height: 8),
 
                           Text(
                             'Unable to load image',
-                            style: TextStyle(
-                              color:
-                                  Colors.grey,
-                            ),
+                            style: TextStyle(color: Colors.grey),
                           ),
                         ],
                       ),
@@ -359,12 +277,8 @@ class _PromotionPage
                 // ==================================================
                 // OPTIONAL BUTTON
                 // ==================================================
-
-                if (promotion.buttonText !=
-                        null &&
-                    promotion.buttonText!
-                        .trim()
-                        .isNotEmpty &&
+                if (promotion.buttonText != null &&
+                    promotion.buttonText!.trim().isNotEmpty &&
                     hasLink)
                   Positioned(
                     left: 20,
@@ -374,26 +288,22 @@ class _PromotionPage
                     child: ElevatedButton(
                       onPressed: onTap,
 
-                      style:
-                          ElevatedButton.styleFrom(
-                        padding:
-                            const EdgeInsets
-                                .symmetric(
-                          vertical: 13,
-                        ),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 13),
 
-                        shape:
-                            RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius
-                                  .circular(
-                            12,
-                          ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
                       ),
 
                       child: Text(
-                        promotion.buttonText!,
+                        // 👈 Check if text is longer than 15 characters
+                        promotion.buttonText!.length > 15
+                            ? '${promotion.buttonText!.substring(0, 15)}...'
+                            : promotion.buttonText!,
+                        overflow: TextOverflow
+                            .ellipsis, // Safety fallback for extremely long words
+                        maxLines: 1,
                       ),
                     ),
                   ),

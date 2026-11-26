@@ -143,7 +143,7 @@ class _JobCardState extends ConsumerState<JobCard> {
                       alignment: Alignment.topLeft,
                       widthFactor: 0.9,
                       child: RichText(
-                        maxLines: 2,
+                        maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                         text: TextSpan(
                           children: [
@@ -196,77 +196,6 @@ class _JobCardState extends ConsumerState<JobCard> {
                 ],
               ),
             ),
-
-            if (variant == JobCardVariant.postedJob)
-              Row(
-                children: [
-                  /// DETAILS
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        "assets/icons/visual/status.svg",
-                        height: 12,
-                      ),
-                      const SizedBox(width: 6),
-
-                      Text("Status :", style: TextStyle(fontSize: 12)),
-                      const SizedBox(width: 8),
-                      Text(
-                        TextFormatter.capitalize(job.status ?? ""),
-                        style: TextStyle(
-                          color: StatusDataFormatter.getStatusColorGuardian(
-                            application?.status,
-                          ),
-                          fontWeight: FontWeight.w500,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(width: 20),
-
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              GuardianJobApplication(jobId: job.id),
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 4,
-                        vertical: 2,
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SvgPicture.asset(
-                            "assets/icons/navigations/confirmed.svg",
-                            height: 16,
-                            width: 16,
-                            color: AppColors.primary01,
-                          ),
-                          const SizedBox(width: 4),
-                          const Text("Applications"),
-                          const SizedBox(width: 4),
-                          Text(
-                            "(${job.applications?.length ?? 0})",
-                            style: const TextStyle(fontWeight: FontWeight.w500),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(width: 10),
-
-                  /// APPLY BUTTON
-                ],
-              ),
 
             const SizedBox(height: 6),
 
@@ -722,6 +651,78 @@ class _JobCardState extends ConsumerState<JobCard> {
             //         /// APPLY BUTTON
             //       ],
             //     ),
+            if (variant == JobCardVariant.postedJob) ...[
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  /// DETAILS
+                  Row(
+                    children: [
+                      SvgPicture.asset(
+                        "assets/icons/visual/status.svg",
+                        height: 12,
+                      ),
+                      const SizedBox(width: 6),
+
+                      Text("Status :", style: TextStyle(fontSize: 12)),
+                      const SizedBox(width: 8),
+                      Text(
+                        TextFormatter.capitalize(job.status ?? ""),
+                        style: TextStyle(
+                          color: StatusDataFormatter.getStatusColorGuardian(
+                            job.status ,
+                          ),
+                          fontWeight: FontWeight.w500,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(width: 20),
+
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              GuardianJobApplication(jobId: job.id),
+                        ),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 4,
+                        vertical: 2,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SvgPicture.asset(
+                            "assets/icons/navigations/confirmed.svg",
+                            height: 16,
+                            width: 16,
+                            color: AppColors.primary01,
+                          ),
+                          const SizedBox(width: 4),
+                          const Text("Applications"),
+                          const SizedBox(width: 4),
+                          Text(
+                            "(${job.applications?.length ?? 0})",
+                            style: const TextStyle(fontWeight: FontWeight.w500),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(width: 10),
+
+                  /// APPLY BUTTON
+                ],
+              ),
+            ],
           ],
         ),
       ),

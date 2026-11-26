@@ -277,20 +277,21 @@ class _JobsPageState extends ConsumerState<JobsPage> {
     }
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           /// 📊 COUNT + FILTER
           Row(
             children: [
-                            Expanded(
+              Expanded(
                 child: state.isLoading
                     ? const Align(
                         alignment: Alignment.centerLeft,
                         child: ShimmerWrapper(
                           child: SkeletonBox(
-                            width: 140, // Adjust width based on your text length
+                            width:
+                                140, // Adjust width based on your text length
                             height: 30,
                             borderRadius: BorderRadius.all(Radius.circular(6)),
                           ),
@@ -302,11 +303,12 @@ class _JobsPageState extends ConsumerState<JobsPage> {
                               ? (state.meta?.liveJobs ?? 0)
                               : (state.meta?.counts.liveJobs ?? 0),
                         ),
-                        style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                          color: AppColors.neutrals02,
-                          fontWeight: FontWeight.w600,
-                          height: 1.5,
-                        ),
+                        style: Theme.of(context).textTheme.headlineSmall!
+                            .copyWith(
+                              color: AppColors.neutrals02,
+                              fontWeight: FontWeight.w600,
+                              height: 1.5,
+                            ),
                       ),
               ),
 
@@ -314,7 +316,7 @@ class _JobsPageState extends ConsumerState<JobsPage> {
                 /// Clear Filters
                 Row(
                   children: [
-                    if (hasFilters ) ...[
+                    if (hasFilters) ...[
                       Padding(
                         padding: const EdgeInsets.only(right: 6),
                         child: AppButton(
@@ -334,23 +336,23 @@ class _JobsPageState extends ConsumerState<JobsPage> {
                         ),
                       ),
 
-                      const SizedBox(width: 6),],
+                      const SizedBox(width: 6),
+                    ],
 
-                      AppButton(
-                        label: "Filters",
-                        onPressed: () => openFilter(context),
-                        variant: AppButtonVariant.outline,
-                        height: 32,
-                        width: 100,
-                        icon: Icons.tune,
-                      ),
-                  
+                    AppButton(
+                      label: "Filters",
+                      onPressed: () => openFilter(context),
+                      variant: AppButtonVariant.outline,
+                      height: 32,
+                      width: 100,
+                      icon: Icons.tune,
+                    ),
                   ],
                 ),
               ],
+              const SizedBox(height: 16),
             ],
           ),
-          const SizedBox(height: 16),
 
           /// 🔍 SEARCH
           if (isTutor) ...[
@@ -471,7 +473,7 @@ class _JobsPageState extends ConsumerState<JobsPage> {
               ],
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 4),
           ],
         ],
       ),
