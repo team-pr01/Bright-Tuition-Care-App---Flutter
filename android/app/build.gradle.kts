@@ -25,7 +25,7 @@ android {
     defaultConfig {
         applicationId = "com.prtechsolutions.btc.btcclient"
         minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        targetSdk = 34
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
@@ -50,7 +50,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-base:18.2.0")
     
     // ✅ Firebase BoM (Bill of Materials) - Manages Firebase versions
-    implementation(platform("com.google.firebase:firebase-bom:32.5.0"))
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     
     // ✅ Firebase Cloud Messaging
     implementation("com.google.firebase:firebase-messaging")
