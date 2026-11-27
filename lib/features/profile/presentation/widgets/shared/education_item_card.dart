@@ -16,11 +16,19 @@ class EducationItemCard extends StatelessWidget {
     this.onDelete,
   });
 
+  /// 👈 MATCHES the edit screen logic exactly
   bool get _isSchoolLevel {
     return education.level == "Secondary" ||
-        education.level == "Higher Secondary" ||
-        education.level == "O Level" ||
-        education.level == "A Level";
+        education.level == "Higher Secondary";
+  }
+
+  /// 👈 MATCHES the edit screen logic exactly
+  bool get _isHigherEdLevel {
+    return education.level == "Diploma" ||
+        education.level == "Bachelor" ||
+        education.level == "Masters" ||
+        education.level == "Honors" ||
+        education.level == "Doctoral";
   }
 
   @override
@@ -29,11 +37,6 @@ class EducationItemCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      // decoration: BoxDecoration(
-      //   color: const Color(0xffF8FAFD),
-      //   borderRadius: BorderRadius.circular(18),
-      //   border: Border.all(color: Colors.grey.shade300),
-      // ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -50,9 +53,7 @@ class EducationItemCard extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-
                     const SizedBox(height: 4),
-
                     Text(
                       education.institute.isEmpty
                           ? "Institute Not Provided"
@@ -62,7 +63,6 @@ class EducationItemCard extends StatelessWidget {
                   ],
                 ),
               ),
-
               AppButton(
                 iconOnly: true,
                 icon: Icons.edit_outlined,
@@ -71,7 +71,6 @@ class EducationItemCard extends StatelessWidget {
                 height: 32,
                 onPressed: onEdit,
               ),
-
               const SizedBox(width: 8),
               AppButton(
                 iconOnly: true,
@@ -87,37 +86,28 @@ class EducationItemCard extends StatelessWidget {
           ),
 
           const SizedBox(height: 20),
+
           Wrap(
             children: [
               ProfileInfoRow(label: "Level", value: education.level),
-
               ProfileInfoRow(label: "Degree", value: education.degree),
-
               ProfileInfoRow(label: "Institute", value: education.institute),
-
               ProfileInfoRow(label: "Curriculum", value: education.curriculum),
 
-              /// GROUP & BOARD
+              // 👈 Show Group & Board ONLY for Secondary & Higher Secondary
               if (_isSchoolLevel) ...[
                 ProfileInfoRow(label: "Group", value: education.group),
-
                 ProfileInfoRow(label: "Board", value: education.board),
               ],
 
-              /// DEPARTMENT & SEMESTER
-              if (!_isSchoolLevel) ...[
-                ProfileInfoRow(
-                  label: "Department",
-                  value: education.department,
-                ),
-
+              // 👈 Show Department & Semester ONLY for Diploma, Bachelor, Masters, Honors, Doctoral
+              if (_isHigherEdLevel) ...[
+                ProfileInfoRow(label: "Department", value: education.department),
                 ProfileInfoRow(label: "Semester", value: education.semester),
               ],
 
-              // ProfileInfoRow(
-              //   label: "Result",
-              //   value: education.result,
-              // ),
+              // For O Level / A Level — nothing extra shows (correct behavior)
+
               if (!isCurrent)
                 ProfileInfoRow(
                   label: "Passing Year",
@@ -128,37 +118,11 @@ class EducationItemCard extends StatelessWidget {
                 label: "Is Current Institute",
                 value: education.isCurrentInstitute == true ? "Yes" : "No",
               ),
-              ProfileInfoRow(label: "Result", value: "${education.result!}"),
+
+              ProfileInfoRow(label: "Result", value: "${education.result ?? "-"}"),
             ],
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _StatusChip extends StatelessWidget {
-  final String text;
-  final Color color;
-
-  const _StatusChip({required this.text, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
-        borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: color.withOpacity(0.25)),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: color,
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-        ),
       ),
     );
   }

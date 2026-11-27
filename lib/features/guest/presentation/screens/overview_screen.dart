@@ -88,7 +88,7 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
   void _startJobsAutoScroll() {
     _jobsAutoScrollTimer?.cancel();
 
-    _jobsAutoScrollTimer = Timer.periodic(const Duration(seconds: 2), (_) {
+    _jobsAutoScrollTimer = Timer.periodic(const Duration(seconds: 10), (_) {
       if (!mounted || !_jobsScrollController.hasClients) {
         return;
       }
@@ -144,33 +144,7 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
     });
   }
 
-  final List<_StatItem> _stats = const [
-    _StatItem(
-      icon: Icons.work_outline_rounded,
-      value: '184',
-      label: 'Live Jobs',
-      iconColor: Color(0xFFE91E63),
-    ),
-    _StatItem(
-      icon: Icons.people_outline_rounded,
-      value: '40007',
-      label: 'Active Tutors',
-      iconColor: Color(0xFF4CAF50),
-    ),
-    _StatItem(
-      icon: Icons.sentiment_satisfied_alt_outlined,
-      value: '12223',
-      label: 'Happy Guardians',
-      iconColor: Color(0xFFFF9800),
-    ),
-    _StatItem(
-      icon: Icons.emoji_events_outlined,
-      value: '4.7',
-      label: 'Ratings',
-      iconColor: Color(0xFF2196F3),
-    ),
-  ];
-
+  
   final List<_UsefulItem> _usefulItems = const [
     _UsefulItem(icon: Icons.info_outline_rounded, title: 'About Us'),
     _UsefulItem(icon: Icons.support_agent_outlined, title: 'Contact Us'),
@@ -499,8 +473,41 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
 
   Widget _buildCombinedStatsAndJobsCard() {
     final jobsState = ref.watch(jobsProvider);
-
     final cities = jobsState.jobsByCity;
+
+    // 👈 Read directly from state, not meta
+    final availableJobs = jobsState.availableJobs;
+    final activeTutors = jobsState.activeTutors;
+    final happyGuardians = jobsState.happyGuardians;
+    final averageRating = jobsState.averageRating;
+
+    final dynamicStats = [
+      _StatItem(
+        icon: Icons.work_outline_rounded,
+        value: '$availableJobs',
+        label: 'Live Jobs',
+        iconColor: const Color(0xFFE91E63),
+      ),
+      _StatItem(
+        icon: Icons.people_outline_rounded,
+        value: '${activeTutors + 25000}',
+        label: 'Active Tutors',
+        iconColor: const Color(0xFF4CAF50),
+      ),
+      _StatItem(
+        icon: Icons.sentiment_satisfied_alt_outlined,
+        value: '${happyGuardians + 12000}',
+        label: 'Happy Guardians',
+        iconColor: const Color(0xFFFF9800),
+      ),
+      _StatItem(
+        icon: Icons.emoji_events_outlined,
+        // value: (averageRating < 4.7 ? 4.7 : averageRating).toStringAsFixed(1),
+        value: "4.7",
+        label: 'Ratings',
+        iconColor: const Color(0xFF2196F3),
+      ),
+    ];
 
     return Container(
       width: double.infinity,
@@ -512,7 +519,7 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
           GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: _stats.length,
+            itemCount: dynamicStats.length, // 👈 Use dynamic list
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               crossAxisSpacing: 12,
@@ -520,14 +527,14 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
               childAspectRatio: 2.35,
             ),
             itemBuilder: (context, index) {
-              return _buildInlineStatItem(_stats[index]);
+              return _buildInlineStatItem(
+                dynamicStats[index],
+              ); // 👈 Use dynamic list
             },
           ),
 
           const SizedBox(height: 18),
-
           Container(height: 1, color: const Color(0xFFD6E9FE)),
-
           const SizedBox(height: 14),
 
           // ========================================================
@@ -536,9 +543,7 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
           Row(
             children: [
               const PulsingDot(size: 8, color: Color(0xFF2196F3)),
-
               const SizedBox(width: 8),
-
               Expanded(
                 child: Text(
                   'Live Tuition Jobs',
@@ -549,14 +554,11 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                   ),
                 ),
               ),
-
               _buildNavButton(
                 icon: Icons.chevron_left_rounded,
                 onTap: () => _scrollJobs(false),
               ),
-
               const SizedBox(width: 6),
-
               _buildNavButton(
                 icon: Icons.chevron_right_rounded,
                 onTap: () => _scrollJobs(true),
@@ -569,7 +571,7 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
           // ========================================================
           // CITIES FROM API
           // ========================================================
-          _buildCities(jobsState.jobsByCity),
+          _buildCities(cities),
         ],
       ),
     );
@@ -703,6 +705,7 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
             await ref.read(jobsProvider.notifier).applyFilter(filter);
 
             if (!mounted) return;
+
             Navigator.push(
               context,
               MaterialPageRoute(

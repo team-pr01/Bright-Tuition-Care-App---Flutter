@@ -158,7 +158,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
       ).showSnackBar(SnackBar(content: Text(e.toString())));
     } finally {
       if (mounted) {
-        setState(() {
+        setState(() { 
           _saving = false;
         });
       }
@@ -168,7 +168,7 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CommonAppBar(title: "Edit Education"),
+      appBar: CommonAppBar(title: _isEdit ? "Edit Education" : "Add Education"),
       body: SafeArea(
         child: Form(
           key: _formKey,
@@ -203,17 +203,22 @@ class _EditEducationScreenState extends ConsumerState<EditEducationScreen> {
 
                           setState(() {
                             _levelController.text = v;
-                            
+
                             // 👈 Clear out fields when switching to avoid ghost data
                             if (v == "O Level" || v == "A Level") {
                               _groupController.clear();
                               _boardController.clear();
                               _departmentController.clear();
                               _semesterController.clear();
-                            } else if (v == "Secondary" || v == "Higher Secondary") {
+                            } else if (v == "Secondary" ||
+                                v == "Higher Secondary") {
                               _departmentController.clear();
                               _semesterController.clear();
-                            } else if (v == "Diploma" || v == "Bachelor" || v == "Masters" || v == "Honors" || v == "Doctoral") {
+                            } else if (v == "Diploma" ||
+                                v == "Bachelor" ||
+                                v == "Masters" ||
+                                v == "Honors" ||
+                                v == "Doctoral") {
                               _groupController.clear();
                               _boardController.clear();
                             }
