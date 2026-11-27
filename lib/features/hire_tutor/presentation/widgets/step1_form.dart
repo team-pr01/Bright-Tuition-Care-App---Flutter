@@ -123,7 +123,7 @@ void initState() {
               //  required: true,
               label: "Curriculum",
               type: AppInputType.dropdown2,
-              dropdownItems: curriculumTypes,
+              dropdownItems: guardianCurriculumTypes,
               value: data.curriculum,
               onChanged: (v) {
                 notifier.update((d) => d.curriculum = v);

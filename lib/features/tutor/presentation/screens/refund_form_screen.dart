@@ -152,7 +152,6 @@ class _RefundFormScreenState extends ConsumerState<RefundFormScreen> {
                 required: true,
               ),
 
-              const SizedBox(height: 16),
 
               /// SUBMIT BUTTON
               AppButton(

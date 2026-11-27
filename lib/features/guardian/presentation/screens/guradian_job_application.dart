@@ -21,10 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class GuardianJobApplication extends ConsumerStatefulWidget {
   final String jobId;
 
-  const GuardianJobApplication({
-    super.key,
-    required this.jobId,
-  });
+  const GuardianJobApplication({super.key, required this.jobId});
 
   @override
   ConsumerState<GuardianJobApplication> createState() =>
@@ -35,8 +32,7 @@ class _GuardianJobApplicationState
     extends ConsumerState<GuardianJobApplication> {
   final TextEditingController searchController = TextEditingController();
   final TextEditingController demoDateController = TextEditingController();
-  final TextEditingController appointedDateController =
-      TextEditingController();
+  final TextEditingController appointedDateController = TextEditingController();
 
   Timer? debounce;
 
@@ -51,9 +47,7 @@ class _GuardianJobApplicationState
     super.initState();
 
     Future.microtask(() {
-      ref
-          .read(jobApplicationProvider.notifier)
-          .fetchInitial(widget.jobId);
+      ref.read(jobApplicationProvider.notifier).fetchInitial(widget.jobId);
     });
   }
 
@@ -79,9 +73,7 @@ class _GuardianJobApplicationState
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Tutor information is not available"),
-        ),
+        const SnackBar(content: Text("Tutor information is not available")),
       );
 
       return;
@@ -98,9 +90,7 @@ class _GuardianJobApplicationState
         context: context,
         barrierDismissible: false,
         builder: (_) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return const Center(child: CircularProgressIndicator());
         },
       );
 
@@ -110,8 +100,7 @@ class _GuardianJobApplicationState
       // GET TUTOR PROFILE
       // ------------------------------------------------------------
 
-      final TutorProfileModel tutorProfile =
-          await getTutorProfile(id);
+      final TutorProfileModel tutorProfile = await getTutorProfile(id);
 
       if (!mounted) return;
 
@@ -159,19 +148,12 @@ class _GuardianJobApplicationState
       String message = e.toString();
 
       if (message.startsWith("Exception: ")) {
-        message = message.replaceFirst(
-          "Exception: ",
-          "",
-        );
+        message = message.replaceFirst("Exception: ", "");
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            message.isEmpty
-                ? "Failed to load tutor CV"
-                : message,
-          ),
+          content: Text(message.isEmpty ? "Failed to load tutor CV" : message),
         ),
       );
     }
@@ -186,10 +168,7 @@ class _GuardianJobApplicationState
 
     await ref
         .read(jobApplicationProvider.notifier)
-        .fetchInitial(
-          widget.jobId,
-          refresh: true,
-        );
+        .fetchInitial(widget.jobId, refresh: true);
   }
 
   // ================================================================
@@ -197,21 +176,20 @@ class _GuardianJobApplicationState
   // ================================================================
 
   void _applyCurrentFilters() {
-    ref.read(jobApplicationProvider.notifier).applyFilters(
-      jobId: widget.jobId,
-      newStatus: selectedStatus == "All"
-          ? ""
-          : selectedStatus,
-      newKeyword: searchController.text,
-      newDemoDate: demoDateController.text.isEmpty
-          ? null
-          : demoDateController.text,
-      newAppointedDate:
-          appointedDateController.text.isEmpty
+    ref
+        .read(jobApplicationProvider.notifier)
+        .applyFilters(
+          jobId: widget.jobId,
+          newStatus: selectedStatus == "All" ? "" : selectedStatus,
+          newKeyword: searchController.text,
+          newDemoDate: demoDateController.text.isEmpty
+              ? null
+              : demoDateController.text,
+          newAppointedDate: appointedDateController.text.isEmpty
               ? null
               : appointedDateController.text,
-      newLimit: selectedLimit,
-    );
+          newLimit: selectedLimit,
+        );
   }
 
   // ================================================================
@@ -222,229 +200,22 @@ class _GuardianJobApplicationState
   Widget build(BuildContext context) {
     final state = ref.watch(jobApplicationProvider);
 
-    final notifier =
-        ref.read(jobApplicationProvider.notifier);
+    final notifier = ref.read(jobApplicationProvider.notifier);
 
     return Scaffold(
-      appBar: const CommonAppBar(
-        title: "Job Applications",
-      ),
+      appBar: const CommonAppBar(title: "Job Applications"),
 
       body: RefreshIndicator(
         key: _refreshKey,
 
         onRefresh: () async {
-          await notifier.fetchInitial(
-            widget.jobId,
-            refresh: true,
-          );
+          await notifier.fetchInitial(widget.jobId, refresh: true);
         },
 
         child: Column(
           children: [
             // ======================================================
             // FILTERS
-            // ======================================================
-
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                children: [
-                  // ==================================================
-                  // SEARCH
-                  // ==================================================
-
-                  ApplicationSearchBar(
-                    controller: searchController,
-
-                    onChanged: (value) {
-                      if (debounce?.isActive ?? false) {
-                        debounce!.cancel();
-                      }
-
-                      debounce = Timer(
-                        const Duration(
-                          milliseconds: 500,
-                        ),
-                        () {
-                          notifier.applyFilters(
-                            jobId: widget.jobId,
-                            newKeyword: value,
-                            newStatus:
-                                selectedStatus == "All"
-                                    ? ""
-                                    : selectedStatus,
-                            newDemoDate:
-                                demoDateController
-                                        .text
-                                        .isEmpty
-                                    ? null
-                                    : demoDateController.text,
-                            newAppointedDate:
-                                appointedDateController
-                                        .text
-                                        .isEmpty
-                                    ? null
-                                    : appointedDateController
-                                        .text,
-                            newLimit: selectedLimit,
-                          );
-                        },
-                      );
-                    },
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  // ==================================================
-                  // STATUS + LIMIT
-                  // ==================================================
-
-                  Row(
-                    children: [
-                      Expanded(
-                        child: AppInputField(
-                          label: "Status",
-                          type: AppInputType.dropdown2,
-
-                          dropdownItems: const [
-                            "All",
-                            "applied",
-                            "shortlisted",
-                            "appointed",
-                            "confirmed",
-                            "rejected",
-                          ],
-
-                          value: selectedStatus,
-
-                          onChanged: (value) {
-                            setState(() {
-                              selectedStatus =
-                                  value ?? "All";
-                            });
-
-                            _applyCurrentFilters();
-                          },
-                        ),
-                      ),
-
-                      const SizedBox(width: 20),
-
-                      Expanded(
-                        child: AppInputField(
-                          label: "Limit",
-                          type: AppInputType.dropdown2,
-
-                          dropdownItems: const [
-                            "5",
-                            "10",
-                            "20",
-                            "30",
-                          ],
-
-                          value: selectedLimit.toString(),
-
-                          onChanged: (value) {
-                            final limit =
-                                int.tryParse(
-                                      value ?? "10",
-                                    ) ??
-                                    10;
-
-                            setState(() {
-                              selectedLimit = limit;
-                            });
-
-                            _applyCurrentFilters();
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  // ==================================================
-                  // DEMO DATE + APPOINTED DATE
-                  // ==================================================
-
-                  Row(
-                    children: [
-                      Expanded(
-                        child: AppInputField(
-                          controller:
-                              demoDateController,
-                          label: "Demo Date",
-                          type: AppInputType.date,
-                          hint:"mm/dd/yyyy",
-                          onChanged: (_) {
-                            _applyCurrentFilters();
-                          },
-                        ),
-                      ),
-
-                      const SizedBox(width: 20),
-
-                      Expanded(
-                        child: AppInputField(
-                          controller:
-                              appointedDateController,
-                          label: "Appointed Date",
-                           hint:"mm/dd/yyyy",
-                          type: AppInputType.date,
-
-                          onChanged: (_) {
-                            _applyCurrentFilters();
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  // ==================================================
-                  // CLEAR
-                  // ==================================================
-
-                  Row(
-                    children: [
-                      Expanded(
-                        child: AppButton(
-                          label: "Clear",
-                          variant:
-                              AppButtonVariant.gradient,
-
-                          onPressed: () {
-                            searchController.clear();
-                            demoDateController.clear();
-                            appointedDateController.clear();
-
-                            setState(() {
-                              selectedStatus = "All";
-                              selectedLimit = 10;
-                            });
-
-                            notifier.applyFilters(
-                              jobId: widget.jobId,
-                              newStatus: "",
-                              newKeyword: "",
-                              newDemoDate: null,
-                              newAppointedDate: null,
-                              newLimit: 10,
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
-            // ======================================================
-            // APPLICATION LIST
             // ======================================================
 
             Expanded(
@@ -457,8 +228,7 @@ class _GuardianJobApplicationState
                         // LOADING SKELETON
                         // ==========================================
 
-                        if (state.isLoading &&
-                            state.applications.isEmpty)
+                        if (state.isLoading && state.applications.isEmpty)
                           ListView.builder(
                             itemCount: 6,
 
@@ -466,50 +236,34 @@ class _GuardianJobApplicationState
                               return const JobApplicationSkeletonCard();
                             },
                           )
-
                         // ==========================================
                         // APPLICATIONS
                         // ==========================================
-
                         else
                           ListView.builder(
-                            itemCount:
-                                state.applications.length,
+                            itemCount: state.applications.length,
 
-                            itemBuilder:
-                                (context, index) {
-                              final app =
-                                  state.applications[index];
+                            itemBuilder: (context, index) {
+                              final app = state.applications[index];
 
                               return Container(
-                                margin:
-                                    const EdgeInsets
-                                        .symmetric(
-                                  horizontal:
-                                      AppSpacing.md,
-                                  vertical:
-                                      AppSpacing.sm,
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: AppSpacing.md,
+                                  vertical: AppSpacing.sm,
                                 ),
 
-                                decoration:
-                                    BoxDecoration(
+                                decoration: BoxDecoration(
                                   color: Colors.white,
 
-                                  borderRadius:
-                                      BorderRadius.circular(
-                                    16,
-                                  ),
+                                  borderRadius: BorderRadius.circular(16),
 
                                   border: Border.all(
-                                    color:
-                                        AppColors.primary01,
+                                    color: AppColors.primary01,
                                   ),
 
                                   boxShadow: [
                                     BoxShadow(
-                                      color: AppColors
-                                          .primary02
-                                          .withOpacity(
+                                      color: AppColors.primary02.withOpacity(
                                         0.3,
                                       ),
                                       blurRadius: 4,
@@ -519,15 +273,11 @@ class _GuardianJobApplicationState
                                 ),
 
                                 child: Padding(
-                                  padding:
-                                      const EdgeInsets.all(
-                                    AppSpacing.md,
-                                  ),
+                                  padding: const EdgeInsets.all(AppSpacing.md),
 
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment
-                                            .start,
+                                        CrossAxisAlignment.start,
 
                                     children: [
                                       // =================================
@@ -536,39 +286,32 @@ class _GuardianJobApplicationState
 
                                       Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment
-                                                .spaceBetween,
+                                            MainAxisAlignment.spaceBetween,
 
                                         children: [
                                           Expanded(
                                             child: Row(
                                               children: [
-                                                if ((app.tutorCustomId ??
-                                                        "")
+                                                if ((app.tutorCustomId ?? "")
                                                     .isNotEmpty)
                                                   Text(
                                                     "${app.tutorCustomId} ",
-                                                    style:
-                                                        AppTextStyles
-                                                            .labelMedium
-                                                            .copyWith(
-                                                      color:
-                                                          AppColors
+                                                    style: AppTextStyles
+                                                        .labelMedium
+                                                        .copyWith(
+                                                          color: AppColors
                                                               .primary01,
-                                                      fontWeight:
-                                                          FontWeight
-                                                              .w600,
-                                                    ),
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
                                                   ),
 
                                                 Expanded(
-                                                  child:
-                                                      Text(
+                                                  child: Text(
                                                     app.userName,
 
                                                     overflow:
-                                                        TextOverflow
-                                                            .ellipsis,
+                                                        TextOverflow.ellipsis,
                                                   ),
                                                 ),
                                               ],
@@ -576,239 +319,171 @@ class _GuardianJobApplicationState
                                           ),
 
                                           Container(
-                                            padding:
-                                                const EdgeInsets
-                                                    .symmetric(
-                                              horizontal:
-                                                  AppSpacing
-                                                      .sm,
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: AppSpacing.sm,
                                               vertical: 4,
                                             ),
 
-                                            decoration:
-                                                BoxDecoration(
+                                            decoration: BoxDecoration(
                                               color:
-                                                  StatusDataFormatter
-                                                      .getJobApplicationStatusColor(
-                                                app.status,
-                                              ).withOpacity(
-                                                0.1,
-                                              ),
+                                                  StatusDataFormatter.getJobApplicationStatusColor(
+                                                    app.status,
+                                                  ).withOpacity(0.1),
 
                                               borderRadius:
-                                                  BorderRadius
-                                                      .circular(
-                                                AppRadius
-                                                    .full
-                                                    .toDouble(),
-                                              ),
+                                                  BorderRadius.circular(
+                                                    AppRadius.full.toDouble(),
+                                                  ),
                                             ),
 
                                             child: Text(
-                                              app.status
-                                                  .toUpperCase(),
+                                              app.status.toUpperCase(),
 
-                                              style:
-                                                  AppTextStyles
-                                                      .labelSmall
-                                                      .copyWith(
-                                                color:
-                                                    StatusDataFormatter
-                                                        .getJobApplicationStatusColor(
-                                                  app.status,
-                                                ),
-                                              ),
+                                              style: AppTextStyles.labelSmall
+                                                  .copyWith(
+                                                    color:
+                                                        StatusDataFormatter.getJobApplicationStatusColor(
+                                                          app.status,
+                                                        ),
+                                                  ),
                                             ),
                                           ),
                                         ],
                                       ),
 
-                                      const SizedBox(
-                                        height:
-                                            AppSpacing.sm,
-                                      ),
+                                      const SizedBox(height: AppSpacing.sm),
 
                                       // =================================
                                       // APPLIED DATE
                                       // =================================
-
                                       Text(
                                         "Applied: ${DateFormatter.formattedDate(app.appliedOn)}",
                                       ),
 
-                                      const SizedBox(
-                                        height:
-                                            AppSpacing.sm,
-                                      ),
+                                      const SizedBox(height: AppSpacing.sm),
 
                                       // =================================
                                       // SHORTLISTED + APPOINTED
                                       // =================================
-
                                       Row(
                                         children: [
                                           Expanded(
-                                            child:
-                                                IconRow(
+                                            child: IconRow(
                                               icon:
                                                   "assets/icons/status/shortlisted.svg",
 
-                                              title:
-                                                  "Shortlisted On",
+                                              title: "Shortlisted On",
 
-                                              value:
-                                                  app.shortlistedOn !=
-                                                          null
-                                                      ? DateFormatter
-                                                          .formattedDate(
-                                                          app.shortlistedOn!,
-                                                        )
-                                                      : "N/A",
+                                              value: app.shortlistedOn != null
+                                                  ? DateFormatter.formattedDate(
+                                                      app.shortlistedOn!,
+                                                    )
+                                                  : "N/A",
                                             ),
                                           ),
 
                                           Expanded(
-                                            child:
-                                                IconRow(
+                                            child: IconRow(
                                               icon:
                                                   "assets/icons/status/appointed.svg",
 
-                                              title:
-                                                  "Appointed On",
+                                              title: "Appointed On",
 
-                                              value:
-                                                  app.appointedOn !=
-                                                          null
-                                                      ? DateFormatter
-                                                          .formattedDate(
-                                                          app.appointedOn!,
-                                                        )
-                                                      : "N/A",
+                                              value: app.appointedOn != null
+                                                  ? DateFormatter.formattedDate(
+                                                      app.appointedOn!,
+                                                    )
+                                                  : "N/A",
                                             ),
                                           ),
                                         ],
                                       ),
 
-                                      const SizedBox(
-                                        height:
-                                            AppSpacing.sm,
-                                      ),
+                                      const SizedBox(height: AppSpacing.sm),
 
                                       // =================================
                                       // CONFIRMED + CANCELLED
                                       // =================================
-
                                       Row(
                                         children: [
                                           Expanded(
-                                            child:
-                                                IconRow(
+                                            child: IconRow(
                                               icon:
                                                   "assets/icons/status/confirmed.svg",
 
-                                              title:
-                                                  "Confirmed On",
+                                              title: "Confirmed On",
 
-                                              value:
-                                                  app.confirmedOn !=
-                                                          null
-                                                      ? DateFormatter
-                                                          .formattedDate(
-                                                          app.confirmedOn!,
-                                                        )
-                                                      : "N/A",
+                                              value: app.confirmedOn != null
+                                                  ? DateFormatter.formattedDate(
+                                                      app.confirmedOn!,
+                                                    )
+                                                  : "N/A",
                                             ),
                                           ),
 
                                           Expanded(
-                                            child:
-                                                IconRow(
+                                            child: IconRow(
                                               icon:
                                                   "assets/icons/status/cancelled.svg",
 
-                                              title:
-                                                  "Cancelled On",
+                                              title: "Cancelled On",
 
-                                              value:
-                                                  app.rejectedOn !=
-                                                          null
-                                                      ? DateFormatter
-                                                          .formattedDate(
-                                                          app.rejectedOn!,
-                                                        )
-                                                      : "N/A",
+                                              value: app.rejectedOn != null
+                                                  ? DateFormatter.formattedDate(
+                                                      app.rejectedOn!,
+                                                    )
+                                                  : "N/A",
                                             ),
                                           ),
                                         ],
                                       ),
 
-                                      const SizedBox(
-                                        height:
-                                            AppSpacing.sm,
-                                      ),
+                                      const SizedBox(height: AppSpacing.sm),
 
                                       // =================================
                                       // VIEW CV
                                       // =================================
-
                                       Align(
-                                        alignment:
-                                            Alignment
-                                                .centerRight,
+                                        alignment: Alignment.centerRight,
 
                                         child: InkWell(
-                                          borderRadius:
-                                              BorderRadius
-                                                  .circular(
+                                          borderRadius: BorderRadius.circular(
                                             8,
                                           ),
 
                                           onTap: () {
-                                            _viewTutorCV(
-                                              app.tutorId,
-                                            );
+                                            _viewTutorCV(app.tutorId);
                                           },
 
                                           child: Padding(
-                                            padding:
-                                                const EdgeInsets
-                                                    .symmetric(
+                                            padding: const EdgeInsets.symmetric(
                                               horizontal: 8,
                                               vertical: 8,
                                             ),
 
                                             child: Row(
-                                              mainAxisSize:
-                                                  MainAxisSize
-                                                      .min,
+                                              mainAxisSize: MainAxisSize.min,
 
                                               children: [
                                                 const Icon(
-                                                  Icons
-                                                      .visibility_outlined,
+                                                  Icons.visibility_outlined,
                                                   size: 17,
-                                                  color: AppColors
-                                                      .primary01,
+                                                  color: AppColors.primary01,
                                                 ),
 
-                                                const SizedBox(
-                                                  width: 5,
-                                                ),
+                                                const SizedBox(width: 5),
 
                                                 Text(
                                                   "View CV",
 
-                                                  style:
-                                                      AppTextStyles
-                                                          .labelMedium
-                                                          .copyWith(
-                                                    color:
-                                                        AppColors
-                                                            .primary01,
-                                                    fontWeight:
-                                                        FontWeight
-                                                            .w600,
-                                                  ),
+                                                  style: AppTextStyles
+                                                      .labelMedium
+                                                      .copyWith(
+                                                        color:
+                                                            AppColors.primary01,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      ),
                                                 ),
                                               ],
                                             ),
@@ -825,7 +500,6 @@ class _GuardianJobApplicationState
                         // ==========================================
                         // REFRESH LOADER
                         // ==========================================
-
                         if (state.isRefreshing)
                           Positioned(
                             top: 12,
@@ -834,24 +508,16 @@ class _GuardianJobApplicationState
 
                             child: Center(
                               child: Container(
-                                padding:
-                                    const EdgeInsets.all(
-                                  10,
-                                ),
+                                padding: const EdgeInsets.all(10),
 
-                                decoration:
-                                    BoxDecoration(
+                                decoration: BoxDecoration(
                                   color: Colors.white,
 
-                                  borderRadius:
-                                      BorderRadius.circular(
-                                    30,
-                                  ),
+                                  borderRadius: BorderRadius.circular(30),
 
                                   boxShadow: const [
                                     BoxShadow(
-                                      color:
-                                          Colors.black12,
+                                      color: Colors.black12,
                                       blurRadius: 8,
                                     ),
                                   ],
@@ -861,8 +527,7 @@ class _GuardianJobApplicationState
                                   width: 20,
                                   height: 20,
 
-                                  child:
-                                      CircularProgressIndicator(
+                                  child: CircularProgressIndicator(
                                     strokeWidth: 2,
                                   ),
                                 ),
@@ -876,21 +541,17 @@ class _GuardianJobApplicationState
                   // ==================================================
                   // PAGINATION
                   // ==================================================
-
                   if (state.meta != null)
                     Container(
-                      padding:
-                          const EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(10),
 
-                      decoration:
-                          BoxDecoration(
+                      decoration: BoxDecoration(
                         color: Colors.white,
 
                         boxShadow: [
                           BoxShadow(
                             blurRadius: 4,
-                            color: Colors.black
-                                .withOpacity(0.1),
+                            color: Colors.black.withOpacity(0.1),
                           ),
                         ],
                       ),
@@ -900,61 +561,43 @@ class _GuardianJobApplicationState
                           Flexible(
                             child: AppButton(
                               label: "Prev",
-                              variant:
-                                  AppButtonVariant
-                                      .outlineGray,
+                              variant: AppButtonVariant.outlineGray,
 
-                              onPressed:
-                                  state.meta!.page > 1
-                                      ? () {
-                                          notifier
-                                              .goToPage(
-                                            widget.jobId,
-                                            state.meta!
-                                                    .page -
-                                                1,
-                                          );
-                                        }
-                                      : null,
+                              onPressed: state.meta!.page > 1
+                                  ? () {
+                                      notifier.goToPage(
+                                        widget.jobId,
+                                        state.meta!.page - 1,
+                                      );
+                                    }
+                                  : null,
                             ),
                           ),
 
-                          const SizedBox(
-                            width: AppSpacing.sm,
-                          ),
+                          const SizedBox(width: AppSpacing.sm),
 
                           Text(
                             "${state.meta!.page} / ${state.meta!.totalPages}",
 
-                            style:
-                                AppTextStyles.labelMedium,
+                            style: AppTextStyles.labelMedium,
                           ),
 
-                          const SizedBox(
-                            width: AppSpacing.sm,
-                          ),
+                          const SizedBox(width: AppSpacing.sm),
 
                           Flexible(
                             child: AppButton(
                               label: "Next",
-                              variant:
-                                  AppButtonVariant
-                                      .outlineGray,
+                              variant: AppButtonVariant.outlineGray,
 
                               onPressed:
-                                  state.meta!.page <
-                                          state.meta!
-                                              .totalPages
-                                      ? () {
-                                          notifier
-                                              .goToPage(
-                                            widget.jobId,
-                                            state.meta!
-                                                    .page +
-                                                1,
-                                          );
-                                        }
-                                      : null,
+                                  state.meta!.page < state.meta!.totalPages
+                                  ? () {
+                                      notifier.goToPage(
+                                        widget.jobId,
+                                        state.meta!.page + 1,
+                                      );
+                                    }
+                                  : null,
                             ),
                           ),
                         ],

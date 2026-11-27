@@ -1,4 +1,5 @@
 import 'package:btcclient/core/config/theme.dart';
+import 'package:btcclient/core/utils/date_formatter.dart';
 import 'package:btcclient/core/widgets/navbar/common_appbar.dart';
 import 'package:btcclient/features/notifications/data/notification_model.dart';
 import 'package:btcclient/features/notifications/presentations/provider/notification_notifier.dart';
@@ -6,6 +7,50 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+
+// ============================================================
+// TITLE COLOR CODING CONSTANTS
+// ============================================================
+
+const List<String> PURPLE_TITLES = [
+  "Viewed Your CV!",
+  "Appointed!",
+  "Confirmation Letter",
+  "Verified!",
+  "Verification Request!",
+  "Profile Verification Code"
+];
+
+const List<String> GREEN_TITLES = [
+  "Shortlisted!",
+  "Tuition Job Confirmed!",
+  "Platform Charge Received!",
+  "Appointed Tutor!",
+  "Confirmed Tutor!",
+];
+
+const List<String> RED_TITLES = ["Rejected!", "Cancelled!", "Cancelled Tutor!"];
+
+const List<String> BLUE_TITLES = [
+  "Invoice for Platform Charge",
+  "Invoice for Verification Charge",
+  "Verification Charge Received!",
+  "Approved Your Tutor Request!",
+  "Shortlisted Tutor!",
+  "🎉 Happy Birthday! 🎂"
+];
+
+Color getTitleTextColor(String title) {
+  if (PURPLE_TITLES.contains(title)) return const Color(0xFF6B21A8);
+  if (GREEN_TITLES.contains(title)) return const Color(0xFF15803D);
+  if (RED_TITLES.contains(title)) return const Color(0xFFFB2C36);
+  if (BLUE_TITLES.contains(title)) return const Color(0xFF096DB5);
+  return const Color(0xFF364153); // default
+}
+
+// ============================================================
+// SCREEN
+// ============================================================
 
 class NotificationScreen extends ConsumerStatefulWidget {
   const NotificationScreen({super.key});
@@ -39,7 +84,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
           if (state.error != null) {
             return Center(
               child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.lg),
+                padding: const EdgeInsets.all(16),
                 child: Text(
                   state.error!,
                   textAlign: TextAlign.center,
@@ -58,12 +103,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
               return ref.read(notificationNotifierProvider.notifier).refresh();
             },
             child: ListView.separated(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.md,
-                AppSpacing.md,
-                AppSpacing.md,
-                AppSpacing.xl,
-              ),
+              padding: const EdgeInsets.all(8),
               itemCount: state.notifications.length,
               separatorBuilder: (_, __) =>
                   const SizedBox(height: AppSpacing.sm),
@@ -107,7 +147,7 @@ class _EmptyNotificationView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -193,7 +233,12 @@ class _NotificationTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isUnread = !notification.isRead;
+    
+    // 👈 Get the dynamic color for both text and icon
+    final titleColor = getTitleTextColor(notification.title);
+
     debugPrint(notification.toString());
+    
     return Material(
       color: isUnread ? AppColors.primary03 : AppColors.neutrals01,
       borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -209,24 +254,21 @@ class _NotificationTile extends StatelessWidget {
               // ICON + UNREAD INDICATOR
               // ==================================================
               SizedBox(
-                width: 34,
-                height: 34,
+                width: 38, // 👈 Fixed to match Container size
+                height: 38, // 👈 Fixed to match Container size
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
                     Container(
                       width: 44,
                       height: 44,
-                      padding: const EdgeInsets.all(6),
+                      padding: const EdgeInsets.all(6), // 👈 Adjusted padding
                       decoration: BoxDecoration(
-                        color: isUnread
-                            ? AppColors.primary02
-                            : AppColors.neutrals04.withOpacity(0.45),
+                        // 👈 Use titleColor with low opacity for background
+                        color: titleColor.withOpacity(0.08),
                         borderRadius: BorderRadius.circular(AppRadius.medium),
                         border: Border.all(
-                          color: isUnread
-                              ? AppColors.primary01
-                              : AppColors.neutrals04.withOpacity(0.45),
+                          color: titleColor.withOpacity(0.1), // 👈 Use titleColor for border
                           width: 1.5,
                         ),
                       ),
@@ -234,8 +276,8 @@ class _NotificationTile extends StatelessWidget {
                         _iconPath,
                         width: 16,
                         height: 16,
-                        colorFilter: const ColorFilter.mode(
-                          AppColors.primary01,
+                        colorFilter: ColorFilter.mode(
+                          titleColor, // 👈 Use titleColor for the actual icon
                           BlendMode.srcIn,
                         ),
                       ),
@@ -293,7 +335,8 @@ class _NotificationTile extends StatelessWidget {
                         fontWeight: isUnread
                             ? FontWeight.w700
                             : FontWeight.w500,
-                        color: AppColors.neutrals02,
+                        // 👈 Apply Color coding
+                        color: titleColor,
                       ),
                     ),
 
@@ -318,9 +361,9 @@ class _NotificationTile extends StatelessWidget {
                     // DATE
                     // ==================================================
                     Text(
-                      DateFormat(
-                        'dd MMM yyyy • hh:mm a',
-                      ).format(notification.createdAt),
+                      DateFormatter.formatNotificationTime(
+                        notification.createdAt.toString(),
+                      ),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: AppColors.neutrals03,
                       ),

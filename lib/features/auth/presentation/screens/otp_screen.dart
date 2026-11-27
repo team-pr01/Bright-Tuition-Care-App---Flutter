@@ -41,7 +41,7 @@ class _OtpScreenState extends State<OtpScreen> {
   String? error;
 
   Timer? timer;
-  int secondsRemaining = 60;
+  int secondsRemaining = 120;
   bool canResend = false;
 
   String get otp => controllers.map((e) => e.text).join();
@@ -79,7 +79,7 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   void startTimer() {
-    secondsRemaining = 60;
+    secondsRemaining = 120; // 👈 Change 60 to 120
     canResend = false;
 
     timer?.cancel();
@@ -303,8 +303,7 @@ class _OtpScreenState extends State<OtpScreen> {
           //   variant: AppButtonVariant.gradient,
           //   onPressed: verify,
           // ),
-          if (loading)
-          const SizedBox(height: 10),
+          if (loading) const SizedBox(height: 10),
           if (loading)
             SizedBox(
               height: 18,
@@ -339,8 +338,8 @@ class _OtpScreenState extends State<OtpScreen> {
                     child: const Text("Resend OTP"),
                   )
                 : Text(
-                    "Resend in $secondsRemaining sec",
-
+                    // 👈 Format seconds into MM:SS
+                    "Resend in ${(secondsRemaining ~/ 60).toString().padLeft(2, '0')}:${(secondsRemaining % 60).toString().padLeft(2, '0')}",
                     style: TextStyle(color: AppColors.neutrals03),
                   ),
           ),

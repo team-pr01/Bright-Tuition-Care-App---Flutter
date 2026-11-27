@@ -248,7 +248,9 @@ class _JobCardState extends ConsumerState<JobCard> {
                   child: IconRow(
                     icon: "assets/icons/visual/salary.svg",
                     title: "Salary",
-                    value: '${safe(job.salary)} BDT',
+                   value: RegExp(r'\d').hasMatch(safe(job.salary))
+    ? '${safe(job.salary)} BDT'
+    : safe(job.salary),
                   ),
                 ),
               ],

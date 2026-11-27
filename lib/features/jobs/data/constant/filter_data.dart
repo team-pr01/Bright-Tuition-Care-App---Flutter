@@ -4199,6 +4199,12 @@ const List<String> curriculumTypes = [
   "British",
   "Oxford",
 ];
+const List<String> guardianCurriculumTypes = [
+  "Cambridge",
+  "Ed-Excel",
+  "IB",
+  "British",
+];
 
 const List<String> academicGroups = [
   "Science",

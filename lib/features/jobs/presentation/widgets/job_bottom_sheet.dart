@@ -463,7 +463,9 @@ class _JobCardState extends ConsumerState<JobBottomSheet> {
                             title: "Salary",
                             value:
                                 (job.salary != null && job.salary!.isNotEmpty)
-                                ? "${job.salary} BDT"
+                                ? RegExp(r'\d').hasMatch(safe(job.salary))
+                                      ? '${safe(job.salary)} BDT'
+                                      : safe(job.salary)
                                 : "-",
                           ),
                         ),

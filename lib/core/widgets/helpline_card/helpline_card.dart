@@ -29,12 +29,13 @@ class HelplineCard extends StatelessWidget {
       large: 8,
     );
 
-    
-
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 8),
+        padding: EdgeInsets.symmetric(
+          horizontal: horizontalPadding,
+          vertical: 8,
+        ),
         decoration: BoxDecoration(
           color: AppColors.primary03,
           borderRadius: BorderRadius.circular(8),
@@ -58,40 +59,42 @@ class HelplineCard extends StatelessWidget {
               ),
             ),
 
-            SizedBox(width: 12),
-
             // -----------------------------------------------------------------
             // PHONE + TIMING
             // -----------------------------------------------------------------
-
             Expanded(
-              child: Center(
-                child: RichText(
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: "$phone ",
-                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                          color: AppColors.backgroundDark,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  left: 8,
+                ), // 👈 Small gap between icon and text
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: RichText(
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "$phone ",
+                          style: Theme.of(context).textTheme.labelLarge!
+                              .copyWith(color: AppColors.backgroundDark),
                         ),
-                      ),
-                      TextSpan(
-                        text: " ($timing)",
-                        style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                          color: AppColors.backgroundDark,
-                          fontWeight: FontWeight.w400,
-                          fontSize: context.responsiveValue<double>(
-                            extraSmall: 8,
-                            small: 8,
-                            medium: 12,
-                            large: 12,
-                          ),
+                        TextSpan(
+                          text: " ($timing)",
+                          style: Theme.of(context).textTheme.labelSmall!
+                              .copyWith(
+                                color: AppColors.backgroundDark,
+                                fontWeight: FontWeight.w400,
+                                fontSize: context.responsiveValue<double>(
+                                  extraSmall: 8,
+                                  small: 8,
+                                  medium: 12,
+                                  large: 12,
+                                ),
+                              ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

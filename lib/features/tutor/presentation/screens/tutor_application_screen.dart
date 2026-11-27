@@ -241,7 +241,7 @@ class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
                   setState(() => _selectedStatus = "cancelled");
                   ref
                       .read(applicationsProvider.notifier)
-                      .fetchApplications(status: "cancelled");
+                      .fetchApplications(status: "rejected");
                 },
                 label: "Cancelled",
                 count: state.meta?.counts?.rejected ?? 0,
@@ -281,9 +281,9 @@ class _MyApplicationPageState extends ConsumerState<MyApplicationPage> {
   }
 
   /// ================= BODY =================
-  Widget _buildBody(state) {
-    /// LOADING
-    if (state.isLoading && state.applications.isEmpty) {
+   Widget _buildBody(state) {
+    /// LOADING (Show skeleton whenever loading, not just when empty)
+    if (state.isLoading) {
       return Center(
         child: ListView.builder(
           itemCount: 6,
