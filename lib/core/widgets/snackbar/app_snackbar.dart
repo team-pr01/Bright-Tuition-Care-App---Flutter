@@ -36,7 +36,7 @@ class AppSnackbar {
         break;
 
       case SnackType.natural:
-        backgroundColor = Colors.grey;
+        backgroundColor = Colors.black87;
         icon = Icons.circle;
         break;
     }

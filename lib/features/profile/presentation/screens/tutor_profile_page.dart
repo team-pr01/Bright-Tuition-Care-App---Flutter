@@ -287,7 +287,7 @@ class _TutorProfileScreenState extends ConsumerState<TutorProfileScreen> {
             // BACK BUTTON
             // ============================================================
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
+              padding: const EdgeInsets.fromLTRB(8, 20, 16, 0),
               child: _buildBackButton(),
             ),
             TutorProfileCard(
