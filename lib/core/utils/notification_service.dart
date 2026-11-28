@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:btcclient/core/config/env.dart';
 import 'package:btcclient/core/storage/local_storage.dart';
 import 'package:btcclient/features/notifications/services/notification_router.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -19,8 +20,7 @@ class NotificationService {
 
   VoidCallback? onNotificationReceived;
 
-  static const AndroidNotificationChannel channel =
-      AndroidNotificationChannel(
+  static const AndroidNotificationChannel channel = AndroidNotificationChannel(
     'bright_tuition_channel',
     'Bright Tuition Care',
     description: 'Notifications from Bright Tuition Care',
@@ -37,8 +37,7 @@ class NotificationService {
 
   Map<String, dynamic>? _pendingNotificationData;
 
-bool get hasPendingNotification =>
-    _pendingNotificationData != null;
+  bool get hasPendingNotification => _pendingNotificationData != null;
 
   // ============================================================
   // INITIALIZE
@@ -74,8 +73,7 @@ bool get hasPendingNotification =>
     await _localNotifications.initialize(
       settings,
       onDidReceiveNotificationResponse: _onNotificationTap,
-      onDidReceiveBackgroundNotificationResponse:
-          _onNotificationTapBackground,
+      onDidReceiveBackgroundNotificationResponse: _onNotificationTapBackground,
     );
 
     debugPrint('✅ Local notifications initialized');
@@ -92,7 +90,8 @@ bool get hasPendingNotification =>
 
     final androidPlugin = _localNotifications
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
+          AndroidFlutterLocalNotificationsPlugin
+        >();
 
     await androidPlugin?.createNotificationChannel(channel);
 
@@ -108,57 +107,49 @@ bool get hasPendingNotification =>
     // TOKEN REFRESH
     // ----------------------------------------------------------
 
-    FirebaseMessaging.instance.onTokenRefresh.listen(
-      (newToken) async {
-        try {
-          debugPrint('🔄 FCM token refreshed');
-          debugPrint(newToken);
+    FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
+      try {
+        debugPrint('🔄 FCM token refreshed');
+        debugPrint(newToken);
 
-          await LocalStorage.saveFcmToken(newToken);
+        await LocalStorage.saveFcmToken(newToken);
 
-          await _sendTokenToBackend(newToken);
-        } catch (e, stackTrace) {
-          debugPrint('❌ Failed handling token refresh: $e');
-          debugPrintStack(stackTrace: stackTrace);
-        }
-      },
-    );
+        await _sendTokenToBackend(newToken);
+      } catch (e, stackTrace) {
+        debugPrint('❌ Failed handling token refresh: $e');
+        debugPrintStack(stackTrace: stackTrace);
+      }
+    });
 
     // ----------------------------------------------------------
     // FOREGROUND
     // ----------------------------------------------------------
 
-    FirebaseMessaging.onMessage.listen(
-      (RemoteMessage message) async {
-        await _onForegroundMessage(message);
-      },
-    );
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      await _onForegroundMessage(message);
+    });
 
     // ----------------------------------------------------------
     // BACKGROUND → TAP
     // ----------------------------------------------------------
 
-    FirebaseMessaging.onMessageOpenedApp.listen(
-      (RemoteMessage message) {
-        debugPrint('🔔 Background notification opened');
-        debugPrint('🔔 Data: ${message.data}');
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      debugPrint('🔔 Background notification opened');
+      debugPrint('🔔 Data: ${message.data}');
 
-        _handleNotificationData(message.data);
-      },
-    );
+      _handleNotificationData(message.data);
+    });
 
     // ----------------------------------------------------------
     // TERMINATED → TAP
     // ----------------------------------------------------------
 
-    final initialMessage =
-        await FirebaseMessaging.instance.getInitialMessage();
+    final initialMessage = await FirebaseMessaging.instance.getInitialMessage();
 
     if (initialMessage != null) {
       debugPrint('📨 App opened from terminated notification');
       debugPrint('📨 Data: ${initialMessage.data}');
-      _pendingNotificationData =
-      Map<String, dynamic>.from(initialMessage.data);
+      _pendingNotificationData = Map<String, dynamic>.from(initialMessage.data);
       // _handleNotificationData(initialMessage.data);
     }
 
@@ -167,39 +158,33 @@ bool get hasPendingNotification =>
     debugPrint('✅ NotificationService initialization completed');
   }
 
-// ============================================================
-// PROCESS PENDING NOTIFICATION
-// ============================================================
+  // ============================================================
+  // PROCESS PENDING NOTIFICATION
+  // ============================================================
 
-void processPendingNotification() {
-  if (_pendingNotificationData == null) {
-    debugPrint(
-      '🔔 No pending notification to process',
-    );
-    return;
+  void processPendingNotification() {
+    if (_pendingNotificationData == null) {
+      debugPrint('🔔 No pending notification to process');
+      return;
+    }
+
+    final data = Map<String, dynamic>.from(_pendingNotificationData!);
+
+    // Clear it BEFORE processing so the same notification
+    // cannot accidentally be opened twice.
+    _pendingNotificationData = null;
+
+    debugPrint('🚀 Processing pending notification: $data');
+
+    _handleNotificationData(data);
   }
-
-  final data =
-      Map<String, dynamic>.from(_pendingNotificationData!);
-
-  // Clear it BEFORE processing so the same notification
-  // cannot accidentally be opened twice.
-  _pendingNotificationData = null;
-
-  debugPrint(
-    '🚀 Processing pending notification: $data',
-  );
-
-  _handleNotificationData(data);
-}
   // ============================================================
   // PERMISSION
   // ============================================================
 
   Future<void> _requestPermission() async {
     try {
-      final settings =
-          await FirebaseMessaging.instance.requestPermission(
+      final settings = await FirebaseMessaging.instance.requestPermission(
         alert: true,
         badge: true,
         sound: true,
@@ -266,54 +251,34 @@ void processPendingNotification() {
       final accessToken = await LocalStorage.getToken();
 
       if (accessToken == null || accessToken.isEmpty) {
-        debugPrint(
-          '⚠️ Cannot send FCM token: user is not authenticated',
-        );
+        debugPrint('⚠️ Cannot send FCM token: user is not authenticated');
         return;
       }
 
       debugPrint('📤 Sending FCM token to backend...');
 
       final response = await http.patch(
-        Uri.parse(
-          'https://bright-tuition-care-server.onrender.com'
-          '/api/v1/auth/save-push-token',
-        ),
+        Uri.parse('${Env.baseUrl}/auth/save-push-token'),
         headers: {
           'Authorization': accessToken,
           'Content-Type': 'application/json',
         },
-        body: jsonEncode({
-          'pushToken': token,
-        }),
+        body: jsonEncode({'pushToken': token}),
       );
 
-      debugPrint(
-        '📤 FCM backend status: ${response.statusCode}',
-      );
+      debugPrint('📤 FCM backend status: ${response.statusCode}');
 
-      debugPrint(
-        '📤 FCM backend response: ${response.body}',
-      );
+      debugPrint('📤 FCM backend response: ${response.body}');
 
-      if (response.statusCode >= 200 &&
-          response.statusCode < 300) {
-        debugPrint(
-          '✅ FCM TOKEN REGISTERED SUCCESSFULLY',
-        );
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        debugPrint('✅ FCM TOKEN REGISTERED SUCCESSFULLY');
       } else {
-        debugPrint(
-          '❌ FCM TOKEN REGISTRATION FAILED',
-        );
+        debugPrint('❌ FCM TOKEN REGISTRATION FAILED');
       }
     } catch (e, stackTrace) {
-      debugPrint(
-        '❌ Error sending FCM token to backend: $e',
-      );
+      debugPrint('❌ Error sending FCM token to backend: $e');
 
-      debugPrintStack(
-        stackTrace: stackTrace,
-      );
+      debugPrintStack(stackTrace: stackTrace);
     }
   }
 
@@ -321,33 +286,21 @@ void processPendingNotification() {
   // FOREGROUND MESSAGE
   // ============================================================
 
-  Future<void> _onForegroundMessage(
-    RemoteMessage message,
-  ) async {
+  Future<void> _onForegroundMessage(RemoteMessage message) async {
     debugPrint('');
     debugPrint('🔥🔥🔥 FCM MESSAGE RECEIVED 🔥🔥🔥');
     debugPrint('🔥 Message ID: ${message.messageId}');
-    debugPrint(
-      '🔥 Title: ${message.notification?.title}',
-    );
-    debugPrint(
-      '🔥 Body: ${message.notification?.body}',
-    );
-    debugPrint(
-      '🔥 Data: ${message.data}',
-    );
+    debugPrint('🔥 Title: ${message.notification?.title}');
+    debugPrint('🔥 Body: ${message.notification?.body}');
+    debugPrint('🔥 Data: ${message.data}');
     debugPrint('');
 
     try {
       await _showLocalNotification(message);
     } catch (e, stackTrace) {
-      debugPrint(
-        '❌ Failed to show foreground notification: $e',
-      );
+      debugPrint('❌ Failed to show foreground notification: $e');
 
-      debugPrintStack(
-        stackTrace: stackTrace,
-      );
+      debugPrintStack(stackTrace: stackTrace);
     }
 
     onNotificationReceived?.call();
@@ -357,19 +310,13 @@ void processPendingNotification() {
   // SHOW LOCAL NOTIFICATION
   // ============================================================
 
-  Future<void> _showLocalNotification(
-    RemoteMessage message,
-  ) async {
+  Future<void> _showLocalNotification(RemoteMessage message) async {
     final notification = message.notification;
 
     if (notification == null) {
-      debugPrint(
-        '⚠️ Message contains no notification payload.',
-      );
+      debugPrint('⚠️ Message contains no notification payload.');
 
-      debugPrint(
-        '⚠️ This appears to be a DATA-ONLY FCM message.',
-      );
+      debugPrint('⚠️ This appears to be a DATA-ONLY FCM message.');
 
       return;
     }
@@ -395,10 +342,7 @@ void processPendingNotification() {
       DateTime.now().millisecondsSinceEpoch ~/ 1000,
       notification.title ?? 'Bright Tuition Care',
       notification.body ?? '',
-      NotificationDetails(
-        android: androidDetails,
-        iOS: iosDetails,
-      ),
+      NotificationDetails(android: androidDetails, iOS: iosDetails),
       payload: payload,
     );
 
@@ -409,12 +353,8 @@ void processPendingNotification() {
   // FCM NOTIFICATION DATA
   // ============================================================
 
-  void _handleNotificationData(
-    Map<String, dynamic> data,
-  ) {
-    debugPrint(
-      '🔔 Handling notification data: $data',
-    );
+  void _handleNotificationData(Map<String, dynamic> data) {
+    debugPrint('🔔 Handling notification data: $data');
 
     handleNotification(data);
   }
@@ -423,12 +363,8 @@ void processPendingNotification() {
   // ROUTER
   // ============================================================
 
-  static void handleNotification(
-    Map<String, dynamic> data,
-  ) {
-    debugPrint(
-      '🔔 NotificationRouter → $data',
-    );
+  static void handleNotification(Map<String, dynamic> data) {
+    debugPrint('🔔 NotificationRouter → $data');
 
     NotificationRouter.handleNotification(data);
   }
@@ -437,9 +373,7 @@ void processPendingNotification() {
   // LOCAL NOTIFICATION TAP
   // ============================================================
 
-  static void _onNotificationTap(
-    NotificationResponse response,
-  ) {
+  static void _onNotificationTap(NotificationResponse response) {
     debugPrint('🔔 Local notification tapped');
 
     _handlePayload(response.payload);
@@ -450,12 +384,8 @@ void processPendingNotification() {
   // ============================================================
 
   @pragma('vm:entry-point')
-  static void _onNotificationTapBackground(
-    NotificationResponse response,
-  ) {
-    debugPrint(
-      '🔔 Background local notification tapped',
-    );
+  static void _onNotificationTapBackground(NotificationResponse response) {
+    debugPrint('🔔 Background local notification tapped');
 
     _handlePayload(response.payload);
   }
@@ -464,13 +394,9 @@ void processPendingNotification() {
   // LOCAL PAYLOAD
   // ============================================================
 
-  static void _handlePayload(
-    String? payload,
-  ) {
+  static void _handlePayload(String? payload) {
     if (payload == null || payload.isEmpty) {
-      debugPrint(
-        '⚠️ Local notification payload is empty',
-      );
+      debugPrint('⚠️ Local notification payload is empty');
       return;
     }
 
@@ -478,27 +404,19 @@ void processPendingNotification() {
       final decoded = jsonDecode(payload);
 
       if (decoded is! Map) {
-        debugPrint(
-          '⚠️ Invalid notification payload',
-        );
+        debugPrint('⚠️ Invalid notification payload');
         return;
       }
 
       final data = Map<String, dynamic>.from(decoded);
 
-      debugPrint(
-        '🔔 Local notification data: $data',
-      );
+      debugPrint('🔔 Local notification data: $data');
 
       handleNotification(data);
     } catch (e, stackTrace) {
-      debugPrint(
-        '❌ Failed to decode notification payload: $e',
-      );
+      debugPrint('❌ Failed to decode notification payload: $e');
 
-      debugPrintStack(
-        stackTrace: stackTrace,
-      );
+      debugPrintStack(stackTrace: stackTrace);
     }
   }
 }
